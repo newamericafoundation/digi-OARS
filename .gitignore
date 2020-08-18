@@ -1,0 +1,77 @@
+# Eclipse, ctags, Mac metadata, log files
+cordapp/.classpath
+cordapp/.project
+cordapp/tags
+.DS_Storecordapp/
+cordapp/*.log
+cordapp/*.log.gz
+cordapp/*.orig
+
+cordapp/.gradle
+
+# General build files
+cordapp/**/build/*
+cordapp/!docs/build/*
+
+lib/dokka.jar
+
+### JetBrains template
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
+
+cordapp/*.iml
+
+## Directory-based project format:
+#.idea
+
+# if you remove the above rule, at least ignore the following:
+
+# Specific files to avoid churn
+cordapp/.idea/*.xml
+cordapp/.idea/copyright
+cordapp/.idea/jsLibraryMappings.xml
+
+# User-specific stuff:
+cordapp/.idea/tasks.xml
+cordapp/.idea/dictionaries
+
+# Sensitive or high-churn files:
+cordapp/.idea/dataSources.ids
+cordapp/.idea/dataSources.xml
+cordapp/.idea/sqlDataSources.xml
+cordapp/.idea/dynamic.xml
+cordapp/.idea/uiDesigner.xml
+
+# Gradle:
+cordapp/.idea/libraries
+
+# Mongo Explorer plugin:
+cordapp/.idea/mongoSettings.xml
+
+## File-based project format:
+cordapp/*.ipr
+cordapp/*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+cordapp/out/
+cordapp/workflows/out/
+cordapp/contracts/out/
+cordapp/clients/out/
+
+# mpeltonen/sbt-idea plugin
+cordapp/.idea_modules/
+
+# JIRA plugin
+cordapp/atlassian-ide-plugin.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+cordapp/com_crashlytics_export_strings.xml
+cordapp/crashlytics.properties
+cordapp/crashlytics-build.properties
+
+# docs related
+cordapp/docs/virtualenv/
+
+# if you use the installQuasar task
+cordapp/lib
