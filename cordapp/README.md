@@ -2,13 +2,13 @@
   <img src="https://www.corda.net/wp-content/uploads/2016/11/fg005_corda_b.png" alt="Corda" width="500">
 </p>
 
-# CorDapp Template - Kotlin
+# CorDapp Template - Java
 
-Welcome to the Kotlin CorDapp template. The CorDapp template is a stubbed-out CorDapp that you can use to bootstrap 
+Welcome to the Java CorDapp template. The CorDapp template is a stubbed-out CorDapp that you can use to bootstrap 
 your own CorDapps.
 
-**This is the Kotlin version of the CorDapp template. The Java equivalent is 
-[here](https://github.com/corda/cordapp-template-java/).**
+**This is the Java version of the CorDapp template. The Kotlin equivalent is 
+[here](https://github.com/corda/cordapp-template-kotlin/).**
 
 # Pre-Requisites
 
@@ -17,7 +17,7 @@ See https://docs.corda.net/getting-set-up.html.
 # Usage
 
 ## Running tests inside IntelliJ
-
+	
 We recommend editing your IntelliJ preferences so that you use the Gradle runner - this means that the quasar utils
 plugin will make sure that some flags (like ``-javaagent`` - see below) are
 set for you.
@@ -80,7 +80,7 @@ You can find out more about the node shell [here](https://docs.corda.net/shell.h
 
 ### Client
 
-`clients/src/main/kotlin/com/template/Client.kt` defines a simple command-line client that connects to a node via RPC 
+`clients/src/main/java/com/template/Client.java` defines a simple command-line client that connects to a node via RPC 
 and prints a list of the other nodes on the network.
 
 #### Running the client
@@ -97,12 +97,12 @@ with the username `user1` and the password `test`.
 
 ### Webserver
 
-`clients/src/main/kotlin/com/template/webserver/` defines a simple Spring webserver that connects to a node via RPC and 
+`clients/src/main/java/com/template/webserver/` defines a simple Spring webserver that connects to a node via RPC and 
 allows you to interact with the node over HTTP.
 
 The API endpoints are defined here:
 
-     clients/src/main/kotlin/com/template/webserver/Controller.kt
+     clients/src/main/java/com/template/webserver/Controller.java
 
 And a static webpage is defined here:
 
@@ -134,9 +134,9 @@ While the sole template endpoint is served on:
 
 You should extend this template as follows:
 
-* Add your own state and contract definitions under `contracts/src/main/kotlin/`
-* Add your own flow definitions under `workflows/src/main/kotlin/`
-* Extend or replace the client and webserver under `clients/src/main/kotlin/`
+* Add your own state and contract definitions under `contracts/src/main/java/`
+* Add your own flow definitions under `workflows/src/main/java/`
+* Extend or replace the client and webserver under `clients/src/main/java/`
 
 For a guided example of how to extend this template, see the Hello, World! tutorial 
 [here](https://docs.corda.net/hello-world-introduction.html).
