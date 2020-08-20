@@ -76,3 +76,15 @@ cordapp/docs/virtualenv/
 
 # if you use the installQuasar task
 cordapp/lib
+
+
+clients/bin/*
+workflows/bin/*
+contracts/bin/*
+workflows/.settings/*
+contracts/.settings/*
+clients/.settings/*
+
+/clients/bin/*
+
+.DS_Store
