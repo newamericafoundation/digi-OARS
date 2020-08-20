@@ -42,8 +42,8 @@ buildscript {
 }
 
 allprojects {
+    apply plugin: 'java'
     apply from: "${rootProject.projectDir}/repositories.gradle"
-    apply plugin: 'kotlin'
 
     repositories {
         mavenLocal()
@@ -53,25 +53,29 @@ allprojects {
         maven { url 'https://jitpack.io' }
     }
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-        kotlinOptions {
-            languageVersion = "1.2"
-            apiVersion = "1.2"
-            jvmTarget = "1.8"
-            javaParameters = true   // Useful for reflection.
-        }
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-parameters" // Required for shell commands.
     }
 
+//    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+//        kotlinOptions {
+//            languageVersion = "1.2"
+//            apiVersion = "1.2"
+//            jvmTarget = "1.8"
+//            javaParameters = true   // Useful for reflection.
+//        }
+//    }
     jar {
-        // This makes the JAR's SHA-256 hash repeatable.
-        preserveFileTimestamps = false
-        reproducibleFileOrder = true
+        // CorDapps do not configure a Node's logging.
+        exclude '**/log4j2*.xml'
     }
+
 }
 
 apply plugin: 'net.corda.plugins.cordapp'
 apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
+apply plugin: 'java'
 
 sourceSets {
     main {
