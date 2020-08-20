@@ -2,19 +2,16 @@ package com.newamerica.states;
 
 import com.template.contracts.TemplateContract;
 import net.corda.core.contracts.BelongsToContract;
-import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
-import org.dom4j.CDATA;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Currency;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +26,7 @@ import java.util.List;
  *  currency - the globally recognized currency for the fund balance and amount.
  *  status - current stage of the fundState's lifecycle in Corda (can be ISSUED or PAID)
  */
+
 @BelongsToContract(TemplateContract.class)
 public class FundState implements LinearState {
     public final Party originCountry;
