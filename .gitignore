@@ -21,7 +21,8 @@ lib/dokka.jar
 cordapp/*.iml
 
 ## Directory-based project format:
-#.idea
+.idea
+cordapp/.idea
 
 # if you remove the above rule, at least ignore the following:
 
