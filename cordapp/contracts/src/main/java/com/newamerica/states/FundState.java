@@ -9,7 +9,7 @@ import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
@@ -33,14 +33,14 @@ public class FundState implements LinearState {
     public final Party targetCountry;
     public final double amount;
     public final double balance;
-    public final LocalDate datetime;
+    public final ZonedDateTime datetime;
     public final double maxWithdrawalAmount;
     public final Currency currency;
-    public final String status;
+    public final FundStateStatus status;
     public final UniqueIdentifier linearId;
 
     @ConstructorForDeserialization
-    public FundState(Party originCountry, Party targetCountry, double amount, double balance, LocalDate datetime, double maxWithdrawalAmount, Currency currency, String status, UniqueIdentifier linearId) {
+    public FundState(Party originCountry, Party targetCountry, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status, UniqueIdentifier linearId) {
         this.originCountry = originCountry;
         this.targetCountry = targetCountry;
         this.amount = amount;
@@ -52,7 +52,7 @@ public class FundState implements LinearState {
         this.linearId = linearId;
     }
 
-    public FundState(Party originCountry, Party targetCountry, double amount, double balance, LocalDate datetime, double maxWithdrawalAmount, Currency currency, String status){
+    public FundState(Party originCountry, Party targetCountry, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status){
         this(originCountry, targetCountry, amount, balance, datetime, maxWithdrawalAmount, currency, status, new UniqueIdentifier());
     }
 
@@ -70,10 +70,10 @@ public class FundState implements LinearState {
     public Party getTargetCountry() {        return targetCountry;    }
     public double getAmount() {        return amount;    }
     public double getBalance() { return balance;    }
-    public LocalDate getDatetime() { return datetime;    }
+    public ZonedDateTime getDatetime() { return datetime;    }
     public double getMaxWithdrawalAmount() { return maxWithdrawalAmount;    }
     public Currency getCurrency() { return currency;    }
-    public String getStatus() { return status;          }
+    public FundStateStatus getStatus() { return status;          }
 
     //helper functions
 
@@ -89,6 +89,11 @@ public class FundState implements LinearState {
                 this.currency,
                 this.status
                 );
+    }
+
+    public enum FundStateStatus{
+        ISSUED,
+        PAID
     }
 }
 
