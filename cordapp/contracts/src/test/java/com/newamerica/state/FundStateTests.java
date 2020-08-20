@@ -7,7 +7,6 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.Currency;
-import java.util.Date;
 import java.util.Locale;
 
 import static com.newamerica.TestUtils.CATAN;
@@ -64,6 +63,7 @@ public class FundStateTests {
 
     }
 
+    // ensure that the balance is properly reduced while using the withdraw() helper function
     @Test
     public void withdrawalHelperFunctionTest(){
         FundState fundState = new FundState(
