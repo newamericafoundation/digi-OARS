@@ -88,3 +88,6 @@ clients/.settings/*
 /clients/bin/*
 
 .DS_Store
+cordapp/.settings/*
+cordapp/.idea/*
+.idea/runConfigurations
