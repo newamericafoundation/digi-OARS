@@ -5,7 +5,8 @@ import net.corda.core.identity.Party;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Currency;
 import java.util.Locale;
 
@@ -32,10 +33,10 @@ public class FundStateTests {
         assertTrue(targetCountry.getType().isAssignableFrom(Party.class));
         assertTrue(amount.getType().isAssignableFrom(double.class));
         assertTrue(balance.getType().isAssignableFrom(double.class));
-        assertTrue(datetime.getType().isAssignableFrom(LocalDate.class));
+        assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(maxWithdrawalAmount.getType().isAssignableFrom(double.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
-        assertTrue(status.getType().isAssignableFrom(String.class));
+        assertTrue(status.getType().isAssignableFrom(FundState.FundStateStatus.class));
     }
 
     // ensure all getter tests return data as expected
@@ -46,20 +47,20 @@ public class FundStateTests {
                 CATAN.getParty(),
                 5000000,
                 5000000,
-                LocalDate.of(2020, 6, 27),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 1000000,
                 Currency.getInstance(Locale.US),
-                "ISSUED"
+                FundState.FundStateStatus.ISSUED
         );
 
         assertEquals(fundState.getOriginCountry(), US.getParty());
         assertEquals(fundState.getTargetCountry(), CATAN.getParty());
         assertTrue(fundState.getAmount() > 4999999);
         assertTrue(fundState.getBalance() > 4999999);
-        assertEquals(fundState.getDatetime(), LocalDate.of(2020, 6, 27));
+        assertEquals(fundState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertTrue(fundState.getMaxWithdrawalAmount() > 999999);
         assertEquals(fundState.getCurrency(), Currency.getInstance(Locale.US));
-        assertEquals(fundState.getStatus(), "ISSUED");
+        assertEquals(fundState.getStatus(), FundState.FundStateStatus.ISSUED);
 
     }
 
@@ -71,10 +72,10 @@ public class FundStateTests {
                 CATAN.getParty(),
                 5000000,
                 5000000,
-                LocalDate.of(2020, 6, 27),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 1000000,
                 Currency.getInstance(Locale.US),
-                "ISSUED"
+                FundState.FundStateStatus.ISSUED
         );
         double newBlance = fundState.withdraw(1000000).getBalance();
         assertTrue(newBlance > 3999999 && newBlance < 4000001);
