@@ -1,6 +1,6 @@
 package com.newamerica.states;
 
-import com.template.contracts.TemplateContract;
+import com.newamerica.contracts.TemplateContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
