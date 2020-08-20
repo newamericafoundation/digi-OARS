@@ -121,7 +121,7 @@ task deployNodes(type: net.corda.plugins.Cordform, dependsOn: ['jar']) {
         cordapp project(':contracts')
         cordapp project(':workflows')
         config '''	
-                notary="O=Notary,L=London,C=GB"	
+                notary="O=Notary,L=New York,C=US"	
             '''
     }
     node {
