@@ -1,5 +1,6 @@
 package com.newamerica.states;
 
+import com.newamerica.contracts.FundContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -26,7 +27,7 @@ import java.util.List;
  *  status - current stage of the fundState's lifecycle in Corda (can be ISSUED or PAID)
  */
 
-@BelongsToContract(com.newamerica.contracts.TemplateContract.class)
+@BelongsToContract(FundContract.class)
 public class FundState implements LinearState {
     public final Party originCountry;
     public final Party targetCountry;
