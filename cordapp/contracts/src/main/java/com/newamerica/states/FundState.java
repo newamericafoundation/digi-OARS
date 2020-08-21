@@ -1,6 +1,5 @@
 package com.newamerica.states;
 
-import com.newamerica.contracts.TemplateContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -27,10 +26,12 @@ import java.util.List;
  *  status - current stage of the fundState's lifecycle in Corda (can be ISSUED or PAID)
  */
 
-@BelongsToContract(TemplateContract.class)
+@BelongsToContract(com.newamerica.contracts.TemplateContract.class)
 public class FundState implements LinearState {
     public final Party originCountry;
     public final Party targetCountry;
+    public final List<Party> owners;
+    public final List<Party> requiredSigners;
     public final double amount;
     public final double balance;
     public final ZonedDateTime datetime;
@@ -40,9 +41,11 @@ public class FundState implements LinearState {
     public final UniqueIdentifier linearId;
 
     @ConstructorForDeserialization
-    public FundState(Party originCountry, Party targetCountry, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status, UniqueIdentifier linearId) {
+    public FundState(Party originCountry, Party targetCountry, List<Party> owners, List<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status, UniqueIdentifier linearId) {
         this.originCountry = originCountry;
         this.targetCountry = targetCountry;
+        this.owners = owners;
+        this.requiredSigners = requiredSigners;
         this.amount = amount;
         this.balance = balance;
         this.datetime = datetime;
@@ -52,8 +55,8 @@ public class FundState implements LinearState {
         this.linearId = linearId;
     }
 
-    public FundState(Party originCountry, Party targetCountry, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status){
-        this(originCountry, targetCountry, amount, balance, datetime, maxWithdrawalAmount, currency, status, new UniqueIdentifier());
+    public FundState(Party originCountry, Party targetCountry, List<Party> owners, List<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status){
+        this(originCountry, targetCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, status, new UniqueIdentifier());
     }
 
     //getters
@@ -68,6 +71,8 @@ public class FundState implements LinearState {
     }
     public Party getOriginCountry() {        return originCountry;    }
     public Party getTargetCountry() {        return targetCountry;    }
+    public List<Party> getOwners(){ return owners; }
+    public List<Party> getRequiredSigners(){ return requiredSigners; }
     public double getAmount() {        return amount;    }
     public double getBalance() { return balance;    }
     public ZonedDateTime getDatetime() { return datetime;    }
@@ -82,13 +87,15 @@ public class FundState implements LinearState {
         return new FundState(
                 this.originCountry,
                 this.targetCountry,
+                this.owners,
+                this.requiredSigners,
                 this.amount,
                 (this.balance - withdrawalAmount),
                 this.datetime,
                 this.maxWithdrawalAmount,
                 this.currency,
                 this.status
-                );
+        );
     }
 
     public enum FundStateStatus{
