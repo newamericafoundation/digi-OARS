@@ -1,7 +1,5 @@
 package com.newamerica.states;
 
-
-import com.newamerica.contracts.FundContract;
 import com.newamerica.contracts.RequestContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
