@@ -9,6 +9,7 @@ import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Currency;
@@ -33,16 +34,16 @@ public class FundState implements LinearState {
     public final Party targetCountry;
     public final List<Party> owners;
     public final List<Party> requiredSigners;
-    public final double amount;
-    public final double balance;
+    public final BigDecimal amount;
+    public final BigDecimal balance;
     public final ZonedDateTime datetime;
-    public final double maxWithdrawalAmount;
+    public final BigDecimal maxWithdrawalAmount;
     public final Currency currency;
     public final FundStateStatus status;
     public final UniqueIdentifier linearId;
 
     @ConstructorForDeserialization
-    public FundState(Party originCountry, Party targetCountry, List<Party> owners, List<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status, UniqueIdentifier linearId) {
+    public FundState(Party originCountry, Party targetCountry, List<Party> owners, List<Party> requiredSigners, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, FundStateStatus status, UniqueIdentifier linearId) {
         this.originCountry = originCountry;
         this.targetCountry = targetCountry;
         this.owners = owners;
@@ -56,7 +57,16 @@ public class FundState implements LinearState {
         this.linearId = linearId;
     }
 
-    public FundState(Party originCountry, Party targetCountry, List<Party> owners, List<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status){
+    public FundState(Party originCountry,
+                     Party targetCountry,
+                     List<Party> owners,
+                     List<Party> requiredSigners,
+                     BigDecimal amount,
+                     BigDecimal balance,
+                     ZonedDateTime datetime,
+                     BigDecimal maxWithdrawalAmount,
+                     Currency currency,
+                     FundStateStatus status){
         this(originCountry, targetCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, status, new UniqueIdentifier());
     }
 
@@ -74,24 +84,24 @@ public class FundState implements LinearState {
     public Party getTargetCountry() {        return targetCountry;    }
     public List<Party> getOwners(){ return owners; }
     public List<Party> getRequiredSigners(){ return requiredSigners; }
-    public double getAmount() {        return amount;    }
-    public double getBalance() { return balance;    }
+    public BigDecimal getAmount() {        return amount;    }
+    public BigDecimal getBalance() { return balance;    }
     public ZonedDateTime getDatetime() { return datetime;    }
-    public double getMaxWithdrawalAmount() { return maxWithdrawalAmount;    }
+    public BigDecimal getMaxWithdrawalAmount() { return maxWithdrawalAmount;    }
     public Currency getCurrency() { return currency;    }
     public FundStateStatus getStatus() { return status;          }
 
     //helper functions
 
     // return the difference between the balance and the withdrawn amount.
-    public FundState withdraw(double withdrawalAmount){
+    public FundState withdraw(BigDecimal withdrawalAmount){
         return new FundState(
                 this.originCountry,
                 this.targetCountry,
                 this.owners,
                 this.requiredSigners,
                 this.amount,
-                (this.balance - withdrawalAmount),
+                this.balance.subtract(withdrawalAmount),
                 this.datetime,
                 this.maxWithdrawalAmount,
                 this.currency,
