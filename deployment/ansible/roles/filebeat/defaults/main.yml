@@ -1,0 +1,3 @@
+corda_node_base_path: /opt/corda
+corda_node_name: 'node'
+corda_node_full_path: "{{ corda_node_base_path }}/{{ corda_node_name }}"

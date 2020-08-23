@@ -22,7 +22,7 @@ variable "tags" {
 }
 variable "vm_hostname" {
   type    = string
-  default = "newamerica"
+  default = "oars"
 }
 variable "admin_username" {
   type    = string

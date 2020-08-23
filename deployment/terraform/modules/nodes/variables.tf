@@ -20,7 +20,7 @@ variable "admin_username" {
 }
 
 variable "vm_hostname" {
-  description = "(Required) Local hostnname of the virtual machine"
+  description = "(Required) Local hostname of the virtual machine"
 }
 
 variable "vm_size" {

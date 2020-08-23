@@ -1,0 +1,16 @@
+[Unit]
+Description=Corda Node Service - {{ corda_node_name }}
+Requires=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/corda/{{ corda_node_name }}
+{% if prometheus_enabled == false %}
+ExecStart=/usr/bin/java -jar /opt/corda/{{ corda_node_name }}/corda.jar --config-file /opt/corda/{{ corda_node_name }}/config/node.conf
+{% else %}
+ExecStart=/usr/bin/java -Dcapsule.jvm.args="-javaagent:/opt/corda/{{ corda_node_name }}//drivers/jmx_prometheus_javaagent-0.13.0.jar={{ corda_node_jmx_port }}:/opt/corda/{{ corda_node_name }}/drivers/config.yml" -jar /opt/corda/{{ corda_node_name }}/corda.jar --config-file /opt/corda/{{ corda_node_name }}/config/node.conf
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target

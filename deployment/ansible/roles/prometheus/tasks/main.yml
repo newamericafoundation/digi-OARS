@@ -1,0 +1,30 @@
+- name: Create Corda Directory
+  file:
+    owner: corda
+    group: root
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "/opt/corda/prometheus/"
+
+- name: Copy Promtheus Configuration
+  template:
+    src: prometheus.yml.j2
+    dest: "/opt/corda/prometheus/prometheus.yml"
+    owner: root
+    group: root
+    mode: 0644
+    backup: no
+
+- name: Start Prometheus Container
+  docker_container:
+    name: prometheus
+    hostname: prometheus
+    image: prom/prometheus:latest
+    networks_cli_compatible: yes
+    ports:
+      - "9090:9090"
+    command: "--config.file=/etc/prometheus/prometheus.yml"
+
+    volumes:
+      - "/opt/corda/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml"
