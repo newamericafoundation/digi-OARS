@@ -1,5 +1,6 @@
 # 02-prepare-directories.yml
 ---
+
 - name: Prepare Directories
   hosts: node-machines, notary-machines
   gather_facts: true
@@ -65,4 +66,11 @@
         - "files/bootstrapper/node_configs/{{ inventory_hostname }}/nodeInfo-*"
       tags:
         - copy-node-info
+    - name: Add clog Alias
+      lineinfile:
+        path: /home/corda/.bashrc
+        regexp: "^alias clog="
+        line: alias clog='tail -100f /opt/corda/logs/node-corda-node.log'
+      tags:
+        - add-log-alias
 
