@@ -16,7 +16,7 @@ module "peer_nodes" {
 module "notary" {
   source                        = "../modules/nodes"
   resource_group_name           = azurerm_resource_group.resource_group.name
-  vm_hostname                   = var.vm_hostname
+  vm_hostname                   = "svc"
   admin_username                = var.admin_username
   enable_ssh_key                = true
   public_ssh_key                = var.public_ssh_key

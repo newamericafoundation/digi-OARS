@@ -1,0 +1,48 @@
+#- name: Move network-parameters
+#  shell: "mv /opt/corda/{{ corda_node_name }}/network-parameters /opt/corda/{{ corda_node_name }}/network-parameters.bak"
+
+#- name: Copy corda.jar #4.4.3-PREVIEW
+#  copy:
+#    owner: root
+#    group: root
+#    src: "files/{{ env }}/corda4/corda.jar"
+#    dest: "/opt/corda/{{ corda_node_name }}/corda.jar"
+#    backup: yes
+
+#- name: Copy Node Configuration
+#  template:
+#    src: node_4.4.conf.j2
+#    dest: "{{ corda_node_full_path }}/config/node.conf"
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: yes
+
+#- name: Copy Cordapp Jar Files
+#  copy:
+#    src: files/cordapps/{{ env }}/corda4/
+#    dest: "{{ corda_node_full_path }}/cordapps"
+#
+#- name: Copy data fix script 1
+#  copy:
+#    owner: root
+#    group: root
+#    src: "files/{{ env }}/corda4/data-fix.sql"
+#    dest: "/opt/corda/{{ corda_node_name }}_db/sql/data-fix.sql"
+#
+#- name: Copy data fix script 2
+#  copy:
+#    owner: root
+#    group: root
+#    src: "files/{{ env }}/corda4/insert-state_party-datafix.sql"
+#    dest: "/opt/corda/{{ corda_node_name }}_db/sql/insert-state_party-datafix.sql"
+
+- name: Execute Static Data SQL
+  shell: "docker exec {{ corda_node_name }}_db psql -U postgres -f /opt/sql/data-fix.sql"
+
+- name: Start Service
+  systemd:
+    name: "{{ corda_node_name }}"
+    daemon_reload: yes
+    enabled: yes
+    state: started

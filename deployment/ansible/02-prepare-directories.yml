@@ -1,0 +1,68 @@
+# 02-prepare-directories.yml
+---
+- name: Prepare Directories
+  hosts: node-machines, notary-machines
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Create Corda Directory
+      file:
+        owner: corda
+        group: root
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "/opt/corda"
+        - "/opt/corda/certificates"
+        - "/opt/corda/config"
+        - "/opt/corda/persistence"
+        - "/opt/corda/logs"
+        - "/opt/corda/cordapps"
+        - "/opt/corda/cordapps/config"
+        - "/opt/corda/drivers"
+        - "/opt/corda/additional-node-infos"
+      tags:
+        - create-corda-directory
+    - name: Copy Node Configurations
+      copy:
+        owner: corda
+        group: root
+        src: files/bootstrapper/node_configs/{{ inventory_hostname }}/node.conf
+        dest: /opt/corda/config/
+      tags:
+        - copy-node-configs
+    - name: Copy Network Parameters
+      copy:
+        owner: corda
+        group: root
+        src: files/bootstrapper/node_configs/{{ inventory_hostname }}/network-parameters
+        dest: /opt/corda/
+      tags:
+        - copy-network-params
+    - name: Copy Certificates
+      copy:
+        owner: corda
+        group: root
+        src: files/bootstrapper/node_configs/{{ inventory_hostname }}/certificates/
+        dest: /opt/corda/certificates/
+      tags:
+        - copy-certificates
+    - name: Copy Additonal Node Infos
+      copy:
+        owner: corda
+        group: root
+        src: files/bootstrapper/node_configs/{{ inventory_hostname }}/additional-node-infos/
+        dest: /opt/corda/additional-node-infos/
+      tags:
+        - copy-additonal-node-infos
+    - name: Copy Node Info
+      copy:
+        owner: corda
+        group: root
+        src: "{{ item }}"
+        dest: /opt/corda/
+      with_fileglob:
+        - "files/bootstrapper/node_configs/{{ inventory_hostname }}/nodeInfo-*"
+      tags:
+        - copy-node-info
+
