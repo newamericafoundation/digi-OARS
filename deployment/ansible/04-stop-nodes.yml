@@ -1,0 +1,13 @@
+# 04-stop-nodes.yml
+---
+- name: Install CorDapps
+  hosts: node-machines
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Stop Corda Docker Container
+      docker_container:
+        name: corda-node
+        hostname: corda-node
+        image: "{{ corda_docker_image_version }}"
+        state: stopped
