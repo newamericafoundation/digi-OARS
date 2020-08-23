@@ -10,7 +10,7 @@ catancso ansible_host=poc-oars-catancso.eastus.cloudapp.azure.com organisation="
 newamerica ansible_host=poc-oars-newamerica.eastus.cloudapp.azure.com organisation="New America"
 
 [notary-machines]
-notary ansible_host="52.188.10.174" organisation="Notary"
+notary ansible_host=52.188.10.174 organisation="Notary"
 
 [all:vars]
 ansible_ssh_private_key_file = ~/.ssh/id_rsa

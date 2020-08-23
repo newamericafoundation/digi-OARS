@@ -26,3 +26,11 @@
         - "/opt/corda/persistence"
       tags:
         - remove-dirs
+    - name: Remove Docker Container
+      docker_container:
+        name: corda-node
+        hostname: corda-node
+        image: "{{ corda_docker_image_version }}"
+        state: absent
+      tags:
+        - remove-corda

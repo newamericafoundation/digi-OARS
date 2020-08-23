@@ -47,7 +47,7 @@
         dest: /opt/corda/certificates/
       tags:
         - copy-certificates
-    - name: Copy Additonal Node Infos
+    - name: Copy Additional Node Infos
       copy:
         owner: corda
         group: root
