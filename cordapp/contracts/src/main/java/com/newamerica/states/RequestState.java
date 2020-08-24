@@ -33,17 +33,44 @@ import java.util.List;
 public class RequestState implements LinearState {
     public final String authorizedUserUsername;
     public final String authorizedUserDept;
-    public final String authorizerUsername;
+    public final String authorizerUserUsername;
     public final Party authorizerDept;
-    public final String externalAccount;
+    public final String externalAccountId;
     public final BigDecimal amount;
     public final Currency currency;
     public final ZonedDateTime datetime;
     public final RequestStateStatus status;
     public final StateAndRef<FundState> fundStateRef;
     public final UniqueIdentifier linearId;
+    public final List<AbstractParty> participants;
 
     @ConstructorForDeserialization
+    public RequestState(String authorizedUserUsername,
+                        String authorizedUserDept,
+                        String authorizerUserUsername,
+                        Party authorizerDept,
+                        String externalAccountId,
+                        BigDecimal amount,
+                        Currency currency,
+                        ZonedDateTime datetime,
+                        RequestStateStatus status,
+                        StateAndRef<FundState> fundStateRef,
+                        UniqueIdentifier linearId,
+                        List<AbstractParty> participants) {
+        this.authorizedUserUsername = authorizedUserUsername;
+        this.authorizedUserDept = authorizedUserDept;
+        this.authorizerUserUsername = authorizerUserUsername;
+        this.authorizerDept = authorizerDept;
+        this.externalAccountId = externalAccountId;
+        this.amount = amount;
+        this.currency = currency;
+        this.datetime = datetime;
+        this.status = status;
+        this.fundStateRef = fundStateRef;
+        this.linearId = linearId;
+        this.participants = participants;
+    }
+
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
                         String authorizerUsername,
@@ -54,31 +81,8 @@ public class RequestState implements LinearState {
                         ZonedDateTime datetime,
                         RequestStateStatus status,
                         StateAndRef<FundState> fundStateRef,
-                        UniqueIdentifier linearId) {
-        this.authorizedUserUsername = authorizedUserUsername;
-        this.authorizedUserDept = authorizedUserDept;
-        this.authorizerUsername = authorizerUsername;
-        this.authorizerDept = authorizerDept;
-        this.externalAccount = externalAccount;
-        this.amount = amount;
-        this.currency = currency;
-        this.datetime = datetime;
-        this.status = status;
-        this.fundStateRef = fundStateRef;
-        this.linearId = linearId;
-    }
-
-    public RequestState(String authorizedUserUsername,
-                        String authorizedUserDept,
-                        String authorizerUsername,
-                        Party authorizerDept,
-                        String externalAccount,
-                        BigDecimal amount,
-                        Currency currency,
-                        ZonedDateTime datetime,
-                        RequestStateStatus status,
-                        StateAndRef<FundState> fundStateRef) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateRef,new UniqueIdentifier());
+                        List<AbstractParty> participants) {
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateRef,new UniqueIdentifier(), participants);
     }
 
 
@@ -88,19 +92,19 @@ public class RequestState implements LinearState {
 
     @NotNull
     @Override
-    public List<AbstractParty> getParticipants() { return Arrays.asList();}
+    public List<AbstractParty> getParticipants() { return participants;}
 
 
     public String getAuthorizedUserUsername() { return authorizedUserUsername; }
     public String getAuthorizedUserDept() { return authorizedUserDept; }
-    public String getAuthorizerUsername() { return authorizerUsername; }
     public Party getAuthorizerDept() { return authorizerDept; }
-    public String getExternalAccount() { return externalAccount; }
     public BigDecimal getAmount() { return amount; }
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
     public RequestStateStatus getStatus() { return status; }
     public StateAndRef<FundState> getFundStateRef() { return fundStateRef; }
+    public String getAuthorizerUserUsername() { return authorizerUserUsername; }
+    public String getExternalAccountId() { return externalAccountId; }
 
 
     public enum RequestStateStatus{
