@@ -12,6 +12,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Currency;
 import java.util.List;
@@ -31,7 +32,7 @@ public class IssueFundFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction>{
         private final FundState outputFundState;
 
-        public InitiatorFlow(Party originCountry, Party targetCountry, Set<Party> owners, Set<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, Set participants){
+        public InitiatorFlow(Party originCountry, Party targetCountry, Set<Party> owners, Set<Party> requiredSigners, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, Set participants){
             this.outputFundState = new FundState(originCountry,targetCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, FundState.FundStateStatus.ISSUED, participants);
         }
 

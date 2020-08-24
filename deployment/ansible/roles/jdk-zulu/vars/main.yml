@@ -1,0 +1,5 @@
+# determine if the latest package version has been requested
+jdk_zulu_package_install_latest: "{{ (jdk_zulu_package_version or False) and jdk_zulu_package_version.lower() == 'latest' }}"
+
+# determine if package version should be used for package installation
+jdk_zulu_package_install_version: '{% if jdk_zulu_package_version | default(null) and jdk_zulu_package_version.lower() not in ("latest", "present") %}{{ jdk_zulu_package_version }}{% endif %}'

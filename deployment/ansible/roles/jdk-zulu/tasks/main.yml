@@ -1,0 +1,39 @@
+# prepare system for the official Docker APT repository
+- name: Add Azul Zulu GPG repository key
+  become: yes
+  apt_key:
+    keyserver: '{{ jdk_zulu_gpg_keyserver }}'
+    id: '{{ jdk_zulu_gpg_key_id }}'
+    state: 'present'
+  tags:
+    - jdk-zulu
+
+- name: Add Azul Zulu official repository
+  become: yes
+  apt_repository:
+    repo: 'deb {{ jdk_zulu_apt_repo_url }} stable main'
+    state: 'present'
+  tags:
+    - jdk-zulu
+
+- name: Update APT cache
+  become: yes
+  apt:
+    update_cache: yes
+    cache_valid_time: '{{ 60 * 60 * 24 }}' # cache is valid for 24 hours
+  changed_when: false
+  tags:
+    - jdk-zulu
+
+# install package
+- name: Install {{ jdk_zulu_package_name }} package via apt
+  become: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  apt:
+    name: '{{ jdk_zulu_package_name }}{% if jdk_zulu_package_install_version %}={{ jdk_zulu_package_install_version }}{% endif %}'
+    state: '{% if jdk_zulu_package_install_latest %}latest{% else %}present{% endif %}'
+    force: yes
+  tags:
+    - jdk-zulu
+    - jdk-zulu-packages

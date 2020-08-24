@@ -1,0 +1,57 @@
+# 00-pre_requisites.yml
+---
+- name: Network Bootstrapper
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Download Jar
+      get_url:
+        url: https://software.r3.com/artifactory/corda-releases/net/corda/corda-tools-network-bootstrapper/{{ network_boostrapper_version }}/corda-tools-network-bootstrapper-{{ network_boostrapper_version }}.jar
+        dest: files/bootstrapper/corda-tools-network-bootstrapper.jar
+  tags:
+    - download-bootstrapper
+
+- name: Node Configurations
+  hosts: node-machines
+  gather_facts: true
+  tasks:
+    - set_fact:
+        my_inventory_hostname: "{{ ansible_host }}"
+    - include_role:
+        name: corda
+        tasks_from: create-node-conf.yml
+      vars:
+        corda_node_name: "{{ inventory_hostname }}"
+        corda_node_org: "{{ organisation }}"
+        corda_node_host_p2p: "{{ my_inventory_hostname }}"
+        corda_node_base_path: files/bootstrapper/node_configs
+  tags:
+    - node-configs
+
+- name: Notary Node Configurations
+  hosts: notary-machines
+  gather_facts: true
+  tasks:
+    - set_fact:
+        my_inventory_hostname: "{{ ansible_host }}"
+    - include_role:
+        name: corda
+        tasks_from: create-notary-conf.yml
+      vars:
+        corda_node_name: "{{ inventory_hostname }}"
+        corda_node_org: "{{ organisation }}"
+        corda_node_host_p2p: "{{ my_inventory_hostname }}"
+        corda_node_base_path: files/bootstrapper/node_configs
+  tags:
+    - node-configs
+
+- name: Run Bootstrapper
+  hosts: localhost
+  gather_facts: true
+  tasks:
+    - name: Execute Bootstrapper Jar
+      shell: java -jar corda-tools-network-bootstrapper.jar --dir ./node_configs
+      args:
+        chdir: files/bootstrapper/
+  tags:
+    - execute-bootstrapper

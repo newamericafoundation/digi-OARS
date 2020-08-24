@@ -1,0 +1,29 @@
+---
+# file: jdk-zulu/defaults/main.yml
+# Variables in this file are automatically included into the role's context and can be overridden by the active play.
+
+# The name of a package which contains the service to install by this role.
+jdk_zulu_package_name: 'zulu-8'
+
+# The version of the package to install.
+# One of 'latest', 'present', empty or actual package version.
+# Empty value is equivalent to 'present'.
+jdk_zulu_package_version:
+
+# The GPG key id for the Debian/Ubuntu packages
+jdk_zulu_gpg_key_id: '0xB1998361219BD9C9'
+
+# The GPG keyserver to fetch GPG key from
+jdk_zulu_gpg_keyserver: 'hkp://keyserver.ubuntu.com:80'
+
+# The name of the Yum repository
+jdk_zulu_yum_repo_name: 'zulu'
+
+# The location of Azul Zulu repository for Ubuntu systems
+jdk_zulu_apt_repo_url: 'http://repos.azulsystems.com/ubuntu'
+
+# The location of Azul Zulu repository for RedHat systems
+jdk_zulu_yum_repo_base_url: 'http://repos.azulsystems.com/rhel/$releasever/$basearch'
+
+# The location of the Azul Zulu GPG key for RedHat systems
+jdk_zulu_yum_repo_gpgkey: 'http://repos.azulsystems.com/RPM-GPG-KEY-azulsystems'

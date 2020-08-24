@@ -7,8 +7,9 @@ import net.corda.core.contracts.Contract;
 import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.LedgerTransaction;
-
 import java.util.Set;
+import java.math.BigDecimal;
+
 
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
@@ -41,9 +42,9 @@ public class FundContract implements Contract {
                 require.using("OriginCountry and ReceivingCountry cannot be the same Party", outputState.originCountry == outputState.receivingCountry);
                 require.using("There must be at least one Party in the owner list.", outputState.owners.isEmpty());
                 require.using("There must be at least one Party in the requiredSigners list.", outputState.owners.isEmpty());
-                require.using("The amount must be greater than zero.", outputState.amount > 0);
-                require.using("The balance must be greater than zero.", outputState.balance > 0);
-                require.using("The maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount >= 0);
+                require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
+                require.using("The balance must be greater than zero.", outputState.balance.compareTo(BigDecimal.ZERO) > 0);
+                require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
                 require.using("The set of participants cannot be empty.", outputState.participants.isEmpty());
 

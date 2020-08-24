@@ -1,0 +1,56 @@
+- name: Prepare node directory
+  import_tasks: prepare-directory.yml
+
+- name: Create Docker network
+  docker_network:
+    name: "{{ corda_node_name }}"
+
+#- name: Install Postgresql Database
+#  docker_container:
+#    name: "{{ corda_node_name }}_db"
+#    hostname: "{{ corda_node_name }}_db"
+#    image: "{{ corda_node_local_postgres_db_image_version }}"
+#    networks_cli_compatible: yes
+#    networks:
+#      - name: "{{ corda_node_name }}"
+#    ports:
+#      - "{{ corda_node_database_port }}:5432"
+#    volumes:
+#      - "/opt/corda/{{ corda_node_name }}_db/data:/var/lib/postgresql/data"
+#      - "/opt/corda/{{ corda_node_name }}_db/sql:/opt/sql/"
+#      - "/opt/corda/{{ corda_node_name }}_db/backups:/opt/backups/"
+#    env:
+#      POSTGRES_USER: "postgres"
+#      POSTGRES_HOST_AUTH_METHOD: "trust"
+
+#- name: Waits for port 5432
+#  wait_for:
+#    host: 0.0.0.0
+#    port: "{{ corda_node_database_port }}"
+
+#- name: Wait for DB Ready
+#  pause:
+#    seconds: 10
+#
+#- name: Create node.conf
+#  import_tasks: create-node-conf.yml
+
+#- name: Run Node Registration
+#  import_tasks: run-initial-registration.yml
+#
+#- name: Create systemd Service
+#  template:
+#    src: node.service.j2
+#    dest: "/etc/systemd/system/{{ corda_node_name }}.service"
+#    owner: root
+#    group: root
+#    mode: 0644
+#    backup: no
+#  notify: Restart Service
+#
+#- name: Start Service
+#  systemd:
+#    name: "{{ corda_node_name }}"
+#    daemon_reload: yes
+#    enabled: yes
+#    state: started
