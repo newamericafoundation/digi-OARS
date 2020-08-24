@@ -121,6 +121,7 @@ public class FundState implements LinearState {
 
     public enum FundStateStatus{
         ISSUED,
+        RECEIVED,
         PAID
     }
 }
