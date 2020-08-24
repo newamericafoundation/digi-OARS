@@ -33,9 +33,9 @@ import java.util.List;
 public class RequestState implements LinearState {
     public final String authorizedUserUsername;
     public final String authorizedUserDept;
-    public final String authorizerUsername;
+    public final String authorizerUserUsername;
     public final Party authorizerDept;
-    public final String externalAccount;
+    public final String externalAccountId;
     public final BigDecimal amount;
     public final Currency currency;
     public final ZonedDateTime datetime;
@@ -46,9 +46,9 @@ public class RequestState implements LinearState {
     @ConstructorForDeserialization
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
-                        String authorizerUsername,
+                        String authorizerUserUsername,
                         Party authorizerDept,
-                        String externalAccount,
+                        String externalAccountId,
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
@@ -57,9 +57,9 @@ public class RequestState implements LinearState {
                         UniqueIdentifier linearId) {
         this.authorizedUserUsername = authorizedUserUsername;
         this.authorizedUserDept = authorizedUserDept;
-        this.authorizerUsername = authorizerUsername;
+        this.authorizerUserUsername = authorizerUserUsername;
         this.authorizerDept = authorizerDept;
-        this.externalAccount = externalAccount;
+        this.externalAccountId = externalAccountId;
         this.amount = amount;
         this.currency = currency;
         this.datetime = datetime;
@@ -93,14 +93,14 @@ public class RequestState implements LinearState {
 
     public String getAuthorizedUserUsername() { return authorizedUserUsername; }
     public String getAuthorizedUserDept() { return authorizedUserDept; }
-    public String getAuthorizerUsername() { return authorizerUsername; }
     public Party getAuthorizerDept() { return authorizerDept; }
-    public String getExternalAccount() { return externalAccount; }
     public BigDecimal getAmount() { return amount; }
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
     public RequestStateStatus getStatus() { return status; }
     public StateAndRef<FundState> getFundStateRef() { return fundStateRef; }
+    public String getAuthorizerUserUsername() { return authorizerUserUsername; }
+    public String getExternalAccountId() { return externalAccountId; }
 
 
     public enum RequestStateStatus{
