@@ -38,7 +38,7 @@ public class FundContract implements Contract {
                 require.using("No inputs should be consumed when issuing a FundState.", tx.getInputStates().size() == 0);
                 require.using("Only one output state should be created when issuing a FundState.", tx.getOutputStates().size() == 1);
                 FundState outputState = (FundState) tx.getOutputStates().get(0);
-                require.using("OriginCountry and TargetCountry cannot be the same Party", outputState.originCountry == outputState.targetCountry);
+                require.using("OriginCountry and ReceivingCountry cannot be the same Party", outputState.originCountry == outputState.receivingCountry);
                 require.using("There must be at least one Party in the owner list.", outputState.owners.isEmpty());
                 require.using("There must be at least one Party in the requiredSigners list.", outputState.owners.isEmpty());
                 require.using("The amount must be greater than zero.", outputState.amount > 0);

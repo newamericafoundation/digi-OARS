@@ -51,7 +51,7 @@ public class FundStateTests {
     @Test
     public void hasAllAttributes() throws NoSuchFieldException{
         Field originCountry = FundState.class.getDeclaredField("originCountry");
-        Field targetCountry = FundState.class.getDeclaredField("targetCountry");
+        Field receivingCountry = FundState.class.getDeclaredField("receivingCountry");
         Field owners = FundState.class.getDeclaredField("owners");
         Field requiredSigners = FundState.class.getDeclaredField("requiredSigners");
         Field amount = FundState.class.getDeclaredField("amount");
@@ -63,7 +63,7 @@ public class FundStateTests {
         Field participants = FundState.class.getDeclaredField("participants");
 
         assertTrue(originCountry.getType().isAssignableFrom(Party.class));
-        assertTrue(targetCountry.getType().isAssignableFrom(Party.class));
+        assertTrue(receivingCountry.getType().isAssignableFrom(Party.class));
         assertTrue(owners.getType().isAssignableFrom(Set.class));
         assertTrue(requiredSigners.getType().isAssignableFrom(Set.class));
         assertTrue(amount.getType().isAssignableFrom(double.class));
@@ -80,7 +80,7 @@ public class FundStateTests {
     public void getterTests(){
 
         assertEquals(fundState.getOriginCountry(), US.getParty());
-        assertEquals(fundState.getTargetCountry(), CATAN.getParty());
+        assertEquals(fundState.getReceivingCountry(), CATAN.getParty());
         assertEquals(fundState.getOwners(),owners);
         assertEquals(fundState.getRequiredSigners(), requiredSigners);
         assertTrue(fundState.getAmount() > 4999999);
