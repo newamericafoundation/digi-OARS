@@ -26,7 +26,7 @@ import java.util.List;
  *  externalAccount - the external account name/id that the fund transfers to
  *  datetime - the day/time the fund was issued.
  *  currency - the globally recognized currency for the fund balance and amount.
- *  status - current stage of the requestState's lifecycle in Corda (can be ISSUED, PENDING, FlAGGED)
+ *  status - current stage of the requestState's lifecycle in Corda (can be ISSUED, PENDING, FLAGGED)
  *  fundStateRef -  A reference to the fund state that this request is based on
  */
 @BelongsToContract(RequestContract.class)
@@ -40,7 +40,6 @@ public class RequestState implements LinearState {
     public final Currency currency;
     public final ZonedDateTime datetime;
     public final RequestStateStatus status;
-    public final StateAndRef<FundState> fundStateRef;
     public final UniqueIdentifier linearId;
     public final List<AbstractParty> participants;
 
@@ -54,7 +53,6 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
-                        StateAndRef<FundState> fundStateRef,
                         UniqueIdentifier linearId,
                         List<AbstractParty> participants) {
         this.authorizedUserUsername = authorizedUserUsername;
@@ -66,7 +64,6 @@ public class RequestState implements LinearState {
         this.currency = currency;
         this.datetime = datetime;
         this.status = status;
-        this.fundStateRef = fundStateRef;
         this.linearId = linearId;
         this.participants = participants;
     }
@@ -80,9 +77,8 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
-                        StateAndRef<FundState> fundStateRef,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateRef,new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status,new UniqueIdentifier(), participants);
     }
 
 
@@ -102,7 +98,6 @@ public class RequestState implements LinearState {
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
     public RequestStateStatus getStatus() { return status; }
-    public StateAndRef<FundState> getFundStateRef() { return fundStateRef; }
     public String getAuthorizerUserUsername() { return authorizerUserUsername; }
     public String getExternalAccountId() { return externalAccountId; }
 
