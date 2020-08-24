@@ -2,7 +2,6 @@ package com.newamerica.states;
 
 
 import com.newamerica.contracts.RequestContract;
-import com.sun.xml.internal.ws.wsdl.writer.document.Part;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.StateAndRef;
@@ -14,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 
