@@ -47,6 +47,7 @@ public class FundContract implements Contract {
                 require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
                 require.using("The set of participants cannot be empty.", outputState.participants.isEmpty());
+                require.using("The isReceived flag must be FALSE during issuance.", !outputState.isReceived);
 
                 // combine the sets
                 Set<Party> combinedSets = outputState.owners;
