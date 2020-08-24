@@ -5,7 +5,10 @@ import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
 import net.corda.core.contracts.Contract;
 import net.corda.core.contracts.TypeOnlyCommandData;
+import net.corda.core.identity.Party;
 import net.corda.core.transactions.LedgerTransaction;
+
+import java.util.Set;
 
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
@@ -40,8 +43,14 @@ public class FundContract implements Contract {
                 require.using("There must be at least one Party in the requiredSigners list.", outputState.owners.isEmpty());
                 require.using("The amount must be greater than zero.", outputState.amount > 0);
                 require.using("The balance must be greater than zero.", outputState.balance > 0);
-                require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount >= 0);
-                require.using("the status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
+                require.using("The maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount >= 0);
+                require.using("The status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
+                require.using("The set of participants cannot be empty.", outputState.participants.isEmpty());
+
+                // combine the sets
+                Set<Party> combinedSets = outputState.owners;
+                combinedSets.addAll(outputState.requiredSigners);
+                require.using("All owners and requiredSigners must be in the participant set.", outputState.participants.containsAll(combinedSets));
                 return null;
             });
         }

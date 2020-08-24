@@ -10,9 +10,8 @@ import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.ZonedDateTime;
-import java.util.Arrays;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A FundState is an on-ledger representation of off-ledger recovered assets.
@@ -31,8 +30,8 @@ import java.util.List;
 public class FundState implements LinearState {
     public final Party originCountry;
     public final Party targetCountry;
-    public final List<Party> owners;
-    public final List<Party> requiredSigners;
+    public final Set<Party> owners;
+    public final Set<Party> requiredSigners;
     public final double amount;
     public final double balance;
     public final ZonedDateTime datetime;
@@ -40,9 +39,10 @@ public class FundState implements LinearState {
     public final Currency currency;
     public final FundStateStatus status;
     public final UniqueIdentifier linearId;
+    public final Set<Party> participants;
 
     @ConstructorForDeserialization
-    public FundState(Party originCountry, Party targetCountry, List<Party> owners, List<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status, UniqueIdentifier linearId) {
+    public FundState(Party originCountry, Party targetCountry, Set<Party> owners, Set<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status, Set<Party> participants, UniqueIdentifier linearId) {
         this.originCountry = originCountry;
         this.targetCountry = targetCountry;
         this.owners = owners;
@@ -53,17 +53,18 @@ public class FundState implements LinearState {
         this.maxWithdrawalAmount = maxWithdrawalAmount;
         this.currency = currency;
         this.status = status;
+        this.participants = participants;
         this.linearId = linearId;
     }
 
-    public FundState(Party originCountry, Party targetCountry, List<Party> owners, List<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status){
-        this(originCountry, targetCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, status, new UniqueIdentifier());
+    public FundState(Party originCountry, Party targetCountry, Set<Party> owners, Set<Party> requiredSigners, double amount, double balance, ZonedDateTime datetime, double maxWithdrawalAmount, Currency currency, FundStateStatus status, Set<Party> participants){
+        this(originCountry, targetCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
     }
 
     //getters
     @Override
     public List<AbstractParty> getParticipants() {
-        return Arrays.asList();
+        return new ArrayList<>(this.participants);
     }
     @NotNull
     @Override
@@ -72,8 +73,8 @@ public class FundState implements LinearState {
     }
     public Party getOriginCountry() {        return originCountry;    }
     public Party getTargetCountry() {        return targetCountry;    }
-    public List<Party> getOwners(){ return owners; }
-    public List<Party> getRequiredSigners(){ return requiredSigners; }
+    public Set<Party> getOwners(){ return owners; }
+    public Set<Party> getRequiredSigners(){ return requiredSigners; }
     public double getAmount() {        return amount;    }
     public double getBalance() { return balance;    }
     public ZonedDateTime getDatetime() { return datetime;    }
@@ -95,7 +96,8 @@ public class FundState implements LinearState {
                 this.datetime,
                 this.maxWithdrawalAmount,
                 this.currency,
-                this.status
+                this.status,
+                this.participants
         );
     }
 
