@@ -91,3 +91,7 @@ clients/.settings/*
 cordapp/.settings/*
 cordapp/.idea/*
 .idea/runConfigurations
+
+cordapp/clients/bin/*
+cordapp/workflows/bin/*
+cordapp/contracts/bin/*
