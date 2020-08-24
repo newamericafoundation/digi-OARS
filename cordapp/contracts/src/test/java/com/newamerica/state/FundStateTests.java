@@ -18,8 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 public class FundStateTests {
     private FundState fundState;
-    private List<Party> owners = new ArrayList<>();
-    private List<Party> requiredSigners = new ArrayList<>();
+    private final Set<Party> owners = new HashSet<>();
+    private final Set<Party> requiredSigners = new HashSet<>();
+    private final Set<Party> participants = new HashSet<>();
 
 
     @Before
@@ -27,6 +28,9 @@ public class FundStateTests {
         owners.add(US.getParty());
         requiredSigners.add(US.getParty());
         requiredSigners.add(CATAN.getParty());
+        participants.add(US.getParty());
+        participants.add(CATAN.getParty());
+
 
         fundState = new FundState(
                 US.getParty(),
@@ -38,7 +42,8 @@ public class FundStateTests {
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
-                FundState.FundStateStatus.ISSUED
+                FundState.FundStateStatus.ISSUED,
+                participants
         );
 
     }
@@ -47,7 +52,7 @@ public class FundStateTests {
     @Test
     public void hasAllAttributes() throws NoSuchFieldException{
         Field originCountry = FundState.class.getDeclaredField("originCountry");
-        Field targetCountry = FundState.class.getDeclaredField("targetCountry");
+        Field receivingCountry = FundState.class.getDeclaredField("receivingCountry");
         Field owners = FundState.class.getDeclaredField("owners");
         Field requiredSigners = FundState.class.getDeclaredField("requiredSigners");
         Field amount = FundState.class.getDeclaredField("amount");
@@ -56,17 +61,19 @@ public class FundStateTests {
         Field maxWithdrawalAmount = FundState.class.getDeclaredField("maxWithdrawalAmount");
         Field currency = FundState.class.getDeclaredField("currency");
         Field status = FundState.class.getDeclaredField("status");
+        Field participants = FundState.class.getDeclaredField("participants");
 
         assertTrue(originCountry.getType().isAssignableFrom(Party.class));
-        assertTrue(targetCountry.getType().isAssignableFrom(Party.class));
-        assertTrue(owners.getType().isAssignableFrom(List.class));
-        assertTrue(requiredSigners.getType().isAssignableFrom(List.class));
+        assertTrue(receivingCountry.getType().isAssignableFrom(Party.class));
+        assertTrue(owners.getType().isAssignableFrom(Set.class));
+        assertTrue(requiredSigners.getType().isAssignableFrom(Set.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(balance.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(maxWithdrawalAmount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(status.getType().isAssignableFrom(FundState.FundStateStatus.class));
+        assertTrue(participants.getType().isAssignableFrom(Set.class));
     }
 
     // ensure all getter tests return data as expected
@@ -74,7 +81,7 @@ public class FundStateTests {
     public void getterTests(){
 
         assertEquals(fundState.getOriginCountry(), US.getParty());
-        assertEquals(fundState.getTargetCountry(), CATAN.getParty());
+        assertEquals(fundState.getReceivingCountry(), CATAN.getParty());
         assertEquals(fundState.getOwners(),owners);
         assertEquals(fundState.getRequiredSigners(), requiredSigners);
         assertTrue(fundState.getAmount().compareTo(BigDecimal.valueOf(4999999)) > 0);
@@ -83,6 +90,7 @@ public class FundStateTests {
         assertTrue(fundState.getMaxWithdrawalAmount().compareTo(BigDecimal.valueOf(999999)) > 0);
         assertEquals(fundState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(fundState.getStatus(), FundState.FundStateStatus.ISSUED);
+        assertEquals(fundState.getParticipants(),new ArrayList<>(participants));
 
     }
 

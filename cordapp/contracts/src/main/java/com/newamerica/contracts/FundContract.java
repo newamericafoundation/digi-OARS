@@ -5,9 +5,11 @@ import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
 import net.corda.core.contracts.Contract;
 import net.corda.core.contracts.TypeOnlyCommandData;
+import net.corda.core.identity.Party;
 import net.corda.core.transactions.LedgerTransaction;
-
+import java.util.Set;
 import java.math.BigDecimal;
+
 
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
@@ -37,13 +39,19 @@ public class FundContract implements Contract {
                 require.using("No inputs should be consumed when issuing a FundState.", tx.getInputStates().size() == 0);
                 require.using("Only one output state should be created when issuing a FundState.", tx.getOutputStates().size() == 1);
                 FundState outputState = (FundState) tx.getOutputStates().get(0);
-                require.using("OriginCountry and TargetCountry cannot be the same Party", outputState.originCountry == outputState.targetCountry);
+                require.using("OriginCountry and ReceivingCountry cannot be the same Party", outputState.originCountry == outputState.receivingCountry);
                 require.using("There must be at least one Party in the owner list.", outputState.owners.isEmpty());
                 require.using("There must be at least one Party in the requiredSigners list.", outputState.owners.isEmpty());
                 require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The balance must be greater than zero.", outputState.balance.compareTo(BigDecimal.ZERO) > 0);
                 require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
-                require.using("the status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
+                require.using("The status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
+                require.using("The set of participants cannot be empty.", outputState.participants.isEmpty());
+
+                // combine the sets
+                Set<Party> combinedSets = outputState.owners;
+                combinedSets.addAll(outputState.requiredSigners);
+                require.using("All owners and requiredSigners must be in the participant set.", outputState.participants.containsAll(combinedSets));
                 return null;
             });
         }
