@@ -27,6 +27,7 @@ import java.util.Set;
  *  maxWithdrawalAmount - a term agreed upon in an off-leger bi-lateral agreement.
  *  currency - the globally recognized currency for the fund balance and amount.
  *  status - current stage of the fundState's lifecycle in Corda (can be ISSUED or PAID)
+ *  isRecieved - a flag modified by an authorized treasury user
  */
 
 @BelongsToContract(FundContract.class)
