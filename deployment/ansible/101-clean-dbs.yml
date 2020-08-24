@@ -1,0 +1,29 @@
+# 101-clean-dbs.yml
+---
+- name: Clean DB's
+  hosts: node-machines, notary-machines
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Stop Corda Docker Container
+      docker_container:
+        name: corda-node
+        hostname: corda-node
+        image: "{{ corda_docker_image_version }}"
+        state: stopped
+    - name: Remove Directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/opt/corda/persistence/*"
+      tags:
+        - remove-dirs
+    - name: Remove Docker Container
+      docker_container:
+        name: corda-node
+        hostname: corda-node
+        image: "{{ corda_docker_image_version }}"
+        state: absent
+      tags:
+        - remove-corda

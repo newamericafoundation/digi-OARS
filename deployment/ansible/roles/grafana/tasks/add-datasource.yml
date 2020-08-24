@@ -1,0 +1,20 @@
+- name: Create Datasource
+  uri:
+    url: http://localhost:3000/api/datasources
+    method: POST
+    user: admin
+    password: "%Tu#qo3l3$t9G26C"
+    body_format: json
+    body:
+      name: "{{ datasource_name }}"
+      type: "postgres"
+      url: "{{ private_ip }}:{{ private_port }}"
+      database: "postgres"
+      password: ""
+      jsonData:
+        sslmode: "disable"
+        postgresVersion: "906"
+      user: "postgres"
+      access: "proxy"
+      isDefault: false
+    force_basic_auth: yes
