@@ -41,6 +41,7 @@ public class TransferState implements LinearState {
     public final ZonedDateTime datetime;
     public final StateAndRef<RequestState> requestStateRef;
     public final UniqueIdentifier linearId;
+    public final List<AbstractParty> participants;
 
 
     @ConstructorForDeserialization
@@ -52,7 +53,8 @@ public class TransferState implements LinearState {
                          Currency currency,
                          ZonedDateTime datetime,
                          StateAndRef<RequestState> requestStateRef,
-                         UniqueIdentifier linearId) {
+                         UniqueIdentifier linearId,
+                         List<AbstractParty> participants) {
         this.issuanceParty = issuanceParty;
         this.receivingDept = receivingDept;
         this.authorizedUserUsername = authorizedUserUsername;
@@ -62,6 +64,7 @@ public class TransferState implements LinearState {
         this.datetime = datetime;
         this.requestStateRef = requestStateRef;
         this.linearId = linearId;
+        this.participants = participants;
     }
 
     public TransferState(Party issuanceParty,
@@ -71,8 +74,9 @@ public class TransferState implements LinearState {
                          BigDecimal amount,
                          Currency currency,
                          ZonedDateTime datetime,
-                         StateAndRef<RequestState> requestStateRef) {
-        this(issuanceParty, receivingDept, authorizedUserUsername, externalAccountId, amount, currency, datetime, requestStateRef, new UniqueIdentifier());
+                         StateAndRef<RequestState> requestStateRef,
+                         List<AbstractParty> participants) {
+        this(issuanceParty, receivingDept, authorizedUserUsername, externalAccountId, amount, currency, datetime, requestStateRef, new UniqueIdentifier(), participants);
     }
 
 
@@ -82,5 +86,5 @@ public class TransferState implements LinearState {
 
     @NotNull
     @Override
-    public List<AbstractParty> getParticipants() { return Arrays.asList(); }
+    public List<AbstractParty> getParticipants() { return participants; }
 }

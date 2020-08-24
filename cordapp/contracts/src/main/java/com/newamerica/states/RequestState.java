@@ -42,6 +42,7 @@ public class RequestState implements LinearState {
     public final RequestStateStatus status;
     public final StateAndRef<FundState> fundStateRef;
     public final UniqueIdentifier linearId;
+    public final List<AbstractParty> participants;
 
     @ConstructorForDeserialization
     public RequestState(String authorizedUserUsername,
@@ -54,7 +55,8 @@ public class RequestState implements LinearState {
                         ZonedDateTime datetime,
                         RequestStateStatus status,
                         StateAndRef<FundState> fundStateRef,
-                        UniqueIdentifier linearId) {
+                        UniqueIdentifier linearId,
+                        List<AbstractParty> participants) {
         this.authorizedUserUsername = authorizedUserUsername;
         this.authorizedUserDept = authorizedUserDept;
         this.authorizerUserUsername = authorizerUserUsername;
@@ -66,6 +68,7 @@ public class RequestState implements LinearState {
         this.status = status;
         this.fundStateRef = fundStateRef;
         this.linearId = linearId;
+        this.participants = participants;
     }
 
     public RequestState(String authorizedUserUsername,
@@ -77,8 +80,9 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
-                        StateAndRef<FundState> fundStateRef) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateRef,new UniqueIdentifier());
+                        StateAndRef<FundState> fundStateRef,
+                        List<AbstractParty> participants) {
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateRef,new UniqueIdentifier(), participants);
     }
 
 
@@ -88,7 +92,7 @@ public class RequestState implements LinearState {
 
     @NotNull
     @Override
-    public List<AbstractParty> getParticipants() { return Arrays.asList();}
+    public List<AbstractParty> getParticipants() { return participants;}
 
 
     public String getAuthorizedUserUsername() { return authorizedUserUsername; }
