@@ -5,7 +5,6 @@ import com.newamerica.contracts.FundContract;
 import com.newamerica.states.FundState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
-import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
@@ -42,7 +41,8 @@ public class IssueFundFlow {
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new FundContract.Commands.Issue();
-            transactionBuilder.addCommand(commandData, outputFundState.getParticipants().add(getOurIdentity());
+            outputFundState.getParticipants().add(getOurIdentity());
+            transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputFundState, FundContract.ID);
             transactionBuilder.verify(getServiceHub());
 
@@ -62,9 +62,7 @@ public class IssueFundFlow {
     }
 
     /**
-     * This is the flow which signs IOU issuances.
-     * The signing is handled by the [SignTransactionFlow].
-     * Uncomment the initiatedBy annotation to facilitate the responder flow.
+     * This is the flow which signs FundState issuances.
      */
 
     @InitiatedBy(IssueFundFlow.InitiatorFlow.class)
