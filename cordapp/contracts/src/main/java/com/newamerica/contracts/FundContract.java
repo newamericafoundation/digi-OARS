@@ -1,6 +1,7 @@
 package com.newamerica.contracts;
 
 import com.newamerica.states.FundState;
+import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
 import net.corda.core.contracts.Contract;
@@ -25,6 +26,7 @@ public class FundContract implements Contract {
     // Used to indicate the transaction's intent.
     public interface Commands extends CommandData {
         class Issue extends TypeOnlyCommandData implements Commands {}
+        class Withdraw extends TypeOnlyCommandData implements Commands {}
         class Receive extends TypeOnlyCommandData implements Commands {}
     }
 
@@ -55,9 +57,36 @@ public class FundContract implements Contract {
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.participants.containsAll(combinedLists));
                 return null;
             });
-        }
+        }else if(commandData.equals(new Commands.Withdraw())){
+            requireThat(require -> {
+                require.using("One input should be consumed when updating the balance of a FundState.", tx.getInputStates().size() == 1);
+                require.using("Only one output state should be created when updating the balance of a FundState.", tx.getOutputStates().size() == 1);
 
-        if(commandData.equals(new Commands.Receive())){
+                FundState inputState = (FundState) tx.getInputStates().get(0);
+                require.using("The inputFundState's status must be RECEIVED in order to proceed.", inputState.getStatus() == FundState.FundStateStatus.RECEIVED);
+
+                FundState outputState = (FundState) tx.getOutputStates().get(0);
+
+                require.using("If balance is zero, then the status should be PAID", outputState.getBalance().compareTo(BigDecimal.ZERO) == 0 && outputState.getStatus() != FundState.FundStateStatus.PAID);
+                require.using("If balance is greater than zero, then the status should be RECEIVED", outputState.getBalance().compareTo(BigDecimal.ZERO) > 0 && outputState.getStatus() != FundState.FundStateStatus.RECEIVED);
+                require.using("The withdrawal cannot be for more than the maxWithdrawalAmount", inputState.getMaxWithdrawalAmount().compareTo(outputState.getAmount()) < 0);
+                require.using("The withdrawal cannot result in a negative balance.", outputState.getBalance().compareTo(BigDecimal.ZERO) < 0);
+                require.using("The originCountry cannot change.", inputState.getOriginCountry() == outputState.getOriginCountry());
+                require.using("The receivingCountry cannot change.", inputState.getReceivingCountry() == outputState.getReceivingCountry());
+                require.using("The owners cannot change.", inputState.getOwners() == outputState.getOwners());
+                require.using("The requiredSigners cannot change.", inputState.getRequiredSigners() == outputState.getRequiredSigners());
+                require.using("The amount cannot change.", inputState.getAmount() == outputState.getAmount());
+                require.using("The datetime cannot change.", inputState.getDatetime() == outputState.getDatetime());
+                require.using("The maxWithdrawalAmount cannot change.", inputState.getMaxWithdrawalAmount() == outputState.getMaxWithdrawalAmount());
+                require.using("The currency cannot change.", inputState.getCurrency() == outputState.getCurrency());
+                require.using("The participants cannot change.", inputState.getParticipants() == outputState.getParticipants());
+
+                RequestState refRequestState = (RequestState) tx.getReferenceStates().get(0);
+                require.using("Referenced request state must be in the APPROVED status.", refRequestState.getStatus() == RequestState.RequestStateStatus.APPROVED);
+
+               return null;
+            });
+        }else if(commandData.equals(new Commands.Receive())){
             requireThat(require -> {
                 require.using("1 input should be consumed when receiving a FundState.", tx.getInputStates().size() == 1);
                 require.using("Only 1 output state should be created when receiving a FundState.", tx.getOutputStates().size() == 1);
