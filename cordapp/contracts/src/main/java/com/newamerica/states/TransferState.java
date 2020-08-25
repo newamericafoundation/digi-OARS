@@ -37,7 +37,7 @@ public class TransferState implements LinearState {
     public final BigDecimal amount;
     public final Currency currency;
     public final ZonedDateTime datetime;
-    public final StateAndRef<RequestState> requestStateRef;
+    public final UniqueIdentifier requestStateLinearId;
     public final UniqueIdentifier linearId;
     public final List<AbstractParty> participants;
 
@@ -50,7 +50,7 @@ public class TransferState implements LinearState {
                          BigDecimal amount,
                          Currency currency,
                          ZonedDateTime datetime,
-                         StateAndRef<RequestState> requestStateRef,
+                         UniqueIdentifier requestStateLinearId,
                          UniqueIdentifier linearId,
                          List<AbstractParty> participants) {
         this.issuanceParty = issuanceParty;
@@ -60,7 +60,7 @@ public class TransferState implements LinearState {
         this.amount = amount;
         this.currency = currency;
         this.datetime = datetime;
-        this.requestStateRef = requestStateRef;
+        this.requestStateLinearId = requestStateLinearId;
         this.linearId = linearId;
         this.participants = participants;
     }
@@ -72,11 +72,20 @@ public class TransferState implements LinearState {
                          BigDecimal amount,
                          Currency currency,
                          ZonedDateTime datetime,
-                         StateAndRef<RequestState> requestStateRef,
+                         UniqueIdentifier requestStateLinearId,
                          List<AbstractParty> participants) {
-        this(issuanceParty, receivingDept, authorizedUserUsername, externalAccountId, amount, currency, datetime, requestStateRef, new UniqueIdentifier(), participants);
+        this(issuanceParty, receivingDept, authorizedUserUsername, externalAccountId, amount, currency, datetime, requestStateLinearId, new UniqueIdentifier(), participants);
     }
 
+
+    public Party getIssuanceParty() { return issuanceParty; }
+    public String getReceivingDept() { return receivingDept; }
+    public String getAuthorizedUserUsername() { return authorizedUserUsername; }
+    public String getExternalAccountId() { return externalAccountId; }
+    public BigDecimal getAmount() { return amount; }
+    public Currency getCurrency() { return currency; }
+    public ZonedDateTime getDatetime() { return datetime; }
+    public UniqueIdentifier getRequestStateLinearId() { return requestStateLinearId; }
 
     @NotNull
     @Override
