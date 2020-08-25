@@ -15,14 +15,11 @@ import java.util.List;
 /**
  * A PartialRequestState is an on-ledger representation of partial request data that gets stored in the database.
  *
- *  authorizedUserUsername - The name of a Catan MoFA approved authorized user, who sends the request
  *  authorizedUserDept - the department name that the authorized user belongs to
- *  authorizerUsername - The name of a Catan MoJ authorizer, who sign off the request
  *  authorizerDept - the current value that exists in the fund.
  *  externalAccount - the external account name/id that the fund transfers to
  *  datetime - the day/time the fund was issued.
  *  currency - the globally recognized currency for the fund balance and amount.
- *  status - current stage of the requestState's lifecycle in Corda (can be ISSUED, PENDING, FlAGGED)
  *  fundStateLinearId -  A reference to the fund state that this request is based on
  */
 public class PartialRequestState implements LinearState {
