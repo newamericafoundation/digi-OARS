@@ -60,7 +60,7 @@ public class IssuePartialRequestFundFlow {
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new PartialRequestContract.Commands.Issue();
             outputPartialRequestState.getParticipants().add(getOurIdentity());
-            transactionBuilder.addCommand(commandData, outputPartialRequestState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, outputPartialRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputPartialRequestState, PartialRequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
@@ -83,7 +83,7 @@ public class IssuePartialRequestFundFlow {
      * This is the flow which signs PartialRequestState issuances.
      */
 
-    @InitiatedBy(IssueRequestFlow.InitiatorFlow.class)
+    @InitiatedBy(IssuePartialRequestFundFlow.InitiatorFlow.class)
     public static class ResponderFlow extends FlowLogic<SignedTransaction>{
         private final FlowSession flowSession;
         private SecureHash txWeJustSigned;
