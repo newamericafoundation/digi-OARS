@@ -1,0 +1,13 @@
+version: "3.2"
+services:
+  keycloak:
+    container_name: keycloak-oars
+    hostname: keycloak-oars
+    image: quay.io/keycloak/keycloak:latest
+    ports:
+      - 9080:8080
+    environment:
+      - "KEYCLOAK_USER=admin"
+      - "KEYCLOAK_PASSWORD=1234"
+    volumes:
+      - ./theme/:/opt/jboss/keycloak/themes/coreui
