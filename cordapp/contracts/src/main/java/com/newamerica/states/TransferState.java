@@ -4,7 +4,6 @@ package com.newamerica.states;
 import com.newamerica.contracts.RequestContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
-import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;

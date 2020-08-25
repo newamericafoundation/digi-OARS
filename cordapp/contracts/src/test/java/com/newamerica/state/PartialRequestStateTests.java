@@ -1,7 +1,6 @@
 package com.newamerica.state;
 
 import com.newamerica.states.PartialRequestState;
-import com.newamerica.states.RequestState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -12,7 +11,10 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.Locale;
 
 import static com.newamerica.TestUtils.CATANMoFA;
 import static com.newamerica.TestUtils.CATANMoJ;
