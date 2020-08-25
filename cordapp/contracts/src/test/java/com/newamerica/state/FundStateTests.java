@@ -9,7 +9,10 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.Locale;
 
 import static com.newamerica.TestUtils.CATAN;
 import static com.newamerica.TestUtils.US;

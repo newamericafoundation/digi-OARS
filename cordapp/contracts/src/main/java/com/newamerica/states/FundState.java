@@ -14,7 +14,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
-import java.util.List;
 
 /**
  * A FundState is an on-ledger representation of off-ledger recovered asLists.
