@@ -3,7 +3,6 @@ package com.newamerica.states;
 import com.newamerica.contracts.RequestContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
-import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -12,9 +11,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A RequestState is an on-ledger representation of request data that gets stored in the database.
@@ -40,6 +39,7 @@ public class RequestState implements LinearState {
     public final Currency currency;
     public final ZonedDateTime datetime;
     public final RequestStateStatus status;
+    public final UUID fundStateLinearId;
     public final UniqueIdentifier linearId;
     public final List<AbstractParty> participants;
 
@@ -53,6 +53,7 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
+                        UUID fundStateLinearId,
                         UniqueIdentifier linearId,
                         List<AbstractParty> participants) {
         this.authorizedUserUsername = authorizedUserUsername;
@@ -64,6 +65,7 @@ public class RequestState implements LinearState {
         this.currency = currency;
         this.datetime = datetime;
         this.status = status;
+        this.fundStateLinearId = fundStateLinearId;
         this.linearId = linearId;
         this.participants = participants;
     }
@@ -77,8 +79,9 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
+                        UUID fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status,new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -90,7 +93,7 @@ public class RequestState implements LinearState {
     @Override
     public List<AbstractParty> getParticipants() { return participants;}
 
-
+    //getters
     public String getAuthorizedUserUsername() { return authorizedUserUsername; }
     public String getAuthorizedUserDept() { return authorizedUserDept; }
     public Party getAuthorizerDept() { return authorizerDept; }
@@ -98,9 +101,26 @@ public class RequestState implements LinearState {
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
     public RequestStateStatus getStatus() { return status; }
+    public UUID getFundStateLinearId() { return fundStateLinearId; }
     public String getAuthorizerUserUsername() { return authorizerUserUsername; }
     public String getExternalAccountId() { return externalAccountId; }
 
+    //helper functions
+    public RequestState changeStatus(RequestStateStatus newStatus){
+        return new RequestState(
+                this.authorizedUserUsername,
+                this.authorizedUserDept,
+                this.authorizerUserUsername,
+                this.authorizerDept,
+                this.externalAccountId,
+                this.amount,
+                this.currency,
+                this.datetime,
+                newStatus,
+                this.fundStateLinearId,
+                this.participants
+        );
+    }
 
     public enum RequestStateStatus{
         ISSUED,
