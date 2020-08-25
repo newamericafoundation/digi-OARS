@@ -3,7 +3,6 @@ package com.newamerica.states;
 import com.newamerica.contracts.RequestContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
-import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -12,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 
@@ -27,7 +25,7 @@ import java.util.List;
  *  datetime - the day/time the fund was issued.
  *  currency - the globally recognized currency for the fund balance and amount.
  *  status - current stage of the requestState's lifecycle in Corda (can be ISSUED, PENDING, FlAGGED)
- *  fundStateRef -  A reference to the fund state that this request is based on
+ *  fundStateLinearId -  A reference to the fund state that this request is based on
  */
 @BelongsToContract(RequestContract.class)
 public class RequestState implements LinearState {
@@ -40,7 +38,7 @@ public class RequestState implements LinearState {
     public final Currency currency;
     public final ZonedDateTime datetime;
     public final RequestStateStatus status;
-    public final StateAndRef<FundState> fundStateRef;
+    public final UniqueIdentifier fundStateLinearId;
     public final UniqueIdentifier linearId;
     public final List<AbstractParty> participants;
 
@@ -54,7 +52,7 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
-                        StateAndRef<FundState> fundStateRef,
+                        UniqueIdentifier fundStateLinearId,
                         UniqueIdentifier linearId,
                         List<AbstractParty> participants) {
         this.authorizedUserUsername = authorizedUserUsername;
@@ -66,7 +64,7 @@ public class RequestState implements LinearState {
         this.currency = currency;
         this.datetime = datetime;
         this.status = status;
-        this.fundStateRef = fundStateRef;
+        this.fundStateLinearId = fundStateLinearId;
         this.linearId = linearId;
         this.participants = participants;
     }
@@ -80,9 +78,9 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
-                        StateAndRef<FundState> fundStateRef,
+                        UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateRef,new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateLinearId,new UniqueIdentifier(), participants);
     }
 
 
@@ -102,14 +100,19 @@ public class RequestState implements LinearState {
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
     public RequestStateStatus getStatus() { return status; }
-    public StateAndRef<FundState> getFundStateRef() { return fundStateRef; }
+    public UniqueIdentifier getfundStateLinearId() { return fundStateLinearId; }
     public String getAuthorizerUserUsername() { return authorizerUserUsername; }
     public String getExternalAccountId() { return externalAccountId; }
 
 
-    public enum RequestStateStatus{
-        ISSUED,
-        PENDING,
-        FLAGGED
+    public enum RequestStateStatus {
+        PENDING("pending"),
+        FLAGGED("flagged"),
+        APPROVED("approved");
+
+        public final String status;
+        RequestStateStatus(String status) {
+            this.status = status;
+        }
     }
 }

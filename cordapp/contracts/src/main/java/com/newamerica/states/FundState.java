@@ -116,9 +116,14 @@ public class FundState implements LinearState {
     }
 
     public enum FundStateStatus{
-        ISSUED,
-        RECEIVED,
-        PAID
+        ISSUED("issued"),
+        RECEIVED("received"),
+        PAID("paid");
+
+        public final String status;
+        FundStateStatus(String status) {
+            this.status = status;
+        }
     }
 }
 
