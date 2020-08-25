@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 public class FundStateTests {
     private FundState fundState;
-    private final Set<Party> owners = new HashSet<>();
-    private final Set<Party> requiredSigners = new HashSet<>();
-    private final Set<Party> participants = new HashSet<>();
+    private final List<Party> owners = new ArrayList<>();
+    private final List<Party> requiredSigners = new ArrayList<>();
+    private final List<Party> participants = new ArrayList<>();
 
 
     @Before
@@ -43,7 +43,6 @@ public class FundStateTests {
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
-                false,
                 participants
         );
 
@@ -62,21 +61,19 @@ public class FundStateTests {
         Field maxWithdrawalAmount = FundState.class.getDeclaredField("maxWithdrawalAmount");
         Field currency = FundState.class.getDeclaredField("currency");
         Field status = FundState.class.getDeclaredField("status");
-        Field isReceived = FundState.class.getDeclaredField("isReceived");
         Field participants = FundState.class.getDeclaredField("participants");
 
         assertTrue(originCountry.getType().isAssignableFrom(Party.class));
         assertTrue(receivingCountry.getType().isAssignableFrom(Party.class));
-        assertTrue(owners.getType().isAssignableFrom(Set.class));
-        assertTrue(requiredSigners.getType().isAssignableFrom(Set.class));
+        assertTrue(owners.getType().isAssignableFrom(List.class));
+        assertTrue(requiredSigners.getType().isAssignableFrom(List.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(balance.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(maxWithdrawalAmount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(status.getType().isAssignableFrom(FundState.FundStateStatus.class));
-        assertTrue(isReceived.getType().isAssignableFrom(boolean.class));
-        assertTrue(participants.getType().isAssignableFrom(Set.class));
+        assertTrue(participants.getType().isAssignableFrom(List.class));
     }
 
     // ensure all getter tests return data as expected
@@ -93,7 +90,6 @@ public class FundStateTests {
         assertTrue(fundState.getMaxWithdrawalAmount().compareTo(BigDecimal.valueOf(999999)) > 0);
         assertEquals(fundState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(fundState.getStatus(), FundState.FundStateStatus.ISSUED);
-        assertEquals(fundState.getIsReceived(), false);
         assertEquals(fundState.getParticipants(),new ArrayList<>(participants));
 
     }
