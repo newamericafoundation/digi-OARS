@@ -1,6 +1,5 @@
 package com.newamerica.state;
 
-import com.newamerica.states.RequestState;
 import com.newamerica.states.TransferState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -12,9 +11,12 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.Locale;
 
-import static com.newamerica.TestUtils.*;
+import static com.newamerica.TestUtils.CATANTreasury;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

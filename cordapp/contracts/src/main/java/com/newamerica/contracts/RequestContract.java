@@ -17,7 +17,7 @@ public class RequestContract implements Contract {
 
     // Used to indicate the transaction's intent.
     public interface Commands extends CommandData {
-        class Issue extends TypeOnlyCommandData implements FundContract.Commands {}
+        class Issue extends TypeOnlyCommandData implements RequestContract.Commands {}
     }
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
