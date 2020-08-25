@@ -87,7 +87,7 @@ public class RequestStateTests {
         assertEquals(requestState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(requestState.getStatus(), RequestState.RequestStateStatus.PENDING);
         assertEquals(requestState.getExternalAccountId(), "1234567890");
-        assertEquals(requestState.getfundStateLinearId(), uniqueIdentifier);
+        assertEquals(requestState.getFundStateLinearId(), uniqueIdentifier);
         assertEquals(requestState.getParticipants(),new ArrayList<>(participants));
     }
 }
