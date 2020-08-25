@@ -2,6 +2,7 @@ package com.newamerica.states;
 
 
 import com.newamerica.contracts.RequestContract;
+import com.newamerica.contracts.TransferContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.StateAndRef;
@@ -28,7 +29,7 @@ import java.util.List;
  *  currency - the globally recognized currency for the fund balance and amount.
  *  requestStateRef -  A reference to the request state that this transfer is based on
  */
-@BelongsToContract(RequestContract.class)
+@BelongsToContract(TransferContract.class)
 public class TransferState implements LinearState {
     public final Party issuanceParty;
     public final String receivingDept;
@@ -40,7 +41,6 @@ public class TransferState implements LinearState {
     public final UniqueIdentifier requestStateLinearId;
     public final UniqueIdentifier linearId;
     public final List<AbstractParty> participants;
-
 
     @ConstructorForDeserialization
     public TransferState(Party issuanceParty,

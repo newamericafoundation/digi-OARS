@@ -21,8 +21,8 @@ public class RequestContract implements Contract {
     }
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
-        final CommandWithParties<FundContract.Commands> command = requireSingleCommand(tx.getCommands(), FundContract.Commands.class);
-        final FundContract.Commands commandData = command.getValue();
+        final CommandWithParties<RequestContract.Commands> command = requireSingleCommand(tx.getCommands(), RequestContract.Commands.class);
+        final RequestContract.Commands commandData = command.getValue();
 
         if(commandData.equals(new Commands.Issue())){
             requireThat(require -> {
