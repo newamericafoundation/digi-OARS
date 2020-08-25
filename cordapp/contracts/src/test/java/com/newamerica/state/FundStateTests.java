@@ -45,7 +45,6 @@ public class FundStateTests {
                 FundState.FundStateStatus.ISSUED,
                 participants
         );
-
     }
 
     // ensure that the FundState object has all necessary attributes and correct data types.
