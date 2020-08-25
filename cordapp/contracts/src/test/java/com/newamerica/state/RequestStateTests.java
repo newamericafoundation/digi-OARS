@@ -13,7 +13,8 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 
-import static com.newamerica.TestUtils.*;
+import static com.newamerica.TestUtils.CATANMoFA;
+import static com.newamerica.TestUtils.CATANMoJ;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

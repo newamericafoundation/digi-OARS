@@ -7,9 +7,9 @@ import net.corda.core.contracts.Contract;
 import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.LedgerTransaction;
-import java.util.List;
-import java.math.BigDecimal;
 
+import java.math.BigDecimal;
+import java.util.List;
 
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
