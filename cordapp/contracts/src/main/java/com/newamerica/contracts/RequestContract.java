@@ -30,6 +30,7 @@ public class RequestContract implements Contract {
                 require.using("No inputs should be consumed when issuing a RequestState.", tx.getInputStates().size() == 0);
                 require.using("Only one output state should be created when issuing a RequestState.", tx.getOutputStates().size() == 1);
                 RequestState outputState = (RequestState) tx.getOutputStates().get(0);
+                //require.using("RequestState status must be either PENDING or FLAGGED", outputState.status == RequestState.RequestStateStatus.APPROVED );
                 return null;
             });
         }
