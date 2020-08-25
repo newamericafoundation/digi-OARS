@@ -24,7 +24,7 @@ public class FundStateTests {
 
 
     @Before
-    public void Listup(){
+    public void setup(){
         owners.add(US.getParty());
         requiredSigners.add(US.getParty());
         requiredSigners.add(CATAN.getParty());
