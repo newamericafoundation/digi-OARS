@@ -39,14 +39,14 @@ public class ReceiveFundFlow {
         public InitiatorFlow(UniqueIdentifier fundStateLinearId,
                              Party originCountry,
                              Party targetCountry,
-                             Set<Party> owners,
-                             Set<Party> requiredSigners,
+                             List<Party> owners,
+                             List<Party> requiredSigners,
                              BigDecimal amount,
                              BigDecimal balance,
                              ZonedDateTime datetime,
                              BigDecimal maxWithdrawalAmount,
                              Currency currency,
-                             Set participants) {
+                             List participants) {
             this.fundStateLinearId = fundStateLinearId;
             this.outputFundState = new FundState(
                     originCountry,
@@ -59,7 +59,7 @@ public class ReceiveFundFlow {
                     maxWithdrawalAmount,
                     currency,
                     FundState.FundStateStatus.ISSUED,
-                    true, participants);
+                    participants);
         }
         @Suspendable
         @Override

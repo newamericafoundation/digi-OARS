@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Currency;
 import java.util.List;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
@@ -32,8 +32,8 @@ public class IssueFundFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction>{
         private final FundState outputFundState;
 
-        public InitiatorFlow(Party originCountry, Party targetCountry, Set<Party> owners, Set<Party> requiredSigners, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, Set participants){
-            this.outputFundState = new FundState(originCountry,targetCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, FundState.FundStateStatus.ISSUED, false, participants);
+        public InitiatorFlow(Party originCountry, Party targetCountry, List<Party> owners, List<Party> requiredSigners, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, List participants){
+            this.outputFundState = new FundState(originCountry,targetCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, FundState.FundStateStatus.ISSUED, participants);
         }
 
         @Suspendable

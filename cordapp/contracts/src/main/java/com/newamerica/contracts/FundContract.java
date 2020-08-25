@@ -7,7 +7,7 @@ import net.corda.core.contracts.Contract;
 import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.LedgerTransaction;
-import java.util.Set;
+import java.util.List;
 import java.math.BigDecimal;
 
 
@@ -15,7 +15,7 @@ import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 /**
- * The FundContract is a smart contract which resembles a set of rules that all participants must agree to
+ * The FundContract is a smart contract which resembles a List of rules that all participants must agree to
  * in order to verify a transaction and sign. The rules differ between Commands/transaction types.
  */
 public class FundContract implements Contract {
@@ -47,13 +47,12 @@ public class FundContract implements Contract {
                 require.using("The balance must be greater than zero.", outputState.balance.compareTo(BigDecimal.ZERO) > 0);
                 require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
-                require.using("The set of participants cannot be empty.", outputState.participants.isEmpty());
-                require.using("The isReceived flag must be FALSE during issuance.", !outputState.isReceived);
+                require.using("The List of participants cannot be empty.", outputState.participants.isEmpty());
 
-                // combine the sets
-                Set<Party> combinedSets = outputState.owners;
-                combinedSets.addAll(outputState.requiredSigners);
-                require.using("All owners and requiredSigners must be in the participant set.", outputState.participants.containsAll(combinedSets));
+                // combine the Lists
+                List<Party> combinedLists = outputState.owners;
+                combinedLists.addAll(outputState.requiredSigners);
+                require.using("All owners and requiredSigners must be in the participant List.", outputState.participants.containsAll(combinedLists));
                 return null;
             });
         }
@@ -70,8 +69,7 @@ public class FundContract implements Contract {
                 require.using("The balance must be greater than zero.", outputState.balance.compareTo(BigDecimal.ZERO) > 0);
                 require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The status can only be RECEIVED during an issuance transaction.", outputState.status == FundState.FundStateStatus.RECEIVED);
-                require.using("The set of participants cannot be empty.", outputState.participants.isEmpty());
-                require.using("The isReceived flag must be TRUE after receiving.", outputState.isReceived);
+                require.using("The List of participants cannot be empty.", outputState.participants.isEmpty());
                 FundState inputState = (FundState) tx.getInputStates().get(0);
                 require.using("input OriginCountry and output OriginCountry must be the same", inputState.originCountry == outputState.originCountry);
                 require.using("input ReceivingCountry and output ReceivingCountry must be the same", inputState.receivingCountry == outputState.receivingCountry);
@@ -79,10 +77,10 @@ public class FundContract implements Contract {
                 require.using("input balance and output balance must be the same", inputState.balance == outputState.balance);
                 require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.maxWithdrawalAmount == outputState.maxWithdrawalAmount);
 
-                // combine the sets
-                Set<Party> combinedSets = outputState.owners;
-                combinedSets.addAll(outputState.requiredSigners);
-                require.using("All owners and requiredSigners must be in the participant set.", outputState.participants.containsAll(combinedSets));
+                // combine the Lists
+                List<Party> combinedLists = outputState.owners;
+                combinedLists.addAll(outputState.requiredSigners);
+                require.using("All owners and requiredSigners must be in the participant List.", outputState.participants.containsAll(combinedLists));
                 return null;
             });
         }

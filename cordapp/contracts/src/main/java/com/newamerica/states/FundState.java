@@ -14,10 +14,10 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
-import java.util.Set;
+import java.util.List;
 
 /**
- * A FundState is an on-ledger representation of off-ledger recovered assets.
+ * A FundState is an on-ledger representation of off-ledger recovered asLists.
  *
  *  originCountry - the source country which will be sending the funds (US).
  *  receivingCountry - the country which will be receiving the funds (Catan).
@@ -33,20 +33,19 @@ import java.util.Set;
 public class FundState implements LinearState {
     public final Party originCountry;
     public final Party receivingCountry;
-    public final Set<Party> owners;
-    public final Set<Party> requiredSigners;
+    public final List<Party> owners;
+    public final List<Party> requiredSigners;
     public final BigDecimal amount;
     public final BigDecimal balance;
     public final ZonedDateTime datetime;
     public final BigDecimal maxWithdrawalAmount;
     public final Currency currency;
     public final FundStateStatus status;
-    public final boolean isReceived;
     public final UniqueIdentifier linearId;
-    public final Set<Party> participants;
+    public final List<Party> participants;
 
     @ConstructorForDeserialization
-    public FundState(Party originCountry, Party receivingCountry, Set<Party> owners, Set<Party> requiredSigners, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, FundStateStatus status, Boolean isReceived, Set<Party> participants, UniqueIdentifier linearId) {
+    public FundState(Party originCountry, Party receivingCountry, List<Party> owners, List<Party> requiredSigners, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, FundStateStatus status, List<Party> participants, UniqueIdentifier linearId) {
         this.originCountry = originCountry;
         this.receivingCountry = receivingCountry;
         this.owners = owners;
@@ -57,24 +56,22 @@ public class FundState implements LinearState {
         this.maxWithdrawalAmount = maxWithdrawalAmount;
         this.currency = currency;
         this.status = status;
-        this.isReceived = isReceived;
         this.participants = participants;
         this.linearId = linearId;
     }
 
     public FundState(Party originCountry,
                      Party receivingCountry,
-                     Set<Party> owners,
-                     Set<Party> requiredSigners,
+                     List<Party> owners,
+                     List<Party> requiredSigners,
                      BigDecimal amount,
                      BigDecimal balance,
                      ZonedDateTime datetime,
                      BigDecimal maxWithdrawalAmount,
                      Currency currency,
                      FundStateStatus status,
-                     boolean isReceived,
-                     Set<Party> participants){
-        this(originCountry, receivingCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, status, isReceived, participants, new UniqueIdentifier());
+                     List<Party> participants){
+        this(originCountry, receivingCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
     }
 
     //getters
@@ -89,14 +86,13 @@ public class FundState implements LinearState {
     }
     public Party getOriginCountry() {        return originCountry;    }
     public Party getReceivingCountry() {        return receivingCountry;    }
-    public Set<Party> getOwners(){ return owners; }
-    public Set<Party> getRequiredSigners(){ return requiredSigners; }
+    public List<Party> getOwners(){ return owners; }
+    public List<Party> getRequiredSigners(){ return requiredSigners; }
     public BigDecimal getAmount() {        return amount;    }
     public BigDecimal getBalance() { return balance;    }
     public ZonedDateTime getDatetime() { return datetime;    }
     public BigDecimal getMaxWithdrawalAmount() { return maxWithdrawalAmount;    }
     public Currency getCurrency() { return currency;    }
-    public Boolean getIsReceived() { return isReceived; }
     public FundStateStatus getStatus() { return status;          }
 
     //helper functions
@@ -114,7 +110,6 @@ public class FundState implements LinearState {
                 this.maxWithdrawalAmount,
                 this.currency,
                 this.status,
-                this.isReceived,
                 this.participants
         );
     }
