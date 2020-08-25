@@ -1,7 +1,6 @@
 package com.newamerica.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.newamerica.contracts.FundContract;
 import com.newamerica.contracts.RequestContract;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
@@ -18,7 +17,10 @@ import net.corda.core.transactions.TransactionBuilder;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
@@ -38,7 +40,7 @@ public class IssueRequestFlow {
                 BigDecimal amount,
                 Currency currency,
                 ZonedDateTime datetime,
-                UUID fundStateLinearId,
+                UniqueIdentifier fundStateLinearId,
                 List<AbstractParty> participants
         ){
             this.outputRequestState = new RequestState(
@@ -60,7 +62,7 @@ public class IssueRequestFlow {
         @Override
         public SignedTransaction call() throws FlowException {
             List<UUID> fundStateLinearIdList = new ArrayList<>();
-            fundStateLinearIdList.add(outputRequestState.fundStateLinearId);
+            fundStateLinearIdList.add(outputRequestState.fundStateLinearId.getId());
 
             //get StatAndRef for the respective FundState
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, fundStateLinearIdList);
