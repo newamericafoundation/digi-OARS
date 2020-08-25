@@ -26,7 +26,7 @@ public class TransferStateTests {
     @Before
     public void setup(){
         participants.add(CATANTreasury.getParty());
-        uniqueIdentifier =  new UniqueIdentifier("", UUID.randomUUID());
+        uniqueIdentifier =  new UniqueIdentifier();
 
         transferState = new TransferState(
                 CATANTreasury.getParty(),
