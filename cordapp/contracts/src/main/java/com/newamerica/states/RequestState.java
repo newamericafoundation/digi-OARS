@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Currency;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * A RequestState is an on-ledger representation of request data that gets stored in the database.
@@ -44,7 +43,7 @@ public class RequestState implements LinearState {
     public final Currency currency;
     public final ZonedDateTime datetime;
     public final RequestStateStatus status;
-    public final UUID fundStateLinearId;
+    public final UniqueIdentifier fundStateLinearId;
     public final UniqueIdentifier linearId;
     public final List<AbstractParty> participants;
 
@@ -58,7 +57,7 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
-                        UUID fundStateLinearId,
+                        UniqueIdentifier fundStateLinearId,
                         UniqueIdentifier linearId,
                         List<AbstractParty> participants) {
         this.authorizedUserUsername = authorizedUserUsername;
@@ -84,7 +83,7 @@ public class RequestState implements LinearState {
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
-                        UUID fundStateLinearId,
+                        UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
         this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
@@ -106,7 +105,7 @@ public class RequestState implements LinearState {
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
     public RequestStateStatus getStatus() { return status; }
-    public UUID getFundStateLinearId() { return fundStateLinearId; }
+    public UniqueIdentifier getFundStateLinearId() { return fundStateLinearId; }
     public String getAuthorizerUserUsername() { return authorizerUserUsername; }
     public String getExternalAccountId() { return externalAccountId; }
 
