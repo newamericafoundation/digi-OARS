@@ -1,9 +1,7 @@
 package com.newamerica.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.newamerica.contracts.FundContract;
 import com.newamerica.contracts.PartialRequestContract;
-import com.newamerica.states.FundState;
 import com.newamerica.states.PartialRequestState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
