@@ -1,7 +1,6 @@
 package com.newamerica.states;
 
 
-import com.newamerica.contracts.RequestContract;
 import com.newamerica.contracts.TransferContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
