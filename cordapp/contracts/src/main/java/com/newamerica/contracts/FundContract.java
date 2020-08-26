@@ -1,13 +1,11 @@
 package com.newamerica.contracts;
 
 import com.newamerica.states.FundState;
-import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
 import net.corda.core.contracts.Contract;
 import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.identity.AbstractParty;
-import net.corda.core.identity.Party;
 import net.corda.core.transactions.LedgerTransaction;
 
 import java.math.BigDecimal;
