@@ -1,6 +1,5 @@
 package com.newamerica.contracts;
 
-import com.newamerica.states.RequestState;
 import com.newamerica.states.TransferState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
@@ -26,7 +25,7 @@ public class TransferContract implements Contract {
         final CommandWithParties<TransferContract.Commands> command = requireSingleCommand(tx.getCommands(), TransferContract.Commands.class);
         final TransferContract.Commands commandData = command.getValue();
 
-        if(commandData.equals(new RequestContract.Commands.Issue())){
+        if(commandData.equals(new Commands.Issue())){
             requireThat(require -> {
                 require.using("No inputs should be consumed when issuing a TransferState.", tx.getInputStates().size() == 0);
                 require.using("Only one output state should be created when issuing a TransferState.", tx.getOutputStates().size() == 1);
