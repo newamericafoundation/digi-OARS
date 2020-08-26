@@ -7,7 +7,6 @@ import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
-import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.AbstractParty;
@@ -32,22 +31,19 @@ public class UpdateFundBalanceFlow {
     @InitiatingFlow
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
-        private final StateAndRef requestState;
-        private final UniqueIdentifier fundStateLinearId;
+        private final RequestState requestState;
 
         public InitiatorFlow(
-                StateAndRef requestState,
-                UniqueIdentifier fundStateLinearId
+                RequestState requestState
         ){
             this.requestState = requestState;
-            this.fundStateLinearId = fundStateLinearId;
         }
 
         @Suspendable
         @Override
         public SignedTransaction call() throws FlowException {
             List<UUID> fundStateLinearIdList = new ArrayList<>();
-            fundStateLinearIdList.add(fundStateLinearId.getId());
+            fundStateLinearIdList.add(requestState.getFundStateLinearId().getId());
 
             //get StatAndRef for the respective FundState
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, fundStateLinearIdList);
@@ -56,8 +52,7 @@ public class UpdateFundBalanceFlow {
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
 
             //create new output state for the fundState
-            RequestState approvedRequestState = (RequestState)inputStateRef.getState().getData();
-            FundState outputFundState = inputStateRefFundState.withdraw(approvedRequestState.getAmount());
+            FundState outputFundState = inputStateRefFundState.withdraw(requestState.getAmount());
             if(outputFundState.getBalance().compareTo(BigDecimal.ZERO) == 0){
                 outputFundState.changeStatus(FundState.FundStateStatus.PAID);
             }
@@ -83,12 +78,12 @@ public class UpdateFundBalanceFlow {
             SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
             subFlow(new FinalityFlow(signedTransaction, flowSessions));
             return subFlow( new IssuePartialRequestFundFlow.InitiatorFlow(
-                    approvedRequestState.getAuthorizedUserDept(),
-                    approvedRequestState.getAuthorizerDept(),
-                    approvedRequestState.getExternalAccountId(),
-                    approvedRequestState.getAmount(),
-                    approvedRequestState.getCurrency(),
-                    approvedRequestState.getDatetime(),
+                    requestState.getAuthorizedUserDept(),
+                    requestState.getAuthorizerDept(),
+                    requestState.getExternalAccountId(),
+                    requestState.getAmount(),
+                    requestState.getCurrency(),
+                    requestState.getDatetime(),
                     outputFundState.getLinearId(),
                     outputFundState.getPartialRequestParticipants()
                     )

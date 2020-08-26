@@ -5,8 +5,10 @@ import com.newamerica.contracts.RequestContract;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
+import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -14,6 +16,7 @@ import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
+import net.corda.core.utilities.ProgressTracker;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -24,6 +27,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
+import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 public class IssueRequestFlow {
     @InitiatingFlow
@@ -92,6 +96,49 @@ public class IssueRequestFlow {
 
             SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
             return subFlow(new FinalityFlow(signedTransaction, flowSessions));
+        }
+
+        /**
+         * This is the flow which signs RequestState issuances.
+         */
+
+        @InitiatedBy(IssueRequestFlow.InitiatorFlow.class)
+        public static class ResponderFlow extends FlowLogic<SignedTransaction>{
+            private final FlowSession flowSession;
+            private SecureHash txWeJustSigned;
+
+            public ResponderFlow(FlowSession flowSession){
+                this.flowSession = flowSession;
+            }
+
+            @Suspendable
+            @Override
+            public SignedTransaction call() throws FlowException {
+                class SignTxFlow extends SignTransactionFlow{
+
+                    private SignTxFlow(FlowSession flowSession, ProgressTracker progressTracker){
+                        super(flowSession, progressTracker);
+                    }
+
+                    @Override
+                    protected void checkTransaction(SignedTransaction stx){
+                        requireThat(req -> {
+                            ContractState output = stx.getTx().getOutputs().get(0).getData();
+                            req.using("This must be an RequestState transaction", output instanceof RequestState);
+                            return null;
+                        });
+                        txWeJustSigned = stx.getId();
+                    }
+                }
+                flowSession.getCounterpartyFlowInfo().getFlowVersion();
+
+                // Create a sign transaction flow
+                SignTxFlow signTxFlow = new SignTxFlow(flowSession, SignTransactionFlow.Companion.tracker());
+
+                // Run the sign transaction flow to sign the transaction
+                subFlow(signTxFlow);
+                return subFlow(new ReceiveFinalityFlow(flowSession, txWeJustSigned));
+            }
         }
     }
 }
