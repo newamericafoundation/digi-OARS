@@ -37,7 +37,6 @@ public class IssuePartialRequestFundFlow {
                 Currency currency,
                 ZonedDateTime datetime,
                 UniqueIdentifier fundStateLinearId,
-                UniqueIdentifier linearId,
                 List<AbstractParty> participants
         ){
             this.outputPartialRequestState = new PartialRequestState(
@@ -48,7 +47,6 @@ public class IssuePartialRequestFundFlow {
                     currency,
                     datetime,
                     fundStateLinearId,
-                    linearId,
                     participants
             );
         }

@@ -1,6 +1,7 @@
 package com.newamerica.state;
 
 import com.newamerica.states.FundState;
+import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,16 +15,16 @@ import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
 
-import static com.newamerica.TestUtils.CATAN;
-import static com.newamerica.TestUtils.US;
+import static com.newamerica.TestUtils.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class FundStateTests {
     private FundState fundState;
-    private final List<Party> owners = new ArrayList<>();
-    private final List<Party> requiredSigners = new ArrayList<>();
-    private final List<Party> participants = new ArrayList<>();
+    private final List<AbstractParty> owners = new ArrayList<>();
+    private final List<AbstractParty> requiredSigners = new ArrayList<>();
+    private final List<AbstractParty> participants = new ArrayList<>();
+    private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
 
 
     @Before
@@ -33,6 +34,8 @@ public class FundStateTests {
         requiredSigners.add(CATAN.getParty());
         participants.add(US.getParty());
         participants.add(CATAN.getParty());
+        partialRequestParticipants.add(US_CSO.getParty());
+        partialRequestParticipants.add(CATAN_CSO.getParty());
 
 
         fundState = new FundState(
@@ -40,6 +43,7 @@ public class FundStateTests {
                 CATAN.getParty(),
                 owners,
                 requiredSigners,
+                partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
@@ -57,6 +61,7 @@ public class FundStateTests {
         Field receivingCountry = FundState.class.getDeclaredField("receivingCountry");
         Field owners = FundState.class.getDeclaredField("owners");
         Field requiredSigners = FundState.class.getDeclaredField("requiredSigners");
+        Field partialRequestParticipants = FundState.class.getDeclaredField("partialRequestParticipants");
         Field amount = FundState.class.getDeclaredField("amount");
         Field balance = FundState.class.getDeclaredField("balance");
         Field datetime = FundState.class.getDeclaredField("datetime");
@@ -69,6 +74,7 @@ public class FundStateTests {
         assertTrue(receivingCountry.getType().isAssignableFrom(Party.class));
         assertTrue(owners.getType().isAssignableFrom(List.class));
         assertTrue(requiredSigners.getType().isAssignableFrom(List.class));
+        assertTrue(partialRequestParticipants.getType().isAssignableFrom(List.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(balance.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
@@ -86,6 +92,7 @@ public class FundStateTests {
         assertEquals(fundState.getReceivingCountry(), CATAN.getParty());
         assertEquals(fundState.getOwners(),owners);
         assertEquals(fundState.getRequiredSigners(), requiredSigners);
+        assertEquals(fundState.getPartialRequestParticipants(), partialRequestParticipants);
         assertTrue(fundState.getAmount().compareTo(BigDecimal.valueOf(4999999)) > 0);
         assertTrue(fundState.getBalance().compareTo(BigDecimal.valueOf(4999999)) > 0);
         assertEquals(fundState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));

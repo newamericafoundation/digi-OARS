@@ -10,6 +10,7 @@ import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
+import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
@@ -42,8 +43,9 @@ public class ReceiveFundFlow {
         public InitiatorFlow(UniqueIdentifier fundStateLinearId,
                              Party originCountry,
                              Party targetCountry,
-                             List<Party> owners,
-                             List<Party> requiredSigners,
+                             List<AbstractParty> owners,
+                             List<AbstractParty> requiredSigners,
+                             List<AbstractParty> partialRequestParticipants,
                              BigDecimal amount,
                              BigDecimal balance,
                              ZonedDateTime datetime,
@@ -56,6 +58,7 @@ public class ReceiveFundFlow {
                     targetCountry,
                     owners,
                     requiredSigners,
+                    partialRequestParticipants,
                     amount,
                     balance,
                     datetime,
