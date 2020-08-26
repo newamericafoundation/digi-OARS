@@ -36,7 +36,6 @@ public class PartialRequestStateTests {
         partialrequestState = new PartialRequestState(
                 "Catan Ministry of Education",
                 CATANMoJ.getParty(),
-                "1234567890",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
@@ -51,7 +50,6 @@ public class PartialRequestStateTests {
     public void hasAllAttributes() throws NoSuchFieldException{
         Field authorizedUserDept = PartialRequestState.class.getDeclaredField("authorizedUserDept");
         Field authorizerDept = PartialRequestState.class.getDeclaredField("authorizerDept");
-        Field externalAccountId = PartialRequestState.class.getDeclaredField("externalAccountId");
         Field amount = PartialRequestState.class.getDeclaredField("amount");
         Field datetime = PartialRequestState.class.getDeclaredField("datetime");
         Field currency = PartialRequestState.class.getDeclaredField("currency");
@@ -60,7 +58,6 @@ public class PartialRequestStateTests {
 
         assertTrue(authorizedUserDept.getType().isAssignableFrom(String.class));
         assertTrue(authorizerDept.getType().isAssignableFrom(Party.class));
-        assertTrue(externalAccountId.getType().isAssignableFrom(String.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(fundStateLinearId.getType().isAssignableFrom(UniqueIdentifier.class));
@@ -78,7 +75,6 @@ public class PartialRequestStateTests {
         assertTrue(partialrequestState.getAmount().compareTo(BigDecimal.valueOf(1000000)) == 0);
         assertEquals(partialrequestState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertEquals(partialrequestState.getCurrency(), Currency.getInstance(Locale.US));
-        assertEquals(partialrequestState.getExternalAccountId(), "1234567890");
         assertEquals(partialrequestState.getFundStateLinearId(), uniqueIdentifier);
         assertEquals(partialrequestState.getParticipants(),new ArrayList<>(participants));
     }
