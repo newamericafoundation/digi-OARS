@@ -10,6 +10,7 @@ import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
+import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
@@ -61,9 +62,8 @@ public class UpdateFundBalanceFlow {
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new FundContract.Commands.Withdraw();
             outputFundState.getParticipants().add(getOurIdentity());
-            transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputFundState, FundContract.ID);
-            transactionBuilder.addReferenceState(requestState.referenced());
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction
@@ -96,7 +96,7 @@ public class UpdateFundBalanceFlow {
      * This is the flow which signs FundState updates.
      */
 
-    @InitiatedBy(IssueFundFlow.InitiatorFlow.class)
+    @InitiatedBy(UpdateFundBalanceFlow.InitiatorFlow.class)
     public static class ResponderFlow extends FlowLogic<SignedTransaction>{
         private final FlowSession flowSession;
         private SecureHash txWeJustSigned;

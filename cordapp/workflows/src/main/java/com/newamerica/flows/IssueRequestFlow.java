@@ -85,7 +85,7 @@ public class IssueRequestFlow {
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = inputStateRefFundState.getRequiredSigners().stream().collect(Collectors.toList());
+            List<Party> otherParties = inputStateRefFundState.getRequiredSigners().stream().map(i -> ((Party) i)).collect(Collectors.toList());
 
             //create sessions based on otherParties
             List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());

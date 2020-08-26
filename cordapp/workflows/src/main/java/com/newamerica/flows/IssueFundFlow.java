@@ -32,8 +32,8 @@ public class IssueFundFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction>{
         private final FundState outputFundState;
 
-        public InitiatorFlow(Party originCountry, Party targetCountry, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, List participants){
-            this.outputFundState = new FundState(originCountry,targetCountry, owners, requiredSigners, partialRequestParticipants, amount, balance, datetime, maxWithdrawalAmount, currency, FundState.FundStateStatus.ISSUED, participants);
+        public InitiatorFlow(Party originCountry, Party receivingCountry, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, List participants){
+            this.outputFundState = new FundState(originCountry,receivingCountry, owners, requiredSigners, partialRequestParticipants, amount, balance, datetime, maxWithdrawalAmount, currency, FundState.FundStateStatus.ISSUED, participants);
         }
 
         @Suspendable

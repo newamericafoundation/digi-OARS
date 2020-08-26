@@ -82,9 +82,6 @@ public class FundContract implements Contract {
                 require.using("The currency cannot change.", inputState.getCurrency() == outputState.getCurrency());
                 require.using("The participants cannot change.", inputState.getParticipants() == outputState.getParticipants());
 
-                RequestState refRequestState = (RequestState) tx.getReferenceStates().get(0);
-                require.using("Referenced request state must be in the APPROVED status.", refRequestState.getStatus() == RequestState.RequestStateStatus.APPROVED);
-
                return null;
             });
         }else if(commandData.equals(new Commands.Receive())){
