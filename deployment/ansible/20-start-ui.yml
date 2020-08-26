@@ -15,6 +15,7 @@
         name: ui
         hostname: ui
         image: "{{ docker_registry_url }}/{{ docker_image_ui }}:{{ docker_image_ui_version }}"
+        pull: true
         state: started
         networks:
           - name: corda

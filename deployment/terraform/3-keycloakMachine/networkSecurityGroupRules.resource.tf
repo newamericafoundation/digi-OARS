@@ -12,6 +12,11 @@ resource "azurerm_network_security_rule" "ssh_keycloak" {
   destination_port_range                     = "22"
 }
 
+data "azurerm_application_security_group" "asg-nodes" {
+  name                = "asg-nodes"
+  resource_group_name = "new-america-nodes"
+}
+
 resource "azurerm_network_security_rule" "frontend" {
   name                                       = "frontend_inbound"
   resource_group_name                        = data.azurerm_resource_group.resource_group.name
