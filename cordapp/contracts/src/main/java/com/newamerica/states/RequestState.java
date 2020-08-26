@@ -24,13 +24,8 @@ import java.util.List;
  *  externalAccount - the external account name/id that the fund transfers to
  *  datetime - the day/time the fund was issued.
  *  currency - the globally recognized currency for the fund balance and amount.
-<<<<<<< HEAD
  *  status - current stage of the requestState's lifecycle in Corda (can be ISSUED, PENDING, FlAGGED)
  *  fundStateLinearId -  A reference to the fund state that this request is based on
-=======
- *  status - current stage of the requestState's lifecycle in Corda (can be ISSUED, PENDING, FLAGGED)
- *  fundStateRef -  A reference to the fund state that this request is based on
->>>>>>> PNA-35-Create-Request-Flow
  */
 @BelongsToContract(RequestContract.class)
 public class RequestState implements LinearState {

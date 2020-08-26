@@ -8,4 +8,5 @@ public class TestUtils {
     public static TestIdentity CATAN = new TestIdentity(new CordaX500Name("Catan", "TestCity", "BG"));
     public static TestIdentity CATANMoJ = new TestIdentity(new CordaX500Name("CatanMoJ", "TestCity", "BG"));
     public static TestIdentity CATANMoFA = new TestIdentity(new CordaX500Name("CatanMoFA", "TestCity", "BG"));
+    public static TestIdentity CATANTreasury = new TestIdentity(new CordaX500Name("CatanTreasury", "TestCity", "BG"));
 }

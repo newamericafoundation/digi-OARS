@@ -11,6 +11,9 @@
         hostname: corda-node
         image: "{{ corda_docker_image_version }}"
         state: stopped
+      tags:
+        - stop-node
+        - remove-node
     - name: Remove Directories
       file:
         path: "{{ item }}"
@@ -33,4 +36,16 @@
         image: "{{ corda_docker_image_version }}"
         state: absent
       tags:
-        - remove-corda
+        - remove-node
+
+- name: Clean Docker Network
+  hosts: node-machines, notary-machines
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Remove Corda Docker Network
+      docker_network:
+        name: corda
+        state: absent
+  tags:
+    - remove-docker-network

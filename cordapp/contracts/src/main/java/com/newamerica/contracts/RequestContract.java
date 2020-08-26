@@ -1,6 +1,5 @@
 package com.newamerica.contracts;
 
-import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
@@ -18,12 +17,12 @@ public class RequestContract implements Contract {
 
     // Used to indicate the transaction's intent.
     public interface Commands extends CommandData {
-        class Issue extends TypeOnlyCommandData implements FundContract.Commands {}
+        class Issue extends TypeOnlyCommandData implements RequestContract.Commands {}
     }
     @Override
     public void verify(@NotNull LedgerTransaction tx) throws IllegalArgumentException {
-        final CommandWithParties<FundContract.Commands> command = requireSingleCommand(tx.getCommands(), FundContract.Commands.class);
-        final FundContract.Commands commandData = command.getValue();
+        final CommandWithParties<RequestContract.Commands> command = requireSingleCommand(tx.getCommands(), RequestContract.Commands.class);
+        final RequestContract.Commands commandData = command.getValue();
 
         if(commandData.equals(new Commands.Issue())){
             requireThat(require -> {

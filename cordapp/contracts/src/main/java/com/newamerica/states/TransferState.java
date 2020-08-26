@@ -2,9 +2,9 @@ package com.newamerica.states;
 
 
 import com.newamerica.contracts.RequestContract;
+import com.newamerica.contracts.TransferContract;
 import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
-import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
@@ -28,7 +28,7 @@ import java.util.List;
  *  currency - the globally recognized currency for the fund balance and amount.
  *  requestStateRef -  A reference to the request state that this transfer is based on
  */
-@BelongsToContract(RequestContract.class)
+@BelongsToContract(TransferContract.class)
 public class TransferState implements LinearState {
     public final Party issuanceParty;
     public final String receivingDept;
@@ -37,10 +37,9 @@ public class TransferState implements LinearState {
     public final BigDecimal amount;
     public final Currency currency;
     public final ZonedDateTime datetime;
-    public final StateAndRef<RequestState> requestStateRef;
+    public final UniqueIdentifier requestStateLinearId;
     public final UniqueIdentifier linearId;
     public final List<AbstractParty> participants;
-
 
     @ConstructorForDeserialization
     public TransferState(Party issuanceParty,
@@ -50,7 +49,7 @@ public class TransferState implements LinearState {
                          BigDecimal amount,
                          Currency currency,
                          ZonedDateTime datetime,
-                         StateAndRef<RequestState> requestStateRef,
+                         UniqueIdentifier requestStateLinearId,
                          UniqueIdentifier linearId,
                          List<AbstractParty> participants) {
         this.issuanceParty = issuanceParty;
@@ -60,7 +59,7 @@ public class TransferState implements LinearState {
         this.amount = amount;
         this.currency = currency;
         this.datetime = datetime;
-        this.requestStateRef = requestStateRef;
+        this.requestStateLinearId = requestStateLinearId;
         this.linearId = linearId;
         this.participants = participants;
     }
@@ -72,11 +71,20 @@ public class TransferState implements LinearState {
                          BigDecimal amount,
                          Currency currency,
                          ZonedDateTime datetime,
-                         StateAndRef<RequestState> requestStateRef,
+                         UniqueIdentifier requestStateLinearId,
                          List<AbstractParty> participants) {
-        this(issuanceParty, receivingDept, authorizedUserUsername, externalAccountId, amount, currency, datetime, requestStateRef, new UniqueIdentifier(), participants);
+        this(issuanceParty, receivingDept, authorizedUserUsername, externalAccountId, amount, currency, datetime, requestStateLinearId, new UniqueIdentifier(), participants);
     }
 
+
+    public Party getIssuanceParty() { return issuanceParty; }
+    public String getReceivingDept() { return receivingDept; }
+    public String getAuthorizedUserUsername() { return authorizedUserUsername; }
+    public String getExternalAccountId() { return externalAccountId; }
+    public BigDecimal getAmount() { return amount; }
+    public Currency getCurrency() { return currency; }
+    public ZonedDateTime getDatetime() { return datetime; }
+    public UniqueIdentifier getRequestStateLinearId() { return requestStateLinearId; }
 
     @NotNull
     @Override

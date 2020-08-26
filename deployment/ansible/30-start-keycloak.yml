@@ -1,0 +1,88 @@
+# 30-start-keycloak.yml
+
+# If running for the first time, you will need to manually disable SSL:
+# https://stackoverflow.com/questions/49859066/keycloak-docker-https-required
+
+# Steps:
+# 1. docker exec -it keycloak bash
+# 2. cd /opt/jboss/keycloak/bin
+# 3. ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin
+# 4. ./kcadm.sh update realms/master -s sslRequired=NONE
+---
+- name: Start Keycloak
+  hosts: keycloak
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Create Keycloak Directory
+      file:
+        owner: corda
+        group: root
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "/opt/keycloak"
+        - "/opt/keycloak/coreui-theme"
+      tags:
+        - create-root-directory
+    - name: Copy Theme
+      copy:
+        owner: corda
+        group: root
+        mode: 0644
+        src: ../../keycloak/theme/
+        dest: /opt/keycloak/coreui-theme/
+      tags:
+        - copy-theme
+    - name: Create Docker Network
+      docker_network:
+        name: keycloak
+      tags:
+        - start-db
+    - name: Create Postgres Docker volume
+      docker_volume:
+        name: postgres_data
+      tags:
+        - start-db
+    - name: Start Keycloak Postgres Database Container
+      docker_container:
+        name: keycloak-postgres
+        hostname: keycloak-postgres
+        image: postgres
+        state: started
+        networks:
+          - name: keycloak
+        networks_cli_compatible: yes
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+        env:
+          POSTGRES_DB: "{{ keycloak_db_name }}"
+          POSTGRES_USER: "{{ keycloak_db_user }}"
+          POSTGRES_PASSWORD: "{{ keycloak_db_password }}"
+      tags:
+        - start-db
+    - name: Start Keycloak Container
+      docker_container:
+        name: "{{ inventory_hostname }}"
+        hostname: "{{ inventory_hostname }}"
+        image: "{{ docker_image_keycloak }}:{{ docker_image_keycloak_version }}"
+        state: started
+        networks:
+          - name: keycloak
+          - name: oars
+        networks_cli_compatible: yes
+        ports:
+          - 80:8080
+        volumes:
+          - /opt/keycloak/coreui-theme:/opt/jboss/keycloak/themes/coreui-theme
+        env:
+          DB_VENDOR: POSTGRES
+          DB_ADDR: keycloak-postgres
+          DB_DATABASE: "{{ keycloak_db_name }}"
+          DB_USER: "{{ keycloak_db_user }}"
+          DB_SCHEMA: public
+          DB_PASSWORD: "{{ keycloak_db_password }}"
+          KEYCLOAK_USER: "{{ keycloak_admin_username }}"
+          KEYCLOAK_PASSWORD: "{{ keycloak_admin_password }}"
+      tags:
+        - start-keycloak

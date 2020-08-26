@@ -10,8 +10,8 @@
         name: corda
     - name: Start Corda Docker Container
       docker_container:
-        name: corda-node
-        hostname: corda-node
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
         image: "{{ corda_docker_image_version }}"
         state: started
         networks:

@@ -1,9 +1,12 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { KeycloakProvider } from '@react-keycloak/web';
+import keycloak from 'keycloak';
 
 function App() {
   return (
+    <KeycloakProvider keycloak={keycloak}>
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
@@ -20,6 +23,7 @@ function App() {
         </a>
       </header>
     </div>
+    </KeycloakProvider>
   );
 }
 
