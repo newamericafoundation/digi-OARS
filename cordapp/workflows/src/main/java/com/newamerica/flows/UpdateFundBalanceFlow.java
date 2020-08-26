@@ -5,14 +5,17 @@ import com.newamerica.contracts.FundContract;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
+import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.Party;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
+import net.corda.core.utilities.ProgressTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
+import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 public class UpdateFundBalanceFlow {
 
@@ -73,7 +77,61 @@ public class UpdateFundBalanceFlow {
             List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
 
             SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
-            return subFlow(new FinalityFlow(signedTransaction, flowSessions));
+            subFlow(new FinalityFlow(signedTransaction, flowSessions));
+            return subFlow( new IssuePartialRequestFundFlow.InitiatorFlow(
+                    approvedRequestState.getAuthorizedUserDept(),
+                    approvedRequestState.getAuthorizerDept(),
+                    approvedRequestState.getExternalAccountId(),
+                    approvedRequestState.getAmount(),
+                    approvedRequestState.getCurrency(),
+                    approvedRequestState.getDatetime(),
+                    outputFundState.getLinearId(),
+                    outputFundState.getPartialRequestParticipants()
+                    )
+            );
+        }
+    }
+
+    /**
+     * This is the flow which signs FundState updates.
+     */
+
+    @InitiatedBy(IssueFundFlow.InitiatorFlow.class)
+    public static class ResponderFlow extends FlowLogic<SignedTransaction>{
+        private final FlowSession flowSession;
+        private SecureHash txWeJustSigned;
+
+        public ResponderFlow(FlowSession flowSession){
+            this.flowSession = flowSession;
+        }
+
+        @Suspendable
+        @Override
+        public SignedTransaction call() throws FlowException {
+            class SignTxFlow extends SignTransactionFlow{
+
+                private SignTxFlow(FlowSession flowSession, ProgressTracker progressTracker){
+                    super(flowSession, progressTracker);
+                }
+
+                @Override
+                protected void checkTransaction(SignedTransaction stx){
+                    requireThat(req -> {
+                        ContractState output = stx.getTx().getOutputs().get(0).getData();
+                        req.using("This must be an FundState transaction", output instanceof FundState);
+                        return null;
+                    });
+                    txWeJustSigned = stx.getId();
+                }
+            }
+            flowSession.getCounterpartyFlowInfo().getFlowVersion();
+
+            // Create a sign transaction flow
+            SignTxFlow signTxFlow = new SignTxFlow(flowSession, SignTransactionFlow.Companion.tracker());
+
+            // Run the sign transaction flow to sign the transaction
+            subFlow(signTxFlow);
+            return subFlow(new ReceiveFinalityFlow(flowSession, txWeJustSigned));
         }
     }
 }

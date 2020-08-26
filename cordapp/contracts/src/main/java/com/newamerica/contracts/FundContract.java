@@ -6,6 +6,7 @@ import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
 import net.corda.core.contracts.Contract;
 import net.corda.core.contracts.TypeOnlyCommandData;
+import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.LedgerTransaction;
 
@@ -52,7 +53,7 @@ public class FundContract implements Contract {
                 require.using("The List of participants cannot be empty.", outputState.participants.isEmpty());
 
                 // combine the Lists
-                List<Party> combinedLists = outputState.owners;
+                List<AbstractParty> combinedLists = outputState.owners;
                 combinedLists.addAll(outputState.requiredSigners);
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.participants.containsAll(combinedLists));
                 return null;
@@ -107,7 +108,7 @@ public class FundContract implements Contract {
                 require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.maxWithdrawalAmount == outputState.maxWithdrawalAmount);
 
                 // combine the Lists
-                List<Party> combinedLists = outputState.owners;
+                List<AbstractParty> combinedLists = outputState.owners;
                 combinedLists.addAll(outputState.requiredSigners);
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.participants.containsAll(combinedLists));
                 return null;

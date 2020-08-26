@@ -33,8 +33,9 @@ import java.util.List;
 public class FundState implements LinearState {
     public final Party originCountry;
     public final Party receivingCountry;
-    public final List<Party> owners;
-    public final List<Party> requiredSigners;
+    public final List<AbstractParty> owners;
+    public final List<AbstractParty> requiredSigners;
+    public final List<AbstractParty> partialRequestParticipants;
     public final BigDecimal amount;
     public final BigDecimal balance;
     public final ZonedDateTime datetime;
@@ -42,14 +43,15 @@ public class FundState implements LinearState {
     public final Currency currency;
     public final FundStateStatus status;
     public final UniqueIdentifier linearId;
-    public final List<Party> participants;
+    public final List<AbstractParty> participants;
 
     @ConstructorForDeserialization
-    public FundState(Party originCountry, Party receivingCountry, List<Party> owners, List<Party> requiredSigners, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, FundStateStatus status, List<Party> participants, UniqueIdentifier linearId) {
+    public FundState(Party originCountry, Party receivingCountry, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, FundStateStatus status, List<AbstractParty> participants, UniqueIdentifier linearId) {
         this.originCountry = originCountry;
         this.receivingCountry = receivingCountry;
         this.owners = owners;
         this.requiredSigners = requiredSigners;
+        this.partialRequestParticipants = partialRequestParticipants;
         this.amount = amount;
         this.balance = balance;
         this.datetime = datetime;
@@ -62,16 +64,17 @@ public class FundState implements LinearState {
 
     public FundState(Party originCountry,
                      Party receivingCountry,
-                     List<Party> owners,
-                     List<Party> requiredSigners,
+                     List<AbstractParty> owners,
+                     List<AbstractParty> requiredSigners,
+                     List<AbstractParty> partialRequestParticipants,
                      BigDecimal amount,
                      BigDecimal balance,
                      ZonedDateTime datetime,
                      BigDecimal maxWithdrawalAmount,
                      Currency currency,
                      FundStateStatus status,
-                     List<Party> participants){
-        this(originCountry, receivingCountry, owners, requiredSigners, amount, balance, datetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
+                     List<AbstractParty> participants){
+        this(originCountry, receivingCountry, owners, requiredSigners, partialRequestParticipants, amount, balance, datetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
     }
 
     //getters
@@ -86,8 +89,9 @@ public class FundState implements LinearState {
     }
     public Party getOriginCountry() {        return originCountry;    }
     public Party getReceivingCountry() {        return receivingCountry;    }
-    public List<Party> getOwners(){ return owners; }
-    public List<Party> getRequiredSigners(){ return requiredSigners; }
+    public List<AbstractParty> getOwners(){ return owners; }
+    public List<AbstractParty> getRequiredSigners(){ return requiredSigners; }
+    public List<AbstractParty> getPartialRequestParticipants(){ return partialRequestParticipants; }
     public BigDecimal getAmount() {        return amount;    }
     public BigDecimal getBalance() { return balance;    }
     public ZonedDateTime getDatetime() { return datetime;    }
@@ -104,6 +108,7 @@ public class FundState implements LinearState {
                 this.receivingCountry,
                 this.owners,
                 this.requiredSigners,
+                this.partialRequestParticipants,
                 this.amount,
                 this.balance.subtract(withdrawalAmount),
                 this.datetime,
