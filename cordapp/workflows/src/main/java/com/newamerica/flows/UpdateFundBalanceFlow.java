@@ -18,6 +18,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -57,6 +58,9 @@ public class UpdateFundBalanceFlow {
             //create new output state for the fundState
             RequestState approvedRequestState = (RequestState)inputStateRef.getState().getData();
             FundState outputFundState = inputStateRefFundState.withdraw(approvedRequestState.getAmount());
+            if(outputFundState.getBalance().compareTo(BigDecimal.ZERO) == 0){
+                outputFundState.changeStatus(FundState.FundStateStatus.PAID);
+            }
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);

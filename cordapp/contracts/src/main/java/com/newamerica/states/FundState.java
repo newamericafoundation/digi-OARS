@@ -119,6 +119,23 @@ public class FundState implements LinearState {
         );
     }
 
+    public FundState changeStatus(FundStateStatus newStatus){
+        return new FundState(
+                this.originCountry,
+                this.receivingCountry,
+                this.owners,
+                this.requiredSigners,
+                this.partialRequestParticipants,
+                this.amount,
+                this.balance,
+                this.datetime,
+                this.maxWithdrawalAmount,
+                this.currency,
+                newStatus,
+                this.participants
+        );
+    }
+
     public enum FundStateStatus{
         ISSUED("issued"),
         RECEIVED("received"),
