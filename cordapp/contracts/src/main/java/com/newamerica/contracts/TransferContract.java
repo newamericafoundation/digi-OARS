@@ -1,6 +1,5 @@
 package com.newamerica.contracts;
 
-import com.newamerica.states.RequestState;
 import com.newamerica.states.TransferState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.CommandWithParties;
