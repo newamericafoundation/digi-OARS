@@ -42,7 +42,6 @@ public class IssuePartialRequestFundFlow {
             this.outputPartialRequestState = new PartialRequestState(
                     authorizedUserDept,
                     authorizerDept,
-                    externalAccountId,
                     amount,
                     currency,
                     datetime,

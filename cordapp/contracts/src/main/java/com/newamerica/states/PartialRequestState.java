@@ -26,7 +26,6 @@ public class PartialRequestState implements LinearState {
 
     public final String authorizedUserDept;
     public final Party authorizerDept;
-    public final String externalAccountId;
     public final BigDecimal amount;
     public final Currency currency;
     public final ZonedDateTime datetime;
@@ -37,7 +36,6 @@ public class PartialRequestState implements LinearState {
     @ConstructorForDeserialization
     public PartialRequestState(String authorizedUserDept,
                         Party authorizerDept,
-                        String externalAccountId,
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
@@ -46,7 +44,6 @@ public class PartialRequestState implements LinearState {
                         List<AbstractParty> participants) {
         this.authorizedUserDept = authorizedUserDept;
         this.authorizerDept = authorizerDept;
-        this.externalAccountId = externalAccountId;
         this.amount = amount;
         this.currency = currency;
         this.datetime = datetime;
@@ -57,13 +54,12 @@ public class PartialRequestState implements LinearState {
 
     public PartialRequestState(String authorizedUserDept,
                         Party authorizerDept,
-                        String externalAccount,
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserDept, authorizerDept, externalAccount, amount, currency, datetime, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserDept, authorizerDept, amount, currency, datetime, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -82,6 +78,5 @@ public class PartialRequestState implements LinearState {
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
     public UniqueIdentifier getFundStateLinearId() { return fundStateLinearId; }
-    public String getExternalAccountId() { return externalAccountId; }
 
 }

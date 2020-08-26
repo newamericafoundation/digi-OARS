@@ -18,6 +18,8 @@ import java.util.Locale;
 
 import static com.newamerica.TestUtils.CATANTreasury;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+
 
 public class TransferStateTests {
     private TransferState transferState;
