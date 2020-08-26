@@ -1,8 +1,7 @@
 package com.newamerica.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.newamerica.contracts.FundContract;
-import com.newamerica.states.FundState;
+import com.newamerica.contracts.RequestContract;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.StateAndRef;
@@ -39,30 +38,35 @@ public class ApproveRequestFlow {
 
             //get StatAndRef for the respective RequestState
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, requestStateLinearIdList);
-            Vault.Page results = getServiceHub().getVaultService().queryBy(FundState.class, queryCriteria);
-            StateAndRef inputStateRef = (StateAndRef) results.getStates().get(0);
-            FundState inputStateRefRequestState = (FundState) inputStateRef.getState().getData();
+            Vault.Page results = getServiceHub().getVaultService().queryBy(RequestState.class, queryCriteria);
+            StateAndRef stateRef = (StateAndRef) results.getStates().get(0);
+            RequestState inputRequestState = (RequestState) stateRef.getState().getData();
+
+            RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
-            CommandData commandData = new FundContract.Commands.Issue();
-            outputFundState.getParticipants().add(getOurIdentity());
-            transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
-            transactionBuilder.addOutputState(outputFundState, FundContract.ID);
+            CommandData commandData = new RequestContract.Commands.Approve();
+            outputRequestState.getParticipants().add(getOurIdentity());
+            transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
+            transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = outputFundState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
+            List<Party> otherParties = outputRequestState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
             List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
 
             SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
-            return subFlow(new FinalityFlow(signedTransaction, flowSessions));
+            RequestState approveRequestState = (RequestState) subFlow(new FinalityFlow(signedTransaction, flowSessions)).getTx().getOutputStates().get(0);
+            return subFlow(new UpdateFundBalanceFlow.InitiatorFlow(
+                    approveRequestState
+            ));
         }
     }
 }
