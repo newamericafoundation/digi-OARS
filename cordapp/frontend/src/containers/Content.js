@@ -7,7 +7,7 @@ import {
 import { CContainer, CFade } from '@coreui/react'
 import { useKeycloak } from '@react-keycloak/web';
 
-// import {publicRoutes, privateRoutes} from '../routes'
+import {publicRoutes} from '../routes'
   
 const loading = (
   <div className="pt-3 text-center">
@@ -34,7 +34,7 @@ const Content = () => {
       <CContainer fluid>
         <Suspense fallback={loading}>
           <Switch>
-            {/* {publicRoutes.map((route, idx) => {
+            {publicRoutes.map((route, idx) => {
               return route.component && (
                 <Route
                   key={idx}
@@ -48,7 +48,7 @@ const Content = () => {
                   
               )
             })}
-            {privateRoutes.map((route, idx) => {
+            {/* {privateRoutes.map((route, idx) => {
               return route.component && (
                 <Route
                   key={idx}
