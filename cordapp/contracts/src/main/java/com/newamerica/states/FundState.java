@@ -136,6 +136,7 @@ public class FundState implements LinearState {
                 this.participants
         );
     }
+
     @CordaSerializable
     public enum FundStateStatus{
         ISSUED("issued"),
