@@ -1,5 +1,6 @@
 package com.newamerica.contract;
 
+import com.newamerica.TestUtils;
 import com.newamerica.contracts.TransferContract;
 import com.newamerica.states.TransferState;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -30,9 +31,9 @@ public class TransferContractTests {
 
     @Before
     public void setup() {
-        participants.add(US_DoJ.getParty());
-        participants.add(US_DoS.getParty());
-        participants.add(NewAmerica.getParty());
+        participants.add(TestUtils.US_DoJ.getParty());
+        participants.add(TestUtils.US_DoS.getParty());
+        participants.add(TestUtils.NewAmerica.getParty());
         participants.add(CATANTreasury.getParty());
         participants.add(CATANMoFA.getParty());
         participants.add(CATANMoJ.getParty());

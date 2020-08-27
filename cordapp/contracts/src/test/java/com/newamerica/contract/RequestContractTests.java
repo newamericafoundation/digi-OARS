@@ -1,5 +1,6 @@
 package com.newamerica.contract;
 
+import com.newamerica.TestUtils;
 import com.newamerica.contracts.RequestContract;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
@@ -35,9 +36,9 @@ public class RequestContractTests {
 
     @Before
     public void setup() {
-        participants.add(US_DoJ.getParty());
-        participants.add(US_DoS.getParty());
-        participants.add(NewAmerica.getParty());
+        participants.add(TestUtils.US_DoJ.getParty());
+        participants.add(TestUtils.US_DoS.getParty());
+        participants.add(TestUtils.NewAmerica.getParty());
         participants.add(CATANTreasury.getParty());
         participants.add(CATANMoFA.getParty());
         participants.add(CATANMoJ.getParty());
