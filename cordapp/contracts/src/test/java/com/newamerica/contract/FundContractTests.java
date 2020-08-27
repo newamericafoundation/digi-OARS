@@ -28,7 +28,6 @@ public class FundContractTests {
             Arrays.asList("com.newamerica", "com.newamerica.contracts")
     );
 
-    private FundState fundState;
     private final List<AbstractParty> owners = new ArrayList<>();
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
@@ -67,12 +66,12 @@ public class FundContractTests {
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
                 tx.output(FundContract.ID, fs);
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new Commands.DummyCommand());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new Commands.DummyCommand());
                 return tx.failsWith("Contract verification failed");
             });
             l.transaction(tx -> {
                 tx.output(FundContract.ID, fs);
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 return tx.verifies();
             });
             return null;
@@ -100,13 +99,13 @@ public class FundContractTests {
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
                 tx.input(FundContract.ID, fs);
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs.withdraw(BigDecimal.valueOf(200)));
                 return tx.failsWith("No inputs should be consumed when issuing a FundState.");
             });
             l.transaction(tx -> {
                 tx.output(FundContract.ID, fs);
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 return tx.verifies();
             });
             return null;
@@ -133,14 +132,14 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 tx.output(FundContract.ID, fs.withdraw(BigDecimal.valueOf(200)));
                 return tx.failsWith("Only one output state should be created when issuing a FundState.");
             });
             l.transaction(tx -> {
                 tx.output(FundContract.ID, fs);
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 return tx.verifies();
             });
             return null;
@@ -167,7 +166,7 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 return tx.failsWith("OriginCountry and ReceivingCountry cannot be the same Party.");
             });
@@ -196,7 +195,7 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 return tx.failsWith("There must be at least one Party in the owner list.");
             });
@@ -225,7 +224,7 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 return tx.failsWith("There must be at least one Party in the requiredSigners list.");
             });
@@ -253,7 +252,7 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 return tx.failsWith("The amount must be greater than zero.");
             });
@@ -281,7 +280,7 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 return tx.failsWith("The balance must be greater than zero.");
             });
@@ -309,7 +308,7 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 return tx.failsWith("The balance and amount fields must be equal during an issuance.");
             });
@@ -337,7 +336,7 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 return tx.failsWith("The maxWithdrawalAmount must be greater than or equal to zero.");
             });
@@ -365,7 +364,7 @@ public class FundContractTests {
 
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(i -> i.getOwningKey()).collect(Collectors.toList())), new FundContract.Commands.Issue());
+                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
                 return tx.failsWith("The status can only be ISSUED during an issuance transaction.");
             });
