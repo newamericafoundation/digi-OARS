@@ -30,8 +30,8 @@ public class TransferContract implements Contract {
                 require.using("No inputs should be consumed when issuing a TransferState.", tx.getInputStates().size() == 0);
                 require.using("Only one output state should be created when issuing a TransferState.", tx.getOutputStates().size() == 1);
                 TransferState outputState = (TransferState) tx.getOutputStates().get(0);
-                require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
-                require.using("The List of participants cannot be empty.", outputState.participants.isEmpty());
+                require.using("The amount must be greater than zero.", outputState.getAmount().compareTo(BigDecimal.ZERO) > 0);
+                require.using("The List of participants cannot be empty.", !outputState.participants.isEmpty());
                 return null;
             });
         }

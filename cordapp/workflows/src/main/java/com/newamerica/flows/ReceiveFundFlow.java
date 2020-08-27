@@ -10,7 +10,6 @@ import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
-import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.QueryCriteria;
@@ -18,10 +17,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,35 +34,12 @@ public class ReceiveFundFlow {
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier fundStateLinearId;
-        private final FundState outputFundState;
 
-        public InitiatorFlow(UniqueIdentifier fundStateLinearId,
-                             Party originCountry,
-                             Party targetCountry,
-                             List<AbstractParty> owners,
-                             List<AbstractParty> requiredSigners,
-                             List<AbstractParty> partialRequestParticipants,
-                             BigDecimal amount,
-                             BigDecimal balance,
-                             ZonedDateTime datetime,
-                             BigDecimal maxWithdrawalAmount,
-                             Currency currency,
-                             List participants) {
+        public InitiatorFlow(UniqueIdentifier fundStateLinearId) {
             this.fundStateLinearId = fundStateLinearId;
-            this.outputFundState = new FundState(
-                    originCountry,
-                    targetCountry,
-                    owners,
-                    requiredSigners,
-                    partialRequestParticipants,
-                    amount,
-                    balance,
-                    datetime,
-                    maxWithdrawalAmount,
-                    currency,
-                    FundState.FundStateStatus.ISSUED,
-                    participants);
         }
+
+
         @Suspendable
         @Override
         public SignedTransaction call() throws FlowException {
@@ -79,6 +52,23 @@ public class ReceiveFundFlow {
                     new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(inputFundStateLinearId));
             Vault.Page results = getServiceHub().getVaultService().queryBy(FundState.class, queryCriteria);
             StateAndRef inputFundStateAndRef = (StateAndRef) results.getStates().get(0);
+            FundState inputFundState = (FundState) inputFundStateAndRef.getState().getData();
+
+            // contruct output fund state
+            FundState outputFundState = new FundState(
+                    inputFundState.getOriginCountry(),
+                    inputFundState.getReceivingCountry(),
+                    inputFundState.getOwners(),
+                    inputFundState.getRequiredSigners(),
+                    inputFundState.getPartialRequestParticipants(),
+                    inputFundState.getAmount(),
+                    inputFundState.getBalance(),
+                    inputFundState.getDatetime(),
+                    inputFundState.getMaxWithdrawalAmount(),
+                    inputFundState.getCurrency(),
+                    FundState.FundStateStatus.RECEIVED,
+                    inputFundState.getParticipants()
+            );
 
             // build tx
             transactionBuilder.addCommand(
@@ -93,9 +83,9 @@ public class ReceiveFundFlow {
 
             //create list of all parties minus ourIdentity for required signatures
             List<Party> otherParties = outputFundState
-                                        .getParticipants()
-                                        .stream()
-                                        .map(i -> ((Party) i)).collect(Collectors.toList());
+                    .getParticipants()
+                    .stream()
+                    .map(i -> ((Party) i)).collect(Collectors.toList());
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
