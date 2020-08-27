@@ -54,7 +54,7 @@ const Header = () => {
 
       <CHeaderNav className="d-md-down-none mr-auto">
         <CHeaderNavItem className="px-3" >
-          <CHeaderNavLink to="/dashboard">OPEN ASSET REPATRIATION SYSTEM</CHeaderNavLink>
+          <h4 className="mb-auto">OPEN ASSET <strong>REPATRIATION</strong> SYSTEM</h4>
         </CHeaderNavItem>
       </CHeaderNav>
 

@@ -25,11 +25,8 @@ export const useAuth = () => {
     const fetchUserInfo = async () => {
       try {
         const userProfile = await keycloak.loadUserProfile();
-
         setUser({ ...userProfile, fullName: `${userProfile.firstName} ${userProfile.lastName}` });
-        console.log(userProfile);
       } catch (err) {
-          console.log(err)
         setNotification({ isVisible: true, message: err.message });
       }
     };
