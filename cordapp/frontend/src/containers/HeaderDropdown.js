@@ -36,6 +36,12 @@ const HeaderDropdown = () => {
     <React.Fragment>
       <CDropdown
         inNav
+        className="c-header-nav-items mr-3"
+      >
+        {auth.user.attributes ? <CIcon name={"cif" + auth.user.attributes.country[0]} height={20} /> : null}
+      </CDropdown>
+      <CDropdown
+        inNav
         className="c-header-nav-items"
       >
         <strong>{auth.user.fullName}</strong>

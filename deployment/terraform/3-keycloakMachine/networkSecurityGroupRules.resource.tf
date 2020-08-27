@@ -6,7 +6,7 @@ resource "azurerm_network_security_rule" "ssh_keycloak" {
   network_security_group_name                = module.keycloak.network_security_group_name
   priority                                   = 100
   protocol                                   = "Tcp"
-  source_address_prefixes                    = ["81.148.212.130"]
+  source_address_prefixes                    = ["81.148.212.130", "69.27.238.234"]
   source_port_range                          = "*"
   destination_application_security_group_ids = [azurerm_application_security_group.asg-keycloak.id]
   destination_port_range                     = "22"
@@ -25,7 +25,7 @@ resource "azurerm_network_security_rule" "frontend" {
   network_security_group_name                = module.keycloak.network_security_group_name
   priority                                   = 110
   protocol                                   = "Tcp"
-  source_address_prefixes                    = ["81.148.212.130"]
+  source_address_prefixes                    = ["81.148.212.130", "69.27.238.234"]
   source_port_range                          = "*"
   destination_application_security_group_ids = [azurerm_application_security_group.asg-keycloak.id]
   destination_port_ranges                    = ["80"]

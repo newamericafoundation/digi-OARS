@@ -2,6 +2,7 @@ import { sygnet } from './sygnet'
 import { logo } from './logo'
 import { logoNegative } from './logo-negative'
 import { cordaLogo } from './cordalogo'
+import { cifCatan } from './catan-flag'
 
 import {
   cibSkype,
@@ -129,14 +130,18 @@ import {
   cilX,
   cilXCircle,
   cilWarning,
-  cilExitToApp
+  cilExitToApp,
+  cilBank,
+  cilWallet,
+  cilFork
 } from '@coreui/icons'
 
 export const icons = Object.assign({}, {
   sygnet,
   logo,
   logoNegative,
-  cordaLogo
+  cordaLogo,
+  cifCatan
 }, {
   cilAlignCenter,
   cilAlignLeft,
@@ -229,7 +234,10 @@ export const icons = Object.assign({}, {
   cilX,
   cilXCircle,
   cilWarning,
-  cilExitToApp
+  cilExitToApp,
+  cilBank,
+  cilWallet,
+  cilFork
 }, {
   cifUs,
   cifBr,
