@@ -43,14 +43,14 @@ public class FundContract implements Contract {
                 require.using("No inputs should be consumed when issuing a FundState.", tx.getInputStates().size() == 0);
                 require.using("Only one output state should be created when issuing a FundState.", tx.getOutputStates().size() == 1);
                 FundState outputState = (FundState) tx.getOutputStates().get(0);
-                require.using("OriginCountry and ReceivingCountry cannot be the same Party", outputState.originCountry != outputState.receivingCountry);
+                require.using("OriginCountry and ReceivingCountry cannot be the same Party.", outputState.originCountry != outputState.receivingCountry);
                 require.using("There must be at least one Party in the owner list.", !outputState.owners.isEmpty());
-                require.using("There must be at least one Party in the requiredSigners list.", !outputState.owners.isEmpty());
+                require.using("There must be at least one Party in the requiredSigners list.", !outputState.requiredSigners.isEmpty());
                 require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The balance must be greater than zero.", outputState.balance.compareTo(BigDecimal.ZERO) > 0);
-                require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
+                require.using("The balance and amount fields must be equal during an issuance.", outputState.getAmount().compareTo(outputState.getBalance()) == 0);
+                require.using("The maxWithdrawalAmount must be greater than or equal to zero.", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
-                require.using("The List of participants cannot be empty.", !outputState.participants.isEmpty());
 
                 // combine the Lists
                 List<AbstractParty> combinedLists = Stream.concat(outputState.owners.stream(), outputState.requiredSigners.stream()) .collect(Collectors.toList());
