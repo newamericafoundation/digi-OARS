@@ -32,16 +32,15 @@ const HeaderDropdown = () => {
     )
   }
 
-  return (
+  return (    
     <React.Fragment>
       <CDropdown
         inNav
         className="c-header-nav-items"
-        direction="down"
       >
-        <CDropdownToggle className="c-header-nav-link" caret={false}>
-          {auth.user.email}
-        </CDropdownToggle>
+        <strong>{auth.user.fullName}</strong>
+        <br/>
+        {auth.meta.keycloak.token ? auth.meta.keycloak.tokenParsed.groups[0] : null}
       </CDropdown>
       <CDropdown
         inNav
@@ -52,11 +51,13 @@ const HeaderDropdown = () => {
           {auth.isAuthenticated &&
             <div>
               <div className="c-avatar">
-                <CImg
-                  src={'avatars/6.jpg'}
-                  className="c-avatar-img"
-                  alt={auth.user.email}
-                />
+                {auth.user.attributes ? 
+                  <CImg
+                    src={'avatars/' + auth.user.attributes.avatar[0]}
+                    className="c-avatar-img"
+                    alt={auth.user.email}
+                  /> : null
+                }
               </div>
             </div>
           }
