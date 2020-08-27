@@ -7,7 +7,3 @@ export const cordaLogo = ['192 152', `
     ></path>
     </g>
 `]
-    
-    
-    
-    

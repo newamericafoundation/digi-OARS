@@ -12,9 +12,7 @@ import {
   CLink
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react';
-
-// routes config
-// import { publicRoutes, privateRoutes } from '../routes';
+import { publicRoutes } from '../routes';
 
 import { 
   HeaderDropdown,
@@ -34,7 +32,7 @@ const Header = () => {
     dispatch({type: 'set', sidebarShow: val})
   }
 
-  // const routes = [...publicRoutes, ...privateRoutes]
+  const routes = [...publicRoutes]
 
   return (
     <CHeader withSubheader>
@@ -63,10 +61,10 @@ const Header = () => {
       </CHeaderNav>
 
       <CSubheader className="px-3 justify-content-between">
-        {/* <CBreadcrumbRouter 
+        <CBreadcrumbRouter 
           className="border-0 c-subheader-nav m-0 px-0 px-md-3" 
           routes={routes} 
-        /> */}
+        />
           <div className="d-md-down-none mfe-2 c-subheader-nav">
             <CLink className="c-subheader-nav-link"href="#">
               <CIcon name="cil-speech" alt="Settings" />
@@ -80,6 +78,9 @@ const Header = () => {
             </CLink>
             <CLink className="c-subheader-nav-link" href="#">
               <CIcon name="cil-settings" alt="Settings" />&nbsp;Settings
+            </CLink>
+            <CLink className="c-subheader-nav-link" href="#" disabled={true}>
+              <CIcon name="cil-fork" alt="version"/>&nbsp;v{window._env_.VERSION}
             </CLink>
           </div>
       </CSubheader>

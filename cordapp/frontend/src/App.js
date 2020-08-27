@@ -1,5 +1,4 @@
 import React from 'react';
-// import logo from './logo.svg';
 import './scss/style.scss';
 import { KeycloakProvider } from '@react-keycloak/web';
 import keycloak from 'keycloak';

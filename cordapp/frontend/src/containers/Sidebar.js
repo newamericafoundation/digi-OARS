@@ -1,5 +1,4 @@
 import React from 'react';
-import { withKeycloak, useKeycloak } from '@react-keycloak/web';
 import { useSelector, useDispatch } from 'react-redux';
 import CIcon from '@coreui/icons-react';
 import {
@@ -13,6 +12,7 @@ import {
   CSidebarNavDropdown,
   CSidebarNavItem,
 } from '@coreui/react';
+import { useAuth } from '../auth-hook';
 
 import nav from './_nav';
 import nav_secure from './_nav_secure';
@@ -20,19 +20,7 @@ import nav_secure from './_nav_secure';
 const Sidebar = () => {
     const dispatch = useDispatch()
     const show = useSelector(state => state.sidebarShow)
-
-    const [keycloak] = useKeycloak();
-
-    const isAuthorized = (roles) => {
-        if (keycloak && roles) {
-            return roles.some(r => {
-                const realm =  keycloak.hasRealmRole(r);
-                const resource = keycloak.hasResourceRole(r);
-                return realm || resource;
-            });
-        }
-        return false;
-    }
+    const auth = useAuth();
 
     return (
         <CSidebar show={show} onShowChange={(val) => dispatch({type: 'set', sidebarShow: val})}>
@@ -59,9 +47,8 @@ const Sidebar = () => {
                         CSidebarNavTitle
                     }}
                 />
-
                 {/* Privately visible items to role: RealmAdmin | RealmUser */}
-                {isAuthorized(['RealmAdmin', 'RealmUser']) && <CCreateElement
+                {auth.meta.keycloak.hasResourceRole('user') && <CCreateElement
                     items={nav_secure}
                     components={{
                         CSidebarNavDivider,
@@ -76,4 +63,4 @@ const Sidebar = () => {
     )
 }
 
-export default withKeycloak(Sidebar);
+export default Sidebar;
