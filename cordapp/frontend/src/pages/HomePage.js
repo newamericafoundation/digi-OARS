@@ -11,6 +11,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { useAuth } from '../auth-hook';
+import { FundsForm } from './views/funds/FundsForm';
 
 
 const HomePage = () => {
@@ -54,8 +55,6 @@ const HomePage = () => {
               <h1 className="display-3">Welcome to OARS!</h1> :
               <h1 className="display-3">{greeting}{auth.user.firstName}!</h1>
             }
-            
-            
             <p className="lead">The Open Asset Repatriation System increases transparency and accountability in the asset return process.</p>
             <p>For more information visit website</p>
             {!auth.isAuthenticated && <CButton color="primary" onClick={() => auth.login()}>Login</CButton>}
@@ -112,8 +111,6 @@ const HomePage = () => {
           </CRow>
         </CCardFooter>
       </CCard>}
-
-
   </>
   )
 }
