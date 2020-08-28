@@ -1,0 +1,33 @@
+[INFO ] 2020-08-27T20:02:43,248 [main] Starter - Starting Starter on 18LDN-MAC100.local with PID 25082 (/Users/nealshah/repositories/NewAmerica/test/digi-OARS/cordapp/clients/build/classes/java/main started by nealshah in /Users/nealshah/repositories/NewAmerica/test/digi-OARS/cordapp/clients)
+[INFO ] 2020-08-27T20:02:43,251 [main] Starter - No active profile set, falling back to default profiles: default
+[INFO ] 2020-08-27T20:02:43,287 [main] AnnotationConfigServletWebServerApplicationContext - Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@119cbf96: startup date [Thu Aug 27 21:02:43 BST 2020]; root of context hierarchy
+[INFO ] 2020-08-27T20:02:43,832 [main] DefaultListableBeanFactory - Overriding bean definition for bean 'jsonComponentModule' with a different definition: replacing [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=starter; factoryMethodName=jsonComponentModule; initMethodName=null; destroyMethodName=(inferred); defined in com.newamerica.webserver.Starter] with [Root bean: class [null]; scope=; abstract=false; lazyInit=false; autowireMode=3; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration; factoryMethodName=jsonComponentModule; initMethodName=null; destroyMethodName=(inferred); defined in class path resource [org/springframework/boot/autoconfigure/jackson/JacksonAutoConfiguration.class]]
+[INFO ] 2020-08-27T20:02:44,406 [main] TomcatWebServer - Tomcat initialized with port(s): 10050 (http)
+[INFO ] 2020-08-27T20:02:44,423 [main] Http11NioProtocol - Initializing ProtocolHandler ["http-nio-10050"]
+[INFO ] 2020-08-27T20:02:44,434 [main] StandardService - Starting service [Tomcat]
+[INFO ] 2020-08-27T20:02:44,435 [main] StandardEngine - Starting Servlet Engine: Apache Tomcat/8.5.31
+[INFO ] 2020-08-27T20:02:44,446 [localhost-startStop-1] AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [/Users/nealshah/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:.]
+[INFO ] 2020-08-27T20:02:44,552 [localhost-startStop-1] [/] - Initializing Spring embedded WebApplicationContext
+[INFO ] 2020-08-27T20:02:44,552 [localhost-startStop-1] ContextLoader - Root WebApplicationContext: initialization completed in 1267 ms
+[INFO ] 2020-08-27T20:02:44,683 [localhost-startStop-1] ServletRegistrationBean - Servlet dispatcherServlet mapped to [/]
+[INFO ] 2020-08-27T20:02:44,688 [localhost-startStop-1] FilterRegistrationBean - Mapping filter: 'characterEncodingFilter' to: [/*]
+[INFO ] 2020-08-27T20:02:44,689 [localhost-startStop-1] FilterRegistrationBean - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+[INFO ] 2020-08-27T20:02:44,689 [localhost-startStop-1] FilterRegistrationBean - Mapping filter: 'httpPutFormContentFilter' to: [/*]
+[INFO ] 2020-08-27T20:02:44,689 [localhost-startStop-1] FilterRegistrationBean - Mapping filter: 'requestContextFilter' to: [/*]
+[INFO ] 2020-08-27T20:02:48,041 [main] RPCClient - Startup took 1780 msec
+[INFO ] 2020-08-27T20:02:48,150 [main] SimpleUrlHandlerMapping - Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+[INFO ] 2020-08-27T20:02:48,256 [main] RequestMappingHandlerAdapter - Looking for @ControllerAdvice: org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@119cbf96: startup date [Thu Aug 27 21:02:43 BST 2020]; root of context hierarchy
+[INFO ] 2020-08-27T20:02:48,337 [main] RequestMappingHandlerMapping - Mapped "{[/hello],methods=[GET],produces=[text/plain]}" onto private java.lang.String com.newamerica.webserver.Controller.sayhello()
+[INFO ] 2020-08-27T20:02:48,338 [main] RequestMappingHandlerMapping - Mapped "{[/nodeInfo],methods=[GET],produces=[application/json]}" onto private org.springframework.http.ResponseEntity<java.lang.String> com.newamerica.webserver.Controller.getNodeInfo()
+[INFO ] 2020-08-27T20:02:48,341 [main] RequestMappingHandlerMapping - Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+[INFO ] 2020-08-27T20:02:48,342 [main] RequestMappingHandlerMapping - Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+[INFO ] 2020-08-27T20:02:48,364 [main] SimpleUrlHandlerMapping - Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+[INFO ] 2020-08-27T20:02:48,364 [main] SimpleUrlHandlerMapping - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+[INFO ] 2020-08-27T20:02:48,412 [main] WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+[INFO ] 2020-08-27T20:02:48,571 [main] AnnotationMBeanExporter - Registering beans for JMX exposure on startup
+[INFO ] 2020-08-27T20:02:48,584 [main] Http11NioProtocol - Starting ProtocolHandler ["http-nio-10050"]
+[INFO ] 2020-08-27T20:02:48,602 [main] NioSelectorPool - Using a shared selector for servlet write/read
+[INFO ] 2020-08-27T20:02:48,618 [main] TomcatWebServer - Tomcat started on port(s): 10050 (http) with context path ''
+[INFO ] 2020-08-27T20:02:48,621 [main] Starter - Started Starter in 6.077 seconds (JVM running for 6.978)
+[INFO ] 2020-08-27T20:03:00,011 [Thread-3] AnnotationConfigServletWebServerApplicationContext - Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@119cbf96: startup date [Thu Aug 27 21:02:43 BST 2020]; root of context hierarchy
+[INFO ] 2020-08-27T20:03:00,013 [Thread-3] AnnotationMBeanExporter - Unregistering JMX-exposed beans on shutdown

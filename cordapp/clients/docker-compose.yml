@@ -1,0 +1,9 @@
+version: "3.2"
+services:
+  nmn-client:
+    container_name: client
+    image: newamericapocacr.azurecr.io/oars-client:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - "CONFIG_RPC_PORT=10009"

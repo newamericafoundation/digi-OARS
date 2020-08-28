@@ -19,6 +19,7 @@
         networks_cli_compatible: yes
         ports:
           - 10200:10200
+          - 10201:10201
           - 2222:2222
         volumes:
           - "/opt/corda/config:/etc/corda"
