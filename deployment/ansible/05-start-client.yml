@@ -1,0 +1,29 @@
+# 05-start-client.yml
+---
+- name: Start Corda Client
+  hosts: node-machines
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Docker Login
+      docker_login:
+        registry: "{{ docker_registry_url }}"
+        username: "{{ docker_registry_username }}"
+        password: "{{ docker_registry_password }}"
+    - name: Start Client Docker Container
+      docker_container:
+        name: "client-{{ inventory_hostname }}"
+        hostname: "client-{{ inventory_hostname }}"
+        image: "{{ docker_registry_url }}/{{ docker_image_api }}:{{ docker_image_api_version }}"
+        state: started
+        networks:
+          - name: corda
+        networks_cli_compatible: yes
+        ports:
+          - 8080:8080
+        env:
+          SERVER_PORT: "8080"
+          CONFIG_RPC_USERNAME: "user1"
+          CONFIG_RPC_PASSWORD: "test"
+          CONFIG_RPC_HOST: "node-{{ inventory_hostname }}"
+          CONFIG_RPC_PORT: "10201"

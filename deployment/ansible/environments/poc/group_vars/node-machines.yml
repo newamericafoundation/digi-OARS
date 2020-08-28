@@ -4,3 +4,6 @@ docker_registry_password: MQp6SL8JMZ3PlKAGX=KH8T/Qwk9sM1o/
 
 docker_image_ui: oars-ui
 docker_image_ui_version: latest
+
+docker_image_api: oars-client
+docker_image_api_version: latest
