@@ -124,9 +124,9 @@ public class RequestState implements LinearState {
 
     @CordaSerializable
     public enum RequestStateStatus {
-        PENDING("pending"),
-        FLAGGED("flagged"),
-        APPROVED("approved");
+        PENDING("PENDING"),
+        FLAGGED("FLAGGED"),
+        APPROVED("APPROVED");
 
         public final String status;
         RequestStateStatus(String status) {

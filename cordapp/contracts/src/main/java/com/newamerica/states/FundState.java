@@ -139,9 +139,9 @@ public class FundState implements LinearState {
 
     @CordaSerializable
     public enum FundStateStatus{
-        ISSUED("issued"),
-        RECEIVED("received"),
-        PAID("paid");
+        ISSUED("ISSUED"),
+        RECEIVED("RECEIVED"),
+        PAID("RECEIVED");
 
         public final String status;
         FundStateStatus(String status) {
