@@ -6,13 +6,12 @@ import {
   CHeaderBrand,
   CHeaderNav,
   CHeaderNavItem,
-  CHeaderNavLink,
   CSubheader,
   CBreadcrumbRouter,
   CLink
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react';
-import { publicRoutes } from '../routes';
+import { publicRoutes, privateRoutes } from '../routes';
 
 import { 
   HeaderDropdown,
@@ -32,7 +31,7 @@ const Header = () => {
     dispatch({type: 'set', sidebarShow: val})
   }
 
-  const routes = [...publicRoutes]
+  const routes = [...publicRoutes, ...privateRoutes]
 
   return (
     <CHeader withSubheader>

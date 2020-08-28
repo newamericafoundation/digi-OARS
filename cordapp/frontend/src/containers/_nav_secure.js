@@ -2,7 +2,7 @@ export default [
   {
     _tag: "CSidebarNavItem",
     name: "Dashboard",
-    to: "/",
+    to: "/dashboard",
     icon: "cil-speedometer",
   },
   {
@@ -12,19 +12,19 @@ export default [
   {
     _tag: "CSidebarNavItem",
     name: "Funds",
-    to: "/",
+    to: "/funds",
     icon: "cil-bank",
   },
   {
     _tag: "CSidebarNavItem",
     name: "Withdrawals",
-    to: "/",
+    to: "/withdrawals",
     icon: "cil-wallet",
   },
   {
     _tag: "CSidebarNavItem",
     name: "Transfers",
-    to: "/",
+    to: "/transfers",
     icon: "cil-chevron-right",
   },
 ];

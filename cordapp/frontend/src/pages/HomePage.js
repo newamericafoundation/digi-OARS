@@ -1,19 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import {
-  CBadge,
   CButton,
   CCard,
   CCardBody,
   CCardFooter,
-  CCardHeader,
   CCol,
   CProgress,
   CRow,
-  CCallout,
   CJumbotron
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
-import { useAuth } from '../auth-hook'; 
+import { useAuth } from '../auth-hook';
 
 
 const HomePage = () => {
@@ -65,9 +62,7 @@ const HomePage = () => {
             {auth.isAuthenticated && <CButton color="light" onClick={() => auth.logout()}>Logout</CButton>}
           </CCol>
         </CRow>
-        
       </CJumbotron>
-
       {auth.isAuthenticated &&
       <CCard>
         <CCardBody>
