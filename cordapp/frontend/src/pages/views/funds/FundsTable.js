@@ -6,9 +6,7 @@ import {
   CDataTable,
   CCollapse,
 } from "@coreui/react";
-// import CIcon from '@coreui/icons-react'
-// import { useAuth } from '../auth-hook';
-import { FundData } from "../../data/Funds";
+import { FundData } from "../../../data/Funds";
 
 export const FundsTable = () => {
   const fundData = FundData;

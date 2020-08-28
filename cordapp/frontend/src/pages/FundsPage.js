@@ -1,8 +1,28 @@
-import React from "react";
-import { CCard, CCardBody, CCardHeader, CButton } from "@coreui/react";
-import { FundsTable } from "./views/FundsTable";
+import React, { useState } from "react";
+import {
+  CCard,
+  CCardBody,
+  CCardHeader,
+  CButton,
+  CModal,
+  CModalHeader,
+  CModalBody,
+  CModalTitle,
+} from "@coreui/react";
+import { FundsTable } from "./views/funds/FundsTable";
+import { FundsForm } from "./views/funds/FundsForm";
 
 const FundsPage = () => {
+  const [show, setShow] = useState(false);
+
+  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    handleClose();
+  };
+
   return (
     <>
       <CCard>
@@ -13,13 +33,30 @@ const FundsPage = () => {
               className={"float-right mb-0"}
               color={"primary"}
               tabIndex="0"
-            >Issue Funds</CButton>
+              onClick={handleShow}
+            >
+              Issue Funds
+            </CButton>
           </div>
         </CCardHeader>
         <CCardBody>
           <FundsTable />
         </CCardBody>
       </CCard>
+      <CModal show={show} onClose={handleClose}>
+        <CModalHeader closeButton>
+          <CModalTitle>Funds Form</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <FundsForm onSubmit={onFormSubmit} />
+        </CModalBody>
+        {/* <CModalFooter>
+            <CButton color="primary">Submit</CButton>
+            <CButton color="secondary" onClick={handleClose}>
+              Cancel
+            </CButton>
+          </CModalFooter> */}
+      </CModal>
     </>
   );
 };
