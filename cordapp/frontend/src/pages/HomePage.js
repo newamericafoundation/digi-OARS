@@ -62,7 +62,6 @@ const HomePage = () => {
           </CCol>
         </CRow>
       </CJumbotron>
-      <FundsForm />
       {auth.isAuthenticated &&
       <CCard>
         <CCardBody>
