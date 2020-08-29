@@ -10,9 +10,7 @@ import { FundData } from "../../../data/Funds";
 
 export const FundsTable = () => {
   const fundData = FundData;
-
   const [details, setDetails] = useState([]);
-  // const [items, setItems] = useState(usersData)
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);
@@ -96,11 +94,17 @@ export const FundsTable = () => {
               <CCardBody>
                 <h4>Linear Id: {item.linearId}</h4>
                 <p className="text-muted">
-                    Origin Country: {item.originCountry}<br/>
-                    Receiving Country: {item.receivingCountry}<br/>
-                    Amount ({item.currency}): {item.amount}<br/>
-                    Balance ({item.currency}): {item.balance}<br/>
-                    Max Withdrawal Amount ({item.currency}): {item.maxWithdrawalAmount}<br/>
+                  Origin Country: {item.originCountry}
+                  <br />
+                  Receiving Country: {item.receivingCountry}
+                  <br />
+                  Amount ({item.currency}): {item.amount}
+                  <br />
+                  Balance ({item.currency}): {item.balance}
+                  <br />
+                  Max Withdrawal Amount ({item.currency}):{" "}
+                  {item.maxWithdrawalAmount}
+                  <br />
                 </p>
               </CCardBody>
             </CCollapse>

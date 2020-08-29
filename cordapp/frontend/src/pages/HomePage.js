@@ -11,8 +11,6 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { useAuth } from '../auth-hook';
-import { FundsForm } from './views/funds/FundsForm';
-
 
 const HomePage = () => {
   const auth = useAuth();
