@@ -26,5 +26,5 @@ export default [
     name: "Transfers",
     to: "/transfers",
     icon: "cil-chevron-right",
-  },
+  }
 ];

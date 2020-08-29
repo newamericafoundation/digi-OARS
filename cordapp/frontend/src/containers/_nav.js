@@ -4,7 +4,7 @@ export default [
     name: 'Home',
     to: '/',
     icon: 'cil-home'
-  }
+  } 
 ]
   
   

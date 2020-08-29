@@ -7,7 +7,7 @@ import {
   CSelect,
   CInput,
   CButton,
-  CForm
+  CForm,
 } from "@coreui/react";
 
 export const FundsForm = ({ onSubmit }) => {
