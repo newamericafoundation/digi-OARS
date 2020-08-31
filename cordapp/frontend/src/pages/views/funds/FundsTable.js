@@ -9,8 +9,9 @@ import {
   CCollapse,
   CCol,
   CRow,
+  CProgress,
 } from "@coreui/react";
-import Moment from 'moment';
+import Moment from "moment";
 import { FundData } from "../../../data/Funds";
 
 export const FundsTable = () => {
@@ -112,7 +113,7 @@ export const FundsTable = () => {
           <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
         ),
         datetime: (item) => (
-        <td>{Moment(item.datetime).format('DD/MMM/yyyy')}</td>
+          <td>{Moment(item.datetime).format("DD/MMM/yyyy")}</td>
         ),
         status: (item) => (
           <td>
@@ -146,6 +147,20 @@ export const FundsTable = () => {
                   {getReceivedButton(item.isReceived)}
                 </CCardHeader>
                 <CCardBody>
+                  {item.isReceived ? (
+                    <CRow className="mb-3">
+                      <CCol>
+                        <p className="text-muted">Total Assets Repatriated:</p>
+                        <CProgress
+                          value={(item.balance / item.amount) * 100}
+                          showPercentage
+                          striped
+                          color="success"
+                          precision={2}
+                        />
+                      </CCol>
+                    </CRow>
+                  ) : null}
                   <CRow>
                     <CCol md="3">
                       ID:
