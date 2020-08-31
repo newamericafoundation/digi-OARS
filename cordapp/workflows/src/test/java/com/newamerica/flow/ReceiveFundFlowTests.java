@@ -18,7 +18,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -34,8 +33,6 @@ public class ReceiveFundFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
-    private UniqueIdentifier fundStateLinearId;
-
 
     @Before
     public void setup() throws ExecutionException, InterruptedException {
@@ -48,7 +45,6 @@ public class ReceiveFundFlowTests {
                 )
         ).withNotarySpecs(Arrays.asList(new MockNetworkNotarySpec(new CordaX500Name("Notary", "London", "GB"))));
         mockNetwork = new MockNetwork(mockNetworkParameters);
-        System.out.println(mockNetwork);
 
         a = mockNetwork.createNode(new MockNodeParameters());
         b = mockNetwork.createNode(new MockNodeParameters());
@@ -61,22 +57,20 @@ public class ReceiveFundFlowTests {
 
         // For real nodes this happens automatically, but we have to manually register the flow for tests
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueFundFlow.ResponderFlow.class));
-        startedNodes.forEach(el -> el.registerInitiatedFlow(ReceiveFundFlow.ResponderFlow.class));
         mockNetwork.runNetwork();
 
         usDos = a.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
         usDoj = b.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
         catanTreasury = c.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
 
-        owners.add(usDos);
-        requiredSigners.add(usDos);
+        owners.add(usDoj);
+        requiredSigners.add(usDoj);
         requiredSigners.add(catanTreasury);
         participants.add(usDos);
         participants.add(usDoj);
         participants.add(catanTreasury);
         partialRequestParticipants.add(usDos);
         partialRequestParticipants.add(catanTreasury);
-
     }
 
 
@@ -93,13 +87,13 @@ public class ReceiveFundFlowTests {
     public void flowReturnsCorrectlyFormedPartiallySignedTransaction() throws Exception {
 
         IssueFundFlow.InitiatorFlow flow = new IssueFundFlow.InitiatorFlow(
-                usDos,
+                usDoj,
                 catanTreasury,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
-                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                ZonedDateTime.now(),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
@@ -113,7 +107,8 @@ public class ReceiveFundFlowTests {
 
         // get fundstate linear id
         FundState input = (FundState) ptx.getTx().getOutputs().get(0).getData();
-        fundStateLinearId = input.getLinearId();
+        UniqueIdentifier fundStateLinearId = input.getLinearId();
+        System.out.println(fundStateLinearId);
 
         ReceiveFundFlow.InitiatorFlow receiveFlow = new ReceiveFundFlow.InitiatorFlow(
                 fundStateLinearId
@@ -122,6 +117,8 @@ public class ReceiveFundFlowTests {
         mockNetwork.runNetwork();
 
         SignedTransaction ptx2 = futureTwo.get();
+        FundState output = (FundState) ptx2.getTx().getOutputs().get(0).getData();
+        System.out.println(output.toString());
 
         // Check the transaction is well formed...
         // one output, one input IOUState and a command with the right properties.
@@ -133,187 +130,5 @@ public class ReceiveFundFlowTests {
 
         ptx2.verifySignaturesExcept(catanTreasury.getOwningKey(),
                 mockNetwork.getDefaultNotaryNode().getInfo().getLegalIdentitiesAndCerts().get(0).getOwningKey());
-
     }
-
-//    // All requirements should properly pass/fail according to the FundState contract.
-//    @Test
-//    public void flowReturnsVerifiedPartiallySignedTransaction() throws Exception {
-//
-//        //should fail because:There must be at least one Party in the owner list.
-//        IssueFundFlow.InitiatorFlow originAndReceivingTheSame = new IssueFundFlow.InitiatorFlow(
-//                usDos,
-//                usDos,
-//                owners,
-//                requiredSigners,
-//                partialRequestParticipants,
-//                BigDecimal.valueOf(5000000),
-//                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-//                BigDecimal.valueOf(1000000),
-//                Currency.getInstance(Locale.US),
-//                participants
-//        );
-//
-//        Future<SignedTransaction> futureOne = a.startFlow(originAndReceivingTheSame);
-//        mockNetwork.runNetwork();
-//
-//        exception.expectCause(instanceOf(TransactionVerificationException.class));
-//        futureOne.get();
-//
-//        //should fail because: OriginCountry and ReceivingCountry cannot be the same Party.
-//        owners.clear();
-//        IssueFundFlow.InitiatorFlow emptyOwnersList = new IssueFundFlow.InitiatorFlow(
-//                usDos,
-//                usDoj,
-//                owners,
-//                requiredSigners,
-//                partialRequestParticipants,
-//                BigDecimal.valueOf(5000000),
-//                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-//                BigDecimal.valueOf(1000000),
-//                Currency.getInstance(Locale.US),
-//                participants
-//        );
-//
-//        Future<SignedTransaction> futureTwo = a.startFlow(emptyOwnersList);
-//        mockNetwork.runNetwork();
-//
-//        exception.expectCause(instanceOf(TransactionVerificationException.class));
-//        futureTwo.get();
-//
-//        owners.add(usDos);
-//
-//        //should fail because: There must be at least one Party in the requiredSigners list.
-//        requiredSigners.clear();
-//        IssueFundFlow.InitiatorFlow emptyRequiredSignersList = new IssueFundFlow.InitiatorFlow(
-//                usDos,
-//                usDoj,
-//                owners,
-//                requiredSigners,
-//                partialRequestParticipants,
-//                BigDecimal.valueOf(5000000),
-//                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-//                BigDecimal.valueOf(1000000),
-//                Currency.getInstance(Locale.US),
-//                participants
-//        );
-//
-//        Future<SignedTransaction> futureThree = a.startFlow(emptyRequiredSignersList);
-//        mockNetwork.runNetwork();
-//
-//        exception.expectCause(instanceOf(TransactionVerificationException.class));
-//        futureThree.get();
-//
-//        requiredSigners.add(usDos);
-//        requiredSigners.add(catanTreasury);
-//
-//        //should fail because: The amount must be greater than zero.
-//        IssueFundFlow.InitiatorFlow negativeAmountAndBalance = new IssueFundFlow.InitiatorFlow(
-//                usDos,
-//                usDoj,
-//                owners,
-//                requiredSigners,
-//                partialRequestParticipants,
-//                BigDecimal.valueOf(5000000),
-//                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-//                BigDecimal.valueOf(1000000),
-//                Currency.getInstance(Locale.US),
-//                participants
-//        );
-//
-//        Future<SignedTransaction> futureFour = a.startFlow(negativeAmountAndBalance);
-//        mockNetwork.runNetwork();
-//
-//        exception.expectCause(instanceOf(TransactionVerificationException.class));
-//        futureFour.get();
-//
-//        //should fail because: The maxWithdrawalAmount must be greater than or equal to zero.
-//        IssueFundFlow.InitiatorFlow negativeMaxWithdrawalAmount = new IssueFundFlow.InitiatorFlow(
-//                usDos,
-//                usDoj,
-//                owners,
-//                requiredSigners,
-//                partialRequestParticipants,
-//                BigDecimal.valueOf(5000000),
-//                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-//                BigDecimal.valueOf(-1000000),
-//                Currency.getInstance(Locale.US),
-//                participants
-//        );
-//
-//        Future<SignedTransaction> futureFive = a.startFlow(negativeMaxWithdrawalAmount);
-//        mockNetwork.runNetwork();
-//
-//        exception.expectCause(instanceOf(TransactionVerificationException.class));
-//        futureFive.get();
-//
-//        //should verify
-//        IssueFundFlow.InitiatorFlow validFundState = new IssueFundFlow.InitiatorFlow(
-//                usDos,
-//                usDoj,
-//                owners,
-//                requiredSigners,
-//                partialRequestParticipants,
-//                BigDecimal.valueOf(5000000),
-//                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-//                BigDecimal.valueOf(1000000),
-//                Currency.getInstance(Locale.US),
-//                participants
-//        );
-//
-//        Future<SignedTransaction> futureSix = a.startFlow(validFundState);
-//        mockNetwork.runNetwork();
-//        futureSix.get();
-//    }
-//
-//    // all signatures were proplery fetched.
-//    @Test
-//    public void flowReturnsTransactionSignedByBothParties() throws Exception {
-//
-//        IssueFundFlow.InitiatorFlow flow = new IssueFundFlow.InitiatorFlow(usDos,
-//                usDoj,
-//                owners,
-//                requiredSigners,
-//                partialRequestParticipants,
-//                BigDecimal.valueOf(5000000),
-//                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-//                BigDecimal.valueOf(1000000),
-//                Currency.getInstance(Locale.US),
-//                participants);
-//
-//        Future<SignedTransaction> future = a.startFlow(flow);
-//        mockNetwork.runNetwork();
-//
-//        SignedTransaction stx = future.get();
-//        stx.verifyRequiredSignatures();
-//    }
-//
-//    // check each party's vault for the fundState's existence
-//    @Test
-//    public void flowRecordsTheSameTransactionInBothPartyVaults() throws Exception {
-//
-//        IssueFundFlow.InitiatorFlow flow = new IssueFundFlow.InitiatorFlow(usDos,
-//                usDoj,
-//                owners,
-//                requiredSigners,
-//                partialRequestParticipants,
-//                BigDecimal.valueOf(5000000),
-//                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-//                BigDecimal.valueOf(1000000),
-//                Currency.getInstance(Locale.US),
-//                participants);
-//
-//        Future<SignedTransaction> future = a.startFlow(flow);
-//        mockNetwork.runNetwork();
-//        SignedTransaction stx = future.get();
-//        System.out.printf("Signed transaction hash: %h\n", stx.getId());
-//
-//        Stream.of(a, b).map(el ->
-//                el.getServices().getValidatedTransactions().getTransaction(stx.getId())
-//        ).forEach(el -> {
-//            SecureHash txHash = el.getId();
-//            System.out.printf("$txHash == %h\n", stx.getId());
-//            assertEquals(stx.getId(), txHash);
-//        });
-//    }
 }

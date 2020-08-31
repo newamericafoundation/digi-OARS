@@ -87,26 +87,26 @@ public class FundContract implements Contract {
             requireThat(require -> {
                 require.using("1 input should be consumed when receiving a FundState.", tx.getInputStates().size() == 1);
                 require.using("Only 1 output state should be created when receiving a FundState.", tx.getOutputStates().size() == 1);
-                FundState outputState = (FundState) tx.getOutputStates().get(0);
-                require.using("originParty and receivingParty cannot be the same Party", outputState.originParty == outputState.receivingParty);
-                require.using("There must be at least one Party in the owner list.", outputState.owners.isEmpty());
-                require.using("There must be at least one Party in the requiredSigners list.", outputState.owners.isEmpty());
-                require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
-                require.using("The balance must be greater than zero.", outputState.balance.compareTo(BigDecimal.ZERO) > 0);
-                require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
-                require.using("The status can only be RECEIVED during an issuance transaction.", outputState.status == FundState.FundStateStatus.RECEIVED);
-                require.using("The List of participants cannot be empty.", outputState.participants.isEmpty());
                 FundState inputState = (FundState) tx.getInputStates().get(0);
-                require.using("input originParty and output originParty must be the same", inputState.originParty == outputState.originParty);
-                require.using("input receivingParty and output receivingParty must be the same", inputState.receivingParty == outputState.receivingParty);
-                require.using("input amount and output amount must be the same", inputState.amount == outputState.amount);
-                require.using("input balance and output balance must be the same", inputState.balance == outputState.balance);
-                require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.maxWithdrawalAmount == outputState.maxWithdrawalAmount);
-
-                // combine the Lists
+                require.using("The inputFundState's status must be ISSUED in order to proceed.", inputState.getStatus() == FundState.FundStateStatus.ISSUED);
+                FundState outputState = (FundState) tx.getOutputStates().get(0);
+                require.using("originParty and receivingParty cannot be the same Party", outputState.getOriginParty() != outputState.getReceivingParty());
+                require.using("There must be at least one Party in the owner list.", !outputState.getOwners().isEmpty());
+                require.using("There must be at least one Party in the requiredSigners list.", !outputState.getOwners().isEmpty());
+                require.using("The amount must be greater than zero.", outputState.getAmount().compareTo(BigDecimal.ZERO) > 0);
+                require.using("The balance must be greater than zero.", outputState.getBalance().compareTo(BigDecimal.ZERO) > 0);
+                require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.getMaxWithdrawalAmount().compareTo(BigDecimal.ZERO) > 0);
+                require.using("The status can only be RECEIVED during an issuance transaction.", outputState.getStatus() == FundState.FundStateStatus.RECEIVED);
+                require.using("The List of participants cannot be empty.", !outputState.getParticipants().isEmpty());
+                require.using("input amount and output amount must be the same", inputState.getAmount() == outputState.getAmount());
+                require.using("input balance and output balance must be the same", inputState.getBalance() == outputState.getBalance());
+                require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.getMaxWithdrawalAmount() == outputState.getMaxWithdrawalAmount());
+                require.using("input originParty and output originParty must be the same", inputState.getOriginParty() == outputState.getOriginParty());
+                require.using("input receivingParty and output receivingParty must be the same", inputState.getReceivingParty() == outputState.getReceivingParty());
+                 // combine the Lists
                 List<AbstractParty> combinedLists = outputState.owners;
                 combinedLists.addAll(outputState.requiredSigners);
-                require.using("All owners and requiredSigners must be in the participant List.", outputState.participants.containsAll(combinedLists));
+                require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));
                 return null;
             });
         }
