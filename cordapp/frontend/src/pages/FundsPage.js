@@ -50,12 +50,6 @@ const FundsPage = () => {
         <CModalBody>
           <FundsForm onSubmit={onFormSubmit} />
         </CModalBody>
-        {/* <CModalFooter>
-            <CButton color="primary">Submit</CButton>
-            <CButton color="secondary" onClick={handleClose}>
-              Cancel
-            </CButton>
-          </CModalFooter> */}
       </CModal>
     </>
   );
