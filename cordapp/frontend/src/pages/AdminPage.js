@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  CButton,
   CCard,
   CCardBody,
   CCardHeader,
@@ -12,7 +13,7 @@ const AdminPage = () => {
     <CCard>
         <CCardHeader>
           Users
-          {/* <div className="card-header-actions">
+          <div className="card-header-actions">
             <CButton
               className={"float-right mb-0"}
               color={"primary"}
@@ -20,7 +21,21 @@ const AdminPage = () => {
             >
               Create New User
             </CButton>
-          </div> */}
+            <CButton
+              className={"float-right mb-0 mr-2"}
+              color={"light"}
+              tabIndex="0"
+            >
+              Disable User
+            </CButton>
+            <CButton
+              className={"float-right mb-0 mr-2"}
+              color={"danger"}
+              tabIndex="0"
+            >
+              Remove User
+            </CButton>
+          </div>
         </CCardHeader>
         <CCardBody>
           <UsersTable />
