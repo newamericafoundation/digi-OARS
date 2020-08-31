@@ -97,3 +97,5 @@ cordapp/contracts/bin/*
 
 cordapp/clients/logs/*
 cordapp/clients/logs/*.local.log
+cordapp/contracts/logs/*
+cordapp/workflows/logs/*
