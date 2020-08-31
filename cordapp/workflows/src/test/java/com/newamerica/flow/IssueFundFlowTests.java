@@ -10,7 +10,6 @@ import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.transactions.SignedTransaction;
-import net.corda.finance.Currencies;
 import net.corda.testing.node.*;
 import org.junit.After;
 import org.junit.Before;
@@ -23,6 +22,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.Future;
+import java.util.stream.Stream;
 
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertEquals;
@@ -99,7 +99,6 @@ public class IssueFundFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -139,7 +138,6 @@ public class IssueFundFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -161,14 +159,13 @@ public class IssueFundFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
         );
 
-        Future<SignedTransaction> futureTwo = a.startFlow(originAndReceivingTheSame);
+        Future<SignedTransaction> futureTwo = a.startFlow(emptyOwnersList);
         mockNetwork.runNetwork();
 
         exception.expectCause(instanceOf(TransactionVerificationException.class));
@@ -184,7 +181,6 @@ public class IssueFundFlowTests {
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
-                BigDecimal.valueOf(5000000),
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
@@ -202,13 +198,12 @@ public class IssueFundFlowTests {
         requiredSigners.add(catan);
 
         //should fail because: The amount must be greater than zero.
-        IssueFundFlow.InitiatorFlow negativeAmount = new IssueFundFlow.InitiatorFlow(
+        IssueFundFlow.InitiatorFlow negativeAmountAndBalance = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 usDoj,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
-                BigDecimal.valueOf(-1),
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
@@ -216,53 +211,11 @@ public class IssueFundFlowTests {
                 participants
         );
 
-        Future<SignedTransaction> futureFour = a.startFlow(negativeAmount);
+        Future<SignedTransaction> futureFour = a.startFlow(negativeAmountAndBalance);
         mockNetwork.runNetwork();
 
         exception.expectCause(instanceOf(TransactionVerificationException.class));
         futureFour.get();
-
-        //should fail because: The balance must be greater than zero.
-        IssueFundFlow.InitiatorFlow negativeBalance = new IssueFundFlow.InitiatorFlow(
-                usDos,
-                usDoj,
-                owners,
-                requiredSigners,
-                partialRequestParticipants,
-                BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(-5000000),
-                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
-                Currency.getInstance(Locale.US),
-                participants
-        );
-
-        Future<SignedTransaction> futureFive = a.startFlow(negativeBalance);
-        mockNetwork.runNetwork();
-
-        exception.expectCause(instanceOf(TransactionVerificationException.class));
-        futureFive.get();
-
-        //should fail because: The balance and amount fields must be equal during an issuance.
-        IssueFundFlow.InitiatorFlow unequalAmountAndBalance = new IssueFundFlow.InitiatorFlow(
-                usDos,
-                usDoj,
-                owners,
-                requiredSigners,
-                partialRequestParticipants,
-                BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(2000000),
-                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
-                Currency.getInstance(Locale.US),
-                participants
-        );
-
-        Future<SignedTransaction> futureSix = a.startFlow(unequalAmountAndBalance);
-        mockNetwork.runNetwork();
-
-        exception.expectCause(instanceOf(TransactionVerificationException.class));
-        futureSix.get();
 
         //should fail because: The maxWithdrawalAmount must be greater than or equal to zero.
         IssueFundFlow.InitiatorFlow negativeMaxWithdrawalAmount = new IssueFundFlow.InitiatorFlow(
@@ -272,18 +225,17 @@ public class IssueFundFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(-1000000),
                 Currency.getInstance(Locale.US),
                 participants
         );
 
-        Future<SignedTransaction> futureSeven = a.startFlow(negativeMaxWithdrawalAmount);
+        Future<SignedTransaction> futureFive = a.startFlow(negativeMaxWithdrawalAmount);
         mockNetwork.runNetwork();
 
         exception.expectCause(instanceOf(TransactionVerificationException.class));
-        futureSeven.get();
+        futureFive.get();
 
         //should verify
         IssueFundFlow.InitiatorFlow validFundState = new IssueFundFlow.InitiatorFlow(
@@ -293,16 +245,15 @@ public class IssueFundFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
         );
 
-        Future<SignedTransaction> futureEight = a.startFlow(validFundState);
+        Future<SignedTransaction> futureSix = a.startFlow(validFundState);
         mockNetwork.runNetwork();
-        futureEight.get();
+        futureSix.get();
     }
 
     // all signatures were proplery fetched.
@@ -314,7 +265,6 @@ public class IssueFundFlowTests {
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
-                BigDecimal.valueOf(5000000),
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
@@ -338,7 +288,6 @@ public class IssueFundFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -349,7 +298,7 @@ public class IssueFundFlowTests {
         SignedTransaction stx = future.get();
         System.out.printf("Signed transaction hash: %h\n", stx.getId());
 
-        Arrays.asList(a, b).stream().map(el ->
+        Stream.of(a, b).map(el ->
                 el.getServices().getValidatedTransactions().getTransaction(stx.getId())
         ).forEach(el -> {
             SecureHash txHash = el.getId();
