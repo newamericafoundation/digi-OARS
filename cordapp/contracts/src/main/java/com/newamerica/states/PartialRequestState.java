@@ -1,5 +1,7 @@
 package com.newamerica.states;
 
+import com.newamerica.contracts.PartialRequestContract;
+import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -22,6 +24,7 @@ import java.util.List;
  *  currency - the globally recognized currency for the fund balance and amount.
  *  fundStateLinearId -  A reference to the fund state that this request is based on
  */
+@BelongsToContract(PartialRequestContract.class)
 public class PartialRequestState implements LinearState {
 
     public final String authorizedUserDept;
