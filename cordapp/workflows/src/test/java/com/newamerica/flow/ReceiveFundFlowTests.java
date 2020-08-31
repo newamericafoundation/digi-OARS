@@ -57,6 +57,7 @@ public class ReceiveFundFlowTests {
 
         // For real nodes this happens automatically, but we have to manually register the flow for tests
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueFundFlow.ResponderFlow.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(ReceiveFundFlow.ResponderFlow.class));
         mockNetwork.runNetwork();
 
         usDos = a.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
