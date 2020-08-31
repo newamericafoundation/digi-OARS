@@ -43,7 +43,7 @@ public class FundContract implements Contract {
                 require.using("No inputs should be consumed when issuing a FundState.", tx.getInputStates().size() == 0);
                 require.using("Only one output state should be created when issuing a FundState.", tx.getOutputStates().size() == 1);
                 FundState outputState = (FundState) tx.getOutputStates().get(0);
-                require.using("OriginCountry and ReceivingCountry cannot be the same Party.", outputState.originCountry != outputState.receivingCountry);
+                require.using("originParty and receivingParty cannot be the same Party.", outputState.originParty != outputState.receivingParty);
                 require.using("There must be at least one Party in the owner list.", !outputState.owners.isEmpty());
                 require.using("There must be at least one Party in the requiredSigners list.", !outputState.requiredSigners.isEmpty());
                 require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
@@ -71,8 +71,8 @@ public class FundContract implements Contract {
                 require.using("If balance is greater than zero, then the status should be RECEIVED", outputState.getBalance().compareTo(BigDecimal.ZERO) > 0 && outputState.getStatus() != FundState.FundStateStatus.RECEIVED);
                 require.using("The withdrawal cannot be for more than the maxWithdrawalAmount", inputState.getMaxWithdrawalAmount().compareTo(outputState.getAmount()) < 0);
                 require.using("The withdrawal cannot result in a negative balance.", outputState.getBalance().compareTo(BigDecimal.ZERO) < 0);
-                require.using("The originCountry cannot change.", inputState.getOriginCountry() == outputState.getOriginCountry());
-                require.using("The receivingCountry cannot change.", inputState.getReceivingCountry() == outputState.getReceivingCountry());
+                require.using("The originParty cannot change.", inputState.getOriginParty() == outputState.getOriginParty());
+                require.using("The receivingParty cannot change.", inputState.getReceivingParty() == outputState.getReceivingParty());
                 require.using("The owners cannot change.", inputState.getOwners() == outputState.getOwners());
                 require.using("The requiredSigners cannot change.", inputState.getRequiredSigners() == outputState.getRequiredSigners());
                 require.using("The amount cannot change.", inputState.getAmount() == outputState.getAmount());
@@ -88,7 +88,7 @@ public class FundContract implements Contract {
                 require.using("1 input should be consumed when receiving a FundState.", tx.getInputStates().size() == 1);
                 require.using("Only 1 output state should be created when receiving a FundState.", tx.getOutputStates().size() == 1);
                 FundState outputState = (FundState) tx.getOutputStates().get(0);
-                require.using("OriginCountry and ReceivingCountry cannot be the same Party", outputState.originCountry == outputState.receivingCountry);
+                require.using("originParty and receivingParty cannot be the same Party", outputState.originParty == outputState.receivingParty);
                 require.using("There must be at least one Party in the owner list.", outputState.owners.isEmpty());
                 require.using("There must be at least one Party in the requiredSigners list.", outputState.owners.isEmpty());
                 require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
@@ -97,8 +97,8 @@ public class FundContract implements Contract {
                 require.using("The status can only be RECEIVED during an issuance transaction.", outputState.status == FundState.FundStateStatus.RECEIVED);
                 require.using("The List of participants cannot be empty.", outputState.participants.isEmpty());
                 FundState inputState = (FundState) tx.getInputStates().get(0);
-                require.using("input OriginCountry and output OriginCountry must be the same", inputState.originCountry == outputState.originCountry);
-                require.using("input ReceivingCountry and output ReceivingCountry must be the same", inputState.receivingCountry == outputState.receivingCountry);
+                require.using("input originParty and output originParty must be the same", inputState.originParty == outputState.originParty);
+                require.using("input receivingParty and output receivingParty must be the same", inputState.receivingParty == outputState.receivingParty);
                 require.using("input amount and output amount must be the same", inputState.amount == outputState.amount);
                 require.using("input balance and output balance must be the same", inputState.balance == outputState.balance);
                 require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.maxWithdrawalAmount == outputState.maxWithdrawalAmount);
