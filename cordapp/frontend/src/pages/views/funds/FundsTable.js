@@ -25,8 +25,8 @@ export const FundsTable = () => {
 
   const fields = [
     { key: "linearId" },
-    { key: "originCountry" },
-    { key: "receivingCountry" },
+    { key: "originParty" },
+    { key: "receivingParty" },
     { key: "amount" },
     { key: "balance" },
     { key: "datetime" },
@@ -94,9 +94,9 @@ export const FundsTable = () => {
               <CCardBody>
                 <h4>Linear Id: {item.linearId}</h4>
                 <p className="text-muted">
-                  Origin Country: {item.originCountry}
+                  Origin Country: {item.originParty}
                   <br />
-                  Receiving Country: {item.receivingCountry}
+                  Receiving Country: {item.receivingParty}
                   <br />
                   Amount ({item.currency}): {item.amount}
                   <br />

@@ -492,8 +492,8 @@ java.lang.IllegalStateException: Required com.newamerica.contracts.FundContract.
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T18:52:44,839Z [Test worker] internal.Verifier. - Error validating transaction 40CC1768B2251159181CB2295901B07512B2F8947D68377A33932D5AF3E171AE. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party
+[ERROR] 2020-08-27T18:52:44,839Z [Test worker] internal.Verifier. - Error validating transaction 40CC1768B2251159181CB2295901B07512B2F8947D68377A33932D5AF3E171AE. - Failed requirement: originParty and receivingParty cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:44) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -579,8 +579,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T18:52:44,842Z [Test worker] internal.Verifier. - Error validating transaction 40CC1768B2251159181CB2295901B07512B2F8947D68377A33932D5AF3E171AE. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party
+[ERROR] 2020-08-27T18:52:44,842Z [Test worker] internal.Verifier. - Error validating transaction 40CC1768B2251159181CB2295901B07512B2F8947D68377A33932D5AF3E171AE. - Failed requirement: originParty and receivingParty cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:44) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3202,8 +3202,8 @@ java.lang.IllegalArgumentException: Failed requirement: Only one output state sh
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
 [INFO ] 2020-08-27T19:27:44,676Z [Test worker] cordapp.JarScanningCordappLoader. - Loading CorDapps from RestrictedURL(url=file:/C:/Users/Jonathan%20Scialpi/Desktop/Clients/New%20America/digi-OARS/cordapp/contracts/build/generated-custom-cordapps/20200827-192744.174/custom-cordapp_1_7_273bc511-fe51-43f7-87b5-efdb08d6a40a.jar, rootPackageName=null) {}
 [INFO ] 2020-08-27T19:27:44,709Z [Test worker] cordapp.JarScanningCordappLoader. - Scanning CorDapp in file:/C:/Users/Jonathan%20Scialpi/Desktop/Clients/New%20America/digi-OARS/cordapp/contracts/build/generated-custom-cordapps/20200827-192744.174/custom-cordapp_1_7_273bc511-fe51-43f7-87b5-efdb08d6a40a.jar {}
-[ERROR] 2020-08-27T19:27:46,162Z [Test worker] internal.Verifier. - Error validating transaction 02EA6582E73186CA40E7AB844DA45397034CB8684C915A7A1CBFECF20E614EAC. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party
+[ERROR] 2020-08-27T19:27:46,162Z [Test worker] internal.Verifier. - Error validating transaction 02EA6582E73186CA40E7AB844DA45397034CB8684C915A7A1CBFECF20E614EAC. - Failed requirement: originParty and receivingParty cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3292,8 +3292,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:27:46,165Z [Test worker] internal.Verifier. - Error validating transaction 02EA6582E73186CA40E7AB844DA45397034CB8684C915A7A1CBFECF20E614EAC. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party
+[ERROR] 2020-08-27T19:27:46,165Z [Test worker] internal.Verifier. - Error validating transaction 02EA6582E73186CA40E7AB844DA45397034CB8684C915A7A1CBFECF20E614EAC. - Failed requirement: originParty and receivingParty cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3377,8 +3377,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:27:46,176Z [Test worker] internal.Verifier. - Error validating transaction 02EA6582E73186CA40E7AB844DA45397034CB8684C915A7A1CBFECF20E614EAC. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party
+[ERROR] 2020-08-27T19:27:46,176Z [Test worker] internal.Verifier. - Error validating transaction 02EA6582E73186CA40E7AB844DA45397034CB8684C915A7A1CBFECF20E614EAC. - Failed requirement: originParty and receivingParty cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3458,8 +3458,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:27:46,189Z [Test worker] internal.Verifier. - Error validating transaction 58AE96F591D26AC8929A92071F4C22582C8967E286D0F4A5C26C86113FE974BE. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party
+[ERROR] 2020-08-27T19:27:46,189Z [Test worker] internal.Verifier. - Error validating transaction 58AE96F591D26AC8929A92071F4C22582C8967E286D0F4A5C26C86113FE974BE. - Failed requirement: originParty and receivingParty cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3545,8 +3545,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:27:46,192Z [Test worker] internal.Verifier. - Error validating transaction 58AE96F591D26AC8929A92071F4C22582C8967E286D0F4A5C26C86113FE974BE. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party
+[ERROR] 2020-08-27T19:27:46,192Z [Test worker] internal.Verifier. - Error validating transaction 58AE96F591D26AC8929A92071F4C22582C8967E286D0F4A5C26C86113FE974BE. - Failed requirement: originParty and receivingParty cannot be the same Party [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3629,8 +3629,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
 [INFO ] 2020-08-27T19:28:52,270Z [Test worker] cordapp.JarScanningCordappLoader. - Loading CorDapps from RestrictedURL(url=file:/C:/Users/Jonathan%20Scialpi/Desktop/Clients/New%20America/digi-OARS/cordapp/contracts/build/generated-custom-cordapps/20200827-192851.833/custom-cordapp_1_7_844a735f-3242-4e73-9aa7-0ce882503338.jar, rootPackageName=null) {}
 [INFO ] 2020-08-27T19:28:52,306Z [Test worker] cordapp.JarScanningCordappLoader. - Scanning CorDapp in file:/C:/Users/Jonathan%20Scialpi/Desktop/Clients/New%20America/digi-OARS/cordapp/contracts/build/generated-custom-cordapps/20200827-192851.833/custom-cordapp_1_7_844a735f-3242-4e73-9aa7-0ce882503338.jar {}
-[ERROR] 2020-08-27T19:28:53,785Z [Test worker] internal.Verifier. - Error validating transaction 4AA6C839E11EC0E93323EA36F244F1423B6911CA780C5368D2780154D271EB76. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T19:28:53,785Z [Test worker] internal.Verifier. - Error validating transaction 4AA6C839E11EC0E93323EA36F244F1423B6911CA780C5368D2780154D271EB76. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3719,8 +3719,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:28:53,789Z [Test worker] internal.Verifier. - Error validating transaction 4AA6C839E11EC0E93323EA36F244F1423B6911CA780C5368D2780154D271EB76. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T19:28:53,789Z [Test worker] internal.Verifier. - Error validating transaction 4AA6C839E11EC0E93323EA36F244F1423B6911CA780C5368D2780154D271EB76. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3804,8 +3804,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:28:53,802Z [Test worker] internal.Verifier. - Error validating transaction 4AA6C839E11EC0E93323EA36F244F1423B6911CA780C5368D2780154D271EB76. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T19:28:53,802Z [Test worker] internal.Verifier. - Error validating transaction 4AA6C839E11EC0E93323EA36F244F1423B6911CA780C5368D2780154D271EB76. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3885,8 +3885,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:28:53,814Z [Test worker] internal.Verifier. - Error validating transaction 68389280BBA1BF12ECDC0D799B72C2C62E5527384A5A14902642E542AFD648AC. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T19:28:53,814Z [Test worker] internal.Verifier. - Error validating transaction 68389280BBA1BF12ECDC0D799B72C2C62E5527384A5A14902642E542AFD648AC. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -3972,8 +3972,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:28:53,816Z [Test worker] internal.Verifier. - Error validating transaction 68389280BBA1BF12ECDC0D799B72C2C62E5527384A5A14902642E542AFD648AC. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T19:28:53,816Z [Test worker] internal.Verifier. - Error validating transaction 68389280BBA1BF12ECDC0D799B72C2C62E5527384A5A14902642E542AFD648AC. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -4056,8 +4056,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
 [INFO ] 2020-08-27T19:29:34,917Z [Test worker] cordapp.JarScanningCordappLoader. - Loading CorDapps from RestrictedURL(url=file:/C:/Users/Jonathan%20Scialpi/Desktop/Clients/New%20America/digi-OARS/cordapp/contracts/build/generated-custom-cordapps/20200827-192934.487/custom-cordapp_1_7_51764cf3-fce0-41f4-b38c-3f11a659c40f.jar, rootPackageName=null) {}
 [INFO ] 2020-08-27T19:29:34,952Z [Test worker] cordapp.JarScanningCordappLoader. - Scanning CorDapp in file:/C:/Users/Jonathan%20Scialpi/Desktop/Clients/New%20America/digi-OARS/cordapp/contracts/build/generated-custom-cordapps/20200827-192934.487/custom-cordapp_1_7_51764cf3-fce0-41f4-b38c-3f11a659c40f.jar {}
-[ERROR] 2020-08-27T19:29:36,432Z [Test worker] internal.Verifier. - Error validating transaction EA2FCB90CF0D272BA7DB7039A0141618CD19E43C62F72BF449FE845B893DBB0D. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T19:29:36,432Z [Test worker] internal.Verifier. - Error validating transaction EA2FCB90CF0D272BA7DB7039A0141618CD19E43C62F72BF449FE845B893DBB0D. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -4146,8 +4146,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:29:36,437Z [Test worker] internal.Verifier. - Error validating transaction EA2FCB90CF0D272BA7DB7039A0141618CD19E43C62F72BF449FE845B893DBB0D. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T19:29:36,437Z [Test worker] internal.Verifier. - Error validating transaction EA2FCB90CF0D272BA7DB7039A0141618CD19E43C62F72BF449FE845B893DBB0D. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -4231,8 +4231,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T19:29:36,449Z [Test worker] internal.Verifier. - Error validating transaction EA2FCB90CF0D272BA7DB7039A0141618CD19E43C62F72BF449FE845B893DBB0D. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T19:29:36,449Z [Test worker] internal.Verifier. - Error validating transaction EA2FCB90CF0D272BA7DB7039A0141618CD19E43C62F72BF449FE845B893DBB0D. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -8513,8 +8513,8 @@ java.lang.IllegalArgumentException: Failed requirement: The balance must be grea
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T20:07:12,140Z [Test worker] internal.Verifier. - Error validating transaction 99CBDBADE180C81330F259FD2B08E7D660CC6CD49B1A0793D478286BB7438DEC. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T20:07:12,140Z [Test worker] internal.Verifier. - Error validating transaction 99CBDBADE180C81330F259FD2B08E7D660CC6CD49B1A0793D478286BB7438DEC. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -8603,8 +8603,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T20:07:12,150Z [Test worker] internal.Verifier. - Error validating transaction 99CBDBADE180C81330F259FD2B08E7D660CC6CD49B1A0793D478286BB7438DEC. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T20:07:12,150Z [Test worker] internal.Verifier. - Error validating transaction 99CBDBADE180C81330F259FD2B08E7D660CC6CD49B1A0793D478286BB7438DEC. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]
@@ -8688,8 +8688,8 @@ java.lang.IllegalArgumentException: Failed requirement: OriginCountry and Receiv
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624) ~[?:1.8.0_231]
 	at org.gradle.internal.concurrent.ThreadFactoryImpl$ManagedThreadRunnable.run(ThreadFactoryImpl.java:55) ~[gradle-tooling-api-5.4.1.jar:5.4.1]
 	at java.lang.Thread.run(Thread.java:748) [?:1.8.0_231]
-[ERROR] 2020-08-27T20:07:12,161Z [Test worker] internal.Verifier. - Error validating transaction 99CBDBADE180C81330F259FD2B08E7D660CC6CD49B1A0793D478286BB7438DEC. - Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
-java.lang.IllegalArgumentException: Failed requirement: OriginCountry and ReceivingCountry cannot be the same Party.
+[ERROR] 2020-08-27T20:07:12,161Z [Test worker] internal.Verifier. - Error validating transaction 99CBDBADE180C81330F259FD2B08E7D660CC6CD49B1A0793D478286BB7438DEC. - Failed requirement: originParty and receivingParty cannot be the same Party. [errorCode=1vy1atm, moreInformationAt=https://errors.corda.net/OS/4.5/1vy1atm] {}
+java.lang.IllegalArgumentException: Failed requirement: originParty and receivingParty cannot be the same Party.
 	at net.corda.core.contracts.Requirements.using(ContractsDSL.kt:26) ~[corda-core-4.5.jar:?]
 	at com.newamerica.contracts.FundContract.lambda$verify$0(FundContract.java:46) ~[main/:?]
 	at net.corda.core.contracts.ContractsDSL.requireThat(ContractsDSL.kt:30) ~[corda-core-4.5.jar:?]

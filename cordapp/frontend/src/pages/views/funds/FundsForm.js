@@ -17,8 +17,8 @@ export const FundsForm = ({ onSubmit }) => {
         <CRow>
           <CCol xs="12">
             <CFormGroup>
-              <CLabel htmlFor="receivingCountry">Recieving Country</CLabel>
-              <CSelect custom name="receivingCountry" id="receivingCountry">
+              <CLabel htmlFor="receivingParty">Recieving Country</CLabel>
+              <CSelect custom name="receivingParty" id="receivingParty">
                 <option value="1">Catan</option>
                 <option value="2">Freedonia</option>
                 <option value="3">Utopia</option>

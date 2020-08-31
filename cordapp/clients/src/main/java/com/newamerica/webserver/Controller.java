@@ -1,6 +1,8 @@
 package com.newamerica.webserver;
 
+import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
+import net.corda.core.node.NodeInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,32 +12,60 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 /**
  * Define your API endpoints here.
  */
 @RestController
-@RequestMapping("/") // The paths for HTTP requests are relative to this base path.
+@RequestMapping("/api") // The paths for HTTP requests are relative to this base path.
 public class Controller {
-    private final CordaRPCOps proxy;
+    private final CordaRPCOps rpcOps;
     private final static Logger logger = LoggerFactory.getLogger(Controller.class);
 
     public Controller(NodeRPCConnection rpc) {
-        this.proxy = rpc.proxy;
+        this.rpcOps = rpc.proxy;
     }
 
-    @GetMapping(value = "/hello", produces = "text/plain")
-    private String sayhello() {
+    @GetMapping(value = "hello", produces = "text/plain")
+    private String hello() {
         return "Hello OARS!";
     }
 
-    @GetMapping(value = "/nodeInfo", produces = "application/json")
+    @GetMapping(value = "nodeInfo", produces = "application/json")
     private ResponseEntity<String> getNodeInfo() {
-        return new ResponseEntity<String>(proxy.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
+        return new ResponseEntity<String>(rpcOps.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
     }
 
-    @PostMapping(value = "/fund", produces = "application/json")
-    private ResponseEntity<String> createFund() {
+    @GetMapping(value = "me", produces = "application/json")
+    private ResponseEntity<Party> getMyIdentity() {
+        Party me = rpcOps.nodeInfo().getLegalIdentities().get(0);
+        return ResponseEntity.ok(me);
+    }
 
-        return new ResponseEntity<String>(proxy.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
+    @GetMapping(value = "flows", produces = "application/json")
+    private ResponseEntity<String> getFlows() {
+        List<String> flows = rpcOps.registeredFlows();
+        return ResponseEntity.ok("Enumerate flows on this node: \n$flows");
+    }
+
+    @GetMapping(value = "version", produces = "application/json")
+    private ResponseEntity<Integer> getVersion() {
+        Integer version = rpcOps.nodeInfo().getPlatformVersion();
+        return ResponseEntity.ok(version);
+    }
+
+    @GetMapping(value = "network", produces = "application/json")
+    private List<NodeInfo> getNetworkMap() {
+        return rpcOps.networkMapSnapshot();
+    }
+
+
+    @PostMapping(value = "fund", produces = "application/json")
+    private ResponseEntity<String> createFund(HttpServletRequest request) {
+
+        //TODO
+        return new ResponseEntity<String>(rpcOps.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
     }
 }

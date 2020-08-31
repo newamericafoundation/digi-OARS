@@ -168,7 +168,7 @@ public class FundContractTests {
             l.transaction(tx -> {
                 tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
                 tx.output(FundContract.ID, fs);
-                return tx.failsWith("OriginCountry and ReceivingCountry cannot be the same Party.");
+                return tx.failsWith("originParty and receivingParty cannot be the same Party.");
             });
             return null;
         });

@@ -19,8 +19,8 @@ import java.util.List;
 /**
  * A FundState is an on-ledger representation of off-ledger recovered asLists.
  *
- *  originCountry - the source country which will be sending the funds (US).
- *  receivingCountry - the country which will be receiving the funds (Catan).
+ *  originParty - the source country which will be sending the funds (US).
+ *  receivingParty - the country which will be receiving the funds (Catan).
  *  amount - the original value the fund held when it was issued.
  *  balance - the current value that exists in the fund.
  *  datetime - the day/time the fund was issued.
@@ -32,8 +32,8 @@ import java.util.List;
 
 @BelongsToContract(FundContract.class)
 public class FundState implements LinearState {
-    public final Party originCountry;
-    public final Party receivingCountry;
+    public final Party originParty;
+    public final Party receivingParty;
     public final List<AbstractParty> owners;
     public final List<AbstractParty> requiredSigners;
     public final List<AbstractParty> partialRequestParticipants;
@@ -47,9 +47,9 @@ public class FundState implements LinearState {
     public final List<AbstractParty> participants;
 
     @ConstructorForDeserialization
-    public FundState(Party originCountry, Party receivingCountry, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, FundStateStatus status, List<AbstractParty> participants, UniqueIdentifier linearId) {
-        this.originCountry = originCountry;
-        this.receivingCountry = receivingCountry;
+    public FundState(Party originParty, Party receivingParty, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, FundStateStatus status, List<AbstractParty> participants, UniqueIdentifier linearId) {
+        this.originParty = originParty;
+        this.receivingParty = receivingParty;
         this.owners = owners;
         this.requiredSigners = requiredSigners;
         this.partialRequestParticipants = partialRequestParticipants;
@@ -63,8 +63,8 @@ public class FundState implements LinearState {
         this.linearId = linearId;
     }
 
-    public FundState(Party originCountry,
-                     Party receivingCountry,
+    public FundState(Party originParty,
+                     Party receivingParty,
                      List<AbstractParty> owners,
                      List<AbstractParty> requiredSigners,
                      List<AbstractParty> partialRequestParticipants,
@@ -75,7 +75,7 @@ public class FundState implements LinearState {
                      Currency currency,
                      FundStateStatus status,
                      List<AbstractParty> participants){
-        this(originCountry, receivingCountry, owners, requiredSigners, partialRequestParticipants, amount, balance, datetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
+        this(originParty, receivingParty, owners, requiredSigners, partialRequestParticipants, amount, balance, datetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
     }
 
     //getters
@@ -88,8 +88,8 @@ public class FundState implements LinearState {
     public UniqueIdentifier getLinearId() {
         return this.linearId;
     }
-    public Party getOriginCountry() {        return originCountry;    }
-    public Party getReceivingCountry() {        return receivingCountry;    }
+    public Party getoriginParty() {        return originParty;    }
+    public Party getreceivingParty() {        return receivingParty;    }
     public List<AbstractParty> getOwners(){ return owners; }
     public List<AbstractParty> getRequiredSigners(){ return requiredSigners; }
     public List<AbstractParty> getPartialRequestParticipants(){ return partialRequestParticipants; }
@@ -105,8 +105,8 @@ public class FundState implements LinearState {
     // return the difference between the balance and the withdrawn amount.
     public FundState withdraw(BigDecimal withdrawalAmount){
         return new FundState(
-                this.originCountry,
-                this.receivingCountry,
+                this.originParty,
+                this.receivingParty,
                 this.owners,
                 this.requiredSigners,
                 this.partialRequestParticipants,
@@ -122,8 +122,8 @@ public class FundState implements LinearState {
 
     public FundState changeStatus(FundStateStatus newStatus){
         return new FundState(
-                this.originCountry,
-                this.receivingCountry,
+                this.originParty,
+                this.receivingParty,
                 this.owners,
                 this.requiredSigners,
                 this.partialRequestParticipants,

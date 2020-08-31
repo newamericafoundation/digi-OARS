@@ -57,8 +57,8 @@ public class FundStateTests {
     // ensure that the FundState object has all necessary attributes and correct data types.
     @Test
     public void hasAllAttributes() throws NoSuchFieldException{
-        Field originCountry = FundState.class.getDeclaredField("originCountry");
-        Field receivingCountry = FundState.class.getDeclaredField("receivingCountry");
+        Field originParty = FundState.class.getDeclaredField("originParty");
+        Field receivingParty = FundState.class.getDeclaredField("receivingParty");
         Field owners = FundState.class.getDeclaredField("owners");
         Field requiredSigners = FundState.class.getDeclaredField("requiredSigners");
         Field partialRequestParticipants = FundState.class.getDeclaredField("partialRequestParticipants");
@@ -70,8 +70,8 @@ public class FundStateTests {
         Field status = FundState.class.getDeclaredField("status");
         Field participants = FundState.class.getDeclaredField("participants");
 
-        assertTrue(originCountry.getType().isAssignableFrom(Party.class));
-        assertTrue(receivingCountry.getType().isAssignableFrom(Party.class));
+        assertTrue(originParty.getType().isAssignableFrom(Party.class));
+        assertTrue(receivingParty.getType().isAssignableFrom(Party.class));
         assertTrue(owners.getType().isAssignableFrom(List.class));
         assertTrue(requiredSigners.getType().isAssignableFrom(List.class));
         assertTrue(partialRequestParticipants.getType().isAssignableFrom(List.class));
@@ -88,8 +88,8 @@ public class FundStateTests {
     @Test
     public void getterTests(){
 
-        assertEquals(fundState.getOriginCountry(), US.getParty());
-        assertEquals(fundState.getReceivingCountry(), CATAN.getParty());
+        assertEquals(fundState.getoriginParty(), US.getParty());
+        assertEquals(fundState.getreceivingParty(), CATAN.getParty());
         assertEquals(fundState.getOwners(),owners);
         assertEquals(fundState.getRequiredSigners(), requiredSigners);
         assertEquals(fundState.getPartialRequestParticipants(), partialRequestParticipants);
