@@ -6,6 +6,7 @@ import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.node.NodeInfo;
+import net.corda.core.transactions.SignedTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -86,8 +87,7 @@ public class Controller {
         Party US_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=USCSO,L=New York,C=US"));
 
 
-        BigDecimal amount = new BigDecimal(amountStr);
-        BigDecimal balance = amount;
+        BigDecimal amountAndBalance = new BigDecimal(amountStr);
         ZonedDateTime now = ZonedDateTime.now();
         BigDecimal maxWithdrawalAmount = new BigDecimal(maxWithdrawalAmountStr);
         Currency currency = Currency.getInstance("USD");
@@ -97,20 +97,22 @@ public class Controller {
         List<AbstractParty> partialRequestParticipants = Arrays.asList(Catan_CSO, US_CSO);
         List<AbstractParty> participants = Arrays.asList(originParty, US_DoS, NewAmerica, Catan_MoFA, Catan_MoJ, Catan_Treasury);
 
-        rpcOps.startFlowDynamic(
-                IssueFundFlow.InitiatorFlow.class,
-                receivingParty,
-                owners,
-                requiredSigners,
-                partialRequestParticipants,
-                amount,
-                balance,
-                now,
-                maxWithdrawalAmount,
-                currency,
-                participants
-                );
-        
-        return new ResponseEntity<String>(rpcOps.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
+        try {
+            SignedTransaction tx = rpcOps.startFlowDynamic(
+                    IssueFundFlow.InitiatorFlow.class,
+                    receivingParty,
+                    owners,
+                    requiredSigners,
+                    partialRequestParticipants,
+                    amountAndBalance,
+                    now,
+                    maxWithdrawalAmount,
+                    currency,
+                    participants
+            ).getReturnValue().get();
+            return ResponseEntity.ok(tx.toString());
+        } catch(Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
