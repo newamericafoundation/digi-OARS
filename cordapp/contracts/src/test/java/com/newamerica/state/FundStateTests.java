@@ -88,8 +88,8 @@ public class FundStateTests {
     @Test
     public void getterTests(){
 
-        assertEquals(fundState.getoriginParty(), US.getParty());
-        assertEquals(fundState.getreceivingParty(), CATAN.getParty());
+        assertEquals(fundState.getOriginParty(), US.getParty());
+        assertEquals(fundState.getReceivingParty(), CATAN.getParty());
         assertEquals(fundState.getOwners(),owners);
         assertEquals(fundState.getRequiredSigners(), requiredSigners);
         assertEquals(fundState.getPartialRequestParticipants(), partialRequestParticipants);
