@@ -88,8 +88,6 @@ public class FundState implements LinearState {
     public UniqueIdentifier getLinearId() {
         return this.linearId;
     }
-    public Party getoriginParty() {        return originParty;    }
-    public Party getreceivingParty() {        return receivingParty;    }
     public List<AbstractParty> getOwners(){ return owners; }
     public List<AbstractParty> getRequiredSigners(){ return requiredSigners; }
     public List<AbstractParty> getPartialRequestParticipants(){ return partialRequestParticipants; }
@@ -99,6 +97,10 @@ public class FundState implements LinearState {
     public BigDecimal getMaxWithdrawalAmount() { return maxWithdrawalAmount;    }
     public Currency getCurrency() { return currency;    }
     public FundStateStatus getStatus() { return status;          }
+    public Party getOriginParty() { return originParty; }
+    public Party getReceivingParty() { return receivingParty; }
+
+
 
     //helper functions
 

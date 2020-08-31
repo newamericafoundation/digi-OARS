@@ -56,8 +56,8 @@ public class ReceiveFundFlow {
 
             // contruct output fund state
             FundState outputFundState = new FundState(
-                    inputFundState.getoriginParty(),
-                    inputFundState.getreceivingParty(),
+                    inputFundState.getOriginParty(),
+                    inputFundState.getReceivingParty(),
                     inputFundState.getOwners(),
                     inputFundState.getRequiredSigners(),
                     inputFundState.getPartialRequestParticipants(),
