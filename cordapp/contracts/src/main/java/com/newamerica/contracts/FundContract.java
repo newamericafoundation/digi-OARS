@@ -71,8 +71,8 @@ public class FundContract implements Contract {
                 require.using("If balance is greater than zero, then the status should be RECEIVED", outputState.getBalance().compareTo(BigDecimal.ZERO) > 0 && outputState.getStatus() != FundState.FundStateStatus.RECEIVED);
                 require.using("The withdrawal cannot be for more than the maxWithdrawalAmount", inputState.getMaxWithdrawalAmount().compareTo(outputState.getAmount()) < 0);
                 require.using("The withdrawal cannot result in a negative balance.", outputState.getBalance().compareTo(BigDecimal.ZERO) < 0);
-                require.using("The originParty cannot change.", inputState.getoriginParty() == outputState.getoriginParty());
-                require.using("The receivingParty cannot change.", inputState.getreceivingParty() == outputState.getreceivingParty());
+                require.using("The originParty cannot change.", inputState.getOriginParty() == outputState.getOriginParty());
+                require.using("The receivingParty cannot change.", inputState.getReceivingParty() == outputState.getReceivingParty());
                 require.using("The owners cannot change.", inputState.getOwners() == outputState.getOwners());
                 require.using("The requiredSigners cannot change.", inputState.getRequiredSigners() == outputState.getRequiredSigners());
                 require.using("The amount cannot change.", inputState.getAmount() == outputState.getAmount());

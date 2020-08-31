@@ -1,5 +1,6 @@
 package com.newamerica.webserver;
 
+import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.node.NodeInfo;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -64,7 +67,14 @@ public class Controller {
 
     @PostMapping(value = "fund", produces = "application/json")
     private ResponseEntity<String> createFund(HttpServletRequest request) {
-
+        String originPartyName = request.getParameter("originParty");
+        String receivingPartyName = request.getParameter("receivingParty");
+        String amountStr = request.getParameter("amount");
+        Party originParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(originPartyName));
+        Party receivingParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(receivingPartyName));
+        BigDecimal amount = new BigDecimal(amountStr);
+        BigDecimal balance = amount;
+        ZonedDateTime now = ZonedDateTime.now();
         //TODO
         return new ResponseEntity<String>(rpcOps.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
     }
