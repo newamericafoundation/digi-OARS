@@ -32,8 +32,8 @@ public class IssueFundFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction>{
         private final FundState outputFundState;
 
-        public InitiatorFlow(Party originParty, Party receivingParty, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, List participants){
-            this.outputFundState = new FundState(originParty,receivingParty, owners, requiredSigners, partialRequestParticipants, amount, balance, datetime, maxWithdrawalAmount, currency, FundState.FundStateStatus.ISSUED, participants);
+        public InitiatorFlow(Party originParty, Party receivingParty, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amountAndBalance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, List participants){
+            this.outputFundState = new FundState(originParty,receivingParty, owners, requiredSigners, partialRequestParticipants, amountAndBalance, amountAndBalance, datetime, maxWithdrawalAmount, currency, FundState.FundStateStatus.ISSUED, participants);
         }
 
         @Suspendable
@@ -43,7 +43,7 @@ public class IssueFundFlow {
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new FundContract.Commands.Issue();
             outputFundState.getParticipants().add(getOurIdentity());
-            transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputFundState, FundContract.ID);
             transactionBuilder.verify(getServiceHub());
 
@@ -55,7 +55,7 @@ public class IssueFundFlow {
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
-            List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
+            List<FlowSession> flowSessions = otherParties.stream().map(this::initiateFlow).collect(Collectors.toList());
 
             SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
             return subFlow(new FinalityFlow(signedTransaction, flowSessions));
