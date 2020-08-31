@@ -110,7 +110,7 @@ public class Controller {
                 currency,
                 participants
                 );
-
+        
         return new ResponseEntity<String>(rpcOps.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
     }
 }
