@@ -55,20 +55,7 @@ public class ReceiveFundFlow {
             FundState inputFundState = (FundState) inputFundStateAndRef.getState().getData();
 
             // contruct output fund state
-            FundState outputFundState = new FundState(
-                    inputFundState.getOriginParty(),
-                    inputFundState.getReceivingParty(),
-                    inputFundState.getOwners(),
-                    inputFundState.getRequiredSigners(),
-                    inputFundState.getPartialRequestParticipants(),
-                    inputFundState.getAmount(),
-                    inputFundState.getBalance(),
-                    inputFundState.getDatetime(),
-                    inputFundState.getMaxWithdrawalAmount(),
-                    inputFundState.getCurrency(),
-                    FundState.FundStateStatus.RECEIVED,
-                    inputFundState.getParticipants()
-            );
+            FundState outputFundState = inputFundState.changeStatus(FundState.FundStateStatus.RECEIVED);
 
             // build tx
             transactionBuilder.addCommand(
