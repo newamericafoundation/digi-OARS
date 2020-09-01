@@ -30,7 +30,7 @@ const HomePage = () => {
           case (hour > 12 && hour < 17):
             setGreeting("Good afternoon, ");
             break;
-          case (hour > 17):
+          case (hour >= 17):
             setGreeting("Good evening, ");
             break;
           default:

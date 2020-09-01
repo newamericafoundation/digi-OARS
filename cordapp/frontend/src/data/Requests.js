@@ -9,7 +9,7 @@ export const RequestData = [
 	  externalAccountId: "88888888",
 	  purpose: "build a school",
 	  datetime: "2020-02-20T08:12:39.483Z",
-	  status: "pending",
+	  status: "PENDING",
 	  fundStateLinearId: "1601534943"
 	},
 	{
@@ -22,7 +22,7 @@ export const RequestData = [
 	  externalAccountId: "88888888",
 	  purpose: "recruitment",
 	  datetime: "2020-02-21T08:12:39.483Z",
-	  status: "pending",
+	  status: "PENDING",
 	  fundStateLinearId: "1601534943"
 	},
 	{
@@ -35,7 +35,7 @@ export const RequestData = [
 	  externalAccountId: "88888888",
 	  purpose: "implement a new project",
 	  datetime: "2020-02-18T08:12:39.483Z",
-	  status: "approved",
+	  status: "APPROVED",
 	  fundStateLinearId: "1601534943"
 	}
 ]
