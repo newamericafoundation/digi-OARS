@@ -256,7 +256,7 @@ public class IssueFundFlowTests {
         futureSix.get();
     }
 
-    // all signatures were proplery fetched.
+    // all signatures were properly fetched.
     @Test
     public void flowReturnsTransactionSignedByBothParties() throws Exception {
 
