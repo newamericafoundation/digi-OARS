@@ -11,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -70,7 +67,7 @@ public class Controller {
     }
 
     @PostMapping(value = "fund", produces = "application/json")
-    private ResponseEntity<String> createFund(HttpServletRequest request) {
+    private ResponseEntity<String> createFund (@RequestBody request) {
         String originPartyName = request.getParameter("originParty");
         String receivingPartyName = request.getParameter("receivingParty");
         String amountStr = request.getParameter("amount");
