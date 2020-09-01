@@ -71,17 +71,17 @@ public class FundContract implements Contract {
                 require.using("If balance is greater than zero, then the status should be RECEIVED", outputState.getBalance().compareTo(BigDecimal.ZERO) > 0 && outputState.getStatus() != FundState.FundStateStatus.RECEIVED);
                 require.using("The withdrawal cannot be for more than the maxWithdrawalAmount", inputState.getMaxWithdrawalAmount().compareTo(outputState.getAmount()) < 0);
                 require.using("The withdrawal cannot result in a negative balance.", outputState.getBalance().compareTo(BigDecimal.ZERO) < 0);
-                require.using("The originParty cannot change.", inputState.getOriginParty() == outputState.getOriginParty());
-                require.using("The receivingParty cannot change.", inputState.getReceivingParty() == outputState.getReceivingParty());
-                require.using("The owners cannot change.", inputState.getOwners() == outputState.getOwners());
-                require.using("The requiredSigners cannot change.", inputState.getRequiredSigners() == outputState.getRequiredSigners());
-                require.using("The amount cannot change.", inputState.getAmount() == outputState.getAmount());
-                require.using("The datetime cannot change.", inputState.getDatetime() == outputState.getDatetime());
-                require.using("The maxWithdrawalAmount cannot change.", inputState.getMaxWithdrawalAmount() == outputState.getMaxWithdrawalAmount());
-                require.using("The currency cannot change.", inputState.getCurrency() == outputState.getCurrency());
-                require.using("The participants cannot change.", inputState.getParticipants() == outputState.getParticipants());
+                require.using("The originParty cannot change.", inputState.getOriginParty().equals(outputState.getOriginParty()));
+                require.using("The receivingParty cannot change.", inputState.getReceivingParty().equals(outputState.getReceivingParty()));
+                require.using("The owners cannot change.", inputState.getOwners().equals(outputState.getOwners()));
+                require.using("The requiredSigners cannot change.", inputState.getRequiredSigners().equals(outputState.getRequiredSigners()));
+                require.using("The amount cannot change.", inputState.getAmount().equals(outputState.getAmount()));
+                require.using("The datetime cannot change.", inputState.getDatetime().equals(outputState.getDatetime()));
+                require.using("The maxWithdrawalAmount cannot change.", inputState.getMaxWithdrawalAmount().equals(outputState.getMaxWithdrawalAmount()));
+                require.using("The currency cannot change.", inputState.getCurrency().equals(outputState.getCurrency()));
+                require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
 
-               return null;
+                return null;
             });
         }else if(commandData.equals(new Commands.Receive())){
             requireThat(require -> {
@@ -98,14 +98,13 @@ public class FundContract implements Contract {
                 require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.getMaxWithdrawalAmount().compareTo(BigDecimal.ZERO) > 0);
                 require.using("The status can only be RECEIVED during an issuance transaction.", outputState.getStatus() == FundState.FundStateStatus.RECEIVED);
                 require.using("The List of participants cannot be empty.", !outputState.getParticipants().isEmpty());
-                require.using("input amount and output amount must be the same", inputState.getAmount() == outputState.getAmount());
-                require.using("input balance and output balance must be the same", inputState.getBalance() == outputState.getBalance());
-                require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.getMaxWithdrawalAmount() == outputState.getMaxWithdrawalAmount());
-                require.using("input originParty and output originParty must be the same", inputState.getOriginParty() == outputState.getOriginParty());
-                require.using("input receivingParty and output receivingParty must be the same", inputState.getReceivingParty() == outputState.getReceivingParty());
-                 // combine the Lists
-                List<AbstractParty> combinedLists = outputState.owners;
-                combinedLists.addAll(outputState.requiredSigners);
+                require.using("input amount and output amount must be the same", inputState.getAmount().compareTo(outputState.getAmount()) == 0);
+                require.using("input balance and output balance must be the same", inputState.getBalance().compareTo(outputState.getBalance()) == 0);
+                require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.getMaxWithdrawalAmount().compareTo(outputState.getMaxWithdrawalAmount()) == 0);
+                require.using("input originParty" + inputState.getOriginParty() + "and output originParty" + outputState.getOriginParty() + "must be the same", inputState.getOriginParty().equals(outputState.getOriginParty()));
+                require.using("input receivingParty and output receivingParty must be the same", inputState.getReceivingParty().equals(outputState.getReceivingParty()));
+                // combine the Lists
+                List<AbstractParty> combinedLists = Stream.of(outputState.getOwners(), outputState.getRequiredSigners()).flatMap(x -> x.stream()).collect(Collectors.toList());
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));
                 return null;
             });
