@@ -9,9 +9,11 @@ import {
   CModalTitle,
   CRow,
   CCol,
+  CWidgetProgress,
 } from "@coreui/react";
 import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
 import { RequestsTable } from "./views//withdrawals/RequestsTable";
+import { RequestData } from "../data/Requests";
 // import { FundsForm } from "./views/funds/FundsForm";
 // import NetworkProvider from "../providers/NetworkProvider";
 
@@ -26,8 +28,46 @@ const WithdrawalsPage = () => {
     handleClose();
   };
 
+  const toCurrency = (number, currency) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+    }).format(number);
+  };
+
+  const total = RequestData.reduce(
+    (totalFunds, request) => totalFunds + request.amount,
+    0
+  );
+
+  const pending = RequestData.filter(
+    (request) => request.status === "PENDING"
+  ).reduce((totalFunds, request) => totalFunds + request.amount, 0);
+
+  const approved = total - pending;
+
   return (
     <>
+      <CRow>
+        <CCol xs="12" sm="6" lg="6">
+          <CWidgetProgress
+            inverse
+            color="success"
+            header="Approved Withdrawal Requests"
+            text={toCurrency(approved, "USD").toString()}
+            value={(approved / total) * 100}
+          />
+        </CCol>
+        <CCol xs="12" sm="6" lg="6">
+          <CWidgetProgress
+            inverse
+            color="warning"
+            header="Pending Withdrawal Requests"
+            text={toCurrency(pending, "USD").toString()}
+            value={(pending / total) * 100}
+          />
+        </CCol>
+      </CRow>
       <CRow>
         <CCol>
           <CCard>
@@ -41,14 +81,18 @@ const WithdrawalsPage = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Pending Withdrawal Requests</CCardHeader>
-            <CCardBody><RequestsTable status="PENDING"/></CCardBody>
+            <CCardHeader>PendingWithdrawal Requests</CCardHeader>
+            <CCardBody>
+              <RequestsTable status="PENDING" />
+            </CCardBody>
           </CCard>
         </CCol>
         <CCol>
           <CCard>
             <CCardHeader>Approved Withdrawal Requests</CCardHeader>
-            <CCardBody><RequestsTable status="APPROVED"/></CCardBody>
+            <CCardBody>
+              <RequestsTable status="APPROVED" />
+            </CCardBody>
           </CCard>
         </CCol>
       </CRow>
