@@ -30,8 +30,8 @@ export const FundsTable = () => {
   };
 
   const fields = [
-    { key: "originCountry" },
-    { key: "receivingCountry" },
+    { key: "originParty" },
+    { key: "receivingParty" },
     { key: "amount" },
     { key: "balance" },
     { key: "datetime", label: "Date" },
@@ -178,9 +178,9 @@ export const FundsTable = () => {
                     <CCol md="3">
                       {item.linearId}
                       <br />
-                      {item.originCountry}
+                      {item.originParty}
                       <br />
-                      {item.receivingCountry}
+                      {item.receivingParty}
                       <br />
                       {toCurrency(item.amount, item.currency)}
                       <br />

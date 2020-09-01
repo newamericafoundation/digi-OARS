@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   CRow,
   CCol,
@@ -8,21 +8,68 @@ import {
   CInput,
   CButton,
   CForm,
+  CInputGroup,
+  CInputGroupPrepend,
+  CInputGroupText,
+  CInvalidFeedback,
 } from "@coreui/react";
+import { NetworkContext } from "../../../providers/NetworkProvider";
+import useForm from "../../../form/index";
 
 export const FundsForm = ({ onSubmit }) => {
+  const [network] = useContext(NetworkContext);
+
+  const stateSchema = {
+    amount: { value: 0, error: "" },
+    maxWithdrawalAmount: { value: 0, error: "" },
+  };
+
+  const stateValidatorSchema = {
+    amount: {
+      required: true,
+      validator: {
+        func: (value) =>
+          /^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$/.test(value),
+        error: "Invalid currency format.",
+      },
+    },
+    maxWithdrawalAmount: {
+      required: true,
+      validator: {
+        func: (value) =>
+          /^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$/.test(value),
+        error: "Invalid currency format.",
+      },
+    },
+  };
+
+  const onSubmitForm = (state) => {
+    console.log(state);
+    onSubmit();
+    alert(JSON.stringify(state, null, 2));
+  };
+
+  const {
+    values,
+    errors,
+    handleOnChange,
+    handleOnSubmit,
+    disable,
+  } = useForm(stateSchema, stateValidatorSchema, onSubmitForm);
+
+  const { amount, maxWithdrawalAmount } = values;
+
   return (
     <CCol>
-      <CForm onSubmit={onSubmit}>
+      <CForm onSubmit={handleOnSubmit}>
         <CRow>
           <CCol xs="12">
             <CFormGroup>
-              <CLabel htmlFor="receivingParty">Recieving Country</CLabel>
+              <CLabel htmlFor="receivingParty">Receiving Country</CLabel>
               <CSelect custom name="receivingParty" id="receivingParty">
-                <option value="1">Catan</option>
-                <option value="2">Freedonia</option>
-                <option value="3">Utopia</option>
-                <option value="4">Herzoslovaki</option>
+                {network.map((item) => (
+                  <option key={item.toString()}>{item}</option>
+                ))}
               </CSelect>
             </CFormGroup>
           </CCol>
@@ -31,7 +78,22 @@ export const FundsForm = ({ onSubmit }) => {
           <CCol xs="12">
             <CFormGroup>
               <CLabel htmlFor="amount">Repatriation Amount</CLabel>
-              <CInput id="amount" required />
+              <CInputGroup className="input-prepend">
+                <CInputGroupPrepend>
+                  <CInputGroupText>$</CInputGroupText>
+                </CInputGroupPrepend>
+                <CInput
+                  type="number"
+                  name="amount"
+                  id="amount"
+                  value={amount}
+                  placeholder={0}
+                  valid={errors.amount.length === 0}
+                  invalid={errors.amount.length > 0}
+                  onChange={handleOnChange}
+                />
+                <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
+              </CInputGroup>
             </CFormGroup>
           </CCol>
         </CRow>
@@ -41,14 +103,34 @@ export const FundsForm = ({ onSubmit }) => {
               <CLabel htmlFor="maxWithdrawalAmount">
                 Maximum Withdrawal Amount
               </CLabel>
-              <CInput id="maxWithdrawalAmount" required />
+              <CInputGroup className="input-prepend">
+                <CInputGroupPrepend>
+                  <CInputGroupText>$</CInputGroupText>
+                </CInputGroupPrepend>
+                <CInput
+                  type="number"
+                  id="maxWithdrawalAmount"
+                  name="maxWithdrawalAmount"
+                  value={maxWithdrawalAmount}
+                  placeholder={0}
+                  valid={errors.maxWithdrawalAmount.length === 0}
+                  invalid={errors.maxWithdrawalAmount.length > 0}
+                  onChange={handleOnChange}
+                />
+                <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
+              </CInputGroup>
             </CFormGroup>
           </CCol>
         </CRow>
         <CRow>
           <CCol xs="12">
             <CFormGroup>
-              <CButton className={"float-right"} color="primary" type="submit">
+              <CButton
+                className={"float-right"}
+                color="primary"
+                type="submit"
+                disabled={disable}
+              >
                 Submit
               </CButton>
             </CFormGroup>
