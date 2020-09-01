@@ -80,7 +80,6 @@ public class UpdateFundBalanceFlow {
             return subFlow( new IssuePartialRequestFundFlow.InitiatorFlow(
                     requestState.getAuthorizedUserDept(),
                     requestState.getAuthorizerDept(),
-                    requestState.getExternalAccountId(),
                     requestState.getAmount(),
                     requestState.getCurrency(),
                     requestState.getDatetime(),
