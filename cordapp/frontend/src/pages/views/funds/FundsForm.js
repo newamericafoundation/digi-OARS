@@ -15,16 +15,21 @@ import {
 } from "@coreui/react";
 import { NetworkContext } from "../../../providers/NetworkProvider";
 import useForm from "../../../form/index";
+import axios from "axios";
 
 export const FundsForm = ({ onSubmit }) => {
   const [network] = useContext(NetworkContext);
 
   const stateSchema = {
+    receivingParty: { value: "", error: "" },
     amount: { value: 0, error: "" },
     maxWithdrawalAmount: { value: 0, error: "" },
   };
 
   const stateValidatorSchema = {
+    receivingParty: {
+      required: true,
+    },
     amount: {
       required: true,
       validator: {
@@ -44,18 +49,31 @@ export const FundsForm = ({ onSubmit }) => {
   };
 
   const onSubmitForm = (state) => {
-    console.log(state);
+    //   console.log(state);
+    // alert(JSON.stringify(state, null, 2));
+
+    const url =
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      window._env_.API_CLIENT_PORT +
+      "/api/fund";
+
+    //   axios.post(url, {
+    //       originParty: "O=USDoJ, L=New York, C=US",
+    //       receivingParty: state.receivingParty,
+    //       amount: state.amount,
+    //       maxWithdrawalAmount: state.maxWithdrawalAmount
+    //   }).then(res => console.log(res))
+
     onSubmit();
-    alert(JSON.stringify(state, null, 2));
   };
 
-  const {
-    values,
-    errors,
-    handleOnChange,
-    handleOnSubmit,
-    disable,
-  } = useForm(stateSchema, stateValidatorSchema, onSubmitForm);
+  const { values, errors, handleOnChange, handleOnSubmit, disable } = useForm(
+    stateSchema,
+    stateValidatorSchema,
+    onSubmitForm
+  );
 
   const { amount, maxWithdrawalAmount } = values;
 
@@ -66,7 +84,12 @@ export const FundsForm = ({ onSubmit }) => {
           <CCol xs="12">
             <CFormGroup>
               <CLabel htmlFor="receivingParty">Receiving Country</CLabel>
-              <CSelect custom name="receivingParty" id="receivingParty">
+              <CSelect
+                custom
+                name="receivingParty"
+                id="receivingParty"
+                onChange={handleOnChange}
+              >
                 {network.map((item) => (
                   <option key={item.toString()}>{item}</option>
                 ))}
