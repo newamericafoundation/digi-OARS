@@ -11,6 +11,7 @@ import {
 } from "@coreui/react";
 import { FundsTable } from "./views/funds/FundsTable";
 import { FundsForm } from "./views/funds/FundsForm";
+import NetworkProvider from "../providers/NetworkProvider";
 
 const FundsPage = () => {
   const [show, setShow] = useState(false);
@@ -19,7 +20,7 @@ const FundsPage = () => {
   const handleClose = () => setShow(false);
 
   const onFormSubmit = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     handleClose();
   };
 
@@ -48,7 +49,9 @@ const FundsPage = () => {
           <CModalTitle>Funds Form</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <FundsForm onSubmit={onFormSubmit} />
+          <NetworkProvider>
+            <FundsForm onSubmit={onFormSubmit} />
+          </NetworkProvider>
         </CModalBody>
       </CModal>
     </>
