@@ -8,10 +8,6 @@ import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.transactions.LedgerTransaction;
 import org.jetbrains.annotations.NotNull;
 
-import java.security.PublicKey;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
