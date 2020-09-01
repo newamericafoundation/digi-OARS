@@ -6,6 +6,7 @@ import com.newamerica.flows.ReceiveFundFlow;
 import com.newamerica.states.FundState;
 import net.corda.core.contracts.Command;
 import net.corda.core.contracts.UniqueIdentifier;
+import net.corda.core.crypto.SecureHash;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
@@ -22,6 +23,9 @@ import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Stream;
+
+import static org.junit.Assert.assertEquals;
 
 public class ReceiveFundFlowTests {
     private MockNetwork mockNetwork;
@@ -33,6 +37,7 @@ public class ReceiveFundFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+    private UniqueIdentifier fundStateLinearId;
 
     @Before
     public void setup() throws ExecutionException, InterruptedException {
@@ -72,20 +77,6 @@ public class ReceiveFundFlowTests {
         participants.add(catanTreasury);
         partialRequestParticipants.add(usDos);
         partialRequestParticipants.add(catanTreasury);
-    }
-
-
-    @After
-    public void tearDown() {
-        mockNetwork.stopNodes();
-    }
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
-    // ensure that properly formed partially signed transactions are returned from the initiator flow
-    @Test
-    public void flowReturnsCorrectlyFormedPartiallySignedTransaction() throws Exception {
 
         IssueFundFlow.InitiatorFlow flow = new IssueFundFlow.InitiatorFlow(
                 usDoj,
@@ -100,7 +91,7 @@ public class ReceiveFundFlowTests {
                 participants
         );
 
-        Future<SignedTransaction> future = a.startFlow(flow);
+        Future<SignedTransaction> future = b.startFlow(flow);
         mockNetwork.runNetwork();
 
         // Return the unsigned(!) SignedTransaction object from the IOUIssueFlow.
@@ -108,8 +99,21 @@ public class ReceiveFundFlowTests {
 
         // get fundstate linear id
         FundState input = (FundState) ptx.getTx().getOutputs().get(0).getData();
-        UniqueIdentifier fundStateLinearId = input.getLinearId();
-        System.out.println(fundStateLinearId);
+        fundStateLinearId = input.getLinearId();
+    }
+
+
+    @After
+    public void tearDown() {
+        mockNetwork.stopNodes();
+    }
+
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
+    // ensure that properly formed partially signed transactions are returned from the initiator flow
+    @Test
+    public void flowReturnsCorrectlyFormedPartiallySignedTransaction() throws Exception {
 
         ReceiveFundFlow.InitiatorFlow receiveFlow = new ReceiveFundFlow.InitiatorFlow(
                 fundStateLinearId
@@ -132,4 +136,37 @@ public class ReceiveFundFlowTests {
         ptx2.verifySignaturesExcept(catanTreasury.getOwningKey(),
                 mockNetwork.getDefaultNotaryNode().getInfo().getLegalIdentitiesAndCerts().get(0).getOwningKey());
     }
+
+    // all signatures were proplery fetched.
+    @Test
+    public void flowReturnsTransactionSignedByBothParties() throws Exception {
+
+        ReceiveFundFlow.InitiatorFlow receiveFlow = new ReceiveFundFlow.InitiatorFlow(
+                fundStateLinearId
+        );
+        Future<SignedTransaction> futureTwo = c.startFlow(receiveFlow);
+        mockNetwork.runNetwork();
+        futureTwo.get().verifyRequiredSignatures();
+    }
+
+    // check each party's vault for the fundState's existence
+    @Test
+    public void flowRecordsTheSameTransactionInBothPartyVaults() throws Exception {
+        ReceiveFundFlow.InitiatorFlow receiveFlow = new ReceiveFundFlow.InitiatorFlow(
+                fundStateLinearId
+        );
+        Future<SignedTransaction> future = c.startFlow(receiveFlow);
+        mockNetwork.runNetwork();
+        SignedTransaction stx = future.get();
+        System.out.printf("Signed transaction hash: %h\n", stx.getId());
+
+        Stream.of(a, b).map(el ->
+                el.getServices().getValidatedTransactions().getTransaction(stx.getId())
+        ).forEach(el -> {
+            SecureHash txHash = el.getId();
+            System.out.printf("$txHash == %h\n", stx.getId());
+            assertEquals(stx.getId(), txHash);
+        });
+    }
+
 }
