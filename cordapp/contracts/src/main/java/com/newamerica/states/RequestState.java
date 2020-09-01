@@ -122,6 +122,22 @@ public class RequestState implements LinearState {
         );
     }
 
+    public RequestState updateParticipantList(List<AbstractParty> participantList){
+        return new RequestState(
+                this.authorizedUserUsername,
+                this.authorizedUserDept,
+                this.authorizerUserUsername,
+                this.authorizerDept,
+                this.externalAccountId,
+                this.amount,
+                this.currency,
+                this.datetime,
+                this.status,
+                this.fundStateLinearId,
+                participantList
+        );
+    }
+
     @CordaSerializable
     public enum RequestStateStatus {
         PENDING("PENDING"),
