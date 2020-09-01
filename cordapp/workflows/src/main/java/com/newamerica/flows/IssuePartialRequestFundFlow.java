@@ -32,7 +32,6 @@ public class IssuePartialRequestFundFlow {
         public InitiatorFlow(
                 String authorizedUserDept,
                 Party authorizerDept,
-                String externalAccountId,
                 BigDecimal amount,
                 Currency currency,
                 ZonedDateTime datetime,
