@@ -15,16 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.ws.Response;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static jdk.nashorn.internal.objects.Global.println;
 
 /**
  * Define your API endpoints here.
@@ -38,10 +34,6 @@ public class Controller {
 
     public Controller(NodeRPCConnection rpc) {
         this.rpcOps = rpc.proxy;
-    }
-
-    private List<NodeInfo> removeAll(List<NodeInfo> network, NodeInfo node) {
-        return null;
     }
 
     @GetMapping(value = "hello", produces = "text/plain")
