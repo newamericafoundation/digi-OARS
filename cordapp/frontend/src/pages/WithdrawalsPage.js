@@ -41,7 +41,7 @@ const WithdrawalsPage = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Withdrawal Requests</CCardHeader>
+            <CCardHeader>Pending Withdrawal Requests</CCardHeader>
             <CCardBody><RequestsTable status="PENDING"/></CCardBody>
           </CCard>
         </CCol>
