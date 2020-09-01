@@ -5,28 +5,32 @@ import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
+import net.corda.core.node.NodeDiagnosticInfo;
 import net.corda.core.node.NodeInfo;
 import net.corda.core.transactions.SignedTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.Response;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Currency;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static jdk.nashorn.internal.objects.Global.println;
 
 /**
  * Define your API endpoints here.
  */
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api") // The paths for HTTP requests are relative to this base path.
 public class Controller {
     private final CordaRPCOps rpcOps;
@@ -34,6 +38,10 @@ public class Controller {
 
     public Controller(NodeRPCConnection rpc) {
         this.rpcOps = rpc.proxy;
+    }
+
+    private List<NodeInfo> removeAll(List<NodeInfo> network, NodeInfo node) {
+        return null;
     }
 
     @GetMapping(value = "hello", produces = "text/plain")
@@ -47,8 +55,8 @@ public class Controller {
     }
 
     @GetMapping(value = "me", produces = "application/json")
-    private ResponseEntity<Party> getMyIdentity() {
-        Party me = rpcOps.nodeInfo().getLegalIdentities().get(0);
+    private ResponseEntity<NodeInfo> getMyIdentity() {
+        NodeInfo me = rpcOps.nodeInfo();
         return ResponseEntity.ok(me);
     }
 
@@ -64,9 +72,26 @@ public class Controller {
         return ResponseEntity.ok(version);
     }
 
+    @GetMapping(value = "notary", produces = "application/json")
+    private ResponseEntity<List<Party>> getNotary() {
+        List<Party> notaries = rpcOps.notaryIdentities();
+        return ResponseEntity.ok(notaries);
+    }
+
     @GetMapping(value = "network", produces = "application/json")
-    private List<NodeInfo> getNetworkMap() {
-        return rpcOps.networkMapSnapshot();
+    private ResponseEntity<List<Party>> getNetworkMap() {
+        List<Party> filtered = rpcOps.networkMapSnapshot()
+                .stream()
+                .filter(e -> !e.equals(rpcOps.nodeInfo()))
+                .flatMap(e -> e.getLegalIdentities().stream())
+                .collect(Collectors.toList());
+        filtered.remove(rpcOps.notaryIdentities().get(0));
+        return ResponseEntity.ok(filtered);
+    }
+
+    @GetMapping(value = "diagnostics", produces = "application/json")
+    private ResponseEntity<NodeDiagnosticInfo> getDiagnostics() {
+        return ResponseEntity.ok(rpcOps.nodeDiagnosticInfo());
     }
 
     @PostMapping(value = "fund", produces = "application/json")
