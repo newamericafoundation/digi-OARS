@@ -42,7 +42,6 @@ public class IssueFundFlow {
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new FundContract.Commands.Issue();
-            outputFundState.getParticipants().add(getOurIdentity());
             transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputFundState, FundContract.ID);
             transactionBuilder.verify(getServiceHub());

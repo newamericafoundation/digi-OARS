@@ -54,7 +54,7 @@ public class FundContract implements Contract {
 
                 // combine the Lists
                 List<AbstractParty> combinedLists = Stream.concat(outputState.owners.stream(), outputState.requiredSigners.stream()) .collect(Collectors.toList());
-                require.using("All owners and requiredSigners must be in the participant List.", outputState.participants.containsAll(combinedLists));
+                require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));
                 return null;
             });
         }else if(commandData.equals(new Commands.Withdraw())){
