@@ -68,8 +68,6 @@ public class IssueRequestFlowTests {
 
         // For real nodes this happens automatically, but we have to manually register the flow for tests
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueFundFlow.ResponderFlow.class));
-//        startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.CollectSignaturesInitiatingFlow.class));
-//        startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.InitiatorFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.ExtraInitiatingFlowResponder.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.CollectSignaturesResponder.class));
 
@@ -82,13 +80,6 @@ public class IssueRequestFlowTests {
         usCSO = e.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
         catanCSO = f.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
 
-//        owners.add(usDos);
-//        requiredSigners.add(usDos);
-//        requiredSigners.add(catanMoj);
-//        participants.add(usDoj);
-//        participants.add(catanMoj);
-//        partialRequestParticipants.add(usCSO);
-//        partialRequestParticipants.add(catanCSO);
         owners.add(usDos);
         requiredSigners.add(usDoj);
         requiredSigners.add(catanMoj);
