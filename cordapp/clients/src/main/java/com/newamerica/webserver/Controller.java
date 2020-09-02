@@ -9,6 +9,7 @@ import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
 import net.corda.core.node.NodeInfo;
+import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.PageSpecification;
 import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
@@ -30,6 +31,7 @@ import java.util.Arrays;
 import java.util.Currency;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE_NUM;
@@ -159,6 +161,27 @@ public class Controller extends BaseResource {
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(fundId)));
             StateAndRef<FundState> fund = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates().get(0);
             return Response.ok(fund.getState().getData()).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+
+    @GET
+    @Path("/fund/{status}")
+    @Consumes(APPLICATION_JSON)
+    @Produces(APPLICATION_JSON)
+    private Response getFundByStatus (@PathParam("status") String status) {
+        try {
+            String resourcePath = String.format("/fund/%s", status);
+            FundState.FundStateStatus fundStateStatus = FundState.FundStateStatus.valueOf(status);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
+            List<StateAndRef<FundState>> funds = rpcOps.vaultQueryByCriteria(queryCriteria, FundState.class).getStates();
+            List<FundState> result = funds.stream().filter(it -> it.getState().getData().getStatus().equals(fundStateStatus)).map(it -> it.getState().getData()).collect(Collectors.toList());
+            return Response.ok(result).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
