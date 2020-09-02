@@ -17,10 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.ws.rs.*;
@@ -35,6 +32,7 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE_NUM;
+import static sun.misc.Version.println;
 
 /**
  * Define your API endpoints here.
@@ -78,14 +76,23 @@ public class Controller extends BaseResource {
     }
 
     @GetMapping(value = "network", produces = "application/json")
-    private List<NodeInfo> getNetworkMap() {
-        return rpcOps.networkMapSnapshot();
+    private ResponseEntity<List<Party>> getNetworkMap() {
+        List<Party> filtered = rpcOps.networkMapSnapshot()
+                .stream()
+                .filter(e -> !e.equals(rpcOps.nodeInfo()))
+                .flatMap(e -> e.getLegalIdentities().stream())
+                .collect(Collectors.toList());
+        filtered.remove(rpcOps.notaryIdentities().get(0));
+        return ResponseEntity.ok(filtered);
     }
 
-    @POST
-    @Path("/fund")
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
+    @GetMapping(value = "notary", produces = "application/json")
+    private ResponseEntity<List<Party>> getNotary() {
+        List<Party> notaries = rpcOps.notaryIdentities();
+        return ResponseEntity.ok(notaries);
+    }
+
+    @PostMapping(value = "fund", consumes = "application/json", produces = "application/json")
     private Response createFund (@Valid @RequestBody Fund request) {
         try {
             String resourcePath = "/fund";
@@ -94,6 +101,7 @@ public class Controller extends BaseResource {
             String receivingPartyName = request.getReceivingParty();
             String amountStr = request.getAmount();
             String maxWithdrawalAmountStr = request.getMaxWithdrawalAmount();
+
             Party originParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(originPartyName));
             Party receivingParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(receivingPartyName));
             Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US,OU=DoS,L=New York,C=US"));
