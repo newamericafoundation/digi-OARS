@@ -114,6 +114,7 @@ public class Controller extends BaseResource {
 
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     IssueFundFlow.InitiatorFlow.class,
+                    originParty,
                     receivingParty,
                     owners,
                     requiredSigners,
