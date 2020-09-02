@@ -14,19 +14,9 @@ import {
 import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
 import { RequestsTable } from "./views//withdrawals/RequestsTable";
 import { RequestData } from "../data/Requests";
-// import { FundsForm } from "./views/funds/FundsForm";
 // import NetworkProvider from "../providers/NetworkProvider";
 
 const WithdrawalsPage = () => {
-  const [show, setShow] = useState(false);
-
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
-
-  const onFormSubmit = (e) => {
-    // e.preventDefault();
-    handleClose();
-  };
 
   const toCurrency = (number, currency) => {
     return new Intl.NumberFormat("en-US", {
@@ -81,7 +71,7 @@ const WithdrawalsPage = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>PendingWithdrawal Requests</CCardHeader>
+            <CCardHeader>Pending Withdrawal Requests</CCardHeader>
             <CCardBody>
               <RequestsTable status="PENDING" />
             </CCardBody>
@@ -96,17 +86,6 @@ const WithdrawalsPage = () => {
           </CCard>
         </CCol>
       </CRow>
-
-      <CModal show={show} onClose={handleClose}>
-        <CModalHeader closeButton>
-          <CModalTitle>Withdrawal Request Form</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          {/* <NetworkProvider>
-            <FundsForm onSubmit={onFormSubmit} />
-          </NetworkProvider> */}
-        </CModalBody>
-      </CModal>
     </>
   );
 };

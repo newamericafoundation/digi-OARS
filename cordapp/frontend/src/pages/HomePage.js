@@ -8,8 +8,8 @@ import {
   CProgress,
   CRow,
   CJumbotron
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
 import { useAuth } from '../auth-hook';
 
 const HomePage = () => {
