@@ -22,6 +22,7 @@ public class PartialRequestContractTests {
     static private final MockServices ledgerServices =
             new MockServices(Arrays.asList("com.newamerica.contracts", "com.newamerica.flows"));
     private final List<AbstractParty> participants = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
     private PartialRequestState partialRequestState;
 
     @Before
@@ -29,11 +30,12 @@ public class PartialRequestContractTests {
         participants.add(CATANMoJ.getParty());
         participants.add(CATAN_CSO.getParty());
         participants.add(US_CSO.getParty());
+        authorizedParties.add(CATANTreasury.getParty());
 
         //create partial request state
         partialRequestState = new PartialRequestState(
                 "Catan Ministry of Education",
-                CATANTreasury.getParty(),
+                authorizedParties,
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
@@ -104,7 +106,7 @@ public class PartialRequestContractTests {
     public void cannotCreateNegativeValueRequest() {
         PartialRequestState partialRequestState = new PartialRequestState(
                 "Catan Ministry of Education",
-                CATANTreasury.getParty(),
+                authorizedParties,
                 BigDecimal.valueOf(1000000).negate(),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),

@@ -31,7 +31,7 @@ public class IssuePartialRequestFundFlow {
 
         public InitiatorFlow(
                 String authorizedUserDept,
-                Party authorizerDept,
+                List<AbstractParty> authorizedParties,
                 BigDecimal amount,
                 Currency currency,
                 ZonedDateTime datetime,
@@ -40,7 +40,7 @@ public class IssuePartialRequestFundFlow {
         ){
             this.outputPartialRequestState = new PartialRequestState(
                     authorizedUserDept,
-                    authorizerDept,
+                    authorizedParties,
                     amount,
                     currency,
                     datetime,

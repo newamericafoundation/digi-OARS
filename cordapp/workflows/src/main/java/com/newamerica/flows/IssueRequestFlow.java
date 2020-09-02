@@ -36,7 +36,6 @@ public class IssueRequestFlow {
                 String authorizedUserUsername,
                 String authorizedUserDept,
                 String authorizerUserUsername,
-                Party authorizerDept,
                 String externalAccountId,
                 BigDecimal amount,
                 Currency currency,
@@ -48,7 +47,6 @@ public class IssueRequestFlow {
                     authorizedUserUsername,
                     authorizedUserDept,
                     authorizerUserUsername,
-                    authorizerDept,
                     externalAccountId,
                     amount,
                     currency,
@@ -73,7 +71,8 @@ public class IssueRequestFlow {
             if (outputRequestState.amount.compareTo(inputStateRefFundState.maxWithdrawalAmount) > 0) {
                 outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
             }
-            outputRequestState.updateParticipantList(inputStateRefFundState.getParticipants());
+            outputRequestState = outputRequestState.updateParticipantList(inputStateRefFundState.getParticipants());
+            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getRequiredSigners());
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);

@@ -117,7 +117,6 @@ public class IssueRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "Chris Jones",
-                catanMoj,
                 "1234567890",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),

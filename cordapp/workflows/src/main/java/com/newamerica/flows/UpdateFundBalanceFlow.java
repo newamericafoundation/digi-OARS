@@ -79,7 +79,7 @@ public class UpdateFundBalanceFlow {
             subFlow(new FinalityFlow(signedTransaction, flowSessions));
             return subFlow( new IssuePartialRequestFundFlow.InitiatorFlow(
                     requestState.getAuthorizedUserDept(),
-                    requestState.getAuthorizerDept(),
+                    requestState.getAuthorizedParties(),
                     requestState.getAmount(),
                     requestState.getCurrency(),
                     requestState.getDatetime(),
