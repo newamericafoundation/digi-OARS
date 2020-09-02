@@ -103,6 +103,7 @@ public class Controller extends BaseResource {
             Party originParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(originPartyName));
             Party receivingParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(receivingPartyName));
             Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=DoS,L=New York,C=US"));
+            Party US_DoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=DoJ,L=New York,C=US"));
             Party NewAmerica = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=NewAmerica,L=New York,C=US"));
             Party Catan_MoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=MoJ,L=London,C=GB"));
             Party Catan_MoFA = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=MoFA,L=London,C=GB"));
@@ -118,7 +119,7 @@ public class Controller extends BaseResource {
             List<AbstractParty> owners = Arrays.asList(originParty);
             List<AbstractParty> requiredSigners =  Arrays.asList(originParty, receivingParty);
             List<AbstractParty> partialRequestParticipants = Arrays.asList(Catan_CSO, US_CSO);
-            List<AbstractParty> participants = Arrays.asList(originParty, US_DoS, NewAmerica, Catan_MoFA, Catan_MoJ, Catan_Treasury);
+            List<AbstractParty> participants = Arrays.asList(originParty, US_DoJ, US_DoS, NewAmerica, Catan_MoFA, Catan_MoJ, Catan_Treasury);
 
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     IssueFundFlow.InitiatorFlow.class,
