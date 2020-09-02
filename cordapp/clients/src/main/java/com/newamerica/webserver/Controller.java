@@ -132,7 +132,8 @@ public class Controller extends BaseResource {
                     currency,
                     participants
             ).getReturnValue().get();
-            return Response.ok(createSuccessServiceResponse("Fund created successfully.", request, resourcePath)).build();
+            FundState created = (FundState) tx.getTx().getOutputs().get(0).getData();
+            return Response.ok(createSuccessServiceResponse("Fund created successfully.", created, resourcePath)).build();
         }catch (Exception e) {
             return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
