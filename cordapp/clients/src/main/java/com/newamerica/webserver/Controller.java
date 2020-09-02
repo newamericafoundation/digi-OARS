@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.ws.rs.*;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE_NUM;
 
 /**
@@ -139,10 +138,7 @@ public class Controller extends BaseResource {
         }
     }
 
-    @GET
-    @Path("/funds")
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
+    @GetMapping(value = "/funds", consumes = "application/json", produces = "application/json")
     private Response getAllFunds () {
         try {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
@@ -157,10 +153,7 @@ public class Controller extends BaseResource {
         }
     }
 
-    @GET
-    @Path("/fund/{fundId}")
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
+    @GetMapping(value = "/fund/{fundId}", consumes = "application/json", produces = "application/json")
     private Response getFundById (@PathParam("fundId") String fundId) {
         try {
             String resourcePath = String.format("/fund/%s", fundId);
@@ -176,10 +169,7 @@ public class Controller extends BaseResource {
         }
     }
 
-    @GET
-    @Path("/fund/{status}")
-    @Consumes(APPLICATION_JSON)
-    @Produces(APPLICATION_JSON)
+    @GetMapping(value = "/fund/{status}", consumes = "application/json", produces = "application/json")
     private Response getFundByStatus (@PathParam("status") String status) {
         try {
             String resourcePath = String.format("/fund/%s", status);
