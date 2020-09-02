@@ -35,6 +35,7 @@ public class IssuePartialRequestFundFlowTests {
     private Party usCso;
     private Party catanCso;
     private final List<AbstractParty> participants = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
 
     @Before
     public void setup() {
@@ -69,6 +70,7 @@ public class IssuePartialRequestFundFlowTests {
 
         participants.add(usCso);
         participants.add(catanCso);
+        authorizedParties.add(catanMoj);
     }
 
     @After
@@ -84,7 +86,7 @@ public class IssuePartialRequestFundFlowTests {
     public void flowReturnsCorrectlyFormedPartiallySignedTransaction() throws Exception {
         IssuePartialRequestFundFlow.InitiatorFlow flow = new IssuePartialRequestFundFlow.InitiatorFlow(
                 "Catan Ministry of Education",
-                catanMoj,
+                authorizedParties,
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
@@ -117,7 +119,7 @@ public class IssuePartialRequestFundFlowTests {
         //should fail because:The amount must be greater than or equal to zero.
         IssuePartialRequestFundFlow.InitiatorFlow negativeAmountValue = new IssuePartialRequestFundFlow.InitiatorFlow(
                 "Catan Ministry of Education",
-                catanMoj,
+                authorizedParties,
                 BigDecimal.valueOf(-1),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
@@ -133,7 +135,7 @@ public class IssuePartialRequestFundFlowTests {
         //should verify
         IssuePartialRequestFundFlow.InitiatorFlow validPartialRequestState = new IssuePartialRequestFundFlow.InitiatorFlow(
                 "Catan Ministry of Education",
-                catanMoj,
+                authorizedParties,
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
@@ -152,7 +154,7 @@ public class IssuePartialRequestFundFlowTests {
 
         IssuePartialRequestFundFlow.InitiatorFlow validPartialRequestState = new IssuePartialRequestFundFlow.InitiatorFlow(
                 "Catan Ministry of Education",
-                catanMoj,
+                authorizedParties,
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
@@ -173,7 +175,7 @@ public class IssuePartialRequestFundFlowTests {
 
         IssuePartialRequestFundFlow.InitiatorFlow validPartialRequestState = new IssuePartialRequestFundFlow.InitiatorFlow(
                 "Catan Ministry of Education",
-                catanMoj,
+                authorizedParties,
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
@@ -188,7 +190,7 @@ public class IssuePartialRequestFundFlowTests {
 
         Stream.of(a, b).map(el ->
                 el.getServices().getValidatedTransactions().getTransaction(stx.getId())
-        ).forEach(el -> {
+        ).filter(Objects::nonNull).forEach(el -> {
             SecureHash txHash = el.getId();
             System.out.printf("$txHash == %h\n", stx.getId());
             assertEquals(stx.getId(), txHash);

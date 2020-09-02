@@ -5,13 +5,13 @@ import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
-import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import net.corda.core.serialization.CordaSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class RequestState implements LinearState {
     public final String authorizedUserUsername;
     public final String authorizedUserDept;
     public final String authorizerUserUsername;
-    public final Party authorizerDept;
+    public final List<AbstractParty> authorizedParties;
     public final String externalAccountId;
     public final BigDecimal amount;
     public final Currency currency;
@@ -47,7 +47,7 @@ public class RequestState implements LinearState {
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
                         String authorizerUserUsername,
-                        Party authorizerDept,
+                        List<AbstractParty> authorizedParties,
                         String externalAccountId,
                         BigDecimal amount,
                         Currency currency,
@@ -59,7 +59,7 @@ public class RequestState implements LinearState {
         this.authorizedUserUsername = authorizedUserUsername;
         this.authorizedUserDept = authorizedUserDept;
         this.authorizerUserUsername = authorizerUserUsername;
-        this.authorizerDept = authorizerDept;
+        this.authorizedParties = authorizedParties;
         this.externalAccountId = externalAccountId;
         this.amount = amount;
         this.currency = currency;
@@ -73,7 +73,6 @@ public class RequestState implements LinearState {
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
                         String authorizerUsername,
-                        Party authorizerDept,
                         String externalAccount,
                         BigDecimal amount,
                         Currency currency,
@@ -81,7 +80,7 @@ public class RequestState implements LinearState {
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizerDept, externalAccount, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, Collections.<AbstractParty>emptyList(), externalAccount, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -96,7 +95,7 @@ public class RequestState implements LinearState {
     //getters
     public String getAuthorizedUserUsername() { return authorizedUserUsername; }
     public String getAuthorizedUserDept() { return authorizedUserDept; }
-    public Party getAuthorizerDept() { return authorizerDept; }
+    public List<AbstractParty> getAuthorizedParties() { return authorizedParties; }
     public BigDecimal getAmount() { return amount; }
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
@@ -111,13 +110,14 @@ public class RequestState implements LinearState {
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
                 this.authorizerUserUsername,
-                this.authorizerDept,
+                this.authorizedParties,
                 this.externalAccountId,
                 this.amount,
                 this.currency,
                 this.datetime,
                 newStatus,
                 this.fundStateLinearId,
+                this.linearId,
                 this.participants
         );
     }
@@ -127,14 +127,32 @@ public class RequestState implements LinearState {
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
                 this.authorizerUserUsername,
-                this.authorizerDept,
+                this.authorizedParties,
                 this.externalAccountId,
                 this.amount,
                 this.currency,
                 this.datetime,
                 this.status,
                 this.fundStateLinearId,
+                this.linearId,
                 participantList
+        );
+    }
+
+    public RequestState updateAuthorizedPartiesList(List<AbstractParty> authorizedParties){
+        return new RequestState(
+                this.authorizedUserUsername,
+                this.authorizedUserDept,
+                this.authorizerUserUsername,
+                authorizedParties,
+                this.externalAccountId,
+                this.amount,
+                this.currency,
+                this.datetime,
+                this.status,
+                this.fundStateLinearId,
+                this.linearId,
+                this.participants
         );
     }
 

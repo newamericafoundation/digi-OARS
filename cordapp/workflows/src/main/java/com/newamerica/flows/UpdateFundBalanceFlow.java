@@ -60,8 +60,8 @@ public class UpdateFundBalanceFlow {
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new FundContract.Commands.Withdraw();
-            outputFundState.getParticipants().add(getOurIdentity());
             transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addInputState(inputStateRef);
             transactionBuilder.addOutputState(outputFundState, FundContract.ID);
             transactionBuilder.verify(getServiceHub());
 
@@ -73,13 +73,12 @@ public class UpdateFundBalanceFlow {
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
-            List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
+            List<FlowSession> flowSessions = otherParties.stream().map(this::initiateFlow).collect(Collectors.toList());
 
-            SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
-            subFlow(new FinalityFlow(signedTransaction, flowSessions));
-            return subFlow( new IssuePartialRequestFundFlow.InitiatorFlow(
+            SignedTransaction finalizedTransaction = subFlow(new FinalityFlow(subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions)), flowSessions));
+            subFlow( new IssuePartialRequestFundFlow.InitiatorFlow(
                     requestState.getAuthorizedUserDept(),
-                    requestState.getAuthorizerDept(),
+                    requestState.getAuthorizedParties(),
                     requestState.getAmount(),
                     requestState.getCurrency(),
                     requestState.getDatetime(),
@@ -87,6 +86,7 @@ public class UpdateFundBalanceFlow {
                     outputFundState.getPartialRequestParticipants()
                     )
             );
+            return finalizedTransaction;
         }
     }
 

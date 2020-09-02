@@ -31,7 +31,7 @@ public class IssuePartialRequestFundFlow {
 
         public InitiatorFlow(
                 String authorizedUserDept,
-                Party authorizerDept,
+                List<AbstractParty> authorizedParties,
                 BigDecimal amount,
                 Currency currency,
                 ZonedDateTime datetime,
@@ -40,7 +40,7 @@ public class IssuePartialRequestFundFlow {
         ){
             this.outputPartialRequestState = new PartialRequestState(
                     authorizedUserDept,
-                    authorizerDept,
+                    authorizedParties,
                     amount,
                     currency,
                     datetime,
@@ -55,7 +55,6 @@ public class IssuePartialRequestFundFlow {
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new PartialRequestContract.Commands.Issue();
-            outputPartialRequestState.getParticipants().add(getOurIdentity());
             transactionBuilder.addCommand(commandData, outputPartialRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputPartialRequestState, PartialRequestContract.ID);
             transactionBuilder.verify(getServiceHub());

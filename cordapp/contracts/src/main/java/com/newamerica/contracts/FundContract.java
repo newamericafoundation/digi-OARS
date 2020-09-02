@@ -9,6 +9,7 @@ import net.corda.core.identity.AbstractParty;
 import net.corda.core.transactions.LedgerTransaction;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,10 +68,11 @@ public class FundContract implements Contract {
 
                 FundState outputState = (FundState) tx.getOutputStates().get(0);
 
-                require.using("If balance is zero, then the status should be PAID", outputState.getBalance().compareTo(BigDecimal.ZERO) == 0 && outputState.getStatus() != FundState.FundStateStatus.PAID);
-                require.using("If balance is greater than zero, then the status should be RECEIVED", outputState.getBalance().compareTo(BigDecimal.ZERO) > 0 && outputState.getStatus() != FundState.FundStateStatus.RECEIVED);
-                require.using("The withdrawal cannot be for more than the maxWithdrawalAmount", inputState.getMaxWithdrawalAmount().compareTo(outputState.getAmount()) < 0);
-                require.using("The withdrawal cannot result in a negative balance.", outputState.getBalance().compareTo(BigDecimal.ZERO) < 0);
+                require.using("If balance is zero, then the status should be PAID OR If balance is greater than zero, then the status should be RECEIVED",
+                        (outputState.getBalance().compareTo(BigDecimal.ZERO) == 0 && outputState.getStatus() == FundState.FundStateStatus.PAID)
+                                || (outputState.getBalance().compareTo(BigDecimal.ZERO) > 0 && outputState.getStatus() == FundState.FundStateStatus.RECEIVED));
+                require.using("The withdrawal cannot be for more than the maxWithdrawalAmount", inputState.getMaxWithdrawalAmount().compareTo(outputState.getAmount()) <= 0);
+                require.using("The withdrawal cannot result in a negative balance.", outputState.getBalance().compareTo(BigDecimal.ZERO) >= 0);
                 require.using("The originParty cannot change.", inputState.getOriginParty().equals(outputState.getOriginParty()));
                 require.using("The receivingParty cannot change.", inputState.getReceivingParty().equals(outputState.getReceivingParty()));
                 require.using("The owners cannot change.", inputState.getOwners().equals(outputState.getOwners()));
@@ -101,10 +103,10 @@ public class FundContract implements Contract {
                 require.using("input amount and output amount must be the same", inputState.getAmount().compareTo(outputState.getAmount()) == 0);
                 require.using("input balance and output balance must be the same", inputState.getBalance().compareTo(outputState.getBalance()) == 0);
                 require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.getMaxWithdrawalAmount().compareTo(outputState.getMaxWithdrawalAmount()) == 0);
-                require.using("input originParty" + inputState.getOriginParty() + "and output originParty" + outputState.getOriginParty() + "must be the same", inputState.getOriginParty().equals(outputState.getOriginParty()));
+                require.using("input originParty and output originParty must be the same", inputState.getOriginParty().equals(outputState.getOriginParty()));
                 require.using("input receivingParty and output receivingParty must be the same", inputState.getReceivingParty().equals(outputState.getReceivingParty()));
                 // combine the Lists
-                List<AbstractParty> combinedLists = Stream.of(outputState.getOwners(), outputState.getRequiredSigners()).flatMap(x -> x.stream()).collect(Collectors.toList());
+                List<AbstractParty> combinedLists = Stream.of(outputState.getOwners(), outputState.getRequiredSigners()).flatMap(Collection::stream).collect(Collectors.toList());
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));
                 return null;
             });

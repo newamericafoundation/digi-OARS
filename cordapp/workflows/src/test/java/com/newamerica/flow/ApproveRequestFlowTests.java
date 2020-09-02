@@ -1,8 +1,10 @@
 package com.newamerica.flow;
 
 import com.newamerica.contracts.RequestContract;
+import com.newamerica.flows.ApproveRequestFlow;
 import com.newamerica.flows.IssueFundFlow;
 import com.newamerica.flows.IssueRequestFlow;
+import com.newamerica.flows.ReceiveFundFlow;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.Command;
@@ -28,12 +30,13 @@ import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
-public class IssueRequestFlowTests {
+public class ApproveRequestFlowTests {
+
     private MockNetwork mockNetwork;
     private StartedMockNode a;
     private StartedMockNode b;
     private Party usDoj;
-    SignedTransaction stx2;
+    SignedTransaction stx4;
     private final List<AbstractParty> owners = new ArrayList<>();
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
@@ -73,6 +76,8 @@ public class IssueRequestFlowTests {
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueFundFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.ExtraInitiatingFlowResponder.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.CollectSignaturesResponder.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.CollectSignaturesResponder.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(ApproveRequestFlow.ResponderFlow.class));
 
         mockNetwork.runNetwork();
 
@@ -112,6 +117,14 @@ public class IssueRequestFlowTests {
         SignedTransaction stx = future.get();
         FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
 
+        //acknowledge the FundState
+        ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                fs.getLinearId()
+        );
+        Future<SignedTransaction> futureTwo = a.startFlow(receiveFundFlow);
+        mockNetwork.runNetwork();
+        futureTwo.get();
+
         //create RequestState
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
@@ -125,9 +138,19 @@ public class IssueRequestFlowTests {
                 participants
         );
 
-        Future<SignedTransaction> futureTwo = c.startFlow(requestFlow);
+        Future<SignedTransaction> futureThree = c.startFlow(requestFlow);
         mockNetwork.runNetwork();
-        stx2 = futureTwo.get();
+        SignedTransaction stx3 = futureThree.get();
+        RequestState rs = (RequestState) stx3.getTx().getOutputStates().get(0);
+
+        //approve requestState
+        ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
+                rs.getLinearId()
+        );
+
+        Future<SignedTransaction> futureFour = d.startFlow(approveRequestFlow);
+        mockNetwork.runNetwork();
+        stx4 = futureFour.get();
     }
 
 
@@ -145,20 +168,20 @@ public class IssueRequestFlowTests {
 
         // Check the transaction is well formed...
         // No outputs, one input IOUState and a command with the right properties.
-        assert (stx2.getTx().getInputs().isEmpty());
-        assert (stx2.getTx().getOutputs().get(0).getData() instanceof RequestState);
+        assert (!stx4.getTx().getInputs().isEmpty());
+        assert (stx4.getTx().getOutputs().get(0).getData() instanceof RequestState);
 
-        Command command = stx2.getTx().getCommands().get(0);
-        assert (command.getValue() instanceof RequestContract.Commands.Issue);
+        Command command = stx4.getTx().getCommands().get(0);
+        assert (command.getValue() instanceof RequestContract.Commands.Approve);
 
-        stx2.verifySignaturesExcept(usDoj.getOwningKey(),
+        stx4.verifySignaturesExcept(usDoj.getOwningKey(),
                 mockNetwork.getDefaultNotaryNode().getInfo().getLegalIdentitiesAndCerts().get(0).getOwningKey());
     }
 
     // all signatures were properly fetched.
     @Test
     public void flowReturnsTransactionSignedByBothParties() throws Exception {
-        stx2.verifyRequiredSignatures();
+        stx4.verifyRequiredSignatures();
     }
 
     // check each party's vault for the requestState's existence
@@ -166,11 +189,11 @@ public class IssueRequestFlowTests {
     public void flowRecordsTheSameTransactionInBothPartyVaults() {
 
         Stream.of(a, b).map(el ->
-                el.getServices().getValidatedTransactions().getTransaction(stx2.getId())
+                el.getServices().getValidatedTransactions().getTransaction(stx4.getId())
         ).filter(Objects::nonNull).forEach(el -> {
             SecureHash txHash = el.getId();
-            System.out.printf("$txHash == %h\n", stx2.getId());
-            assertEquals(stx2.getId(), txHash);
+            System.out.printf("$txHash == %h\n", stx4.getId());
+            assertEquals(stx4.getId(), txHash);
         });
     }
 }

@@ -3,7 +3,6 @@ package com.newamerica.state;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
-import net.corda.core.identity.Party;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +10,10 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Currency;
+import java.util.List;
+import java.util.Locale;
 
 import static com.newamerica.TestUtils.CATANMoFA;
 import static com.newamerica.TestUtils.CATANMoJ;
@@ -27,13 +29,12 @@ public class RequestStateTests {
     public void setup(){
         participants.add(CATANMoJ.getParty());
         participants.add(CATANMoFA.getParty());
-        uniqueIdentifier =  new UniqueIdentifier("", UUID.randomUUID());
+        uniqueIdentifier =  new UniqueIdentifier();
 
         requestState = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "Chris Jones",
-                CATANMoJ.getParty(),
                 "1234567890",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -51,7 +52,7 @@ public class RequestStateTests {
         Field authorizedUserUsername = RequestState.class.getDeclaredField("authorizedUserUsername");
         Field authorizedUserDept = RequestState.class.getDeclaredField("authorizedUserDept");
         Field authorizerUserUsername = RequestState.class.getDeclaredField("authorizerUserUsername");
-        Field authorizerDept = RequestState.class.getDeclaredField("authorizerDept");
+        Field authorizedParties = RequestState.class.getDeclaredField("authorizedParties");
         Field externalAccountId = RequestState.class.getDeclaredField("externalAccountId");
         Field amount = RequestState.class.getDeclaredField("amount");
         Field datetime = RequestState.class.getDeclaredField("datetime");
@@ -63,7 +64,7 @@ public class RequestStateTests {
         assertTrue(authorizedUserUsername.getType().isAssignableFrom(String.class));
         assertTrue(authorizedUserDept.getType().isAssignableFrom(String.class));
         assertTrue(authorizerUserUsername.getType().isAssignableFrom(String.class));
-        assertTrue(authorizerDept.getType().isAssignableFrom(Party.class));
+        assertTrue(authorizedParties.getType().isAssignableFrom(List.class));
         assertTrue(externalAccountId.getType().isAssignableFrom(String.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
@@ -81,8 +82,7 @@ public class RequestStateTests {
         assertEquals(requestState.getAuthorizedUserUsername(), "Alice Bob");
         assertEquals(requestState.getAuthorizedUserDept(), "Catan Ministry of Education");
         assertEquals(requestState.getAuthorizerUserUsername(),"Chris Jones");
-        assertEquals(requestState.getAuthorizerDept(), CATANMoJ.getParty());
-        assertTrue(requestState.getAmount().compareTo(BigDecimal.valueOf(1000000)) == 0);
+        assertEquals(0, requestState.getAmount().compareTo(BigDecimal.valueOf(1000000)));
         assertEquals(requestState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertEquals(requestState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(requestState.getStatus(), RequestState.RequestStateStatus.PENDING);

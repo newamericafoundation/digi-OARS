@@ -118,7 +118,8 @@ public class FundState implements LinearState {
                 this.maxWithdrawalAmount,
                 this.currency,
                 this.status,
-                this.participants
+                this.participants,
+                this.linearId
         );
     }
 
@@ -135,7 +136,8 @@ public class FundState implements LinearState {
                 this.maxWithdrawalAmount,
                 this.currency,
                 newStatus,
-                this.participants
+                this.participants,
+                this.linearId
         );
     }
 

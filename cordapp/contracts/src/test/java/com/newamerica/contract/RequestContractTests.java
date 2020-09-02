@@ -28,7 +28,7 @@ public class RequestContractTests {
     private final List<AbstractParty> participants = new ArrayList<>();
     private RequestState requestState;
     private RequestState requestState_diff;
-    private RequestState requestState_nagative_amount;
+    private RequestState requestState_negative_amount;
 
     public interface Commands extends CommandData {
         class DummyCommand extends TypeOnlyCommandData implements Commands{}
@@ -43,49 +43,43 @@ public class RequestContractTests {
         participants.add(CATANMoFA.getParty());
         participants.add(CATANMoJ.getParty());
 
-        //create transfer state
+        //create request state
         requestState = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "Chris Blue",
-                CATANMoJ.getParty(),
                 "1234567890",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
                 RequestState.RequestStateStatus.PENDING,
                 new UniqueIdentifier(),
-                new UniqueIdentifier(),
                 participants
         );
 
-        //create transfer state
+        //create request state
         requestState_diff = new RequestState(
                 "Alice Alice",
                 "Catan Ministry of Education",
                 "Chris Blue",
-                CATANMoJ.getParty(),
                 "1234567890",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
                 RequestState.RequestStateStatus.APPROVED,
                 new UniqueIdentifier(),
-                new UniqueIdentifier(),
                 participants
         );
 
-        requestState_nagative_amount = new RequestState(
+        requestState_negative_amount = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "Chris Blue",
-                CATANMoJ.getParty(),
                 "1234567890",
                 BigDecimal.valueOf(1000000).negate(),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
                 RequestState.RequestStateStatus.PENDING,
-                new UniqueIdentifier(),
                 new UniqueIdentifier(),
                 participants
         );
@@ -162,7 +156,7 @@ public class RequestContractTests {
     public void cannotCreateNegativeValueRequest() {
         ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
-                tx.output(RequestContract.ID, requestState_nagative_amount);
+                tx.output(RequestContract.ID, requestState_negative_amount);
                 tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Issue());
                 tx.failsWith("The request value must be non-negative.");
                 return null;

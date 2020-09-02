@@ -5,7 +5,6 @@ import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
-import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +27,7 @@ import java.util.List;
 public class PartialRequestState implements LinearState {
 
     public final String authorizedUserDept;
-    public final Party authorizerDept;
+    public final List<AbstractParty> authorizedParties;
     public final BigDecimal amount;
     public final Currency currency;
     public final ZonedDateTime datetime;
@@ -38,7 +37,7 @@ public class PartialRequestState implements LinearState {
 
     @ConstructorForDeserialization
     public PartialRequestState(String authorizedUserDept,
-                        Party authorizerDept,
+                        List<AbstractParty> authorizedParties,
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
@@ -46,7 +45,7 @@ public class PartialRequestState implements LinearState {
                         UniqueIdentifier linearId,
                         List<AbstractParty> participants) {
         this.authorizedUserDept = authorizedUserDept;
-        this.authorizerDept = authorizerDept;
+        this.authorizedParties = authorizedParties;
         this.amount = amount;
         this.currency = currency;
         this.datetime = datetime;
@@ -56,13 +55,13 @@ public class PartialRequestState implements LinearState {
     }
 
     public PartialRequestState(String authorizedUserDept,
-                        Party authorizerDept,
+                        List<AbstractParty> authorizedParties,
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserDept, authorizerDept, amount, currency, datetime, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserDept, authorizedParties, amount, currency, datetime, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -76,7 +75,7 @@ public class PartialRequestState implements LinearState {
 
     //getters
     public String getAuthorizedUserDept() { return authorizedUserDept; }
-    public Party getAuthorizerDept() { return authorizerDept; }
+    public List<AbstractParty> getAuthorizedParties() { return authorizedParties; }
     public BigDecimal getAmount() { return amount; }
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }

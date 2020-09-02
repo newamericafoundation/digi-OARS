@@ -46,13 +46,17 @@ public class ApproveRequestFlow {
             StateAndRef stateRef = (StateAndRef) results.getStates().get(0);
             RequestState inputRequestState = (RequestState) stateRef.getState().getData();
 
+            if(!inputRequestState.getAuthorizedParties().contains(getOurIdentity())){
+                throw new IllegalArgumentException("The initiator of this flow must be a authorizedParty");
+            }
+
             RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Approve();
-            outputRequestState.getParticipants().add(getOurIdentity());
             transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
+            transactionBuilder.addInputState(stateRef);
             transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
@@ -64,13 +68,14 @@ public class ApproveRequestFlow {
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
-            List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
+            List<FlowSession> flowSessions = otherParties.stream().map(this::initiateFlow).collect(Collectors.toList());
 
-            SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
-            RequestState approveRequestState = (RequestState) subFlow(new FinalityFlow(signedTransaction, flowSessions)).getTx().getOutputStates().get(0);
-            return subFlow(new UpdateFundBalanceFlow.InitiatorFlow(
+            SignedTransaction finalizedTransaction = subFlow(new FinalityFlow( subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions)), flowSessions));
+            RequestState approveRequestState = (RequestState) finalizedTransaction.getTx().getOutputStates().get(0);
+            subFlow(new UpdateFundBalanceFlow.InitiatorFlow(
                     approveRequestState
             ));
+            return finalizedTransaction;
         }
     }
     /**

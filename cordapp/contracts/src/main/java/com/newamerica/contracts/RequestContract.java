@@ -31,26 +31,28 @@ public class RequestContract implements Contract {
                 require.using("Only one output state should be created when issuing a RequestState.", tx.getOutputStates().size() == 1);
                 RequestState outputState = (RequestState) tx.getOutputStates().get(0);
                 require.using("RequestState status must be either PENDING or FLAGGED", outputState.status != RequestState.RequestStateStatus.APPROVED );
+                require.using("AuthorizedParties list cannot be empty.", !outputState.getAuthorizedParties().isEmpty());
                 return null;
             });
         }else if(commandData.equals(new Commands.Approve())){
             requireThat(require -> {
-                require.using("Only one inputs should be consumed when approving a RequestState.", tx.getInputStates().size() == 1);
+                require.using("Only one input state should be consumed when approving a RequestState.", tx.getInputStates().size() == 1);
                 require.using("Only one output state should be created when approving a RequestState.", tx.getOutputStates().size() == 1);
                 RequestState inputState = (RequestState) tx.getInputStates().get(0);
                 RequestState outputState = (RequestState) tx.getOutputStates().get(0);
                 require.using("The request input state must be in PENDING status.", inputState.getStatus() == RequestState.RequestStateStatus.PENDING);
-                require.using("The request output state must be in APPROVED status.", inputState.getStatus() == RequestState.RequestStateStatus.APPROVED);
-                require.using("The authorizedUserUsername cannot change.", inputState.getAuthorizedUserUsername() == outputState.getAuthorizedUserUsername());
-                require.using("The authorizedUserDept cannot change.", inputState.getAuthorizedUserDept() == outputState.getAuthorizedUserDept());
-                require.using("The authorizerUserUsername cannot change.", inputState.getAuthorizerUserUsername() == outputState.getAuthorizerUserUsername());
-                require.using("The authorizerDept cannot change.", inputState.getAuthorizerDept() == outputState.getAuthorizerDept());
-                require.using("The externalAccountId cannot change.", inputState.getExternalAccountId() == outputState.getExternalAccountId());
-                require.using("The amount cannot change.", inputState.getAmount() == outputState.getAmount());
-                require.using("The currency cannot change.", inputState.getCurrency() == outputState.getCurrency());
-                require.using("The datetime cannot change.", inputState.getDatetime() == outputState.getDatetime());
-                require.using("The fundStateLinearId cannot change.", inputState.getFundStateLinearId() == outputState.getFundStateLinearId());
-                require.using("The participants cannot change.", inputState.getParticipants() == outputState.getParticipants());
+                require.using("The request output state must be in APPROVED status.", outputState.getStatus() == RequestState.RequestStateStatus.APPROVED);
+                require.using("The authorizedUserUsername cannot change.", inputState.getAuthorizedUserUsername().equals(outputState.getAuthorizedUserUsername()));
+                require.using("The authorizedUserDept cannot change.", inputState.getAuthorizedUserDept().equals(outputState.getAuthorizedUserDept()));
+                require.using("The authorizerUserUsername cannot change.", inputState.getAuthorizerUserUsername().equals(outputState.getAuthorizerUserUsername()));
+                require.using("The authorizerDept cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
+                require.using("The externalAccountId cannot change.", inputState.getExternalAccountId().equals(outputState.getExternalAccountId()));
+                require.using("The amount cannot change.", inputState.getAmount().equals(outputState.getAmount()));
+                require.using("The currency cannot change.", inputState.getCurrency().equals(outputState.getCurrency()));
+                require.using("The datetime cannot change.", inputState.getDatetime().equals(outputState.getDatetime()));
+                require.using("The fundStateLinearId cannot change.", inputState.getFundStateLinearId().equals(outputState.getFundStateLinearId()));
+                require.using("The authorizedParties cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
+                require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
 
                return null;
             });
