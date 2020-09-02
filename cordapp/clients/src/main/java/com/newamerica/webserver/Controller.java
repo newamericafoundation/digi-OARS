@@ -1,9 +1,11 @@
 package com.newamerica.webserver;
 
 import com.newamerica.flows.IssueFundFlow;
+import com.newamerica.flows.ReceiveFundFlow;
 import com.newamerica.states.FundState;
 import com.newamerica.webserver.dtos.Fund;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -89,7 +92,7 @@ public class Controller extends BaseResource {
         return ResponseEntity.ok(notaries);
     }
 
-    @PostMapping(value = "fund", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/fund", consumes = "application/json", produces = "application/json")
     private Response createFund (@Valid @RequestBody Fund request) {
         try {
             String resourcePath = "/fund";
@@ -134,6 +137,8 @@ public class Controller extends BaseResource {
             ).getReturnValue().get();
             FundState created = (FundState) tx.getTx().getOutputs().get(0).getData();
             return Response.ok(createSuccessServiceResponse("Fund created successfully.", created, resourcePath)).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {
             return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -183,6 +188,23 @@ public class Controller extends BaseResource {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PutMapping(value = "/fund", consumes = "application/json", produces = "application/json")
+    private Response receiveFund (@QueryParam("fundId") String fundId) {
+        try {
+            String resourcePath = String.format("/fund?fundId=%s", fundId);
+            SignedTransaction tx = rpcOps.startFlowDynamic(
+                    ReceiveFundFlow.InitiatorFlow.class,
+                    new UniqueIdentifier(null, UUID.fromString(fundId))
+            ).getReturnValue().get();
+            FundState updated = (FundState) tx.getTx().getOutputs().get(0).getData();
+            return Response.ok(createSuccessServiceResponse("Fund received successfully.", updated, resourcePath)).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        }catch (Exception e) {
             return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
