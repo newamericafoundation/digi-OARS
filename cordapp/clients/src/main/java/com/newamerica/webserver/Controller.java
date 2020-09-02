@@ -8,7 +8,6 @@ import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.CordaX500Name;
 import net.corda.core.identity.Party;
 import net.corda.core.messaging.CordaRPCOps;
-import net.corda.core.node.NodeInfo;
 import net.corda.core.node.services.Vault;
 import net.corda.core.node.services.vault.PageSpecification;
 import net.corda.core.node.services.vault.QueryCriteria;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE_NUM;
-import static sun.misc.Version.println;
 
 /**
  * Define your API endpoints here.
@@ -104,13 +102,13 @@ public class Controller extends BaseResource {
 
             Party originParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(originPartyName));
             Party receivingParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(receivingPartyName));
-            Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US,OU=DoS,L=New York,C=US"));
-            Party NewAmerica = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US,OU=NewAmerica,L=New York,C=US"));
-            Party Catan_MoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan,OU=MoJ,L=London,C=GB"));
-            Party Catan_MoFA = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan,OU=MoFA,L=London,C=GB"));
-            Party Catan_Treasury = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan,OU=Treasury,L=London,C=GB"));
-            Party Catan_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan,OU=CSO,L=London,C=GB"));
-            Party US_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US,OU=CSO,L=New York,C=US"));
+            Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=DoS,L=New York,C=US"));
+            Party NewAmerica = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=NewAmerica,L=New York,C=US"));
+            Party Catan_MoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=MoJ,L=London,C=GB"));
+            Party Catan_MoFA = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=MoFA,L=London,C=GB"));
+            Party Catan_Treasury = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Treasury,L=London,C=GB"));
+            Party Catan_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=CatanCSO,L=London,C=GB"));
+            Party US_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=USCSO,L=New York,C=US"));
 
             BigDecimal amountAndBalance = new BigDecimal(amountStr);
             ZonedDateTime now = ZonedDateTime.now();
