@@ -12,20 +12,22 @@ import {
 import { FundsTable } from "./views/funds/FundsTable";
 import { FundsForm } from "./views/funds/FundsForm";
 import NetworkProvider from "../providers/NetworkProvider";
+import ReactNotification from 'react-notifications-component';
+
+import UseToaster from '../notification/Toaster';
 
 const FundsPage = () => {
   const [show, setShow] = useState(false);
-
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
-
-  const onFormSubmit = (e) => {
-    // e.preventDefault();
+  const onFormSubmit = (response) => {
     handleClose();
+    response.status === 200 ? UseToaster("Success", response.entity.message, "success") : UseToaster("Error", response.entity.message, "danger");
   };
 
   return (
     <>
+    <ReactNotification />
       <CCard>
         <CCardHeader>
           Funds
@@ -49,6 +51,7 @@ const FundsPage = () => {
           <CModalTitle>Funds Form</CModalTitle>
         </CModalHeader>
         <CModalBody>
+          
           <NetworkProvider>
             <FundsForm onSubmit={onFormSubmit} />
           </NetworkProvider>

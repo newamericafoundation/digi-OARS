@@ -11,13 +11,28 @@ import {
   CCol,
   CRow,
   CProgress,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody
 } from "@coreui/react";
 import Moment from "moment";
 import { FundData } from "../../../data/Funds";
+import { RequestForm } from "../withdrawals/RequestForm";
 
 export const AvailableFundsTable = () => {
   const fundData = FundData;
   const [details, setDetails] = useState([]);
+
+  const [show, setShow] = useState(false);
+
+  const handleShow = (item) => setShow(true)
+  const handleClose = () => setShow(false);
+
+  const onFormSubmit = (e) => {
+    // e.preventDefault();
+    handleClose();
+  };
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);
@@ -64,6 +79,7 @@ export const AvailableFundsTable = () => {
   };
 
   return (
+    <>
     <CDataTable
       items={fundData.filter(fund => (fund.isReceived === true && fund.balance > 0))}
       fields={fields}
@@ -112,6 +128,19 @@ export const AvailableFundsTable = () => {
               <CCard className="m-3">
                 <CCardHeader>
                   Fund Details
+                  <div className="card-header-actions">
+                    <CButton
+                      className={"float-right mb-0"}
+                      color="success"
+                      variant="outline"
+                      shape="square"
+                      size="sm"
+                      active={true}
+                      onClick={handleShow}
+                    >
+                      Request Withdrawal
+                    </CButton>
+                  </div>
                 </CCardHeader>
                 <CCardBody>
                   {item.isReceived ? (
@@ -163,5 +192,14 @@ export const AvailableFundsTable = () => {
         },
       }}
     />
+    <CModal show={show} onClose={handleClose} size="lg">
+        <CModalHeader closeButton>
+          <CModalTitle>Withdrawal Request Form</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <RequestForm onSubmit={onFormSubmit}/>
+        </CModalBody>
+      </CModal>
+    </>
   );
 };

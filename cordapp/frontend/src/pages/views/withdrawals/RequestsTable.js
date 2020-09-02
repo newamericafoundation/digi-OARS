@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import * as Constants from '../../../constants';
+import * as Constants from "../../../constants";
 import {
   CCard,
   CCardHeader,
@@ -10,7 +10,7 @@ import {
   CCollapse,
   CCol,
   CRow,
-  CProgress,
+  CProgress
 } from "@coreui/react";
 import Moment from "moment";
 import { RequestData } from "../../../data/Requests";
@@ -64,8 +64,11 @@ export const RequestsTable = (filterStatus) => {
   };
 
   return (
+    <>
     <CDataTable
-      items={requestData.filter(request => request.status === filterStatus.status)}
+      items={requestData.filter(
+        (request) => request.status === filterStatus.status
+      )}
       // fields={fields}
       columnFilter
       tableFilter
@@ -163,5 +166,7 @@ export const RequestsTable = (filterStatus) => {
         },
       }}
     />
+    
+      </>
   );
 };
