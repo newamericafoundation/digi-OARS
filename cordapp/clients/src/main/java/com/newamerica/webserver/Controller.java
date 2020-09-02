@@ -56,7 +56,7 @@ public class Controller extends BaseResource {
 
     @GetMapping(value = "nodeInfo", produces = "application/json")
     private ResponseEntity<String> getNodeInfo() {
-        return new ResponseEntity<String>(rpcOps.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
+        return new ResponseEntity<>(rpcOps.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
     }
 
     @GetMapping(value = "me", produces = "application/json")
@@ -140,7 +140,8 @@ public class Controller extends BaseResource {
     private Response getAllFunds () {
         try {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
-            List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, null, pagingSpec).getStates();
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
+            List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
             return Response.ok(fundList).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
@@ -168,7 +169,6 @@ public class Controller extends BaseResource {
             return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
-
 
     @GET
     @Path("/fund/{status}")
