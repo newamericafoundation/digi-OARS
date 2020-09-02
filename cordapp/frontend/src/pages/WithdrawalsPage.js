@@ -1,23 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   CCard,
   CCardBody,
   CCardHeader,
-  CModal,
-  CModalHeader,
-  CModalBody,
-  CModalTitle,
+  CWidgetProgressIcon,
   CRow,
   CCol,
-  CWidgetProgress,
 } from "@coreui/react";
+import CIcon from "@coreui/icons-react";
 import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
 import { RequestsTable } from "./views//withdrawals/RequestsTable";
 import { RequestData } from "../data/Requests";
-// import NetworkProvider from "../providers/NetworkProvider";
 
 const WithdrawalsPage = () => {
-
   const toCurrency = (number, currency) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -39,23 +34,27 @@ const WithdrawalsPage = () => {
   return (
     <>
       <CRow>
-        <CCol xs="12" sm="6" lg="6">
-          <CWidgetProgress
+        <CCol xs="12" sm="6" lg="3">
+          <CWidgetProgressIcon
             inverse
-            color="success"
-            header="Approved Withdrawal Requests"
-            text={toCurrency(approved, "USD").toString()}
+            header={toCurrency(approved, "USD").toString()}
+            text="Approved Withdrawal Requests"
+            color="gradient-success"
             value={(approved / total) * 100}
-          />
+          >
+            <CIcon name="cil-check-circle" height="36" />
+          </CWidgetProgressIcon>
         </CCol>
-        <CCol xs="12" sm="6" lg="6">
-          <CWidgetProgress
+        <CCol xs="12" sm="6" lg="3">
+          <CWidgetProgressIcon
             inverse
-            color="warning"
-            header="Pending Withdrawal Requests"
-            text={toCurrency(pending, "USD").toString()}
+            header={toCurrency(pending, "USD").toString()}
+            text="Pending Withdrawal Requests"
+            color="gradient-warning"
             value={(pending / total) * 100}
-          />
+          >
+            <CIcon name="cil-av-timer" height="36" />
+          </CWidgetProgressIcon>
         </CCol>
       </CRow>
       <CRow>

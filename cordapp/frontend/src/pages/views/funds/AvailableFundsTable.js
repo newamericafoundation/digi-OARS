@@ -30,7 +30,6 @@ export const AvailableFundsTable = () => {
   const handleClose = () => setShow(false);
 
   const onFormSubmit = (e) => {
-    // e.preventDefault();
     handleClose();
   };
 
@@ -46,7 +45,7 @@ export const AvailableFundsTable = () => {
   };
 
   const fields = [
-    { key: "originParty" },
+    { key: "originParty", label: "Origin Country" },
     { key: "balance", label: "Balance Available" },
     { key: "datetime", label: "Date" },
     { key: "maxWithdrawalAmount" },

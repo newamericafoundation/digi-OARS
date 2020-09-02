@@ -30,8 +30,8 @@ export const FundsTable = () => {
   };
 
   const fields = [
-    { key: "originParty" },
-    { key: "receivingParty" },
+    { key: "originParty", label: "Origin Country" },
+    { key: "receivingParty", label: "Receiving Country" },
     { key: "amount" },
     { key: "balance" },
     { key: "datetime", label: "Date" },
