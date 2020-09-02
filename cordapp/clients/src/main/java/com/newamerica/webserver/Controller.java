@@ -94,13 +94,13 @@ public class Controller extends BaseResource {
             String maxWithdrawalAmountStr = request.getMaxWithdrawalAmount();
             Party originParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(originPartyName));
             Party receivingParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(receivingPartyName));
-            Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=USDoS,L=New York,C=US"));
-            Party NewAmerica = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=NewAmerica,L=New York,C=US"));
-            Party Catan_MoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=CatanMoJ,L=London,C=GB"));
-            Party Catan_MoFA = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=CatanMoFA,L=London,C=GB"));
-            Party Catan_Treasury = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=CatanTreasury,L=London,C=GB"));
-            Party Catan_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=CatanCSO,L=London,C=GB"));
-            Party US_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=USCSO,L=New York,C=US"));
+            Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US,OU=DoS,L=New York,C=US"));
+            Party NewAmerica = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US,OU=NewAmerica,L=New York,C=US"));
+            Party Catan_MoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan,OU=MoJ,L=London,C=GB"));
+            Party Catan_MoFA = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan,OU=MoFA,L=London,C=GB"));
+            Party Catan_Treasury = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan,OU=Treasury,L=London,C=GB"));
+            Party Catan_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan,OU=CSO,L=London,C=GB"));
+            Party US_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US,OU=CSO,L=New York,C=US"));
 
             BigDecimal amountAndBalance = new BigDecimal(amountStr);
             ZonedDateTime now = ZonedDateTime.now();
