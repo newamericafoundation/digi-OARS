@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "957a8bc7-84ec-4a16-a983-ce89264e7875",
+		"name": "OARS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get Keycloak Token",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "john",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "my-react-client",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/realms/MyDemo/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"realms",
+						"MyDemo",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Keycloak Users",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "john",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "1234",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "my-react-client",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/auth/admin/realms/MyDemo/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"MyDemo",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Fund State",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"originParty\": \"O=US_DoJ,L=New York,C=US\",\n    \"receivingParty\": \"O=Catan_Treasury, L=London, C=GB\",\n    \"amount\": \"12\",\n    \"maxWithdrawalAmount\": \"12\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:10050/api/fund",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10050",
+					"path": [
+						"api",
+						"fund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Funds",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:10050/api/funds",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10050",
+					"path": [
+						"api",
+						"funds"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
