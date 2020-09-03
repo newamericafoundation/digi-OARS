@@ -2,13 +2,13 @@ package com.newamerica.webserver.responses;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.newamerica.states.FundState;
 import com.newamerica.webserver.dtos.Fund;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FundResponse extends ServiceResponse {
 
-    private Fund data;
-
+    private FundState data;
 
     public FundResponse() { super();}
 
@@ -16,14 +16,12 @@ public class FundResponse extends ServiceResponse {
         super(message, resourcePath);
     }
 
-
-    public Fund getData() {
+    public FundState getData() {
         return data;
     }
 
-    public void setData(Fund data) {
+    public void setData(FundState data) {
         this.data = data;
     }
-
 
 }

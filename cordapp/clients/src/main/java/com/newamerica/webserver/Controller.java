@@ -104,13 +104,13 @@ public class Controller extends BaseResource {
 
             Party originParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(originPartyName));
             Party receivingParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(receivingPartyName));
-            Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=DoS,L=New York,C=US"));
+            Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US_DoS,L=New York,C=US"));
             Party NewAmerica = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=NewAmerica,L=New York,C=US"));
-            Party Catan_MoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=MoJ,L=London,C=GB"));
-            Party Catan_MoFA = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=MoFA,L=London,C=GB"));
-            Party Catan_Treasury = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Treasury,L=London,C=GB"));
-            Party Catan_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=CatanCSO,L=London,C=GB"));
-            Party US_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=USCSO,L=New York,C=US"));
+            Party Catan_MoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan_MoJ,L=London,C=GB"));
+            Party Catan_MoFA = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan_MoFA,L=London,C=GB"));
+            Party Catan_Treasury = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan_Treasury,L=London,C=GB"));
+            Party Catan_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan_CSO,L=London,C=GB"));
+            Party US_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US_CSO,L=New York,C=US"));
 
             BigDecimal amountAndBalance = new BigDecimal(amountStr);
             ZonedDateTime now = ZonedDateTime.now();
@@ -136,7 +136,7 @@ public class Controller extends BaseResource {
                     participants
             ).getReturnValue().get();
             FundState created = (FundState) tx.getTx().getOutputs().get(0).getData();
-            return Response.ok(createSuccessServiceResponse("Fund created successfully.", created, resourcePath)).build();
+            return Response.ok(createFundSuccessServiceResponse("Fund created successfully.", created, resourcePath)).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {
@@ -144,7 +144,7 @@ public class Controller extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/funds", consumes = "application/json", produces = "application/json")
+    @GetMapping(value = "/funds", produces = "application/json")
     private Response getAllFunds () {
         try {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
@@ -201,7 +201,7 @@ public class Controller extends BaseResource {
                     new UniqueIdentifier(null, UUID.fromString(fundId))
             ).getReturnValue().get();
             FundState updated = (FundState) tx.getTx().getOutputs().get(0).getData();
-            return Response.ok(createSuccessServiceResponse("Fund received successfully.", updated, resourcePath)).build();
+            return Response.ok(createFundSuccessServiceResponse("Fund received successfully.", updated, resourcePath)).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {
