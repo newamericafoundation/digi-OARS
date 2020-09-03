@@ -2,7 +2,6 @@ package com.newamerica.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.newamerica.contracts.TransferContract;
-import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import com.newamerica.states.TransferState;
 import net.corda.core.contracts.CommandData;
@@ -20,9 +19,8 @@ import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
@@ -34,12 +32,10 @@ public class IssueTransferFlow {
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private TransferState outputTransferState;
-        private Party issuanceParty;
         private UniqueIdentifier requestStateLinearId;
         private List<AbstractParty> participants;
 
-        public InitiatorFlow (Party issuanceParty, UniqueIdentifier requestStateLinearId, List<AbstractParty> participants) {
-            this.issuanceParty = issuanceParty;
+        public InitiatorFlow (UniqueIdentifier requestStateLinearId, List<AbstractParty> participants) {
             this.requestStateLinearId = requestStateLinearId;
             this.participants = participants;
         }
@@ -47,12 +43,9 @@ public class IssueTransferFlow {
         @Suspendable
         @Override
         public SignedTransaction call() throws FlowException {
-            List<UUID> requestStateLinearUUID = new ArrayList<>();
-            requestStateLinearUUID.add(outputTransferState.getRequestStateLinearId().getId());
-
             //get reference request state for transfer
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, requestStateLinearUUID);
-            Vault.Page results = getServiceHub().getVaultService().queryBy(FundState.class, queryCriteria);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(requestStateLinearId.getId()));
+            Vault.Page results = getServiceHub().getVaultService().queryBy(RequestState.class, queryCriteria);
             StateAndRef requestStateRef = (StateAndRef) results.getStates().get(0);
             RequestState requestState = (RequestState) requestStateRef.getState().getData();
 
@@ -62,7 +55,7 @@ public class IssueTransferFlow {
             transactionBuilder.addCommand(commandData, getOurIdentity().getOwningKey());
 
             outputTransferState = new TransferState(
-                    issuanceParty,
+                    getOurIdentity(),
                     requestState.getAuthorizedUserDept(),
                     requestState.getAuthorizedUserUsername(),
                     requestState.getExternalAccountId(),

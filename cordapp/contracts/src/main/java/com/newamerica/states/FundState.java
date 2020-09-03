@@ -145,7 +145,7 @@ public class FundState implements LinearState {
     public enum FundStateStatus{
         ISSUED("ISSUED"),
         RECEIVED("RECEIVED"),
-        PAID("RECEIVED");
+        PAID("PAID");
 
         public final String status;
         FundStateStatus(String status) {
