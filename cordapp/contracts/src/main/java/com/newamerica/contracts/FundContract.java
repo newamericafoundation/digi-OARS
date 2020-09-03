@@ -50,8 +50,8 @@ public class FundContract implements Contract {
                 require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The balance must be greater than zero.", outputState.balance.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The balance and amount fields must be equal during an issuance.", outputState.getAmount().compareTo(outputState.getBalance()) == 0);
-                require.using("The maxWithdrawalAmount must be greater than or equal to zero.", outputState.maxWithdrawalAmount.compareTo(BigDecimal.ZERO) > 0);
-                require.using("The status can only be ISSUED during an issuance transaction.", outputState.status == FundState.FundStateStatus.ISSUED);
+                require.using("The maxWithdrawalAmount must be greater than or equal to zero.", outputState.getMaxWithdrawalAmount().compareTo(BigDecimal.ZERO) >= 0);
+                require.using("The status can only be ISSUED during an issuance transaction.", outputState.getStatus() == FundState.FundStateStatus.ISSUED);
 
                 // combine the Lists
                 List<AbstractParty> combinedLists = Stream.concat(outputState.owners.stream(), outputState.requiredSigners.stream()) .collect(Collectors.toList());
@@ -97,7 +97,7 @@ public class FundContract implements Contract {
                 require.using("There must be at least one Party in the requiredSigners list.", !outputState.getOwners().isEmpty());
                 require.using("The amount must be greater than zero.", outputState.getAmount().compareTo(BigDecimal.ZERO) > 0);
                 require.using("The balance must be greater than zero.", outputState.getBalance().compareTo(BigDecimal.ZERO) > 0);
-                require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.getMaxWithdrawalAmount().compareTo(BigDecimal.ZERO) > 0);
+                require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.getMaxWithdrawalAmount().compareTo(BigDecimal.ZERO) >= 0);
                 require.using("The status can only be RECEIVED during an issuance transaction.", outputState.getStatus() == FundState.FundStateStatus.RECEIVED);
                 require.using("The List of participants cannot be empty.", !outputState.getParticipants().isEmpty());
                 require.using("input amount and output amount must be the same", inputState.getAmount().compareTo(outputState.getAmount()) == 0);

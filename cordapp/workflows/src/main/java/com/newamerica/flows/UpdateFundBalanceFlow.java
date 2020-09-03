@@ -54,7 +54,7 @@ public class UpdateFundBalanceFlow {
             //create new output state for the fundState
             FundState outputFundState = inputStateRefFundState.withdraw(requestState.getAmount());
             if(outputFundState.getBalance().compareTo(BigDecimal.ZERO) == 0){
-                outputFundState.changeStatus(FundState.FundStateStatus.PAID);
+                outputFundState = outputFundState.changeStatus(FundState.FundStateStatus.PAID);
             }
 
             final Party notary = getPreferredNotary(getServiceHub());
