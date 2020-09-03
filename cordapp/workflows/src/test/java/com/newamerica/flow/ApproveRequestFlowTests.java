@@ -36,7 +36,7 @@ import static org.junit.Assert.assertEquals;
 public class ApproveRequestFlowTests {
 
     private MockNetwork mockNetwork;
-    private StartedMockNode a, b, c;
+    private StartedMockNode a, b, c,d;
     private Party usDoj;
     private Party usDos;
     private Party catanMoj;
@@ -64,7 +64,7 @@ public class ApproveRequestFlowTests {
         a = mockNetwork.createNode(new MockNodeParameters());
         b = mockNetwork.createNode(new MockNodeParameters());
         c = mockNetwork.createNode(new MockNodeParameters());
-        StartedMockNode d = mockNetwork.createNode(new MockNodeParameters());
+        d = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode e = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode f = mockNetwork.createNode(new MockNodeParameters());
 
@@ -247,7 +247,7 @@ public class ApproveRequestFlowTests {
         ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
                 fs.getLinearId()
         );
-        Future<SignedTransaction> futureTwo = a.startFlow(receiveFundFlow);
+        Future<SignedTransaction> futureTwo = c.startFlow(receiveFundFlow);
         mockNetwork.runNetwork();
         futureTwo.get();
 
@@ -277,7 +277,79 @@ public class ApproveRequestFlowTests {
         //run the flow as the a party that is not in the requiredSigners list.
         Future<SignedTransaction> futureFour = a.startFlow(approveRequestFlow);
         mockNetwork.runNetwork();
-        stx4 = futureFour.get();
+        futureFour.get();
+    }
+
+    @Test
+    public void paidStatusIfBalanceZero() throws ExecutionException, InterruptedException{
+        //create FundState
+        IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
+                usDos,
+                catanMoj,
+                owners,
+                requiredSigners,
+                partialRequestParticipants,
+                BigDecimal.valueOf(5000000),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                BigDecimal.valueOf(5000000),
+                Currency.getInstance(Locale.US),
+                participants
+        );
+
+        Future<SignedTransaction> future = a.startFlow(fundStateFlow);
+        mockNetwork.runNetwork();
+        SignedTransaction stx = future.get();
+        FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
+
+        //acknowledge the FundState
+        ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                fs.getLinearId()
+        );
+        Future<SignedTransaction> futureTwo = c.startFlow(receiveFundFlow);
+        mockNetwork.runNetwork();
+        futureTwo.get();
+
+        //create RequestState
+        IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
+                "Alice Bob",
+                "Catan Ministry of Education",
+                "Chris Jones",
+                "1234567890",
+                BigDecimal.valueOf(5000000),
+                Currency.getInstance(Locale.US),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                fs.getLinearId(),
+                participants
+        );
+
+        Future<SignedTransaction> futureThree = c.startFlow(requestFlow);
+        mockNetwork.runNetwork();
+        SignedTransaction stx3 = futureThree.get();
+        RequestState rs = (RequestState) stx3.getTx().getOutputStates().get(0);
+
+        //approve requestState
+        ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
+                rs.getLinearId()
+        );
+
+        //run the flow as the a party that is not in the requiredSigners list.
+        Future<SignedTransaction> futureFour = d.startFlow(approveRequestFlow);
+        mockNetwork.runNetwork();
+        rs = (RequestState) futureFour.get().getTx().getOutputStates().get(0);
+
+        //FundState checks
+        List<UUID> fundStateLinearIdList = new ArrayList<>();
+        fundStateLinearIdList.add(rs.getFundStateLinearId().getId());
+        QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, fundStateLinearIdList);
+        Vault.Page results = a.getServices().getVaultService().queryBy(FundState.class, queryCriteria);
+        StateAndRef stateRef = (StateAndRef) results.getStates().get(0);
+        FundState fs2 = (FundState) stateRef.getState().getData();
+
+        assert(fs2.getBalance().compareTo(BigDecimal.ZERO) == 0);
+        assert(fs2.getStatus() == FundState.FundStateStatus.PAID);
+
+        //RequestState checks
+        assert(rs.getStatus() == RequestState.RequestStateStatus.APPROVED);
     }
 
 }

@@ -30,9 +30,10 @@ import static org.junit.Assert.assertEquals;
 
 public class IssueRequestFlowTests {
     private MockNetwork mockNetwork;
-    private StartedMockNode a;
-    private StartedMockNode b;
+    private StartedMockNode a, b, c;
     private Party usDoj;
+    private Party usDos;
+    private Party catanMoj;
     SignedTransaction stx2;
     private final List<AbstractParty> owners = new ArrayList<>();
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
@@ -56,7 +57,7 @@ public class IssueRequestFlowTests {
 
         a = mockNetwork.createNode(new MockNodeParameters());
         b = mockNetwork.createNode(new MockNodeParameters());
-        StartedMockNode c = mockNetwork.createNode(new MockNodeParameters());
+        c = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode d = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode e = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode f = mockNetwork.createNode(new MockNodeParameters());
@@ -76,10 +77,10 @@ public class IssueRequestFlowTests {
 
         mockNetwork.runNetwork();
 
-        Party usDos = a.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
+        usDos = a.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
         usDoj = b.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
         Party catanMof = c.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
-        Party catanMoj = d.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
+        catanMoj = d.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
         Party usCSO = e.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
         Party catanCSO = f.getInfo().getLegalIdentitiesAndCerts().get(0).getParty();
 
@@ -172,5 +173,46 @@ public class IssueRequestFlowTests {
             System.out.printf("$txHash == %h\n", stx2.getId());
             assertEquals(stx2.getId(), txHash);
         });
+    }
+
+    @Test
+    public void maxWithdrawalRequestsTriggersFlaggedStatus() throws ExecutionException, InterruptedException {
+        //create FundState
+        IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
+                usDos,
+                catanMoj,
+                owners,
+                requiredSigners,
+                partialRequestParticipants,
+                BigDecimal.valueOf(5000000),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                BigDecimal.valueOf(1000000),
+                Currency.getInstance(Locale.US),
+                participants
+        );
+
+        Future<SignedTransaction> future = a.startFlow(fundStateFlow);
+        mockNetwork.runNetwork();
+        SignedTransaction stx = future.get();
+        FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
+
+        //create RequestState
+        IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
+                "Alice Bob",
+                "Catan Ministry of Education",
+                "Chris Jones",
+                "1234567890",
+                BigDecimal.valueOf(1000001),
+                Currency.getInstance(Locale.US),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                fs.getLinearId(),
+                participants
+        );
+
+        Future<SignedTransaction> futureTwo = c.startFlow(requestFlow);
+        mockNetwork.runNetwork();
+        stx2 = futureTwo.get();
+        RequestState rs = (RequestState) stx2.getTx().getOutputStates().get(0);
+        assert(rs.getStatus() == RequestState.RequestStateStatus.FLAGGED);
     }
 }
