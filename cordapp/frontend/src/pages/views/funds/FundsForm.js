@@ -83,7 +83,6 @@ export const FundsForm = ({ onSubmit }) => {
 
   return (
     <>
-
       <CCol>
         <CForm onSubmit={handleOnSubmit}>
           <CRow>

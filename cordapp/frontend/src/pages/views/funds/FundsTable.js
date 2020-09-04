@@ -13,11 +13,8 @@ import {
   CCallout,
 } from "@coreui/react";
 import Moment from "moment";
-import { FundsContext } from "../../../providers/FundsProvider";
 
-export const FundsTable = (data) => {
-  // console.log(data.funds.then(item => console.log(item)));
-  const funds = useContext(FundsContext);
+export const FundsTable = ({funds}) => {  
   const [details, setDetails] = useState([]);
 
   const toggleDetails = (index) => {
@@ -98,7 +95,7 @@ export const FundsTable = (data) => {
 
   return (
     <CDataTable
-      items={funds[0]}
+      items={funds.data}
       fields={fields}
       columnFilter
       tableFilter
