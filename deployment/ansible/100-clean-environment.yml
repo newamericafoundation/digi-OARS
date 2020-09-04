@@ -38,14 +38,14 @@
       tags:
         - remove-node
 
-- name: Clean Docker Network
-  hosts: node-machines, notary-machines
-  gather_facts: true
-  become: true
-  tasks:
-    - name: Remove Corda Docker Network
-      docker_network:
-        name: corda
-        state: absent
-  tags:
-    - remove-docker-network
+#- name: Clean Docker Network
+#  hosts: node-machines, notary-machines
+#  gather_facts: true
+#  become: true
+#  tasks:
+#    - name: Remove Corda Docker Network
+#      docker_network:
+#        name: corda
+#        state: absent
+#  tags:
+#    - remove-docker-network
