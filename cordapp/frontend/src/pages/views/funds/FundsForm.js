@@ -58,7 +58,7 @@ export const FundsForm = ({ onSubmit }) => {
 
     axios
       .post(url, {
-        originParty: "O=DoJ, L=New York, C=US",
+        originParty: "O=US_DoJ, L=New York, C=US",
         receivingParty: state.receivingParty,
         amount: state.amount,
         maxWithdrawalAmount: state.maxWithdrawalAmount,
