@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import {
   CCard,
   CCardBody,
@@ -7,15 +7,16 @@ import {
   CModal,
   CModalHeader,
   CModalBody,
-  CModalTitle,
+  CModalTitle
 } from "@coreui/react";
 import { FundsTable } from "./views/funds/FundsTable";
 import { FundsForm } from "./views/funds/FundsForm";
 import NetworkProvider from "../providers/NetworkProvider";
 import ReactNotification from "react-notifications-component";
-
 import UseToaster from "../notification/Toaster";
 import { FundsContext } from "../providers/FundsProvider";
+import EllipsesText from 'react-ellipsis-text';
+
 
 const FundsPage = () => {
   const [fundsState, fundsCallback] = useContext(FundsContext);
@@ -24,10 +25,24 @@ const FundsPage = () => {
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
 
+  const responseMessage = (message) => {
+    return (
+      <div>
+        {message.entity.message}
+        <br />
+        <strong>State ID:</strong> <EllipsesText text={message.entity.data.linearId.id} length={25}/>
+        <br />
+        <strong>Status:</strong> {message.entity.data.status}
+      </div>
+    );
+  };
+
   const onFormSubmit = (response) => {
     handleClose();
+    console.log(response);
+
     response.status === 200
-      ? UseToaster("Success", response.entity.message, "success")
+      ? UseToaster("Success", responseMessage(response), "success")
       : UseToaster("Error", response.entity.message, "danger");
 
     fundsCallback();
