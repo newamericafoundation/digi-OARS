@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   CRow,
   CCol,
@@ -12,6 +12,7 @@ import {
   CInputGroupPrepend,
   CInputGroupText,
   CInvalidFeedback,
+  CSpinner,
 } from "@coreui/react";
 import { NetworkContext } from "../../../providers/NetworkProvider";
 import useForm from "../../../form/index";
@@ -19,6 +20,7 @@ import axios from "axios";
 
 export const FundsForm = ({ onSubmit }) => {
   const [network] = useContext(NetworkContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const stateSchema = {
     receivingParty: { value: "", error: "" },
@@ -49,6 +51,7 @@ export const FundsForm = ({ onSubmit }) => {
   };
 
   const onSubmitForm = (state) => {
+    setIsLoading(true);
     const url =
       "http://" +
       window._env_.API_CLIENT_URL +
@@ -65,6 +68,7 @@ export const FundsForm = ({ onSubmit }) => {
       })
       .then((response) => {
         onSubmit(response.data);
+        setIsLoading(false);
       })
       .catch((err) => console.log(err));
   };
@@ -79,6 +83,7 @@ export const FundsForm = ({ onSubmit }) => {
 
   return (
     <>
+
       <CCol>
         <CForm onSubmit={handleOnSubmit}>
           <CRow>
@@ -157,6 +162,7 @@ export const FundsForm = ({ onSubmit }) => {
                 >
                   Submit
                 </CButton>
+                {isLoading ? <CSpinner color="primary" size="sm" /> : null }
               </CFormGroup>
             </CCol>
           </CRow>
