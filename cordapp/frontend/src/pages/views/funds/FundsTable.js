@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   CCard,
   CCardHeader,
@@ -10,12 +10,14 @@ import {
   CCol,
   CRow,
   CProgress,
+  CCallout,
 } from "@coreui/react";
 import Moment from "moment";
-import { FundData } from "../../../data/Funds";
+import { FundsContext } from "../../../providers/FundsProvider";
 
-export const FundsTable = () => {
-  const fundData = FundData;
+export const FundsTable = (data) => {
+  // console.log(data.funds.then(item => console.log(item)));
+  const funds = useContext(FundsContext);
   const [details, setDetails] = useState([]);
 
   const toggleDetails = (index) => {
@@ -96,7 +98,7 @@ export const FundsTable = () => {
 
   return (
     <CDataTable
-      items={fundData}
+      items={funds[0]}
       fields={fields}
       columnFilter
       tableFilter
@@ -113,7 +115,7 @@ export const FundsTable = () => {
           <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
         ),
         datetime: (item) => (
-          <td>{Moment(item.datetime).format("DD/MMM/yyyy")}</td>
+          <td>{Moment(item.dateTime).format("DD/MMM/yyyy")}</td>
         ),
         status: (item) => (
           <td>
@@ -162,31 +164,58 @@ export const FundsTable = () => {
                     </CRow>
                   ) : null}
                   <CRow>
-                    <CCol md="3">
-                      ID:
-                      <br />
-                      Origin Country:
-                      <br />
-                      Receiving Country:
-                      <br />
-                      Amount:
-                      <br />
-                      Balance:
-                      <br />
-                      Max Withdrawal Amount
+                    <CCol xl="4" sm="3">
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Origin Country</p>
+                        <strong className="p">{item.originParty}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Receiving Country</p>
+                        <strong className="p">{item.receivingParty}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Amount</p>
+                        <strong className="p">
+                          {toCurrency(item.amount, item.currency)}
+                        </strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Balance</p>
+                        <strong className="p">
+                          {toCurrency(item.balance, item.currency)}
+                        </strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Max Withdrawal Amount</p>
+                        <strong className="p">
+                          {toCurrency(item.maxWithdrawalAmount, item.currency)}
+                        </strong>
+                      </CCallout>
                     </CCol>
-                    <CCol md="3">
-                      {item.linearId}
-                      <br />
-                      {item.originParty}
-                      <br />
-                      {item.receivingParty}
-                      <br />
-                      {toCurrency(item.amount, item.currency)}
-                      <br />
-                      {toCurrency(item.balance, item.currency)}
-                      <br />
-                      {toCurrency(item.maxWithdrawalAmount, item.currency)}
+                    <CCol xl="4" sm="3">
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">State ID</p>
+                        <strong className="p">{item.linearId}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Transaction ID</p>
+                        <strong className="p">{item.txId}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Date/Time</p>
+                        <strong className="p">
+                          {Moment(item.dateTime).format("DD/MMM/YYYY HH:mm:ss")}
+                        </strong>
+                      </CCallout>
+                    </CCol>
+                    <CCol xl="4" sm="3">
+                      <CCallout
+                        color={item.status === "ISSUED" ? "warning" : "success"}
+                        className={"bg-light"}
+                      >
+                        <p className="text-muted mb-0">Status</p>
+                        <strong className="p">{item.status}</strong>
+                      </CCallout>
                     </CCol>
                   </CRow>
                 </CCardBody>
