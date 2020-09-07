@@ -38,6 +38,7 @@ import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE
  * Define your API endpoints here.
  */
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api") // The paths for HTTP requests are relative to this base path.
 public class Controller extends BaseResource {
     private final CordaRPCOps rpcOps;
@@ -148,7 +149,7 @@ public class Controller extends BaseResource {
     private Response getAllFunds () {
         try {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
             return Response.ok(fundList).build();
         }catch (IllegalArgumentException e) {
@@ -192,7 +193,7 @@ public class Controller extends BaseResource {
         }
     }
 
-    @PutMapping(value = "/fund", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/fund", produces = "application/json")
     private Response receiveFund (@QueryParam("fundId") String fundId) {
         try {
             String resourcePath = String.format("/fund?fundId=%s", fundId);
