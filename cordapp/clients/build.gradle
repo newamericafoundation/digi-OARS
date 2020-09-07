@@ -29,6 +29,8 @@ dependencies {
     compile "net.corda:corda-jackson:$corda_release_version"
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0'
     compile group: 'org.glassfish.jersey.core', name: 'jersey-server', version: '2.26'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
 }
 
@@ -49,5 +51,5 @@ task runTemplateClient(type: JavaExec, dependsOn: assemble) {
 task runTemplateServer(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.newamerica.webserver.Starter'
-    args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10018', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
