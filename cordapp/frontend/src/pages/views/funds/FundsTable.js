@@ -11,11 +11,15 @@ import {
   CRow,
   CProgress,
   CCallout,
+  CForm,
+  CSpinner,
 } from "@coreui/react";
 import Moment from "moment";
+import axios from "axios";
 
-export const FundsTable = ({ funds, isReceiver }) => {
+export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [details, setDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);
@@ -56,35 +60,23 @@ export const FundsTable = ({ funds, isReceiver }) => {
     }
   };
 
-  const getReceivedButton = (status) => {
+  const getReceivedButton = (status, id, index) => {
     if (isReceiver) {
-      if (status === "RECEIVED") {
+      if (status === "ISSUED") {
         return (
           <CButton
-            className={"float-right mb-0"}
-            color="dark"
-            variant="outline"
-            shape="square"
-            size="sm"
-            active={false}
-            disabled={true}
-          >
-            Received
-          </CButton>
+              className={"float-right mb-0"}
+              color="success"
+              variant="outline"
+              shape="square"
+              size="sm"
+              onClick={() => onHandleReceiveClick(id, index)}
+            >
+              {isLoading ? <CSpinner className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" /> : null}
+              Receive Funds
+            </CButton>
         );
       }
-      return (
-        <CButton
-          className={"float-right mb-0"}
-          color="success"
-          variant="outline"
-          shape="square"
-          size="sm"
-          active={true}
-        >
-          Receive
-        </CButton>
-      );
     }
   };
 
@@ -93,6 +85,25 @@ export const FundsTable = ({ funds, isReceiver }) => {
       style: "currency",
       currency: currency,
     }).format(number);
+  };
+
+  const onHandleReceiveClick = (fundId, index) => {
+    setIsLoading(true);
+    const url =
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      window._env_.API_CLIENT_PORT +
+      "/api/fund";
+
+    axios
+      .put(url, null, { params: { fundId } })
+      .then((response) => {
+        setIsLoading(false);
+        refreshTableCallback();
+        toggleDetails(index)
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -121,7 +132,9 @@ export const FundsTable = ({ funds, isReceiver }) => {
             <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
           </td>
         ),
-        isReceived: (item) => <td>{getReceivedButton(item.status)}</td>,
+        isReceived: (item) => (
+          <td>{getReceivedButton(item.status, item.linearId)}</td>
+        ),
         show_details: (item, index) => {
           return (
             <td>
@@ -145,7 +158,7 @@ export const FundsTable = ({ funds, isReceiver }) => {
               <CCard className="m-3">
                 <CCardHeader>
                   Fund Details
-                  {getReceivedButton(item.isReceived)}
+                  {getReceivedButton(item.status, item.linearId, index)}
                 </CCardHeader>
                 <CCardBody>
                   {item.isReceived ? (

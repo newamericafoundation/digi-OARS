@@ -17,6 +17,7 @@ import UseToaster from "../notification/Toaster";
 import { FundsContext } from "../providers/FundsProvider";
 import EllipsesText from "react-ellipsis-text";
 import { useAuth } from "../auth-hook";
+import axios from "axios";
 
 const FundsPage = () => {
   const auth = useAuth();
@@ -57,6 +58,22 @@ const FundsPage = () => {
     fundsCallback();
   };
 
+  // const onHandleReceive = (fundId) => {
+  //   const url =
+  //     "http://" +
+  //     window._env_.API_CLIENT_URL +
+  //     ":" +
+  //     window._env_.API_CLIENT_PORT +
+  //     "/api/fund";
+
+  //   axios
+  //     .put(url, null, { params: { fundId } })
+  //     .then((response) => {
+  //       fundsCallback();
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
+
   return (
     <>
       <ReactNotification />
@@ -77,7 +94,11 @@ const FundsPage = () => {
           ) : null}
         </CCardHeader>
         <CCardBody>
-          <FundsTable funds={fundsState} isReceiver={isFundsReceiver} />
+          <FundsTable
+            funds={fundsState}
+            isReceiver={isFundsReceiver}
+            refreshTableCallback={fundsCallback}
+          />
         </CCardBody>
       </CCard>
       <CModal show={show} onClose={handleClose}>
