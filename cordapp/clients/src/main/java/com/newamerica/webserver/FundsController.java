@@ -16,8 +16,6 @@ import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,57 +38,60 @@ import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api") // The paths for HTTP requests are relative to this base path.
-public class Controller extends BaseResource {
+public class FundsController extends BaseResource {
     private final CordaRPCOps rpcOps;
-    private final static Logger logger = LoggerFactory.getLogger(Controller.class);
+    private final static Logger logger = LoggerFactory.getLogger(FundsController.class);
 
-    public Controller(NodeRPCConnection rpc) {
+    public FundsController(NodeRPCConnection rpc) {
         this.rpcOps = rpc.proxy;
     }
 
-    @GetMapping(value = "hello", produces = "text/plain")
-    private String hello() {
-        return "Hello OARS!";
+    @GetMapping(value = "/funds", produces = "application/json")
+    private Response getAllFunds () {
+        try {
+            PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
+            List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
+            return Response.ok(fundList).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
-    @GetMapping(value = "nodeInfo", produces = "application/json")
-    private ResponseEntity<String> getNodeInfo() {
-        return new ResponseEntity<>(rpcOps.nodeInfo().getLegalIdentities().toString(), HttpStatus.OK);
+    @GetMapping(value = "/fund/id", produces = "application/json", params = "fundId")
+    private Response getFundById (@PathParam("fundId") String fundId) {
+        try {
+            String resourcePath = String.format("/fund?fundId=%s", fundId);
+            PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(fundId)));
+            StateAndRef<FundState> fund = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates().get(0);
+            return Response.ok(fund.getState().getData()).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
-    @GetMapping(value = "me", produces = "application/json")
-    private ResponseEntity<Party> getMyIdentity() {
-        Party me = rpcOps.nodeInfo().getLegalIdentities().get(0);
-        return ResponseEntity.ok(me);
-    }
-
-    @GetMapping(value = "flows", produces = "application/json")
-    private ResponseEntity<String> getFlows() {
-        List<String> flows = rpcOps.registeredFlows();
-        return ResponseEntity.ok("Enumerate flows on this node: \n$flows");
-    }
-
-    @GetMapping(value = "version", produces = "application/json")
-    private ResponseEntity<Integer> getVersion() {
-        Integer version = rpcOps.nodeInfo().getPlatformVersion();
-        return ResponseEntity.ok(version);
-    }
-
-    @GetMapping(value = "network", produces = "application/json")
-    private ResponseEntity<List<Party>> getNetworkMap() {
-        List<Party> filtered = rpcOps.networkMapSnapshot()
-                .stream()
-                .filter(e -> !e.equals(rpcOps.nodeInfo()))
-                .flatMap(e -> e.getLegalIdentities().stream())
-                .collect(Collectors.toList());
-        filtered.remove(rpcOps.notaryIdentities().get(0));
-        return ResponseEntity.ok(filtered);
-    }
-
-    @GetMapping(value = "notary", produces = "application/json")
-    private ResponseEntity<List<Party>> getNotary() {
-        List<Party> notaries = rpcOps.notaryIdentities();
-        return ResponseEntity.ok(notaries);
+    @GetMapping(value = "/fund/status", produces = "application/json", params = "status")
+    private Response getFundByStatus (@PathParam("status") String status) {
+        try {
+            String resourcePath = String.format("/fund?status=%s", status);
+            FundState.FundStateStatus fundStateStatus = FundState.FundStateStatus.valueOf(status);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
+            List<StateAndRef<FundState>> funds = rpcOps.vaultQueryByCriteria(queryCriteria, FundState.class).getStates();
+            List<FundState> result = funds.stream().filter(it -> it.getState().getData().getStatus().equals(fundStateStatus)).map(it -> it.getState().getData()).collect(Collectors.toList());
+            return Response.ok(result).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
     }
 
     @PostMapping(value = "/fund", consumes = "application/json", produces = "application/json")
@@ -145,55 +146,7 @@ public class Controller extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/funds", produces = "application/json")
-    private Response getAllFunds () {
-        try {
-            PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
-            List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
-            return Response.ok(fundList).build();
-        }catch (IllegalArgumentException e) {
-            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/fund/{fundId}", consumes = "application/json", produces = "application/json")
-    private Response getFundById (@PathParam("fundId") String fundId) {
-        try {
-            String resourcePath = String.format("/fund/%s", fundId);
-            PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(fundId)));
-            StateAndRef<FundState> fund = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates().get(0);
-            return Response.ok(fund.getState().getData()).build();
-        }catch (IllegalArgumentException e) {
-            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/fund/{status}", consumes = "application/json", produces = "application/json")
-    private Response getFundByStatus (@PathParam("status") String status) {
-        try {
-            String resourcePath = String.format("/fund/%s", status);
-            FundState.FundStateStatus fundStateStatus = FundState.FundStateStatus.valueOf(status);
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
-            List<StateAndRef<FundState>> funds = rpcOps.vaultQueryByCriteria(queryCriteria, FundState.class).getStates();
-            List<FundState> result = funds.stream().filter(it -> it.getState().getData().getStatus().equals(fundStateStatus)).map(it -> it.getState().getData()).collect(Collectors.toList());
-            return Response.ok(result).build();
-        }catch (IllegalArgumentException e) {
-            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
-    @PutMapping(value = "/fund", produces = "application/json")
+    @PutMapping(value = "/fund", produces = "application/json", params = "fundId")
     private Response receiveFund (@QueryParam("fundId") String fundId) {
         try {
             String resourcePath = String.format("/fund?fundId=%s", fundId);
@@ -209,4 +162,5 @@ public class Controller extends BaseResource {
             return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
 }
