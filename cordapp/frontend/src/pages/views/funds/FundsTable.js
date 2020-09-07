@@ -14,7 +14,7 @@ import {
 } from "@coreui/react";
 import Moment from "moment";
 
-export const FundsTable = ({funds}) => {  
+export const FundsTable = ({ funds, isReceiver }) => {
   const [details, setDetails] = useState([]);
 
   const toggleDetails = (index) => {
@@ -56,34 +56,36 @@ export const FundsTable = ({funds}) => {
     }
   };
 
-  const getReceivedButton = (isReceived) => {
-    if (isReceived) {
+  const getReceivedButton = (status) => {
+    if (isReceiver) {
+      if (status === "RECEIVED") {
+        return (
+          <CButton
+            className={"float-right mb-0"}
+            color="dark"
+            variant="outline"
+            shape="square"
+            size="sm"
+            active={false}
+            disabled={true}
+          >
+            Received
+          </CButton>
+        );
+      }
       return (
         <CButton
           className={"float-right mb-0"}
-          color="dark"
+          color="success"
           variant="outline"
           shape="square"
           size="sm"
-          active={false}
-          disabled={true}
+          active={true}
         >
-          Received
+          Receive
         </CButton>
       );
     }
-    return (
-      <CButton
-        className={"float-right mb-0"}
-        color="success"
-        variant="outline"
-        shape="square"
-        size="sm"
-        active={true}
-      >
-        Receive
-      </CButton>
-    );
   };
 
   const toCurrency = (number, currency) => {
@@ -119,7 +121,7 @@ export const FundsTable = ({funds}) => {
             <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
           </td>
         ),
-        isReceived: (item) => <td>{getReceivedButton(item.isReceived)}</td>,
+        isReceived: (item) => <td>{getReceivedButton(item.status)}</td>,
         show_details: (item, index) => {
           return (
             <td>
