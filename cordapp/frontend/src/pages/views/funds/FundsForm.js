@@ -73,6 +73,12 @@ export const FundsForm = ({ onSubmit }) => {
       .catch((err) => console.log(err));
   };
 
+  const getTreasuryNodes = () => {
+    if (network.length > 0) {
+      return network.filter((node) => node.includes("_Treasury"));
+    }
+  };
+
   const { values, errors, handleOnChange, handleOnSubmit, disable } = useForm(
     stateSchema,
     stateValidatorSchema,
@@ -80,6 +86,7 @@ export const FundsForm = ({ onSubmit }) => {
   );
 
   const { amount, maxWithdrawalAmount } = values;
+  const treasuryNodes = getTreasuryNodes();
 
   return (
     <>
@@ -95,9 +102,18 @@ export const FundsForm = ({ onSubmit }) => {
                   id="receivingParty"
                   onChange={handleOnChange}
                 >
-                  {network.map((item) => (
-                    <option key={item.toString()}>{item}</option>
-                  ))}
+                  <option placeholder={0}></option>
+                  {treasuryNodes
+                    ? treasuryNodes.map((item) => (
+                        <option
+                          key={item}
+                          label={item
+                            .split(/O=([a-zA-Z_]+)/)[1]
+                            .replace("_", " ")}
+                          value={item}
+                        />
+                      ))
+                    : null}
                 </CSelect>
               </CFormGroup>
             </CCol>
@@ -161,7 +177,7 @@ export const FundsForm = ({ onSubmit }) => {
                 >
                   Submit
                 </CButton>
-                {isLoading ? <CSpinner color="primary" size="sm" /> : null }
+                {isLoading ? <CSpinner color="primary" size="sm" /> : null}
               </CFormGroup>
             </CCol>
           </CRow>
