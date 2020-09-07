@@ -38,6 +38,7 @@ import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE
  * Define your API endpoints here.
  */
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/api") // The paths for HTTP requests are relative to this base path.
 public class Controller extends BaseResource {
     private final CordaRPCOps rpcOps;
