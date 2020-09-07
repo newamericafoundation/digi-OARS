@@ -175,9 +175,15 @@ export const FundsForm = ({ onSubmit }) => {
                   type="submit"
                   disabled={disable}
                 >
+                  {isLoading ? (
+                    <CSpinner
+                      className="spinner-border spinner-border-sm mr-1"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  ) : null}
                   Submit
                 </CButton>
-                {isLoading ? <CSpinner color="primary" size="sm" /> : null}
               </CFormGroup>
             </CCol>
           </CRow>
