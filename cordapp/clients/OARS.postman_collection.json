@@ -112,7 +112,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"originParty\": \"O=US_DoJ,L=New York,C=US\",\n    \"receivingParty\": \"O=Catan_Treasury, L=London, C=GB\",\n    \"amount\": \"12\",\n    \"maxWithdrawalAmount\": \"12\"\n}",
+					"raw": "{\n    \"originParty\": \"O=US_DoJ,L=New York,C=US\",\n    \"receivingParty\": \"O=Catan_Treasury, L=London, C=GB\",\n    \"amount\": \"4\",\n    \"maxWithdrawalAmount\": \"12\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -129,6 +129,32 @@
 					"path": [
 						"api",
 						"fund"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Receive Fund State",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:10050/api/fund?fundId=369e3644-642d-4b1f-9bdc-a144cdb26d30",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "10050",
+					"path": [
+						"api",
+						"fund"
+					],
+					"query": [
+						{
+							"key": "fundId",
+							"value": "369e3644-642d-4b1f-9bdc-a144cdb26d30"
+						}
 					]
 				}
 			},
