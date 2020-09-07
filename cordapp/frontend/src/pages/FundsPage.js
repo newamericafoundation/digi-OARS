@@ -39,8 +39,6 @@ const FundsPage = () => {
 
   const onFormSubmit = (response) => {
     handleClose();
-    console.log(response);
-
     response.status === 200
       ? UseToaster("Success", responseMessage(response), "success")
       : UseToaster("Error", response.entity.message, "danger");
