@@ -152,13 +152,13 @@ public class RequestsController extends BaseResource {
             List<AbstractParty> authorizedParties = Arrays.asList(Catan_MoJ);
 
             List<AbstractParty> participants = Arrays.asList(Catan_MoFA, US_DoS, NewAmerica, Catan_MoJ, Catan_Treasury);
-
+            
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     IssueRequestFlow.InitiatorFlow.class,
                     authorizedUserUsername,
                     authorizedUserDept,
-                    authorizedParties,
                     externalAccountId,
+                    authorizedParties,
                     purpose,
                     amountAndBalance,
                     currency,
