@@ -134,7 +134,8 @@ import {
   cilBank,
   cilWallet,
   cilFork,
-  cilAvTimer
+  cilAvTimer,
+  cilBriefcase
 } from '@coreui/icons'
 
 export const icons = Object.assign({}, {
@@ -239,7 +240,8 @@ export const icons = Object.assign({}, {
   cilBank,
   cilWallet,
   cilFork,
-  cilAvTimer
+  cilAvTimer,
+  cilBriefcase
 }, {
   cifUs,
   cifBr,
