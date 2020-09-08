@@ -172,7 +172,7 @@ public class RequestsController extends BaseResource {
         }
     }
 
-    @PutMapping(value = "/request", produces = "application/json")
+    @PutMapping(value = "/request", produces = "application/json", params = {"requestId", "authorizerUserUsername"})
     private Response approveRequest (@QueryParam("requestId") String requestId, @QueryParam("authorizerUserUsername") String authorizerUserUsername) {
         try {
             String resourcePath = String.format("/request?requestId=%s?authorizerUserUsername=%s", requestId, authorizerUserUsername);
