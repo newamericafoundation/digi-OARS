@@ -36,6 +36,7 @@ public class IssueRequestFlow {
                 String authorizedUserUsername,
                 String authorizedUserDept,
                 String externalAccountId,
+                List<AbstractParty> authorizedParties,
                 String purpose,
                 BigDecimal amount,
                 Currency currency,
@@ -46,7 +47,8 @@ public class IssueRequestFlow {
             this.outputRequestState = new RequestState(
                     authorizedUserUsername,
                     authorizedUserDept,
-                    null,
+                    "",
+                    authorizedParties,
                     externalAccountId,
                     purpose,
                     amount,

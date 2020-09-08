@@ -31,6 +31,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
+import static com.newamerica.TestUtils.CATANMoFA;
+import static com.newamerica.TestUtils.CATANMoJ;
 import static org.junit.Assert.assertEquals;
 
 public class ApproveRequestFlowTests {
@@ -45,6 +47,7 @@ public class ApproveRequestFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
 
 
 
@@ -102,6 +105,8 @@ public class ApproveRequestFlowTests {
         participants.add(catanMoj);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
+        authorizedParties.add(CATANMoJ.getParty());
+        authorizedParties.add(CATANMoFA.getParty());
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
@@ -135,6 +140,7 @@ public class ApproveRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
+                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -257,6 +263,7 @@ public class ApproveRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
+                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -316,6 +323,7 @@ public class ApproveRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
+                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(5000000),
                 Currency.getInstance(Locale.US),

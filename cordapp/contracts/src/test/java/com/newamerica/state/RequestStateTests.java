@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 public class RequestStateTests {
     private RequestState requestState;
     private final List<AbstractParty> participants = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
     private UniqueIdentifier uniqueIdentifier;
 
     @Before
@@ -30,11 +31,14 @@ public class RequestStateTests {
         participants.add(CATANMoJ.getParty());
         participants.add(CATANMoFA.getParty());
         uniqueIdentifier =  new UniqueIdentifier();
+        authorizedParties.add(CATANMoJ.getParty());
+        authorizedParties.add(CATANMoFA.getParty());
 
         requestState = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "Chris Jones",
+                authorizedParties,
                 "1234567890",
                 "build a school",
                 BigDecimal.valueOf(1000000),
@@ -85,6 +89,7 @@ public class RequestStateTests {
         assertEquals(requestState.getAuthorizedUserUsername(), "Alice Bob");
         assertEquals(requestState.getAuthorizedUserDept(), "Catan Ministry of Education");
         assertEquals(requestState.getAuthorizerUserUsername(),"Chris Jones");
+        assertEquals(requestState.getAuthorizedParties(), new ArrayList<>(authorizedParties));
         assertEquals(0, requestState.getAmount().compareTo(BigDecimal.valueOf(1000000)));
         assertEquals(requestState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertEquals(requestState.getCurrency(), Currency.getInstance(Locale.US));

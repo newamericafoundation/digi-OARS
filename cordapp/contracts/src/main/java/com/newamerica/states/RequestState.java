@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
 
@@ -76,6 +75,7 @@ public class RequestState implements LinearState {
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
                         String authorizerUsername,
+                        List<AbstractParty> authorizedParties,
                         String externalAccount,
                         String purpose,
                         BigDecimal amount,
@@ -84,7 +84,7 @@ public class RequestState implements LinearState {
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, Collections.<AbstractParty>emptyList(), externalAccount, purpose, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizedParties, externalAccount, purpose, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 

@@ -4,7 +4,6 @@ import com.newamerica.TestUtils;
 import com.newamerica.contracts.RequestContract;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
-import net.corda.core.contracts.TransactionVerificationException;
 import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -26,6 +25,8 @@ public class RequestContractTests {
     static private final MockServices ledgerServices =
             new MockServices(Arrays.asList("com.newamerica.contracts", "com.newamerica.flows"));
     private final List<AbstractParty> participants = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
+
     private RequestState requestState;
     private RequestState requestState_diff;
     private RequestState requestState_negative_amount;
@@ -42,12 +43,15 @@ public class RequestContractTests {
         participants.add(CATANTreasury.getParty());
         participants.add(CATANMoFA.getParty());
         participants.add(CATANMoJ.getParty());
+        authorizedParties.add(CATANMoJ.getParty());
+        authorizedParties.add(CATANMoFA.getParty());
 
         //create request state
         requestState = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "Chris Blue",
+                authorizedParties,
                 "1234567890",
                 "build a school",
                 BigDecimal.valueOf(1000000),
@@ -63,6 +67,7 @@ public class RequestContractTests {
                 "Alice Alice",
                 "Catan Ministry of Education",
                 "Chris Blue",
+                authorizedParties,
                 "1234567890",
                 "build a school",
                 BigDecimal.valueOf(1000000),
@@ -77,6 +82,7 @@ public class RequestContractTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "Chris Blue",
+                authorizedParties,
                 "1234567890",
                 "build a school",
                 BigDecimal.valueOf(1000000).negate(),
@@ -89,7 +95,7 @@ public class RequestContractTests {
     }
 
     // issue
-    @Test(expected= TransactionVerificationException.class)
+    @Test
     public void mustHandleMultipleCommandValues() {
         ledger(ledgerServices, l -> {
             l.transaction(tx -> {
