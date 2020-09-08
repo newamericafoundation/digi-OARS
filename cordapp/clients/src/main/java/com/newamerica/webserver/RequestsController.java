@@ -175,7 +175,7 @@ public class RequestsController extends BaseResource {
     @PutMapping(value = "/request", produces = "application/json")
     private Response approveRequest (@QueryParam("requestId") String requestId, @QueryParam("authorizerUserUsername") String authorizerUserUsername) {
         try {
-            String resourcePath = String.format("/request?requestId=%s", requestId);
+            String resourcePath = String.format("/request?requestId=%s?authorizerUserUsername=%s", requestId, authorizerUserUsername);
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     ApproveRequestFlow.InitiatorFlow.class,
                     new UniqueIdentifier(null, UUID.fromString(requestId)),
