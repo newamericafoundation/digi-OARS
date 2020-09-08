@@ -65,7 +65,7 @@ const WithdrawalsPage = () => {
           <CCard>
             <CCardHeader>Available Funds</CCardHeader>
             <CCardBody>
-              <AvailableFundsTable funds={fundsState} />
+              <AvailableFundsTable funds={fundsState} refreshTableCallback={fundsCallback} />
             </CCardBody>
           </CCard>
         </CCol>
