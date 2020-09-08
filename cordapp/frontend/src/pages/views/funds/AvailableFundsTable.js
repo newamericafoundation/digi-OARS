@@ -11,22 +11,26 @@ import {
   CCol,
   CRow,
   CProgress,
+  CCallout,
   CModal,
   CModalHeader,
   CModalTitle,
   CModalBody
 } from "@coreui/react";
 import Moment from "moment";
-import { FundData } from "../../../data/Funds";
 import { RequestForm } from "../withdrawals/RequestForm";
+ 
 
-export const AvailableFundsTable = () => {
-  const fundData = FundData;
+export const AvailableFundsTable = ({funds}) => {
   const [details, setDetails] = useState([]);
-
   const [show, setShow] = useState(false);
+  const [request, setRequest] = useState({});
 
-  const handleShow = (item) => setShow(true)
+  const handleShow = (item) => {
+    setRequest(item)
+    setShow(true)
+    console.log(request)
+  }
   const handleClose = () => setShow(false);
 
   const onFormSubmit = (e) => {
@@ -80,7 +84,7 @@ export const AvailableFundsTable = () => {
   return (
     <>
     <CDataTable
-      items={fundData.filter(fund => (fund.isReceived === true && fund.balance > 0))}
+      items={funds.data.filter(fund => (fund.status === Constants.FUND_RECEIVED && fund.balance > 0))}
       fields={fields}
       columnFilter
       tableFilter
@@ -134,55 +138,68 @@ export const AvailableFundsTable = () => {
                       variant="outline"
                       shape="square"
                       size="sm"
-                      active={true}
-                      onClick={handleShow}
+                      onClick={() => handleShow(item)}
                     >
                       Request Withdrawal
                     </CButton>
                   </div>
                 </CCardHeader>
                 <CCardBody>
-                  {item.isReceived ? (
-                    <CRow className="mb-3">
-                      <CCol>
-                        <p className="text-muted">Total Assets Repatriated:</p>
-                        <CProgress
-                          value={(item.balance / item.amount) * 100}
-                          showPercentage
-                          striped
-                          color="success"
-                          precision={2}
-                        />
-                      </CCol>
-                    </CRow>
-                  ) : null}
                   <CRow>
-                    <CCol md="3">
-                      ID:
-                      <br />
-                      Origin Country:
-                      <br />
-                      Receiving Country:
-                      <br />
-                      Amount:
-                      <br />
-                      Balance:
-                      <br />
-                      Max Withdrawal Amount
+                  <CCol xl="4" sm="3">
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Origin Country</p>
+                        <strong className="p">{item.originParty}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Receiving Country</p>
+                        <strong className="p">{item.receivingParty}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Amount</p>
+                        <strong className="p">
+                          {toCurrency(item.amount, item.currency)}
+                        </strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Balance</p>
+                        <strong className="p">
+                          {toCurrency(item.balance, item.currency)}
+                        </strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Max Withdrawal Amount</p>
+                        <strong className="p">
+                          {toCurrency(item.maxWithdrawalAmount, item.currency)}
+                        </strong>
+                      </CCallout>
                     </CCol>
-                    <CCol md="3">
-                      {item.linearId}
-                      <br />
-                      {item.originParty}
-                      <br />
-                      {item.receivingParty}
-                      <br />
-                      {toCurrency(item.amount, item.currency)}
-                      <br />
-                      {toCurrency(item.balance, item.currency)}
-                      <br />
-                      {toCurrency(item.maxWithdrawalAmount, item.currency)}
+                    <CCol xl="4" sm="3">
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">State ID</p>
+                        <strong className="p">{item.linearId}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Transaction ID</p>
+                        <strong className="p">{item.txId}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Date/Time</p>
+                        <strong className="p">
+                          {Moment(item.dateTime).format("DD/MMM/YYYY HH:mm:ss")}
+                        </strong>
+                      </CCallout>
                     </CCol>
+                    <CCol xl="4" sm="3">
+                      <CCallout
+                        color={item.status === "ISSUED" ? "warning" : "success"}
+                        className={"bg-light"}
+                      >
+                        <p className="text-muted mb-0">Status</p>
+                        <strong className="p">{item.status}</strong>
+                      </CCallout>
+                    </CCol>
+
                   </CRow>
                 </CCardBody>
               </CCard>
@@ -196,7 +213,7 @@ export const AvailableFundsTable = () => {
           <CModalTitle>Withdrawal Request Form</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <RequestForm onSubmit={onFormSubmit}/>
+          <RequestForm onSubmit={onFormSubmit} request={request}/>
         </CModalBody>
       </CModal>
     </>

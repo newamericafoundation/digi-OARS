@@ -14,30 +14,20 @@ import {
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import useForm from "../../../form/index";
-// import axios from "axios";
 import { useAuth } from "../../../auth-hook";
+import axios from "axios";
 
-export const RequestForm = ({ onSubmit }) => {
+export const RequestForm = ({ onSubmit, request }) => {
   const auth = useAuth();
 
   const stateSchema = {
+    fundStateId: { value: request.linearId, error: "" },
+    authorizedUserUsername: { value: auth.user.fullName, error: "" },
     amount: { value: 0, error: "" },
-    maxWithdrawalAmount: { value: 0, error: "" },
   };
 
   const stateValidatorSchema = {
-    authorizedUser: {
-      required: true,
-    },
     amount: {
-      required: true,
-      validator: {
-        func: (value) =>
-          /^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$/.test(value),
-        error: "Invalid currency format.",
-      },
-    },
-    maxWithdrawalAmount: {
       required: true,
       validator: {
         func: (value) =>
@@ -48,23 +38,28 @@ export const RequestForm = ({ onSubmit }) => {
   };
 
   const onSubmitForm = (state) => {
-    //   console.log(state);
-    // alert(JSON.stringify(state, null, 2));
-
     const url =
       "http://" +
       window._env_.API_CLIENT_URL +
       ":" +
       window._env_.API_CLIENT_PORT +
-      "/api/fund";
+      "/api/request";
 
-    //   axios.post(url, {
-    //       originParty: "O=USDoJ, L=New York, C=US",
-    //       receivingParty: state.receivingParty,
-    //       amount: state.amount,
-    //       maxWithdrawalAmount: state.maxWithdrawalAmount
-    //   }).then(res => console.log(res))
-
+      axios
+      .post(url, {
+        amount: state.amount,
+        authorizedUserDept: "test",
+        authorizedUserUsername: auth.user.fullName,
+        authorizerUserUsername: "test",
+        externalAccountId: "test",
+        fundStateLinearId: request.linearId
+      })
+      .then((response) => {
+        console.log(response)
+        onSubmit(response.data);
+        // setIsLoading(false);
+      })
+      .catch((err) => console.log(err));
     onSubmit();
   };
 
@@ -74,7 +69,7 @@ export const RequestForm = ({ onSubmit }) => {
     onSubmitForm
   );
 
-  const { amount, maxWithdrawalAmount } = values;
+  const { fundStateId, authorizedUserUsername, amount } = values;
 
   return (
     <CCol>
@@ -82,7 +77,7 @@ export const RequestForm = ({ onSubmit }) => {
         <CRow>
           <CCol xs="12" md="9" xl="6">
             <CFormGroup>
-              <CLabel htmlFor="authorizedUser">Requestor</CLabel>
+              <CLabel htmlFor="authorizedUserUsername">Requestor</CLabel>
               <CInputGroup className="input-prepend">
                 <CInputGroupPrepend>
                   <CInputGroupText>
@@ -91,20 +86,17 @@ export const RequestForm = ({ onSubmit }) => {
                 </CInputGroupPrepend>
                 <CInput
                   type="text"
-                  name="authorizedUser"
-                  id="authorizedUser"
-                  placeholder={auth.user.email}
+                  name="authorizedUserUsername"
+                  id="authorizedUserUsername"
+                  placeholder={auth.user.fullName}
+                  value={authorizedUserUsername}
                   disabled
                 />
                 <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
               </CInputGroup>
             </CFormGroup>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol xs="12">
             <CFormGroup>
-              <CLabel htmlFor="amount">Repatriation Amount</CLabel>
+              <CLabel htmlFor="amount">Request Amount</CLabel>
               <CInputGroup className="input-prepend">
                 <CInputGroupPrepend>
                   <CInputGroupText>$</CInputGroupText>
@@ -123,26 +115,22 @@ export const RequestForm = ({ onSubmit }) => {
               </CInputGroup>
             </CFormGroup>
           </CCol>
-        </CRow>
-        <CRow>
-          <CCol xs="12">
+          <CCol xs="12" md="9" xl="6">
             <CFormGroup>
-              <CLabel htmlFor="maxWithdrawalAmount">
-                Maximum Withdrawal Amount
-              </CLabel>
+              <CLabel htmlFor="fundStateId">Fund State ID</CLabel>
               <CInputGroup className="input-prepend">
                 <CInputGroupPrepend>
-                  <CInputGroupText>$</CInputGroupText>
+                  <CInputGroupText>
+                    <CIcon name="cil-wallet"></CIcon>
+                  </CInputGroupText>
                 </CInputGroupPrepend>
                 <CInput
-                  type="number"
-                  id="maxWithdrawalAmount"
-                  name="maxWithdrawalAmount"
-                  value={maxWithdrawalAmount}
-                  placeholder={0}
-                  valid={errors.maxWithdrawalAmount.length === 0}
-                  invalid={errors.maxWithdrawalAmount.length > 0}
-                  onChange={handleOnChange}
+                  type="text"
+                  name="fundStateId"
+                  id="fundStateId"
+                  placeholder={request.linearId}
+                  value={fundStateId}
+                  disabled
                 />
                 <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
               </CInputGroup>
