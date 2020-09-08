@@ -75,7 +75,6 @@ public class IssueRequestFlow {
                 outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
             }
             outputRequestState = outputRequestState.updateParticipantList(inputStateRefFundState.getParticipants());
-            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getRequiredSigners());
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);

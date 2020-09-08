@@ -31,8 +31,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
-import static com.newamerica.TestUtils.CATANMoFA;
-import static com.newamerica.TestUtils.CATANMoJ;
 import static org.junit.Assert.assertEquals;
 
 public class ApproveRequestFlowTests {
@@ -105,8 +103,7 @@ public class ApproveRequestFlowTests {
         participants.add(catanMoj);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
-        authorizedParties.add(CATANMoJ.getParty());
-        authorizedParties.add(CATANMoFA.getParty());
+        authorizedParties.add(catanMoj);
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
@@ -185,7 +182,7 @@ public class ApproveRequestFlowTests {
         Command command = stx4.getTx().getCommands().get(0);
         assert (command.getValue() instanceof RequestContract.Commands.Approve);
 
-        stx4.verifySignaturesExcept(usDoj.getOwningKey(),
+        stx4.verifySignaturesExcept(catanMoj.getOwningKey(),
                 mockNetwork.getDefaultNotaryNode().getInfo().getLegalIdentitiesAndCerts().get(0).getOwningKey());
     }
 
