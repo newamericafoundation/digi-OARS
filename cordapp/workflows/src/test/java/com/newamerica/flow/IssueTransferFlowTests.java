@@ -26,8 +26,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
-import static com.newamerica.TestUtils.CATANMoFA;
-import static com.newamerica.TestUtils.CATANMoJ;
 import static org.junit.Assert.assertEquals;
 
 public class IssueTransferFlowTests {
@@ -110,8 +108,7 @@ public class IssueTransferFlowTests {
         participants.add(catanTreasury);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
-        authorizedParties.add(CATANMoJ.getParty());
-        authorizedParties.add(CATANMoFA.getParty());
+        authorizedParties.add(catanMoj);
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
