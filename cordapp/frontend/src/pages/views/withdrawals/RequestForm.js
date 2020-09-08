@@ -14,7 +14,6 @@ import {
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import useForm from "../../../form/index";
-// import axios from "axios";
 import { useAuth } from "../../../auth-hook";
 import axios from "axios";
 
@@ -28,12 +27,6 @@ export const RequestForm = ({ onSubmit, request }) => {
   };
 
   const stateValidatorSchema = {
-    // fundStateId: {
-    //   required: true,
-    // },
-    // authorizedUserUsername: {
-    //   required: true,
-    // },
     amount: {
       required: true,
       validator: {
@@ -45,9 +38,6 @@ export const RequestForm = ({ onSubmit, request }) => {
   };
 
   const onSubmitForm = (state) => {
-      console.log(state);
-    // alert(JSON.stringify(state, null, 2));
-
     const url =
       "http://" +
       window._env_.API_CLIENT_URL +
@@ -70,14 +60,6 @@ export const RequestForm = ({ onSubmit, request }) => {
         // setIsLoading(false);
       })
       .catch((err) => console.log(err));
-
-    //   axios.post(url, {
-    //       originParty: "O=USDoJ, L=New York, C=US",
-    //       receivingParty: state.receivingParty,
-    //       amount: state.amount,
-    //       maxWithdrawalAmount: state.maxWithdrawalAmount
-    //   }).then(res => console.log(res))
-
     onSubmit();
   };
 
