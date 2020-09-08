@@ -21,10 +21,18 @@ public class Request {
     private String externalAccountId;
 
     @NotNull
+    private String purpose;
+
+    @NotNull
     private String amount;
 
     @NotNull
     private String fundStateLinearId;
+
+    public String getPurpose() { return purpose; }
+
+    public void setPurpose(String purpose) { this.purpose = purpose; }
+
 
     public String getAuthorizedUserUsername() {
         return authorizedUserUsername;

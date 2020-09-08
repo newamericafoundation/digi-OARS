@@ -36,6 +36,7 @@ public class RequestStateTests {
                 "Catan Ministry of Education",
                 "Chris Jones",
                 "1234567890",
+                "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
@@ -54,6 +55,7 @@ public class RequestStateTests {
         Field authorizerUserUsername = RequestState.class.getDeclaredField("authorizerUserUsername");
         Field authorizedParties = RequestState.class.getDeclaredField("authorizedParties");
         Field externalAccountId = RequestState.class.getDeclaredField("externalAccountId");
+        Field purpose = RequestState.class.getDeclaredField("purpose");
         Field amount = RequestState.class.getDeclaredField("amount");
         Field datetime = RequestState.class.getDeclaredField("datetime");
         Field currency = RequestState.class.getDeclaredField("currency");
@@ -66,6 +68,7 @@ public class RequestStateTests {
         assertTrue(authorizerUserUsername.getType().isAssignableFrom(String.class));
         assertTrue(authorizedParties.getType().isAssignableFrom(List.class));
         assertTrue(externalAccountId.getType().isAssignableFrom(String.class));
+        assertTrue(purpose.getType().isAssignableFrom(String.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(fundStateLinearId.getType().isAssignableFrom(UniqueIdentifier.class));
@@ -87,6 +90,7 @@ public class RequestStateTests {
         assertEquals(requestState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(requestState.getStatus(), RequestState.RequestStateStatus.PENDING);
         assertEquals(requestState.getExternalAccountId(), "1234567890");
+        assertEquals(requestState.getPurpose(), "build a school");
         assertEquals(requestState.getFundStateLinearId(), uniqueIdentifier);
         assertEquals(requestState.getParticipants(),new ArrayList<>(participants));
     }
