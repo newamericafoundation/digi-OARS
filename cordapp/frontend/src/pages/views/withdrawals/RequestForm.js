@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   CRow,
   CCol,
@@ -11,6 +11,8 @@ import {
   CInputGroupPrepend,
   CInputGroupText,
   CInvalidFeedback,
+  CTextarea,
+  CSpinner
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import useForm from "../../../form/index";
@@ -19,11 +21,14 @@ import axios from "axios";
 
 export const RequestForm = ({ onSubmit, request }) => {
   const auth = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   const stateSchema = {
     fundStateId: { value: request.linearId, error: "" },
     authorizedUserUsername: { value: auth.user.fullName, error: "" },
     amount: { value: 0, error: "" },
+    purpose: { value: "", error: "" },
+    externalAccountId: { value: "", error: "" },
   };
 
   const stateValidatorSchema = {
@@ -35,9 +40,16 @@ export const RequestForm = ({ onSubmit, request }) => {
         error: "Invalid currency format.",
       },
     },
+    externalAccountId: {
+      required: false,
+    },
+    purpose: {
+      required: true,
+    }
   };
 
   const onSubmitForm = (state) => {
+    setIsLoading(true);
     const url =
       "http://" +
       window._env_.API_CLIENT_URL +
@@ -45,19 +57,19 @@ export const RequestForm = ({ onSubmit, request }) => {
       window._env_.API_CLIENT_PORT +
       "/api/request";
 
-      axios
+    axios
       .post(url, {
         amount: state.amount,
-        authorizedUserDept: "test",
+        authorizedUserDept: auth.meta.keycloak.tokenParsed.groups[0],
         authorizedUserUsername: auth.user.fullName,
-        authorizerUserUsername: "test",
-        externalAccountId: "test",
-        fundStateLinearId: request.linearId
+        authorizerUserUsername: "",
+        externalAccountId: state.externalAccountId,
+        fundStateLinearId: request.linearId,
+        purpose: state.purpose,
       })
       .then((response) => {
-        console.log(response)
         onSubmit(response.data);
-        // setIsLoading(false);
+        setIsLoading(false);
       })
       .catch((err) => console.log(err));
     onSubmit();
@@ -69,7 +81,13 @@ export const RequestForm = ({ onSubmit, request }) => {
     onSubmitForm
   );
 
-  const { fundStateId, authorizedUserUsername, amount } = values;
+  const {
+    fundStateId,
+    authorizedUserUsername,
+    amount,
+    externalAccountId,
+    purpose
+  } = values;
 
   return (
     <CCol>
@@ -113,6 +131,25 @@ export const RequestForm = ({ onSubmit, request }) => {
                 />
                 <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
               </CInputGroup>
+              <CFormGroup>
+                <CLabel htmlFor="purpose">Purpose</CLabel>
+                <CInputGroup className="input-prepend">
+                  <CInputGroupPrepend>
+                    <CInputGroupText>
+                      <CIcon name="cil-speech"></CIcon>
+                    </CInputGroupText>
+                  </CInputGroupPrepend>
+                  <CTextarea
+                    type="text"
+                    name="purpose"
+                    id="purpose"
+                    placeholder="Purpose of funds requested"
+                    rows={3}
+                    value={purpose}
+                    onChange={handleOnChange}
+                  />
+                </CInputGroup>
+              </CFormGroup>
             </CFormGroup>
           </CCol>
           <CCol xs="12" md="9" xl="6">
@@ -132,7 +169,24 @@ export const RequestForm = ({ onSubmit, request }) => {
                   value={fundStateId}
                   disabled
                 />
-                <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
+              </CInputGroup>
+            </CFormGroup>
+            <CFormGroup>
+              <CLabel htmlFor="externalAccountId">External Account ID</CLabel>
+              <CInputGroup className="input-prepend">
+                <CInputGroupPrepend>
+                  <CInputGroupText>
+                    <CIcon name="cil-briefcase"></CIcon>
+                  </CInputGroupText>
+                </CInputGroupPrepend>
+                <CInput
+                  type="text"
+                  name="externalAccountId"
+                  id="externalAccountId"
+                  placeholder=""
+                  value={externalAccountId}
+                  onChange={handleOnChange}
+                />
               </CInputGroup>
             </CFormGroup>
           </CCol>
@@ -146,6 +200,13 @@ export const RequestForm = ({ onSubmit, request }) => {
                 type="submit"
                 disabled={disable}
               >
+                {isLoading ? (
+                    <CSpinner
+                      className="spinner-border spinner-border-sm mr-1"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  ) : null}
                 Submit
               </CButton>
             </CFormGroup>

@@ -21,7 +21,7 @@ import Moment from "moment";
 import { RequestForm } from "../withdrawals/RequestForm";
  
 
-export const AvailableFundsTable = ({funds}) => {
+export const AvailableFundsTable = ({funds, refreshTableCallback}) => {
   const [details, setDetails] = useState([]);
   const [show, setShow] = useState(false);
   const [request, setRequest] = useState({});
@@ -29,12 +29,12 @@ export const AvailableFundsTable = ({funds}) => {
   const handleShow = (item) => {
     setRequest(item)
     setShow(true)
-    console.log(request)
   }
   const handleClose = () => setShow(false);
 
   const onFormSubmit = (e) => {
     handleClose();
+    refreshTableCallback();
   };
 
   const toggleDetails = (index) => {
