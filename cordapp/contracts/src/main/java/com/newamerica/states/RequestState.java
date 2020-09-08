@@ -35,6 +35,7 @@ public class RequestState implements LinearState {
     public final String authorizerUserUsername;
     public final List<AbstractParty> authorizedParties;
     public final String externalAccountId;
+    public final String purpose;
     public final BigDecimal amount;
     public final Currency currency;
     public final ZonedDateTime datetime;
@@ -49,6 +50,7 @@ public class RequestState implements LinearState {
                         String authorizerUserUsername,
                         List<AbstractParty> authorizedParties,
                         String externalAccountId,
+                        String purpose,
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
@@ -61,6 +63,7 @@ public class RequestState implements LinearState {
         this.authorizerUserUsername = authorizerUserUsername;
         this.authorizedParties = authorizedParties;
         this.externalAccountId = externalAccountId;
+        this.purpose = purpose;
         this.amount = amount;
         this.currency = currency;
         this.datetime = datetime;
@@ -74,13 +77,14 @@ public class RequestState implements LinearState {
                         String authorizedUserDept,
                         String authorizerUsername,
                         String externalAccount,
+                        String purpose,
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, Collections.<AbstractParty>emptyList(), externalAccount, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, Collections.<AbstractParty>emptyList(), externalAccount, purpose, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -103,6 +107,8 @@ public class RequestState implements LinearState {
     public UniqueIdentifier getFundStateLinearId() { return fundStateLinearId; }
     public String getAuthorizerUserUsername() { return authorizerUserUsername; }
     public String getExternalAccountId() { return externalAccountId; }
+    public String getPurpose() { return purpose; }
+
 
     //helper functions
     public RequestState changeStatus(RequestStateStatus newStatus){
@@ -112,6 +118,7 @@ public class RequestState implements LinearState {
                 this.authorizerUserUsername,
                 this.authorizedParties,
                 this.externalAccountId,
+                this.purpose,
                 this.amount,
                 this.currency,
                 this.datetime,
@@ -129,6 +136,7 @@ public class RequestState implements LinearState {
                 this.authorizerUserUsername,
                 this.authorizedParties,
                 this.externalAccountId,
+                this.purpose,
                 this.amount,
                 this.currency,
                 this.datetime,
@@ -146,6 +154,7 @@ public class RequestState implements LinearState {
                 this.authorizerUserUsername,
                 authorizedParties,
                 this.externalAccountId,
+                this.purpose,
                 this.amount,
                 this.currency,
                 this.datetime,

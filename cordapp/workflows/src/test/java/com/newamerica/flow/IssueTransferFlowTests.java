@@ -141,6 +141,7 @@ public class IssueTransferFlowTests {
                 "Catan Ministry of Education",
                 "Chris Jones",
                 "1234567890",
+                "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
