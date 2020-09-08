@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run Webserver - New America" type="Application" factoryName="Application">
+    <envs>
+      <env name="CONFIG_RPC_HOST" value="localhost" />
+      <env name="SERVER_PORT" value="10052" />
+      <env name="CONFIG_RPC_PORT" value="10012" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.newamerica.webserver.Starter" />
+    <module name="cordapp.clients.main" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.newamerica.webserver.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
