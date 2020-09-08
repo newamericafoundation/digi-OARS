@@ -14,7 +14,6 @@ public class Request {
     @NotNull
     private String authorizedUserDept;
 
-    @NotNull
     private String authorizerUserUsername;
 
     @NotNull

@@ -35,7 +35,6 @@ public class IssueRequestFlow {
         public InitiatorFlow(
                 String authorizedUserUsername,
                 String authorizedUserDept,
-                String authorizerUserUsername,
                 String externalAccountId,
                 String purpose,
                 BigDecimal amount,
@@ -47,7 +46,7 @@ public class IssueRequestFlow {
             this.outputRequestState = new RequestState(
                     authorizedUserUsername,
                     authorizedUserDept,
-                    authorizerUserUsername,
+                    null,
                     externalAccountId,
                     purpose,
                     amount,

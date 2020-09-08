@@ -134,7 +134,6 @@ public class ApproveRequestFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
                 "build a school",
                 BigDecimal.valueOf(1000000),
@@ -151,7 +150,8 @@ public class ApproveRequestFlowTests {
 
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
-                rs.getLinearId()
+                rs.getLinearId(),
+                "Chris Jones"
         );
 
         Future<SignedTransaction> futureFour = d.startFlow(approveRequestFlow);
@@ -256,7 +256,6 @@ public class ApproveRequestFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
                 "build a school",
                 BigDecimal.valueOf(1000000),
@@ -273,7 +272,8 @@ public class ApproveRequestFlowTests {
 
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
-                rs.getLinearId()
+                rs.getLinearId(),
+                "Chris Jones"
         );
 
         //run the flow as the a party that is not in the requiredSigners list.
@@ -315,7 +315,6 @@ public class ApproveRequestFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
                 "build a school",
                 BigDecimal.valueOf(5000000),
@@ -332,7 +331,8 @@ public class ApproveRequestFlowTests {
 
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
-                rs.getLinearId()
+                rs.getLinearId(),
+                "Chris Jones"
         );
 
         //run the flow as the a party that is not in the requiredSigners list.

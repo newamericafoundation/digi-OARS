@@ -1,5 +1,6 @@
 package com.newamerica.webserver;
 
+import com.newamerica.flows.ApproveRequestFlow;
 import com.newamerica.flows.IssueRequestFlow;
 import com.newamerica.states.PartialRequestState;
 import com.newamerica.states.RequestState;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -131,8 +133,8 @@ public class RequestsController extends BaseResource {
 
             String authorizedUserUsername = request.getAuthorizedUserUsername();
             String authorizedUserDept = request.getAuthorizedUserDept();
-            String authorizerUserUsername = request.getAuthorizerUserUsername();
             String externalAccountId = request.getExternalAccountId();
+            String purpose = request.getPurpose();
             String amount = request.getAmount();
             String fundStateLinearId = request.getFundStateLinearId();
 
@@ -153,8 +155,8 @@ public class RequestsController extends BaseResource {
                     IssueRequestFlow.InitiatorFlow.class,
                     authorizedUserUsername,
                     authorizedUserDept,
-                    authorizerUserUsername,
                     externalAccountId,
+                    purpose,
                     amountAndBalance,
                     currency,
                     now,
@@ -163,6 +165,24 @@ public class RequestsController extends BaseResource {
             ).getReturnValue().get();
             RequestState created = (RequestState) tx.getTx().getOutputs().get(0).getData();
             return Response.ok(createRequestSuccessServiceResponse("Request created successfully.", created, resourcePath)).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        }catch (Exception e) {
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PutMapping(value = "/request", produces = "application/json")
+    private Response approveRequest (@QueryParam("requestId") String requestId, @QueryParam("authorizerUserUsername") String authorizerUserUsername) {
+        try {
+            String resourcePath = String.format("/request?requestId=%s", requestId);
+            SignedTransaction tx = rpcOps.startFlowDynamic(
+                    ApproveRequestFlow.InitiatorFlow.class,
+                    new UniqueIdentifier(null, UUID.fromString(requestId)),
+                    authorizerUserUsername
+            ).getReturnValue().get();
+            RequestState updated = (RequestState) tx.getTx().getOutputs().get(0).getData();
+            return Response.ok(createFundSuccessServiceResponse("request approved.", updated, resourcePath)).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {

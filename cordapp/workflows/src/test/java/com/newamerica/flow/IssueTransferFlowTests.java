@@ -139,7 +139,6 @@ public class IssueTransferFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
                 "build a school",
                 BigDecimal.valueOf(1000000),
@@ -156,7 +155,8 @@ public class IssueTransferFlowTests {
 
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
-                rs.getLinearId()
+                rs.getLinearId(),
+                "Chris Jones"
         );
 
         Future<SignedTransaction> futureFour = d.startFlow(approveRequestFlow);

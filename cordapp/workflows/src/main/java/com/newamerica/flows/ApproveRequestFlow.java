@@ -30,9 +30,11 @@ public class ApproveRequestFlow {
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier requestStateLinearId;
+        private final String authorizerUserUsername;
 
-        public InitiatorFlow(UniqueIdentifier requestStateLinearId) {
+        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername) {
             this.requestStateLinearId = requestStateLinearId;
+            this.authorizerUserUsername = authorizerUserUsername;
         }
 
         @Suspendable
@@ -52,20 +54,21 @@ public class ApproveRequestFlow {
             }
 
             RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
+            RequestState outputRequestStateFinal = outputRequestState.updateAuthorizerUserUsername(authorizerUserUsername);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Approve();
             transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addInputState(stateRef);
-            transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
+            transactionBuilder.addOutputState(outputRequestStateFinal, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = outputRequestState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
+            List<Party> otherParties = outputRequestStateFinal.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
