@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   CCard,
   CCardBody,
@@ -11,8 +11,11 @@ import CIcon from "@coreui/icons-react";
 import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
 import { RequestsTable } from "./views//withdrawals/RequestsTable";
 import { RequestData } from "../data/Requests";
+import { FundsContext } from "../providers/FundsProvider";
 
 const WithdrawalsPage = () => {
+  const [fundsState, fundsCallback] = useContext(FundsContext);
+
   const toCurrency = (number, currency) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -62,7 +65,7 @@ const WithdrawalsPage = () => {
           <CCard>
             <CCardHeader>Available Funds</CCardHeader>
             <CCardBody>
-              <AvailableFundsTable />
+              <AvailableFundsTable funds={fundsState} />
             </CCardBody>
           </CCard>
         </CCol>
