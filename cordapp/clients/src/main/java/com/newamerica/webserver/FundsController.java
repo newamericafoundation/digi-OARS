@@ -61,10 +61,10 @@ public class FundsController extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/fund/id", produces = "application/json", params = "fundId")
+    @GetMapping(value = "/fund/{fundId}", produces = "application/json", params = "fundId")
     private Response getFundById (@PathParam("fundId") String fundId) {
         try {
-            String resourcePath = String.format("/fund/id?fundId=%s", fundId);
+            String resourcePath = String.format("/fund/%s", fundId);
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(fundId)));
             StateAndRef<FundState> fund = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates().get(0);
@@ -77,10 +77,10 @@ public class FundsController extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/fund/status", produces = "application/json", params = "status")
+    @GetMapping(value = "/fund/status/{status}", produces = "application/json", params = "status")
     private Response getFundByStatus (@PathParam("status") String status) {
         try {
-            String resourcePath = String.format("/fund/status?status=%s", status);
+            String resourcePath = String.format("/fund/status/%s", status);
             FundState.FundStateStatus fundStateStatus = FundState.FundStateStatus.valueOf(status);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<FundState>> funds = rpcOps.vaultQueryByCriteria(queryCriteria, FundState.class).getStates();
