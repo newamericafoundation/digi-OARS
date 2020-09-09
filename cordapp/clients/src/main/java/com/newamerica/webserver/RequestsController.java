@@ -62,10 +62,10 @@ public class RequestsController extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/request/id", produces = "application/json", params = "requestId")
+    @GetMapping(value = "/request/{requestId}", produces = "application/json", params = "requestId")
     private Response getRequestById (@PathParam("requestId") String requestId) {
         try {
-            String resourcePath = String.format("/request/id?requestId=%s", requestId);
+            String resourcePath = String.format("/request/%s", requestId);
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(requestId)));
             StateAndRef<RequestState> request = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates().get(0);
@@ -81,7 +81,7 @@ public class RequestsController extends BaseResource {
     @GetMapping(value = "/request/status", produces = "application/json", params = "status")
     private Response getRequestByStatus (@PathParam("status") String status) {
         try {
-            String resourcePath = String.format("/request/status?status=%s", status);
+            String resourcePath = String.format("/request/status/%s", status);
             RequestState.RequestStateStatus requestStateStatus = RequestState.RequestStateStatus.valueOf(status);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<RequestState>> requests = rpcOps.vaultQueryByCriteria(queryCriteria, RequestState.class).getStates();
@@ -110,10 +110,10 @@ public class RequestsController extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/partial/request/id", produces = "application/json", params = "partialRequestId")
+    @GetMapping(value = "/partial/request/{partialRequestId}", produces = "application/json", params = "partialRequestId")
     private Response getPartialRequestById (@PathParam("partialRequestId") String partialRequestId) {
         try {
-            String resourcePath = String.format("/partial/request/id?partialRequestId=%s", partialRequestId);
+            String resourcePath = String.format("/partial/request/%s", partialRequestId);
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(partialRequestId)));
             StateAndRef<PartialRequestState> request = rpcOps.vaultQueryByWithPagingSpec(PartialRequestState.class, queryCriteria, pagingSpec).getStates().get(0);
