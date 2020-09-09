@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import * as Constants from "../../../constants";
 import {
   CCard,
@@ -11,10 +11,13 @@ import {
   CCol,
   CRow,
   CProgress,
+  CCallout,
 } from "@coreui/react";
 import Moment from "moment";
+import { useAuth } from "auth-hook";
 
-export const RequestsTable = ({filterStatus, requests }) => {
+export const RequestsTable = ({ filterStatus, requests }) => {
+  const auth = useAuth();
   const [details, setDetails] = useState([]);
 
   const toggleDetails = (index) => {
@@ -29,8 +32,8 @@ export const RequestsTable = ({filterStatus, requests }) => {
   };
 
   const fields = [
-    { key: "authorizedUserUsername", label: "Requestor"},
-    { key: "authorizedUserDept", label: "Department"},
+    { key: "authorizedUserUsername", label: "Requestor" },
+    { key: "authorizedUserDept", label: "Department" },
     { key: "amount" },
     { key: "datetime", label: "Date" },
     { key: "status", _style: { width: "20%" } },
@@ -65,7 +68,10 @@ export const RequestsTable = ({filterStatus, requests }) => {
     <>
       <CDataTable
         items={requests.data.filter(
-          (request) => request.status === filterStatus
+          (request) =>
+            request.status === filterStatus &&
+            request.authorizedUserDept ===
+              auth.meta.keycloak.tokenParsed.groups[0]
         )}
         fields={fields}
         columnFilter
@@ -113,7 +119,60 @@ export const RequestsTable = ({filterStatus, requests }) => {
                 <CCard className="m-3">
                   <CCardHeader>Request Details</CCardHeader>
                   <CCardBody>
-                    
+                    <CRow>
+                      <CCol xl="6" sm="4">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Requestor</p>
+                          <strong className="p">
+                            {item.authorizedUserUsername}
+                          </strong>
+                          <p className="text-muted mb-0">Department</p>
+                          <strong className="p">
+                            {item.authorizedUserDept}
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Amount</p>
+                          <strong className="p">
+                            {toCurrency(item.amount, item.currency)}
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Date/Time</p>
+                          <strong className="p">
+                            {Moment(item.dateTime).format(
+                              "DD/MMM/YYYY HH:mm:ss"
+                            )}
+                          </strong>
+                        </CCallout>
+                      </CCol>
+                      <CCol xl="6" sm="4">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">State ID</p>
+                          <strong className="p">{item.linearId}</strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Transaction ID</p>
+                          <strong className="p">{item.txId}</strong>
+                        </CCallout>
+                        <CCallout
+                          color={
+                            item.status === Constants.REQUEST_PENDING
+                              ? "warning"
+                              : "success"
+                          }
+                          className={"bg-light"}
+                        >
+                          <p className="text-muted mb-0">Status</p>
+                          <strong className="p">
+                            {item.status}
+                            {item.status === Constants.REQUEST_APPROVED
+                              ? " by " + item.authorizerUserUsername
+                              : null}
+                          </strong>
+                        </CCallout>
+                      </CCol>
+                    </CRow>
                   </CCardBody>
                 </CCard>
               </CCollapse>
