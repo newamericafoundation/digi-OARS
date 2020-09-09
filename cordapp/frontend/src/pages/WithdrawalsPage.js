@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   CCard,
   CCardBody,
@@ -13,10 +13,19 @@ import { RequestsTable } from "./views//withdrawals/RequestsTable";
 import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
+import { useAuth } from "auth-hook";
 
 const WithdrawalsPage = () => {
+  const auth = useAuth();
   const [fundsState, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
+  const [isRequestApprover, setIsRequestApprover] = useState(false)
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      setIsRequestApprover(auth.meta.keycloak.hasResourceRole("request_approver"));
+    }
+  }, [auth]);
 
   const toCurrency = (number, currency) => {
     return new Intl.NumberFormat("en-US", {
@@ -82,7 +91,9 @@ const WithdrawalsPage = () => {
               <RequestsTable
                 filterStatus={Constants.REQUEST_PENDING}
                 requests={requestsState}
-                refreshTableCallback={requestsCallback}
+                refreshFundsTableCallback={fundsCallback}
+                refreshRequestsTableCallback={requestsCallback}
+                isApprover={isRequestApprover}
               />
             </CCardBody>
           </CCard>
@@ -94,7 +105,9 @@ const WithdrawalsPage = () => {
               <RequestsTable
                 filterStatus={Constants.REQUEST_APPROVED}
                 requests={requestsState}
-                refreshTableCallback={requestsCallback}
+                refreshFundsTableCallback={fundsCallback}
+                refreshRequestsTableCallback={requestsCallback}
+                isApprover={isRequestApprover}
               />
             </CCardBody>
           </CCard>

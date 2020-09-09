@@ -10,15 +10,23 @@ import {
   CCollapse,
   CCol,
   CRow,
-  CProgress,
   CCallout,
+  CSpinner
 } from "@coreui/react";
 import Moment from "moment";
 import { useAuth } from "auth-hook";
+import axios from "axios";
 
-export const RequestsTable = ({ filterStatus, requests }) => {
+export const RequestsTable = ({
+  filterStatus,
+  requests,
+  refreshFundsTableCallback,
+  refreshRequestsTableCallback,
+  isApprover,
+}) => {
   const auth = useAuth();
   const [details, setDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);
@@ -64,15 +72,39 @@ export const RequestsTable = ({ filterStatus, requests }) => {
     }).format(number);
   };
 
+  const onHandleApproveClick = (requestId, authorizerUserUsername, index) => {
+    setIsLoading(true);
+    const url =
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      window._env_.API_CLIENT_PORT +
+      "/api/request";
+
+    axios
+      .put(url, null, { params: { requestId, authorizerUserUsername } })
+      .then((response) => {
+        setIsLoading(false);
+        refreshFundsTableCallback();
+        refreshRequestsTableCallback();
+        toggleDetails(index);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
       <CDataTable
-        items={requests.data.filter(
-          (request) =>
-            request.status === filterStatus &&
-            request.authorizedUserDept ===
-              auth.meta.keycloak.tokenParsed.groups[0]
-        )}
+        items={
+          isApprover
+            ? requests.data.filter((request) => request.status === filterStatus)
+            : requests.data.filter(
+                (request) =>
+                  request.status === filterStatus &&
+                  request.authorizedUserDept ===
+                    auth.meta.keycloak.tokenParsed.groups[0]
+              )
+        }
         fields={fields}
         columnFilter
         tableFilter
@@ -117,7 +149,37 @@ export const RequestsTable = ({ filterStatus, requests }) => {
             return (
               <CCollapse show={details.includes(index)}>
                 <CCard className="m-3">
-                  <CCardHeader>Request Details</CCardHeader>
+                  <CCardHeader>
+                    Request Details
+                    {item.status !== Constants.REQUEST_APPROVED &&
+                    isApprover ? (
+                      <div className="card-header-actions">
+                        <CButton
+                          className={"float-right mb-0"}
+                          color="success"
+                          variant="outline"
+                          shape="square"
+                          size="sm"
+                          onClick={() =>
+                            onHandleApproveClick(
+                              item.linearId,
+                              auth.user.fullName,
+                              index
+                            )
+                          }
+                        >
+                          {isLoading ? (
+                            <CSpinner
+                              className="spinner-border spinner-border-sm mr-1"
+                              role="status"
+                              aria-hidden="true"
+                            />
+                          ) : null}
+                          Approve Request
+                        </CButton>
+                      </div>
+                    ) : null}
+                  </CCardHeader>
                   <CCardBody>
                     <CRow>
                       <CCol xl="6" sm="4">
