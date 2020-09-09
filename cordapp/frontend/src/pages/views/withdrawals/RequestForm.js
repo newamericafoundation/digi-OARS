@@ -62,7 +62,6 @@ export const RequestForm = ({ onSubmit, request }) => {
         amount: state.amount,
         authorizedUserDept: auth.meta.keycloak.tokenParsed.groups[0],
         authorizedUserUsername: auth.user.fullName,
-        authorizerUserUsername: "",
         externalAccountId: state.externalAccountId,
         fundStateLinearId: request.linearId,
         purpose: state.purpose,
@@ -72,7 +71,6 @@ export const RequestForm = ({ onSubmit, request }) => {
         setIsLoading(false);
       })
       .catch((err) => console.log(err));
-    onSubmit();
   };
 
   const { values, errors, handleOnChange, handleOnSubmit, disable } = useForm(
