@@ -24,15 +24,18 @@ export const AvailableFundsTable = ({ funds, refreshFundsTableCallback, refreshR
   const [details, setDetails] = useState([]);
   const [show, setShow] = useState(false);
   const [request, setRequest] = useState({});
+  const [itemIndex, setItemIndex] = useState()
 
-  const handleShow = (item) => {
+  const handleShow = (item, index) => {
     setRequest(item);
+    setItemIndex(index);
     setShow(true);
   };
   const handleClose = () => setShow(false);
 
   const onFormSubmit = (e) => {
     handleClose();
+    toggleDetails(itemIndex)
     refreshFundsTableCallback();
     refreshRequestsTableCallback();
   };
@@ -140,7 +143,7 @@ export const AvailableFundsTable = ({ funds, refreshFundsTableCallback, refreshR
                         variant="outline"
                         shape="square"
                         size="sm"
-                        onClick={() => handleShow(item)}
+                        onClick={() => handleShow(item, index)}
                       >
                         Request Withdrawal
                       </CButton>

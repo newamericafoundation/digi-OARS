@@ -29,10 +29,10 @@ export const RequestsTable = ({filterStatus, requests }) => {
   };
 
   const fields = [
-    { key: "originParty" },
-    { key: "balance", label: "Balance Available" },
+    { key: "authorizedUserUsername", label: "Requestor"},
+    { key: "authorizedUserDept", label: "Department"},
+    { key: "amount" },
     { key: "datetime", label: "Date" },
-    { key: "maxWithdrawalAmount" },
     { key: "status", _style: { width: "20%" } },
     {
       key: "show_details",
@@ -67,6 +67,7 @@ export const RequestsTable = ({filterStatus, requests }) => {
         items={requests.data.filter(
           (request) => request.status === filterStatus
         )}
+        fields={fields}
         columnFilter
         tableFilter
         footer
@@ -110,52 +111,9 @@ export const RequestsTable = ({filterStatus, requests }) => {
             return (
               <CCollapse show={details.includes(index)}>
                 <CCard className="m-3">
-                  <CCardHeader>Fund Details</CCardHeader>
+                  <CCardHeader>Request Details</CCardHeader>
                   <CCardBody>
-                    {item.isReceived ? (
-                      <CRow className="mb-3">
-                        <CCol>
-                          <p className="text-muted">
-                            Total Assets Repatriated:
-                          </p>
-                          <CProgress
-                            value={(item.balance / item.amount) * 100}
-                            showPercentage
-                            striped
-                            color="success"
-                            precision={2}
-                          />
-                        </CCol>
-                      </CRow>
-                    ) : null}
-                    <CRow>
-                      <CCol md="3">
-                        ID:
-                        <br />
-                        Origin Country:
-                        <br />
-                        Receiving Country:
-                        <br />
-                        Amount:
-                        <br />
-                        Balance:
-                        <br />
-                        Max Withdrawal Amount
-                      </CCol>
-                      <CCol md="3">
-                        {item.linearId}
-                        <br />
-                        {item.originParty}
-                        <br />
-                        {item.receivingParty}
-                        <br />
-                        {toCurrency(item.amount, item.currency)}
-                        <br />
-                        {toCurrency(item.balance, item.currency)}
-                        <br />
-                        {toCurrency(item.maxWithdrawalAmount, item.currency)}
-                      </CCol>
-                    </CRow>
+                    
                   </CCardBody>
                 </CCard>
               </CCollapse>
