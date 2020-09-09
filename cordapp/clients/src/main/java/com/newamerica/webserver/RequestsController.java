@@ -150,9 +150,8 @@ public class RequestsController extends BaseResource {
             Party Catan_Treasury = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan_Treasury,L=London,C=GB"));
 
             List<AbstractParty> authorizedParties = Arrays.asList(Catan_MoJ);
-
             List<AbstractParty> participants = Arrays.asList(Catan_MoFA, US_DoS, NewAmerica, Catan_MoJ, Catan_Treasury);
-            
+
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     IssueRequestFlow.InitiatorFlow.class,
                     authorizedUserUsername,
@@ -185,7 +184,7 @@ public class RequestsController extends BaseResource {
                     authorizerUserUsername
             ).getReturnValue().get();
             RequestState updated = (RequestState) tx.getTx().getOutputs().get(0).getData();
-            return Response.ok(createFundSuccessServiceResponse("request approved.", updated, resourcePath)).build();
+            return Response.ok(createRequestSuccessServiceResponse("request approved.", updated, resourcePath)).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {
