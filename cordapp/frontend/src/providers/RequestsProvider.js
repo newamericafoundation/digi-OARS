@@ -4,7 +4,7 @@ import React, {
   useReducer,
   useCallback,
 } from "react";
-import getFunds from "../data/GetFunds";
+import getRequests from "../data/GetRequests";
 
 export const RequestsContext = createContext();
 
@@ -30,12 +30,12 @@ const RequestsProvider = ({ children }) => {
 
   const callback = useCallback(
     () =>
-      getFunds().then((data) => dispatch({ type: "UPDATE_FUNDS", payload: data })),
+    getRequests().then((data) => dispatch({ type: "UPDATE_REQUESTS", payload: data })),
     [dispatch]
   );
 
   useEffect(() => {
-    getFunds().then((data) => dispatch({ type: "UPDATE_FUNDS", payload: data }));
+    getRequests().then((data) => dispatch({ type: "UPDATE_REQUESTS", payload: data }));
   }, []);
 
   return (

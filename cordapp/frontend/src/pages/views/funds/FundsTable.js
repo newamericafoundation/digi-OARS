@@ -15,6 +15,7 @@ import {
 } from "@coreui/react";
 import Moment from "moment";
 import axios from "axios";
+import * as Constants from '../../../constants';
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [details, setDetails] = useState([]);
@@ -160,7 +161,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                   {getReceivedButton(item.status, item.linearId, index)}
                 </CCardHeader>
                 <CCardBody>
-                  {item.isReceived ? (
+                  {item.status === Constants.FUND_RECEIVED ? (
                     <CRow className="mb-3">
                       <CCol>
                         <p className="text-muted">Total Assets Repatriated:</p>
