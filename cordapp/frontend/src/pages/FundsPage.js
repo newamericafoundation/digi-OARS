@@ -12,7 +12,6 @@ import {
 import { FundsTable } from "./views/funds/FundsTable";
 import { FundsForm } from "./views/funds/FundsForm";
 import NetworkProvider from "../providers/NetworkProvider";
-import ReactNotification from "react-notifications-component";
 import UseToaster from "../notification/Toaster";
 import { FundsContext } from "../providers/FundsProvider";
 import EllipsesText from "react-ellipsis-text";
@@ -59,7 +58,6 @@ const FundsPage = () => {
 
   return (
     <>
-      <ReactNotification />
       <CCard>
         <CCardHeader>
           Funds

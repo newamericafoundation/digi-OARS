@@ -71,7 +71,6 @@ export const RequestForm = ({ onSubmit, request }) => {
         setIsLoading(false);
       })
       .catch((err) => console.log(err));
-    onSubmit();
   };
 
   const { values, errors, handleOnChange, handleOnSubmit, disable } = useForm(

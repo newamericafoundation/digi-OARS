@@ -8,10 +8,10 @@
  * Copyright (c) 2019 Daniel Eden
  */
 
- .notification-container-top-right {
+ /* .notification-container-top-right {
   right: 300px;
   top: 0px;
-}
+} */
 
 @-webkit-keyframes bounce {
   from,

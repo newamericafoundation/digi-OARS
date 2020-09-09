@@ -19,12 +19,18 @@ import {
 } from "@coreui/react";
 import Moment from "moment";
 import { RequestForm } from "../withdrawals/RequestForm";
+import UseToaster from "../../../notification/Toaster";
+import EllipsesText from "react-ellipsis-text";
 
-export const AvailableFundsTable = ({ funds, refreshFundsTableCallback, refreshRequestsTableCallback }) => {
+export const AvailableFundsTable = ({
+  funds,
+  refreshFundsTableCallback,
+  refreshRequestsTableCallback,
+}) => {
   const [details, setDetails] = useState([]);
   const [show, setShow] = useState(false);
   const [request, setRequest] = useState({});
-  const [itemIndex, setItemIndex] = useState()
+  const [itemIndex, setItemIndex] = useState();
 
   const handleShow = (item, index) => {
     setRequest(item);
@@ -33,9 +39,26 @@ export const AvailableFundsTable = ({ funds, refreshFundsTableCallback, refreshR
   };
   const handleClose = () => setShow(false);
 
-  const onFormSubmit = (e) => {
+  const responseMessage = (message) => {
+    return (
+      <div>
+        {message.entity.message}
+        <br />
+        <strong>State ID:</strong>{" "}
+        <EllipsesText text={message.entity.data.linearId.id} length={25} />
+        <br />
+        <strong>Status:</strong> {message.entity.data.status}
+      </div>
+    );
+  };
+
+  const onFormSubmit = (response) => {
     handleClose();
-    toggleDetails(itemIndex)
+    toggleDetails(itemIndex);
+    response.status === 200
+      ? UseToaster("Success", responseMessage(response), "success")
+      : UseToaster("Error", response.entity.message, "danger");
+
     refreshFundsTableCallback();
     refreshRequestsTableCallback();
   };
