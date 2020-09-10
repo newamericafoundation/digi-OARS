@@ -7,19 +7,25 @@
   tasks:
     - name: Stop Corda Docker Container
       docker_container:
-        name: corda-node
-        hostname: corda-node
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
         image: "{{ corda_docker_image_version }}"
         state: stopped
+      tags:
+        - stop-node
     - name: Copy CorDapps
       copy:
         src: files/cordapps/
         dest: /opt/corda/cordapps/
         owner: corda
         group: root
+      tags:
+        - copy-cordapps
     - name: Start Corda Docker Container
       docker_container:
-        name: corda-node
-        hostname: corda-node
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
         image: "{{ corda_docker_image_version }}"
         state: started
+      tags:
+        - start-node

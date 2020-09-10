@@ -16,6 +16,7 @@
         hostname: "client-{{ inventory_hostname }}"
         image: "{{ docker_registry_url }}/{{ docker_image_api }}:{{ docker_image_api_version }}"
         state: started
+        pull: true
         networks:
           - name: corda
         networks_cli_compatible: yes
@@ -27,3 +28,5 @@
           CONFIG_RPC_PASSWORD: "test"
           CONFIG_RPC_HOST: "node-{{ inventory_hostname }}"
           CONFIG_RPC_PORT: "10201"
+  tags:
+    - start-client

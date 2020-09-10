@@ -30,3 +30,5 @@
           - "/opt/corda/cordapps:/opt/corda/cordapps"
           - "/opt/corda/drivers:/opt/corda/drivers"
           - "/opt/corda/network-parameters:/opt/corda/network-parameters"
+  tags:
+    - start-nodes

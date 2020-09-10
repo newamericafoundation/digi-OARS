@@ -7,8 +7,8 @@
   tasks:
     - name: Stop Corda Docker Container
       docker_container:
-        name: corda-node
-        hostname: corda-node
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
         image: "{{ corda_docker_image_version }}"
         state: stopped
     - name: Remove Directories
@@ -21,8 +21,8 @@
         - remove-dirs
     - name: Remove Docker Container
       docker_container:
-        name: corda-node
-        hostname: corda-node
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
         image: "{{ corda_docker_image_version }}"
         state: absent
       tags:
