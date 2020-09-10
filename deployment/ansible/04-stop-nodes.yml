@@ -1,13 +1,23 @@
 # 04-stop-nodes.yml
 ---
-- name: Install CorDapps
-  hosts: node-machines
+- name: Stop Nodes
+  hosts: node-machines, notary-machines
   gather_facts: true
   become: true
   tasks:
     - name: Stop Corda Docker Container
       docker_container:
-        name: corda-node
-        hostname: corda-node
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
         image: "{{ corda_docker_image_version }}"
         state: stopped
+      tags:
+        - stop-nodes
+    - name: Remove Corda Docker Container
+      docker_container:
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
+        image: "{{ corda_docker_image_version }}"
+        state: absent
+      tags:
+        - remove-nodes
