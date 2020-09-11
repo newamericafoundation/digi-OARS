@@ -162,6 +162,7 @@ public class RequestsController extends BaseResource {
                     amountAndBalance,
                     currency,
                     now,
+                    now,
                     fundStateLinearIdAsUUID,
                     participants
             ).getReturnValue().get();
@@ -181,7 +182,8 @@ public class RequestsController extends BaseResource {
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     ApproveRequestFlow.InitiatorFlow.class,
                     new UniqueIdentifier(null, UUID.fromString(requestId)),
-                    authorizerUserUsername
+                    authorizerUserUsername,
+                    ZonedDateTime.now()
             ).getReturnValue().get();
             RequestState updated = (RequestState) tx.getTx().getOutputs().get(0).getData();
             return Response.ok(createRequestSuccessServiceResponse("request approved.", updated, resourcePath)).build();

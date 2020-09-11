@@ -58,7 +58,7 @@ public class ApproveRequestFlow {
             }
 
             RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
-            RequestState outputRequestStateFinal = outputRequestState.updateAuthorizerUserUsername(authorizerUserUsername);
+            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserUsername, updateDatetime);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);

@@ -104,6 +104,7 @@ public class FundContract implements Contract {
                 require.using("input  max withdrawal amount and output max withdrawal amount must be the same", inputState.getMaxWithdrawalAmount().compareTo(outputState.getMaxWithdrawalAmount()) == 0);
                 require.using("input originParty and output originParty must be the same", inputState.getOriginParty().equals(outputState.getOriginParty()));
                 require.using("input receivingParty and output receivingParty must be the same", inputState.getReceivingParty().equals(outputState.getReceivingParty()));
+                require.using("create datetime must be different from update datetime", !inputState.getCreateDatetime().equals(outputState.getUpdateDatetime()));
                 // combine the Lists
                 List<AbstractParty> combinedLists = Stream.of(outputState.getOwners(), outputState.getRequiredSigners()).flatMap(Collection::stream).collect(Collectors.toList());
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));

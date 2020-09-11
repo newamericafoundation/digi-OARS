@@ -173,7 +173,7 @@ public class RequestState implements LinearState {
         );
     }
 
-    public RequestState updateAuthorizerUserUsername(String authorizerUserUsername){
+    public RequestState update(String authorizerUserUsername, ZonedDateTime updateDatetime){
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
@@ -184,7 +184,7 @@ public class RequestState implements LinearState {
                 this.amount,
                 this.currency,
                 this.createDatetime,
-                this.updateDatetime,
+                updateDatetime,
                 this.status,
                 this.fundStateLinearId,
                 this.linearId,

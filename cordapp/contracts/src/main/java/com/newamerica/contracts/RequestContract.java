@@ -53,7 +53,9 @@ public class RequestContract implements Contract {
                 require.using("The fundStateLinearId cannot change.", inputState.getFundStateLinearId().equals(outputState.getFundStateLinearId()));
                 require.using("The authorizedParties cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
-               return null;
+                require.using("create datetime must be different from update datetime", !inputState.getCreateDatetime().equals(outputState.getUpdateDatetime()));
+
+                return null;
             });
         }
     }
