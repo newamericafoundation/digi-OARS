@@ -31,6 +31,9 @@ dependencies {
     compile group: 'org.glassfish.jersey.core', name: 'jersey-server', version: '2.26'
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.0.2.RELEASE'
+
+
 
 }
 
@@ -51,5 +54,17 @@ task runTemplateClient(type: JavaExec, dependsOn: assemble) {
 task runTemplateServer(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.newamerica.webserver.Starter'
-    args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=10050',
+            '--config.rpc.host=localhost',
+            '--config.rpc.port=10006',
+            '--config.rpc.username=user1',
+            '--config.rpc.password=test',
+            'spring.mail.host = smtp.gmail.com',
+            'spring.mail.username = tzztzztzz2@gmail.com',
+            'spring.mail.password = Tzz1109!',
+            'spring.mail.properties.mail.smtp.auth = true',
+            'spring.mail.properties.mail.smtp.socketFactory.port = 465',
+            'spring.mail.properties.mail.smtp.socketFactory.class = javax.net.ssl.SSLSocketFactory',
+            'spring.mail.properties.mail.smtp.socketFactory.fallback = false'
+
 }
