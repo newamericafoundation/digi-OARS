@@ -46,8 +46,8 @@ public class MailService {
         SimpleMailMessage mail = new SimpleMailMessage();
 
         mail.setTo(user.getEmailAddress());
-        mail.setSubject("Testing Mail API");
-        mail.setText("Hurray ! You have done that dude...");
+        mail.setSubject("OARS New Request");
+        mail.setText("Hi, you received a new request in OARS.");
 
         /*
          * This send() contains an Object of SimpleMailMessage as an Parameter
