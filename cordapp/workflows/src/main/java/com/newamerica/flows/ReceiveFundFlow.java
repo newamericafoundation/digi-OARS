@@ -59,7 +59,7 @@ public class ReceiveFundFlow {
 
             // contruct output fund state
             FundState outputFundState = inputFundState.changeStatus(FundState.FundStateStatus.RECEIVED);
-            FundState outputFundStateFinal = inputFundState.updateDatetime(updateDatetime);
+            FundState outputFundStateFinal = outputFundState.updateDatetime(updateDatetime);
 
             // build tx
             transactionBuilder.addCommand(
