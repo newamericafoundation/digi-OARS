@@ -1,0 +1,27 @@
+- name: Install Python
+  apt:
+    name: python
+    force_apt_get: yes
+    update_cache: yes
+  tags:
+    - install-python
+
+- name: Install Pip
+  apt:
+    name: python-pip
+    force_apt_get: yes
+    update_cache: yes
+  tags:
+    - install-python
+
+- name: Install Python Modules for Docker
+  pip:
+    name: "{{ item.name }}"
+    version: "{{ item.version }}"
+    state: present
+  register: output
+  with_items:
+  - { name: docker, version: 4.1.0 }
+  - { name: docker-compose, version: 1.25.3 }
+  tags:
+    - install-python

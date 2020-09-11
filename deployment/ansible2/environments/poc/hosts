@@ -1,0 +1,23 @@
+[node-machines]
+usdos ansible_host=poc-oars-usdos.eastus.cloudapp.azure.com organisation="US DoS"
+usdoj ansible_host=poc-oars-usdoj.eastus.cloudapp.azure.com organisation="US DoJ"
+uscso ansible_host=poc-oars-uscso.eastus.cloudapp.azure.com organisation="US CSO"
+ustreasury ansible_host=poc-oars-ustreasury.eastus.cloudapp.azure.com organisation="US Treasury"
+catanmoj ansible_host=poc-oars-catanmoj.eastus.cloudapp.azure.com organisation="Catan MoJ"
+catanmofa ansible_host=poc-oars-catanmofa.eastus.cloudapp.azure.com organisation="Catan MoFA"
+catantreasury ansible_host=poc-oars-catantreasury.eastus.cloudapp.azure.com organisation="Catan Treasury"
+catancso ansible_host=poc-oars-catancso.eastus.cloudapp.azure.com organisation="Catan CSO"
+newamerica ansible_host=poc-oars-newamerica.eastus.cloudapp.azure.com organisation="New America"
+
+[notary-machines]
+notary ansible_host=52.188.10.174 organisation="Notary"
+
+[keycloak-machines]
+keycloak ansible_host=52.255.138.101
+
+[ui-machines]
+ui ansible_host=oars.eastus.cloudapp.azure.com ansible_port=22000
+
+[all:vars]
+ansible_ssh_private_key_file = ~/.ssh/id_rsa
+ansible_ssh_user = corda

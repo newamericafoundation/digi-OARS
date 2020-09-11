@@ -1,0 +1,52 @@
+# 100-clean-environment.yml
+---
+- name: Clean Environment
+  hosts: node-machines, notary-machines
+  gather_facts: true
+  become: true
+  tasks:
+    - name: Stop Corda Docker Container
+      docker_container:
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
+        image: "{{ corda_docker_image_version }}"
+        state: stopped
+      tags:
+        - stop-node
+        - remove-node
+    - name: Remove Directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - "/opt/corda/certificates"
+        - "/opt/corda/cordapps"
+        - "/opt/corda/additional-node-infos"
+        - "/opt/corda/config"
+        - "/opt/corda/logs"
+        - "/opt/corda/network-parameters"
+        - "/opt/corda/nodeInfo-*"
+        - "/opt/corda/persistence"
+        - "/opt/corda"
+      tags:
+        - remove-dirs
+    - name: Remove Docker Container
+      docker_container:
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
+        image: "{{ corda_docker_image_version }}"
+        state: absent
+      tags:
+        - remove-node
+
+#- name: Clean Docker Network
+#  hosts: node-machines, notary-machines
+#  gather_facts: true
+#  become: true
+#  tasks:
+#    - name: Remove Corda Docker Network
+#      docker_network:
+#        name: corda
+#        state: absent
+#  tags:
+#    - remove-docker-network

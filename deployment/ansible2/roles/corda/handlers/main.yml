@@ -1,0 +1,20 @@
+- name: Start Service
+  systemd:
+    name: "{{ corda_node_name }}"
+    daemon_reload: yes
+    enabled: yes
+    state: started
+
+- name: Restart Service
+  systemd:
+    name: "{{ corda_node_name }}"
+    daemon_reload: yes
+    enabled: yes
+    state: restarted
+
+- name: Stop Service
+  systemd:
+    name: "{{ corda_node_name }}"
+    daemon_reload: yes
+    enabled: yes
+    state: stopped
