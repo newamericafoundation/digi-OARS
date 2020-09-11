@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +57,8 @@ public class RequestContractTests {
                 "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
-                ZonedDateTime.now(),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 RequestState.RequestStateStatus.PENDING,
                 new UniqueIdentifier(),
                 participants
@@ -72,7 +74,8 @@ public class RequestContractTests {
                 "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
-                ZonedDateTime.now(),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 RequestState.RequestStateStatus.APPROVED,
                 new UniqueIdentifier(),
                 participants
@@ -87,7 +90,8 @@ public class RequestContractTests {
                 "build a school",
                 BigDecimal.valueOf(1000000).negate(),
                 Currency.getInstance("USD"),
-                ZonedDateTime.now(),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 RequestState.RequestStateStatus.PENDING,
                 new UniqueIdentifier(),
                 participants

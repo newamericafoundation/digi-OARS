@@ -40,7 +40,8 @@ public class IssueRequestFlow {
                 String purpose,
                 BigDecimal amount,
                 Currency currency,
-                ZonedDateTime datetime,
+                ZonedDateTime createDatetime,
+                ZonedDateTime updateDatetime,
                 UniqueIdentifier fundStateLinearId,
                 List<AbstractParty> participants
         ) {
@@ -53,7 +54,8 @@ public class IssueRequestFlow {
                     purpose,
                     amount,
                     currency,
-                    datetime,
+                    createDatetime,
+                    updateDatetime,
                     RequestState.RequestStateStatus.PENDING,
                     fundStateLinearId,
                     participants

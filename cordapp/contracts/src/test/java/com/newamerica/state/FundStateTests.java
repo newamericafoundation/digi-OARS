@@ -47,6 +47,7 @@ public class FundStateTests {
                 BigDecimal.valueOf(5000000),
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
@@ -64,7 +65,8 @@ public class FundStateTests {
         Field partialRequestParticipants = FundState.class.getDeclaredField("partialRequestParticipants");
         Field amount = FundState.class.getDeclaredField("amount");
         Field balance = FundState.class.getDeclaredField("balance");
-        Field datetime = FundState.class.getDeclaredField("datetime");
+        Field createDatetime = FundState.class.getDeclaredField("createDatetime");
+        Field updateDatetime = FundState.class.getDeclaredField("updateDatetime");
         Field maxWithdrawalAmount = FundState.class.getDeclaredField("maxWithdrawalAmount");
         Field currency = FundState.class.getDeclaredField("currency");
         Field status = FundState.class.getDeclaredField("status");
@@ -77,7 +79,8 @@ public class FundStateTests {
         assertTrue(partialRequestParticipants.getType().isAssignableFrom(List.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(balance.getType().isAssignableFrom(BigDecimal.class));
-        assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
+        assertTrue(createDatetime.getType().isAssignableFrom(ZonedDateTime.class));
+        assertTrue(updateDatetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(maxWithdrawalAmount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(status.getType().isAssignableFrom(FundState.FundStateStatus.class));
@@ -87,7 +90,6 @@ public class FundStateTests {
     // ensure all getter tests return data as expected
     @Test
     public void getterTests(){
-
         assertEquals(fundState.getOriginParty(), US.getParty());
         assertEquals(fundState.getReceivingParty(), CATAN.getParty());
         assertEquals(fundState.getOwners(),owners);
@@ -95,12 +97,12 @@ public class FundStateTests {
         assertEquals(fundState.getPartialRequestParticipants(), partialRequestParticipants);
         assertTrue(fundState.getAmount().compareTo(BigDecimal.valueOf(4999999)) > 0);
         assertTrue(fundState.getBalance().compareTo(BigDecimal.valueOf(4999999)) > 0);
-        assertEquals(fundState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        assertEquals(fundState.getCreateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        assertEquals(fundState.getUpdateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertTrue(fundState.getMaxWithdrawalAmount().compareTo(BigDecimal.valueOf(999999)) > 0);
         assertEquals(fundState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(fundState.getStatus(), FundState.FundStateStatus.ISSUED);
         assertEquals(fundState.getParticipants(),new ArrayList<>(participants));
-
     }
 
     // ensure that the balance is properly reduced while using the withdraw() helper function

@@ -47,10 +47,25 @@ public class FundsController extends BaseResource {
     }
 
     @GetMapping(value = "/funds", produces = "application/json")
-    private Response getAllFunds () {
+    private Response getAllUnconsumedFunds () {
         try {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
+            List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
+            return Response.ok(fundList).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/all-funds", produces = "application/json")
+    private Response getAllFunds () {
+        try {
+            PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
             List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
             return Response.ok(fundList).build();
         }catch (IllegalArgumentException e) {
@@ -133,6 +148,7 @@ public class FundsController extends BaseResource {
                     partialRequestParticipants,
                     amountAndBalance,
                     now,
+                    now,
                     maxWithdrawalAmount,
                     currency,
                     participants
@@ -152,7 +168,8 @@ public class FundsController extends BaseResource {
             String resourcePath = String.format("/fund?fundId=%s", fundId);
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     ReceiveFundFlow.InitiatorFlow.class,
-                    new UniqueIdentifier(null, UUID.fromString(fundId))
+                    new UniqueIdentifier(null, UUID.fromString(fundId)),
+                    ZonedDateTime.now()
             ).getReturnValue().get();
             FundState updated = (FundState) tx.getTx().getOutputs().get(0).getData();
             return Response.ok(createFundSuccessServiceResponse("Fund received successfully.", updated, resourcePath)).build();
