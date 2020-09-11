@@ -17,6 +17,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -34,9 +35,11 @@ public class ReceiveFundFlow {
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier fundStateLinearId;
+        private final ZonedDateTime updateDatetime;
 
-        public InitiatorFlow(UniqueIdentifier fundStateLinearId) {
+        public InitiatorFlow(UniqueIdentifier fundStateLinearId, ZonedDateTime updateDatetime) {
             this.fundStateLinearId = fundStateLinearId;
+            this.updateDatetime = updateDatetime;
         }
 
 
@@ -56,20 +59,21 @@ public class ReceiveFundFlow {
 
             // contruct output fund state
             FundState outputFundState = inputFundState.changeStatus(FundState.FundStateStatus.RECEIVED);
+            FundState outputFundStateFinal = inputFundState.updateDatetime(updateDatetime);
 
             // build tx
             transactionBuilder.addCommand(
                     commandData,
                     outputFundState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
             transactionBuilder.addInputState(inputFundStateAndRef);
-            transactionBuilder.addOutputState(outputFundState, FundContract.ID);
+            transactionBuilder.addOutputState(outputFundStateFinal, FundContract.ID);
 
             //verify and partially sign transaction
             transactionBuilder.verify(getServiceHub());
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = outputFundState
+            List<Party> otherParties = outputFundStateFinal
                     .getParticipants()
                     .stream()
                     .map(i -> ((Party) i)).collect(Collectors.toList());

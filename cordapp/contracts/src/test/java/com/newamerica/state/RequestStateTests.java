@@ -1,5 +1,6 @@
 package com.newamerica.state;
 
+import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -44,6 +45,7 @@ public class RequestStateTests {
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 RequestState.RequestStateStatus.PENDING,
                 uniqueIdentifier,
                 participants
@@ -61,7 +63,8 @@ public class RequestStateTests {
         Field externalAccountId = RequestState.class.getDeclaredField("externalAccountId");
         Field purpose = RequestState.class.getDeclaredField("purpose");
         Field amount = RequestState.class.getDeclaredField("amount");
-        Field datetime = RequestState.class.getDeclaredField("datetime");
+        Field createDatetime = FundState.class.getDeclaredField("createDatetime");
+        Field updateDatetime = FundState.class.getDeclaredField("updateDatetime");
         Field currency = RequestState.class.getDeclaredField("currency");
         Field status = RequestState.class.getDeclaredField("status");
         Field fundStateLinearId = RequestState.class.getDeclaredField("fundStateLinearId");
@@ -74,7 +77,8 @@ public class RequestStateTests {
         assertTrue(externalAccountId.getType().isAssignableFrom(String.class));
         assertTrue(purpose.getType().isAssignableFrom(String.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
-        assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
+        assertTrue(createDatetime.getType().isAssignableFrom(ZonedDateTime.class));
+        assertTrue(updateDatetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(fundStateLinearId.getType().isAssignableFrom(UniqueIdentifier.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(status.getType().isAssignableFrom(RequestState.RequestStateStatus.class));
@@ -91,7 +95,8 @@ public class RequestStateTests {
         assertEquals(requestState.getAuthorizerUserUsername(),"Chris Jones");
         assertEquals(requestState.getAuthorizedParties(), new ArrayList<>(authorizedParties));
         assertEquals(0, requestState.getAmount().compareTo(BigDecimal.valueOf(1000000)));
-        assertEquals(requestState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        assertEquals(requestState.getCreateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        assertEquals(requestState.getUpdateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertEquals(requestState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(requestState.getStatus(), RequestState.RequestStateStatus.PENDING);
         assertEquals(requestState.getExternalAccountId(), "1234567890");

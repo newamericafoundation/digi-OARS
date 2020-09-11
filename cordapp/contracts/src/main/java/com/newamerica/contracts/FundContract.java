@@ -78,7 +78,6 @@ public class FundContract implements Contract {
                 require.using("The owners cannot change.", inputState.getOwners().equals(outputState.getOwners()));
                 require.using("The requiredSigners cannot change.", inputState.getRequiredSigners().equals(outputState.getRequiredSigners()));
                 require.using("The amount cannot change.", inputState.getAmount().equals(outputState.getAmount()));
-                require.using("The datetime cannot change.", inputState.getDatetime().equals(outputState.getDatetime()));
                 require.using("The maxWithdrawalAmount cannot change.", inputState.getMaxWithdrawalAmount().equals(outputState.getMaxWithdrawalAmount()));
                 require.using("The currency cannot change.", inputState.getCurrency().equals(outputState.getCurrency()));
                 require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));

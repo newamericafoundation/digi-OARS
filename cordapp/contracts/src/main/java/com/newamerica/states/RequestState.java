@@ -37,7 +37,8 @@ public class RequestState implements LinearState {
     public final String purpose;
     public final BigDecimal amount;
     public final Currency currency;
-    public final ZonedDateTime datetime;
+    public final ZonedDateTime createDatetime;
+    public final ZonedDateTime updateDatetime;
     public final RequestStateStatus status;
     public final UniqueIdentifier fundStateLinearId;
     public final UniqueIdentifier linearId;
@@ -52,7 +53,8 @@ public class RequestState implements LinearState {
                         String purpose,
                         BigDecimal amount,
                         Currency currency,
-                        ZonedDateTime datetime,
+                        ZonedDateTime createDatetime,
+                        ZonedDateTime updateDatetime,
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         UniqueIdentifier linearId,
@@ -65,7 +67,8 @@ public class RequestState implements LinearState {
         this.purpose = purpose;
         this.amount = amount;
         this.currency = currency;
-        this.datetime = datetime;
+        this.createDatetime = createDatetime;
+        this.updateDatetime = updateDatetime;
         this.status = status;
         this.fundStateLinearId = fundStateLinearId;
         this.linearId = linearId;
@@ -80,11 +83,12 @@ public class RequestState implements LinearState {
                         String purpose,
                         BigDecimal amount,
                         Currency currency,
-                        ZonedDateTime datetime,
+                        ZonedDateTime createDatetime,
+                        ZonedDateTime updateDatetime,
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizedParties, externalAccount, purpose, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizedParties, externalAccount, purpose, amount, currency, createDatetime, updateDatetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -102,12 +106,13 @@ public class RequestState implements LinearState {
     public List<AbstractParty> getAuthorizedParties() { return authorizedParties; }
     public BigDecimal getAmount() { return amount; }
     public Currency getCurrency() { return currency; }
-    public ZonedDateTime getDatetime() { return datetime; }
     public RequestStateStatus getStatus() { return status; }
     public UniqueIdentifier getFundStateLinearId() { return fundStateLinearId; }
     public String getAuthorizerUserUsername() { return authorizerUserUsername; }
     public String getExternalAccountId() { return externalAccountId; }
     public String getPurpose() { return purpose; }
+    public ZonedDateTime getCreateDatetime() { return createDatetime; }
+    public ZonedDateTime getUpdateDatetime() { return updateDatetime; }
 
 
     //helper functions
@@ -121,7 +126,8 @@ public class RequestState implements LinearState {
                 this.purpose,
                 this.amount,
                 this.currency,
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 newStatus,
                 this.fundStateLinearId,
                 this.linearId,
@@ -139,7 +145,8 @@ public class RequestState implements LinearState {
                 this.purpose,
                 this.amount,
                 this.currency,
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 this.status,
                 this.fundStateLinearId,
                 this.linearId,
@@ -157,7 +164,8 @@ public class RequestState implements LinearState {
                 this.purpose,
                 this.amount,
                 this.currency,
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 this.status,
                 this.fundStateLinearId,
                 this.linearId,
@@ -175,7 +183,8 @@ public class RequestState implements LinearState {
                 this.purpose,
                 this.amount,
                 this.currency,
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 this.status,
                 this.fundStateLinearId,
                 this.linearId,

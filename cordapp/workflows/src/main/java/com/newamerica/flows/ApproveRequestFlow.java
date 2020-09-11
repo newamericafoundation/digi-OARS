@@ -17,6 +17,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -31,10 +32,13 @@ public class ApproveRequestFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier requestStateLinearId;
         private final String authorizerUserUsername;
+        private final ZonedDateTime updateDatetime;
 
-        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername) {
+
+        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername, ZonedDateTime updateDatetime) {
             this.requestStateLinearId = requestStateLinearId;
             this.authorizerUserUsername = authorizerUserUsername;
+            this.updateDatetime = updateDatetime;
         }
 
         @Suspendable
