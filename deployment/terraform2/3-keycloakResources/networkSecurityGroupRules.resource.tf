@@ -23,5 +23,5 @@ resource "azurerm_network_security_rule" "ui_inbound" {
   source_address_prefix                      = "Internet"
   source_port_range                          = "*"
   destination_application_security_group_ids = [azurerm_application_security_group.asg.id]
-  destination_port_range                     = "9080"
+  destination_port_range                     = "3000"
 }

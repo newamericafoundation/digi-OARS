@@ -27,6 +27,20 @@ output "network_interface_private_ip" {
   value       = values(azurerm_network_interface.vm)[*].private_ip_address
 }
 
+output "network_interface_map_name_id" {
+  value       = {
+    for thing in azurerm_network_interface.vm:
+        element(split("-", thing.name), 1) => thing.id
+  }
+}
+
+output "network_interface_map_name_ipconf" {
+  value       = {
+    for thing in azurerm_network_interface.vm:
+        element(split("-", thing.name), 1) => thing.ip_configuration[0].name
+  }
+}
+
 //output "public_ip_id" {
 //  description = "id of the public ip address provisoned."
 //  value       = values(azurerm_public_ip.vm)[*].id

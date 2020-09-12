@@ -10,5 +10,5 @@ terraform {
 }
 
 output "StateStorageUrl" {
-  value = "https://newamericatfstate.blob.core.windows.net/${lookup(var.tags, "Environment")}-tfstate/ui.${lookup(var.tags, "Environment")}.terraform.tfstate:${terraform.workspace}"
+  value = "https://newamericatfstate.blob.core.windows.net/${terraform.workspace}-tfstate/ui.${terraform.workspace}.terraform.tfstate:${terraform.workspace}"
 }

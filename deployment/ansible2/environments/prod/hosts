@@ -13,7 +13,7 @@ newamerica ansible_host=poc-oars-newamerica.eastus.cloudapp.azure.com organisati
 notary ansible_host=52.188.10.174 organisation="Notary"
 
 [keycloak-machines]
-keycloak ansible_host=52.255.138.101
+keycloak ansible_host=secure-oars.eastus.cloudapp.azure.com ansible_port=22000
 
 [ui-machines]
 ui ansible_host=oars.eastus.cloudapp.azure.com ansible_port=22000

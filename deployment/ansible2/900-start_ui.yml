@@ -1,0 +1,42 @@
+# 01-install-dependencies.yml
+---
+- name: Nginx Config
+  hosts: ui-machines
+  gather_facts: false
+  become: true
+  roles:
+    - name: client
+  tags:
+    - nginx-config
+
+- name: Start UI
+  hosts: ui-machines
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Docker Login
+      docker_login:
+        registry: "{{ docker_registry_url }}"
+        username: "{{ docker_registry_username }}"
+        password: "{{ docker_registry_password }}"
+    - name: Start UI Container
+      docker_container:
+        name: "ui-{{ inventory_hostname }}"
+        hostname: "ui-{{ inventory_hostname }}"
+        image: "{{ docker_registry_url }}/{{ docker_image_ui }}:{{ docker_image_ui_version }}"
+        pull: true
+        state: started
+#        networks:
+#          - name: corda
+        networks_cli_compatible: yes
+        ports:
+          - 3000:80
+        volumes:
+          - "/opt/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+        env:
+#          API_CLIENT_URL: "{{ ansible_host }}"
+#          API_CLIENT_PORT: "80"
+          KEYCLOAK_URL: "secure-oars.eastus.cloudapp.azure.com"
+          KEYCLOAK_CLIENT_ID: "oars-client"
+  tags:
+    - start-ui

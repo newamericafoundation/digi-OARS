@@ -13,3 +13,10 @@ module "nodes" {
   data_disk_size_gb             = 30
   tags                          = var.tags
 }
+
+resource "azurerm_network_interface_backend_address_pool_association" "nic_alb_assoc" {
+  for_each                = var.node_virtual_machines
+  network_interface_id    = module.nodes.network_interface_map_name_id[each.key]
+  ip_configuration_name   = module.nodes.network_interface_map_name_ipconf[each.key]
+  backend_address_pool_id = data.azurerm_lb_backend_address_pool.load_balancer_backend_pool[each.key].id
+}

@@ -34,9 +34,9 @@ resource "azurerm_lb_probe" "ssh_probe" {
   port                = 22
 }
 
-//resource "azurerm_lb_probe" "frontend_probe" {
-//  resource_group_name = data.azurerm_resource_group.resource_group.name
-//  loadbalancer_id     = azurerm_lb.load_balancer.id
-//  name                = "frontend-running-probe"
-//  port                = 80 // this port needs changing
-//}
+resource "azurerm_lb_probe" "frontend_probe" {
+  resource_group_name = data.azurerm_resource_group.resource_group.name
+  loadbalancer_id     = azurerm_lb.load_balancer.id
+  name                = "frontend-running-probe"
+  port                = 3000
+}

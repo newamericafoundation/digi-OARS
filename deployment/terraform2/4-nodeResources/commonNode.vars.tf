@@ -1,6 +1,6 @@
 variable "vm_hostname" {
   type    = string
-  default = "oars"
+  default = "corda"
 }
 variable "admin_username" {
   type    = string
