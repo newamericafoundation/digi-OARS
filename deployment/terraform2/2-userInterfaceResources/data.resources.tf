@@ -5,7 +5,7 @@ data "azurerm_subnet" "subnet" {
 }
 
 data "azurerm_lb" "load_balancer" {
-  name                = "lb-${data.azurerm_resource_group.resource_group.name}"
+  name                = "lb-ui-${data.azurerm_resource_group.resource_group.name}"
   resource_group_name = data.azurerm_resource_group.resource_group.name
 }
 

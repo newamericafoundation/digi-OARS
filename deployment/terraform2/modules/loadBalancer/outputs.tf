@@ -13,10 +13,10 @@ output "load_balancer_public_ip" {
 output "load_balancer_ssh_probe_id" {
   value = azurerm_lb_probe.ssh_probe.id
 }
-
-output "load_balancer_frontend_probe_id" {
-  value = azurerm_lb_probe.frontend_probe.id
-}
+//
+//output "load_balancer_frontend_probe_id" {
+//  value = azurerm_lb_probe.frontend_probe.id
+//}
 
 output "load_balancer_backend_address_pool_id" {
   value = azurerm_lb_backend_address_pool.backend_address_pool.id

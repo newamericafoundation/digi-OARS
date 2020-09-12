@@ -32,3 +32,14 @@ variable "public_ip_dns" {
   type        = string
   description = "DNS of the public ip resource."
 }
+
+###################################################################################
+# Virtual Machines (Optional)                                                     #
+###################################################################################
+variable "virtual_machines" {
+  type = map(object({
+    public_ip_dns_label = string
+  }))
+  description = "Map of virtual machines."
+  default = {}
+}
