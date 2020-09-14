@@ -1,7 +1,3 @@
-docker_registry_url: newamericapocacr.azurecr.io
-docker_registry_username: newamericapocacr
-docker_registry_password: MQp6SL8JMZ3PlKAGX=KH8T/Qwk9sM1o/
-
 docker_image_ui: oars-ui
 docker_image_ui_version: latest
 

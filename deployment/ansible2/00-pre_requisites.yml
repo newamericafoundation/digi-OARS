@@ -15,15 +15,14 @@
   hosts: node-machines
   gather_facts: true
   tasks:
-    - set_fact:
-        my_inventory_hostname: "{{ ansible_host }}"
     - include_role:
         name: corda
         tasks_from: create-node-conf.yml
       vars:
         corda_node_name: "{{ inventory_hostname }}"
         corda_node_org: "{{ organisation }}"
-        corda_node_host_p2p: "{{ my_inventory_hostname }}"
+        corda_node_host_p2p: "{{ ansible_host }}"
+        corda_node_port_p2p: "{{ ansible_port - 10000}}"
         corda_node_base_path: files/bootstrapper/node_configs
   tags:
     - node-configs
@@ -32,15 +31,14 @@
   hosts: notary-machines
   gather_facts: true
   tasks:
-    - set_fact:
-        my_inventory_hostname: "{{ ansible_host }}"
     - include_role:
         name: corda
         tasks_from: create-notary-conf.yml
       vars:
         corda_node_name: "{{ inventory_hostname }}"
         corda_node_org: "{{ organisation }}"
-        corda_node_host_p2p: "{{ my_inventory_hostname }}"
+        corda_node_host_p2p: "{{ ansible_host }}"
+        corda_node_port_p2p: "{{ ansible_port - 10000}}"
         corda_node_base_path: files/bootstrapper/node_configs
   tags:
     - node-configs
@@ -55,12 +53,3 @@
         chdir: files/bootstrapper/
   tags:
     - execute-bootstrapper
-
-- name: Test
-  hosts: ui-machines
-  gather_facts: true
-  tasks:
-    - name: test
-      shell: echo 'test'
-  tags:
-    - testing

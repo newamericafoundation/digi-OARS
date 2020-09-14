@@ -1,6 +1,5 @@
 # 02-prepare-directories.yml
 ---
-
 - name: Prepare Directories
   hosts: node-machines, notary-machines
   gather_facts: true

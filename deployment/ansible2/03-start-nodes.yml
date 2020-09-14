@@ -18,7 +18,7 @@
           - name: corda
         networks_cli_compatible: yes
         ports:
-          - 10200:10200
+          - "{{ ansible_port - 10000 }}:{{ ansible_port - 10000 }}"
           - 10201:10201
           - 2222:2222
         volumes:

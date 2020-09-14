@@ -4,3 +4,7 @@ docker_registry_password: r92I55u1hzPRm99o/q8od0yROm/Cc56o
 
 docker_image_ui: oars-ui
 docker_image_ui_version: latest
+
+api_url: node-oars.eastus.cloudapp.azure.com
+keycloak_url: secure-oars.eastus.cloudapp.azure.com
+keycloak_client_id: oars-client
