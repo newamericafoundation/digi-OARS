@@ -1,0 +1,5 @@
+- name: Prepare Filebeat conf
+  import_tasks: prepare-filebeat-conf.yml
+
+- name: Start Filebeat container
+  import_tasks: start-filebeat-container.yml

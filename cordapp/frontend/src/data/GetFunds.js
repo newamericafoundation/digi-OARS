@@ -1,14 +1,10 @@
 import axios from "axios";
 
-const url =
-  "http://" +
-  window._env_.API_CLIENT_URL +
-  ":" +
-  window._env_.API_CLIENT_PORT +
-  "/api/funds";
+const getFunds = async (port) => {
+  const url =
+    "http://" + window._env_.API_CLIENT_URL + ":" + port + "/api/funds";
 
-const getFunds = async () => {
-   const res = await axios.get(url);
+  const res = await axios.get(url);
   return res.data.entity.map((ob, index) => ({
     linearId: ob.state.data.linearId.id,
     dateTime: ob.state.data.datetime,

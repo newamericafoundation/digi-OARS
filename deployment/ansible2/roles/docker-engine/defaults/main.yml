@@ -1,0 +1,31 @@
+---
+# file: docker-engine/defaults/main.yml
+# Variables in this file are automatically included into the role's context and can be overridden by the active play.
+
+#/ The name of a package which contains the service to install by this role.
+docker_engine_package_name: 'docker-ce'
+
+#/ The version of the package to install.
+#/ One of `latest`, `present` or package version.
+docker_engine_package_version: 'present'
+
+#/ The name of the service once installed from the package.
+docker_engine_service_name: 'docker'
+
+#/ The GPG key id for the Debian/Ubuntu packages.
+docker_engine_gpg_key_id: '9DC858229FC7DD38854AE2D88D81803C0EBFCD88'
+
+#/ The GPG keyserver to fetch GPG key from.
+docker_engine_gpg_keyserver: 'hkp://p80.pool.sks-keyservers.net:80'
+
+#/ List of users to have an access to the local docker engine.
+#/ For example:
+#/ - '{{ ansible_env.USER }}'
+#/ - operator
+docker_engine_docker_users: []
+
+#/ The configuration for Docker engine.
+#/ Conveniently the configuration file is a JSON format, so this variable is 1:1 mapping
+#/ See [Docker engine doc](https://docs.docker.com/engine/reference/commandline/dockerd/#daemon-configuration-file)
+#/ to check what is accepted here
+docker_engine_config: {}

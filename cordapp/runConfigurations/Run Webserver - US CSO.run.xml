@@ -2,7 +2,7 @@
   <configuration default="false" name="Run Webserver - US CSO" type="Application" factoryName="Application">
     <envs>
       <env name="CONFIG_RPC_HOST" value="localhost" />
-      <env name="SERVER_PORT" value="10053" />
+      <env name="SERVER_PORT" value="10300" />
       <env name="CONFIG_RPC_PORT" value="10015" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.newamerica.webserver.Starter" />

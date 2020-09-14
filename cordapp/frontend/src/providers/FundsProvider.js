@@ -3,8 +3,10 @@ import React, {
   useEffect,
   useReducer,
   useCallback,
+  useContext
 } from "react";
 import getFunds from "../data/GetFunds";
+import { APIContext } from "./APIProvider";
 
 export const FundsContext = createContext();
 
@@ -27,16 +29,23 @@ const reducer = (state, action) => {
 
 const FundsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [api] = useContext(APIContext);
 
   const callback = useCallback(
     () =>
-      getFunds().then((data) => dispatch({ type: "UPDATE_FUNDS", payload: data })),
-    [dispatch]
+      getFunds(api.port).then((data) =>
+        dispatch({ type: "UPDATE_FUNDS", payload: data })
+      ),
+    [dispatch, api.port]
   );
 
   useEffect(() => {
-    getFunds().then((data) => dispatch({ type: "UPDATE_FUNDS", payload: data }));
-  }, []);
+    if (api.port) {
+      getFunds(api.port).then((data) =>
+        dispatch({ type: "UPDATE_FUNDS", payload: data })
+      );
+    }
+  }, [api.port]);
 
   return (
     <FundsContext.Provider value={[state, callback]}>

@@ -3,8 +3,10 @@ import React, {
   useEffect,
   useReducer,
   useCallback,
+  useContext,
 } from "react";
 import getRequests from "../data/GetRequests";
+import { APIContext } from "./APIProvider";
 
 export const RequestsContext = createContext();
 
@@ -27,16 +29,23 @@ const reducer = (state, action) => {
 
 const RequestsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [api] = useContext(APIContext);
 
   const callback = useCallback(
     () =>
-    getRequests().then((data) => dispatch({ type: "UPDATE_REQUESTS", payload: data })),
-    [dispatch]
+      getRequests(api.port).then((data) =>
+        dispatch({ type: "UPDATE_REQUESTS", payload: data })
+      ),
+    [dispatch, api.port]
   );
 
   useEffect(() => {
-    getRequests().then((data) => dispatch({ type: "UPDATE_REQUESTS", payload: data }));
-  }, []);
+    if (api.port) {
+      getRequests(api.port).then((data) =>
+        dispatch({ type: "UPDATE_REQUESTS", payload: data })
+      );
+    }
+  }, [api.port]);
 
   return (
     <RequestsContext.Provider value={[state, callback]}>
