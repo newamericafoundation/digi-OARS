@@ -16,6 +16,11 @@ cordapp {
     }
 }
 
+test{
+    minHeapSize = "256m"
+    maxHeapSize = "4G"
+}
+
 sourceSets {
     main {
         java {
