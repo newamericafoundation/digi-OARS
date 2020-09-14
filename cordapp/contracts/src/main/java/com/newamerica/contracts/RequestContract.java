@@ -32,6 +32,7 @@ public class RequestContract implements Contract {
                 RequestState outputState = (RequestState) tx.getOutputStates().get(0);
                 require.using("RequestState status must be either PENDING or FLAGGED", outputState.status != RequestState.RequestStateStatus.APPROVED );
                 require.using("AuthorizedParties list cannot be empty.", !outputState.getAuthorizedParties().isEmpty());
+                require.using("The create datetime and update datetime must be the same when issue.", outputState.getCreateDatetime().equals(outputState.getUpdateDatetime()));
                 return null;
             });
         }else if(commandData.equals(new Commands.Approve())){
@@ -53,6 +54,7 @@ public class RequestContract implements Contract {
                 require.using("The fundStateLinearId cannot change.", inputState.getFundStateLinearId().equals(outputState.getFundStateLinearId()));
                 require.using("The authorizedParties cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
+                require.using("update datetime must be later than create datetime.", outputState.getUpdateDatetime().isAfter(outputState.getCreateDatetime()));
                 return null;
             });
         }

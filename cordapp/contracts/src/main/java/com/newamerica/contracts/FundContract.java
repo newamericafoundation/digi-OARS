@@ -52,7 +52,7 @@ public class FundContract implements Contract {
                 require.using("The balance and amount fields must be equal during an issuance.", outputState.getAmount().compareTo(outputState.getBalance()) == 0);
                 require.using("The maxWithdrawalAmount must be greater than or equal to zero.", outputState.getMaxWithdrawalAmount().compareTo(BigDecimal.ZERO) >= 0);
                 require.using("The status can only be ISSUED during an issuance transaction.", outputState.getStatus() == FundState.FundStateStatus.ISSUED);
-
+                require.using("The create datetime and update datetime must be the same when issue.", outputState.getCreateDatetime().equals(outputState.getUpdateDatetime()));
                 // combine the Lists
                 List<AbstractParty> combinedLists = Stream.concat(outputState.owners.stream(), outputState.requiredSigners.stream()) .collect(Collectors.toList());
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));
@@ -81,7 +81,7 @@ public class FundContract implements Contract {
                 require.using("The maxWithdrawalAmount cannot change.", inputState.getMaxWithdrawalAmount().equals(outputState.getMaxWithdrawalAmount()));
                 require.using("The currency cannot change.", inputState.getCurrency().equals(outputState.getCurrency()));
                 require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
-
+                require.using("update datetime must be later than create datetime.", outputState.getUpdateDatetime().isAfter(outputState.getCreateDatetime()));
                 return null;
             });
         }else if(commandData.equals(new Commands.Receive())){
@@ -107,6 +107,7 @@ public class FundContract implements Contract {
                 // combine the Lists
                 List<AbstractParty> combinedLists = Stream.of(outputState.getOwners(), outputState.getRequiredSigners()).flatMap(Collection::stream).collect(Collectors.toList());
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));
+                require.using("update datetime must be later than create datetime.", outputState.getUpdateDatetime().isAfter(outputState.getCreateDatetime()));
                 return null;
             });
         }

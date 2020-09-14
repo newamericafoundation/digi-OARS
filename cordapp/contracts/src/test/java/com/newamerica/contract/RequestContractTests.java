@@ -29,6 +29,7 @@ public class RequestContractTests {
     private final List<AbstractParty> authorizedParties = new ArrayList<>();
 
     private RequestState requestState;
+    private RequestState requestState2;
     private RequestState requestState_diff;
     private RequestState requestState_negative_amount;
 
@@ -51,7 +52,7 @@ public class RequestContractTests {
         requestState = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Blue",
+                "",
                 authorizedParties,
                 "1234567890",
                 "build a school",
@@ -63,6 +64,9 @@ public class RequestContractTests {
                 new UniqueIdentifier(),
                 participants
         );
+
+        //create request state
+        requestState2 = requestState.update("Helen Keller", ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")));
 
         //create request state
         requestState_diff = new RequestState(
@@ -115,7 +119,7 @@ public class RequestContractTests {
             });
             l.transaction(tx -> {
                 tx.input(RequestContract.ID, requestState);
-                tx.output(RequestContract.ID, requestState.changeStatus(RequestState.RequestStateStatus.APPROVED));
+                tx.output(RequestContract.ID, requestState2.changeStatus(RequestState.RequestStateStatus.APPROVED));
                 tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Approve());
                 return tx.verifies();
             });
