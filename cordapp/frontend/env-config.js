@@ -5,5 +5,5 @@ window._env_ = {
   KEYCLOAK_PORT: "9080",
   KEYCLOAK_REALM: "oars",
   KEYCLOAK_CLIENT_ID: "oars-client",
-  VERSION: "1.1.8",
+  VERSION: "1.1.9",
 }
