@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import * as Constants from "../../../constants";
 import {
   CCard,
@@ -16,6 +16,7 @@ import {
 import Moment from "moment";
 import { useAuth } from "auth-hook";
 import axios from "axios";
+import { APIContext } from "../../../providers/APIProvider";
 
 export const RequestsTable = ({
   filterStatus,
@@ -25,6 +26,7 @@ export const RequestsTable = ({
   isApprover,
 }) => {
   const auth = useAuth();
+  const [api] = useContext(APIContext);
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -78,7 +80,7 @@ export const RequestsTable = ({
       "http://" +
       window._env_.API_CLIENT_URL +
       ":" +
-      window._env_.API_CLIENT_PORT +
+      api.port +
       "/api/request";
 
     axios

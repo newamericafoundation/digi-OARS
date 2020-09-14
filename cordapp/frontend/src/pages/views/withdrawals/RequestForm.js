@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   CRow,
   CCol,
@@ -12,15 +12,17 @@ import {
   CInputGroupText,
   CInvalidFeedback,
   CTextarea,
-  CSpinner
+  CSpinner,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import useForm from "../../../form/index";
 import { useAuth } from "../../../auth-hook";
 import axios from "axios";
+import { APIContext } from "../../../providers/APIProvider";
 
 export const RequestForm = ({ onSubmit, request }) => {
   const auth = useAuth();
+  const [api] = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const stateSchema = {
@@ -45,7 +47,7 @@ export const RequestForm = ({ onSubmit, request }) => {
     },
     purpose: {
       required: true,
-    }
+    },
   };
 
   const onSubmitForm = (state) => {
@@ -54,7 +56,7 @@ export const RequestForm = ({ onSubmit, request }) => {
       "http://" +
       window._env_.API_CLIENT_URL +
       ":" +
-      window._env_.API_CLIENT_PORT +
+      api.port +
       "/api/request";
 
     axios
@@ -84,7 +86,7 @@ export const RequestForm = ({ onSubmit, request }) => {
     authorizedUserUsername,
     amount,
     externalAccountId,
-    purpose
+    purpose,
   } = values;
 
   return (
@@ -199,12 +201,12 @@ export const RequestForm = ({ onSubmit, request }) => {
                 disabled={disable}
               >
                 {isLoading ? (
-                    <CSpinner
-                      className="spinner-border spinner-border-sm mr-1"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : null}
+                  <CSpinner
+                    className="spinner-border spinner-border-sm mr-1"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                ) : null}
                 Submit
               </CButton>
             </CFormGroup>

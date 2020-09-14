@@ -1,0 +1,27 @@
+devMode = true
+myLegalName = "O={{ corda_node_org }}, L={{ corda_node_city }}, C={{ corda_node_country }}"
+p2pAddress = "{{ corda_node_host_p2p }}:{{ corda_node_port_p2p }}"
+rpcSettings {
+    address = "0.0.0.0:10201"
+    adminAddress = "0.0.0.0:10202"
+}
+notary = { validating : false }
+security {
+    authService {
+        dataSource {
+            type = INMEMORY
+            users=[
+                {
+                    password = test
+                    permissions = [
+                        ALL
+                    ]
+                    user = user1
+                }
+            ]
+        }
+    }
+}
+sshd {
+    port = 2222
+}

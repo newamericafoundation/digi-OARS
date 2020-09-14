@@ -2,7 +2,7 @@
   <configuration default="false" name="Run Webserver - Catan MoFA" type="Application" factoryName="Application">
     <envs>
       <env name="CONFIG_RPC_HOST" value="localhost" />
-      <env name="SERVER_PORT" value="10056" />
+      <env name="SERVER_PORT" value="10500" />
       <env name="CONFIG_RPC_PORT" value="10018" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.newamerica.webserver.Starter" />

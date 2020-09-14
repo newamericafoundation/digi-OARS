@@ -1,0 +1,39 @@
+# 20-start-ui.yml
+---
+- name: Nginx Config
+  hosts: ui-machines
+  gather_facts: false
+  become: true
+  roles:
+    - name: frontend
+  tags:
+    - nginx-config
+
+- name: Start UI
+  hosts: ui-machines
+  gather_facts: false
+  become: true
+  tasks:
+    - name: Docker Login
+      docker_login:
+        registry: "{{ docker_registry_url }}"
+        username: "{{ docker_registry_username }}"
+        password: "{{ docker_registry_password }}"
+    - name: Start UI Container
+      docker_container:
+        name: "oars-ui"
+        hostname: "oars-ui"
+        image: "{{ docker_registry_url }}/{{ docker_image_ui }}:{{ docker_image_ui_version }}"
+        pull: true
+        state: started
+        networks_cli_compatible: yes
+        ports:
+          - 3000:80
+        volumes:
+          - "/opt/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+        env:
+          API_CLIENT_URL: "{{ api_url }}"
+          KEYCLOAK_URL: "{{ keycloak_url }}"
+          KEYCLOAK_CLIENT_ID: "{{ keycloak_client_id }}"
+  tags:
+    - start-ui

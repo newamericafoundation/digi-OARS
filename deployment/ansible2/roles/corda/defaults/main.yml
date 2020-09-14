@@ -1,0 +1,63 @@
+corda_node_version: 4.4
+
+corda_node_base_path: /opt/corda
+corda_node_name: 'node'
+corda_node_full_path: "{{ corda_node_base_path }}/{{ corda_node_name }}"
+
+corda_node_service_name: 'corda-{{ corda_node_name }}'
+
+corda_node_user: corda-node
+corda_node_group: '{{ corda_node_user }}'
+corda_node_shell: !!str false
+
+corda_node_jar: "corda-{{ corda_node_version }}.jar"
+
+corda_node_admin_email: "devops@newamerica.com"
+corda_node_org_unit: "Development"
+corda_node_org: "New America"
+corda_node_city: "New York"
+corda_node_country: "US"
+corda_node_certificates_folder: "{{ ( corda_node_org ) | replace(' ','_')}}"
+
+corda_node_host_p2p: "{{ ansible_host }}"
+corda_node_port_p2p: 10200
+corda_node_detect_public_ip:
+corda_node_host_rpc: "0.0.0.0"
+corda_node_port_rpc: 10201
+corda_node_port_rpc_admin: 10202
+
+corda_node_messaging_servers: []
+corda_node_messaging_server_external:
+
+corda_node_rpc_user: corda
+corda_node_rpc_password: corda_is_awesome
+
+corda_node_devmode: !!str false
+corda_node_url_doorman: "{{ identity_manager_url }}:{{ identity_manager_port }}"
+corda_node_url_networkmap: "{{ network_map_url }}:{{ network_map_port }}"
+
+corda_node_password_keystore: test
+corda_node_password_truststore: "trustpass"
+
+corda_node_java_options: "-Xmx4096m"
+
+corda_node_db_type: h2
+corda_node_database_url: "0.0.0.0"
+corda_node_database_port: "5432"
+corda_node_database_name: "postgres"
+corda_node_database_user: "postgres"
+corda_node_database_password: ""
+
+corda_node_sshd_port: 2222
+
+corda_node_messaging_ssl_configuration: no
+corda_node_messaging_keystore_password: 'changeit'
+corda_node_messaging_truststore_password: 'changeit'
+
+#/ List of the public keys fingerprints (SHA-256 of public key hash) not allowed as Cordapp JARs signers
+#/ There is no default, because an empty list is valid, too!
+corda_node_cordapp_signer_blacklist:
+
+corda_node_graphite_ip:
+
+corda_node_jmx_port:

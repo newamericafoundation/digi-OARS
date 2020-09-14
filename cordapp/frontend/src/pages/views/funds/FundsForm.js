@@ -17,8 +17,10 @@ import {
 import { NetworkContext } from "../../../providers/NetworkProvider";
 import useForm from "../../../form/index";
 import axios from "axios";
+import { APIContext } from "../../../providers/APIProvider";
 
 export const FundsForm = ({ onSubmit }) => {
+  const [api] = useContext(APIContext);
   const [network] = useContext(NetworkContext);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -56,7 +58,7 @@ export const FundsForm = ({ onSubmit }) => {
       "http://" +
       window._env_.API_CLIENT_URL +
       ":" +
-      window._env_.API_CLIENT_PORT +
+      api.port +
       "/api/fund";
 
     axios

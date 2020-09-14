@@ -32,7 +32,7 @@ const FundsPage = () => {
       setIsFundsReceiver(auth.meta.keycloak.hasResourceRole("funds_receiver"));
       setIsFundsIssuer(auth.meta.keycloak.hasResourceRole("funds_issuer"));
     }
-  }, [auth]);
+  }, []);
 
   const responseMessage = (message) => {
     return (

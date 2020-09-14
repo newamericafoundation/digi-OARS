@@ -1,0 +1,5 @@
+docker_image_ui: oars-ui
+docker_image_ui_version: latest
+
+docker_image_api: oars-client
+docker_image_api_version: latest

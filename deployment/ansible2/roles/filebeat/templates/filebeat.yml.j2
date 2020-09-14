@@ -1,0 +1,27 @@
+filebeat.config:
+  modules:
+    path: ${path.config}/modules.d/*.yml
+    reload.enabled: false
+
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - "/var/log/{{ corda_node_name }}/node/node-*"
+  fields:
+    logfile: {{ corda_node_name }}_node
+- type: log
+  enabled: true
+  paths:
+    - "/var/log/{{ corda_node_name }}/ws/spunta-backend.log"
+  fields:
+    logfile: {{ corda_node_name }}_ws
+- type: log
+  enabled: true
+  paths:
+    - "/var/log/{{ corda_node_name }}/batch/batch.log"
+  fields:
+    logfile: {{ corda_node_name }}_batch
+
+output.logstash:
+    hosts: ["10.0.1.4:5044"]
