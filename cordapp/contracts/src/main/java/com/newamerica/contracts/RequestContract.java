@@ -44,17 +44,16 @@ public class RequestContract implements Contract {
                 require.using("The request output state must be in APPROVED status.", outputState.getStatus() == RequestState.RequestStateStatus.APPROVED);
                 require.using("The authorizedUserUsername cannot change.", inputState.getAuthorizedUserUsername().equals(outputState.getAuthorizedUserUsername()));
                 require.using("The authorizedUserDept cannot change.", inputState.getAuthorizedUserDept().equals(outputState.getAuthorizedUserDept()));
-                require.using("The authorizerUserUsername cannot change.", inputState.getAuthorizerUserUsername().equals(outputState.getAuthorizerUserUsername()));
+                require.using("The authorizerUserUsername cannot be null.", !outputState.getAuthorizerUserUsername().isEmpty());
                 require.using("The authorizerDept cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The externalAccountId cannot change.", inputState.getExternalAccountId().equals(outputState.getExternalAccountId()));
+                require.using("The purpose cannot change.", inputState.getPurpose().equals(outputState.getPurpose()));
                 require.using("The amount cannot change.", inputState.getAmount().equals(outputState.getAmount()));
                 require.using("The currency cannot change.", inputState.getCurrency().equals(outputState.getCurrency()));
-                require.using("The datetime cannot change.", inputState.getDatetime().equals(outputState.getDatetime()));
                 require.using("The fundStateLinearId cannot change.", inputState.getFundStateLinearId().equals(outputState.getFundStateLinearId()));
                 require.using("The authorizedParties cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
-
-               return null;
+                return null;
             });
         }
     }

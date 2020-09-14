@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   CCard,
   CCardHeader,
@@ -10,13 +10,18 @@ import {
   CCol,
   CRow,
   CProgress,
+  CCallout,
+  CSpinner,
 } from "@coreui/react";
 import Moment from "moment";
-import { FundData } from "../../../data/Funds";
+import axios from "axios";
+import * as Constants from "../../../constants";
+import { APIContext } from "../../../providers/APIProvider";
 
-export const FundsTable = () => {
-  const fundData = FundData;
+export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
+  const [api] = useContext(APIContext);
   const [details, setDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);
@@ -57,34 +62,30 @@ export const FundsTable = () => {
     }
   };
 
-  const getReceivedButton = (isReceived) => {
-    if (isReceived) {
-      return (
-        <CButton
-          className={"float-right mb-0"}
-          color="dark"
-          variant="outline"
-          shape="square"
-          size="sm"
-          active={false}
-          disabled={true}
-        >
-          Received
-        </CButton>
-      );
+  const getReceivedButton = (status, id, index) => {
+    if (isReceiver) {
+      if (status === "ISSUED") {
+        return (
+          <CButton
+            className={"float-right mb-0"}
+            color="success"
+            variant="outline"
+            shape="square"
+            size="sm"
+            onClick={() => onHandleReceiveClick(id, index)}
+          >
+            {isLoading ? (
+              <CSpinner
+                className="spinner-border spinner-border-sm mr-1"
+                role="status"
+                aria-hidden="true"
+              />
+            ) : null}
+            Receive Funds
+          </CButton>
+        );
+      }
     }
-    return (
-      <CButton
-        className={"float-right mb-0"}
-        color="success"
-        variant="outline"
-        shape="square"
-        size="sm"
-        active={true}
-      >
-        Receive
-      </CButton>
-    );
   };
 
   const toCurrency = (number, currency) => {
@@ -94,9 +95,28 @@ export const FundsTable = () => {
     }).format(number);
   };
 
+  const onHandleReceiveClick = (fundId, index) => {
+    setIsLoading(true);
+    const url =
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      api.port +
+      "/api/fund";
+
+    axios
+      .put(url, null, { params: { fundId } })
+      .then((response) => {
+        setIsLoading(false);
+        refreshTableCallback();
+        toggleDetails(index);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <CDataTable
-      items={fundData}
+      items={funds.data}
       fields={fields}
       columnFilter
       tableFilter
@@ -113,14 +133,16 @@ export const FundsTable = () => {
           <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
         ),
         datetime: (item) => (
-          <td>{Moment(item.datetime).format("DD/MMM/yyyy")}</td>
+          <td>{Moment(item.dateTime).format("DD/MMM/yyyy")}</td>
         ),
         status: (item) => (
           <td>
             <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
           </td>
         ),
-        isReceived: (item) => <td>{getReceivedButton(item.isReceived)}</td>,
+        isReceived: (item) => (
+          <td>{getReceivedButton(item.status, item.linearId)}</td>
+        ),
         show_details: (item, index) => {
           return (
             <td>
@@ -144,10 +166,10 @@ export const FundsTable = () => {
               <CCard className="m-3">
                 <CCardHeader>
                   Fund Details
-                  {getReceivedButton(item.isReceived)}
+                  {getReceivedButton(item.status, item.linearId, index)}
                 </CCardHeader>
                 <CCardBody>
-                  {item.isReceived ? (
+                  {item.status === Constants.FUND_RECEIVED ? (
                     <CRow className="mb-3">
                       <CCol>
                         <p className="text-muted">Total Assets Repatriated:</p>
@@ -162,31 +184,58 @@ export const FundsTable = () => {
                     </CRow>
                   ) : null}
                   <CRow>
-                    <CCol md="3">
-                      ID:
-                      <br />
-                      Origin Country:
-                      <br />
-                      Receiving Country:
-                      <br />
-                      Amount:
-                      <br />
-                      Balance:
-                      <br />
-                      Max Withdrawal Amount
+                    <CCol xl="4" sm="3">
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Origin Country</p>
+                        <strong className="p">{item.originParty}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Receiving Country</p>
+                        <strong className="p">{item.receivingParty}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Amount</p>
+                        <strong className="p">
+                          {toCurrency(item.amount, item.currency)}
+                        </strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Balance</p>
+                        <strong className="p">
+                          {toCurrency(item.balance, item.currency)}
+                        </strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Max Withdrawal Amount</p>
+                        <strong className="p">
+                          {toCurrency(item.maxWithdrawalAmount, item.currency)}
+                        </strong>
+                      </CCallout>
                     </CCol>
-                    <CCol md="3">
-                      {item.linearId}
-                      <br />
-                      {item.originParty}
-                      <br />
-                      {item.receivingParty}
-                      <br />
-                      {toCurrency(item.amount, item.currency)}
-                      <br />
-                      {toCurrency(item.balance, item.currency)}
-                      <br />
-                      {toCurrency(item.maxWithdrawalAmount, item.currency)}
+                    <CCol xl="4" sm="3">
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">State ID</p>
+                        <strong className="p">{item.linearId}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Transaction ID</p>
+                        <strong className="p">{item.txId}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Date/Time</p>
+                        <strong className="p">
+                          {Moment(item.dateTime).format("DD/MMM/YYYY HH:mm:ss")}
+                        </strong>
+                      </CCallout>
+                    </CCol>
+                    <CCol xl="4" sm="3">
+                      <CCallout
+                        color={item.status === "ISSUED" ? "warning" : "success"}
+                        className={"bg-light"}
+                      >
+                        <p className="text-muted mb-0">Status</p>
+                        <strong className="p">{item.status}</strong>
+                      </CCallout>
                     </CCol>
                   </CRow>
                 </CCardBody>

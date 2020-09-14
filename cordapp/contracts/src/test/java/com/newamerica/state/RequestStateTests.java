@@ -1,5 +1,6 @@
 package com.newamerica.state;
 
+import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
@@ -23,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 public class RequestStateTests {
     private RequestState requestState;
     private final List<AbstractParty> participants = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
     private UniqueIdentifier uniqueIdentifier;
 
     @Before
@@ -30,14 +32,19 @@ public class RequestStateTests {
         participants.add(CATANMoJ.getParty());
         participants.add(CATANMoFA.getParty());
         uniqueIdentifier =  new UniqueIdentifier();
+        authorizedParties.add(CATANMoJ.getParty());
+        authorizedParties.add(CATANMoFA.getParty());
 
         requestState = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "Chris Jones",
+                authorizedParties,
                 "1234567890",
+                "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 RequestState.RequestStateStatus.PENDING,
                 uniqueIdentifier,
@@ -54,8 +61,10 @@ public class RequestStateTests {
         Field authorizerUserUsername = RequestState.class.getDeclaredField("authorizerUserUsername");
         Field authorizedParties = RequestState.class.getDeclaredField("authorizedParties");
         Field externalAccountId = RequestState.class.getDeclaredField("externalAccountId");
+        Field purpose = RequestState.class.getDeclaredField("purpose");
         Field amount = RequestState.class.getDeclaredField("amount");
-        Field datetime = RequestState.class.getDeclaredField("datetime");
+        Field createDatetime = FundState.class.getDeclaredField("createDatetime");
+        Field updateDatetime = FundState.class.getDeclaredField("updateDatetime");
         Field currency = RequestState.class.getDeclaredField("currency");
         Field status = RequestState.class.getDeclaredField("status");
         Field fundStateLinearId = RequestState.class.getDeclaredField("fundStateLinearId");
@@ -66,8 +75,10 @@ public class RequestStateTests {
         assertTrue(authorizerUserUsername.getType().isAssignableFrom(String.class));
         assertTrue(authorizedParties.getType().isAssignableFrom(List.class));
         assertTrue(externalAccountId.getType().isAssignableFrom(String.class));
+        assertTrue(purpose.getType().isAssignableFrom(String.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
-        assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
+        assertTrue(createDatetime.getType().isAssignableFrom(ZonedDateTime.class));
+        assertTrue(updateDatetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(fundStateLinearId.getType().isAssignableFrom(UniqueIdentifier.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(status.getType().isAssignableFrom(RequestState.RequestStateStatus.class));
@@ -82,11 +93,14 @@ public class RequestStateTests {
         assertEquals(requestState.getAuthorizedUserUsername(), "Alice Bob");
         assertEquals(requestState.getAuthorizedUserDept(), "Catan Ministry of Education");
         assertEquals(requestState.getAuthorizerUserUsername(),"Chris Jones");
+        assertEquals(requestState.getAuthorizedParties(), new ArrayList<>(authorizedParties));
         assertEquals(0, requestState.getAmount().compareTo(BigDecimal.valueOf(1000000)));
-        assertEquals(requestState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        assertEquals(requestState.getCreateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        assertEquals(requestState.getUpdateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertEquals(requestState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(requestState.getStatus(), RequestState.RequestStateStatus.PENDING);
         assertEquals(requestState.getExternalAccountId(), "1234567890");
+        assertEquals(requestState.getPurpose(), "build a school");
         assertEquals(requestState.getFundStateLinearId(), uniqueIdentifier);
         assertEquals(requestState.getParticipants(),new ArrayList<>(participants));
     }

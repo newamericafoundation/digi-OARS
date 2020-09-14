@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
+import static com.newamerica.TestUtils.CATANMoJ;
 import static org.junit.Assert.assertEquals;
 
 public class IssueRequestFlowTests {
@@ -39,6 +40,7 @@ public class IssueRequestFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
 
 
 
@@ -93,6 +95,7 @@ public class IssueRequestFlowTests {
         participants.add(catanMoj);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
+        authorizedParties.add(CATANMoJ.getParty());
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
@@ -102,6 +105,7 @@ public class IssueRequestFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -117,11 +121,13 @@ public class IssueRequestFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
+                authorizedParties,
+                "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 fs.getLinearId(),
                 participants
         );
@@ -186,6 +192,7 @@ public class IssueRequestFlowTests {
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
@@ -200,11 +207,13 @@ public class IssueRequestFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
+                authorizedParties,
+                "build a school",
                 BigDecimal.valueOf(1000001),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 fs.getLinearId(),
                 participants
         );

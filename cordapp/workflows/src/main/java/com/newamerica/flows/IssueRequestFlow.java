@@ -35,22 +35,27 @@ public class IssueRequestFlow {
         public InitiatorFlow(
                 String authorizedUserUsername,
                 String authorizedUserDept,
-                String authorizerUserUsername,
                 String externalAccountId,
+                List<AbstractParty> authorizedParties,
+                String purpose,
                 BigDecimal amount,
                 Currency currency,
-                ZonedDateTime datetime,
+                ZonedDateTime createDatetime,
+                ZonedDateTime updateDatetime,
                 UniqueIdentifier fundStateLinearId,
                 List<AbstractParty> participants
         ) {
             this.outputRequestState = new RequestState(
                     authorizedUserUsername,
                     authorizedUserDept,
-                    authorizerUserUsername,
+                    "",
+                    authorizedParties,
                     externalAccountId,
+                    purpose,
                     amount,
                     currency,
-                    datetime,
+                    createDatetime,
+                    updateDatetime,
                     RequestState.RequestStateStatus.PENDING,
                     fundStateLinearId,
                     participants
@@ -72,7 +77,6 @@ public class IssueRequestFlow {
                 outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
             }
             outputRequestState = outputRequestState.updateParticipantList(inputStateRefFundState.getParticipants());
-            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getRequiredSigners());
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);

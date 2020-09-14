@@ -1,0 +1,13 @@
+# 01-install-dependencies.yml
+---
+- name: Install Dependencies
+  hosts: all
+  gather_facts: true
+  become: true
+  roles:
+    - role: common
+    - role: docker-engine
+      vars:
+        - docker_engine_package_version: 'latest'
+  tags:
+    - install-dependencies

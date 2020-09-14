@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   CCard,
   CCardBody,
@@ -10,9 +10,23 @@ import {
 import CIcon from "@coreui/icons-react";
 import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
 import { RequestsTable } from "./views//withdrawals/RequestsTable";
-import { RequestData } from "../data/Requests";
+import { FundsContext } from "../providers/FundsProvider";
+import { RequestsContext } from "../providers/RequestsProvider";
+import * as Constants from "../constants";
+import { useAuth } from "auth-hook";
 
 const WithdrawalsPage = () => {
+  const auth = useAuth();
+  const [fundsState, fundsCallback] = useContext(FundsContext);
+  const [requestsState, requestsCallback] = useContext(RequestsContext);
+  const [isRequestApprover, setIsRequestApprover] = useState(false)
+
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      setIsRequestApprover(auth.meta.keycloak.hasResourceRole("request_approver"));
+    }
+  }, [auth]);
+
   const toCurrency = (number, currency) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -20,16 +34,14 @@ const WithdrawalsPage = () => {
     }).format(number);
   };
 
-  const total = RequestData.reduce(
-    (totalFunds, request) => totalFunds + request.amount,
-    0
+  const requestsTotal = requestsState.data.reduce(
+    (totalRequestsAmount, request) => totalRequestsAmount + parseFloat(request.amount), 0
   );
 
-  const pending = RequestData.filter(
-    (request) => request.status === "PENDING"
-  ).reduce((totalFunds, request) => totalFunds + request.amount, 0);
-
-  const approved = total - pending;
+  const requestsPendingTotal = requestsState.data
+    .filter((request) => request.status === Constants.REQUEST_PENDING)
+    .reduce(
+      (totalRequestsPendingAmount, request) => totalRequestsPendingAmount + parseFloat(request.amount), 0);
 
   return (
     <>
@@ -37,10 +49,10 @@ const WithdrawalsPage = () => {
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(approved, "USD").toString()}
+            header={toCurrency((requestsTotal - requestsPendingTotal), "USD").toString()}
             text="Approved Withdrawal Requests"
             color="gradient-success"
-            value={(approved / total) * 100}
+            value={((requestsTotal - requestsPendingTotal) / requestsTotal) * 100}
           >
             <CIcon name="cil-check-circle" height="36" />
           </CWidgetProgressIcon>
@@ -48,10 +60,10 @@ const WithdrawalsPage = () => {
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(pending, "USD").toString()}
+            header={toCurrency(requestsPendingTotal, "USD").toString()}
             text="Pending Withdrawal Requests"
             color="gradient-warning"
-            value={(pending / total) * 100}
+            value={(requestsPendingTotal / requestsTotal) * 100}
           >
             <CIcon name="cil-av-timer" height="36" />
           </CWidgetProgressIcon>
@@ -62,7 +74,11 @@ const WithdrawalsPage = () => {
           <CCard>
             <CCardHeader>Available Funds</CCardHeader>
             <CCardBody>
-              <AvailableFundsTable />
+              <AvailableFundsTable
+                funds={fundsState}
+                refreshFundsTableCallback={fundsCallback}
+                refreshRequestsTableCallback={requestsCallback}
+              />
             </CCardBody>
           </CCard>
         </CCol>
@@ -72,7 +88,13 @@ const WithdrawalsPage = () => {
           <CCard>
             <CCardHeader>Pending Withdrawal Requests</CCardHeader>
             <CCardBody>
-              <RequestsTable status="PENDING" />
+              <RequestsTable
+                filterStatus={Constants.REQUEST_PENDING}
+                requests={requestsState}
+                refreshFundsTableCallback={fundsCallback}
+                refreshRequestsTableCallback={requestsCallback}
+                isApprover={isRequestApprover}
+              />
             </CCardBody>
           </CCard>
         </CCol>
@@ -80,7 +102,13 @@ const WithdrawalsPage = () => {
           <CCard>
             <CCardHeader>Approved Withdrawal Requests</CCardHeader>
             <CCardBody>
-              <RequestsTable status="APPROVED" />
+              <RequestsTable
+                filterStatus={Constants.REQUEST_APPROVED}
+                requests={requestsState}
+                refreshFundsTableCallback={fundsCallback}
+                refreshRequestsTableCallback={requestsCallback}
+                isApprover={isRequestApprover}
+              />
             </CCardBody>
           </CCard>
         </CCol>

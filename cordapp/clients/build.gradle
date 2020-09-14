@@ -29,7 +29,8 @@ dependencies {
     compile "net.corda:corda-jackson:$corda_release_version"
     compile group: 'javax.ws.rs', name: 'javax.ws.rs-api', version: '2.0'
     compile group: 'org.glassfish.jersey.core', name: 'jersey-server', version: '2.26'
-    compile group: 'org.springframework', name: 'spring-webflux', version: '5.2.5.RELEASE'
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
 }
 

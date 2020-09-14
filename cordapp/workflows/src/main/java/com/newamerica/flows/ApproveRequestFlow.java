@@ -17,6 +17,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -30,9 +31,14 @@ public class ApproveRequestFlow {
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier requestStateLinearId;
+        private final String authorizerUserUsername;
+        private final ZonedDateTime updateDatetime;
 
-        public InitiatorFlow(UniqueIdentifier requestStateLinearId) {
+
+        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername, ZonedDateTime updateDatetime) {
             this.requestStateLinearId = requestStateLinearId;
+            this.authorizerUserUsername = authorizerUserUsername;
+            this.updateDatetime = updateDatetime;
         }
 
         @Suspendable
@@ -52,20 +58,21 @@ public class ApproveRequestFlow {
             }
 
             RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
+            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserUsername, updateDatetime);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Approve();
             transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addInputState(stateRef);
-            transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
+            transactionBuilder.addOutputState(outputRequestStateFinal, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = outputRequestState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
+            List<Party> otherParties = outputRequestStateFinal.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties

@@ -62,6 +62,10 @@ allprojects {
         exclude '**/log4j2*.xml'
     }
 
+    test {
+        minHeapSize = "256m"
+        maxHeapSize = "4G"
+    }
 }
 
 apply plugin: 'net.corda.plugins.cordapp'

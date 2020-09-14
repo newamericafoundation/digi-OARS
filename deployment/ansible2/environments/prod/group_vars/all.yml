@@ -1,0 +1,6 @@
+network_boostrapper_version: 4.5.1
+corda_docker_image_version: "corda/corda-zulu-java1.8-4.5"
+
+docker_registry_url: newamericaacrprod.azurecr.io
+docker_registry_username: newamericaacrprod
+docker_registry_password: r92I55u1hzPRm99o/q8od0yROm/Cc56o

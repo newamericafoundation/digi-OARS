@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import * as Constants from "../../../constants";
 import {
   CCard,
@@ -10,14 +10,25 @@ import {
   CCollapse,
   CCol,
   CRow,
-  CProgress
+  CCallout,
+  CSpinner
 } from "@coreui/react";
 import Moment from "moment";
-import { RequestData } from "../../../data/Requests";
+import { useAuth } from "auth-hook";
+import axios from "axios";
+import { APIContext } from "../../../providers/APIProvider";
 
-export const RequestsTable = (filterStatus) => {
-  const requestData = RequestData;
+export const RequestsTable = ({
+  filterStatus,
+  requests,
+  refreshFundsTableCallback,
+  refreshRequestsTableCallback,
+  isApprover,
+}) => {
+  const auth = useAuth();
+  const [api] = useContext(APIContext);
   const [details, setDetails] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);
@@ -31,10 +42,10 @@ export const RequestsTable = (filterStatus) => {
   };
 
   const fields = [
-    { key: "originParty" },
-    { key: "balance", label: "Balance Available" },
+    { key: "authorizedUserUsername", label: "Requestor" },
+    { key: "authorizedUserDept", label: "Department" },
+    { key: "amount" },
     { key: "datetime", label: "Date" },
-    { key: "maxWithdrawalAmount" },
     { key: "status", _style: { width: "20%" } },
     {
       key: "show_details",
@@ -63,110 +74,176 @@ export const RequestsTable = (filterStatus) => {
     }).format(number);
   };
 
+  const onHandleApproveClick = (requestId, authorizerUserUsername, index) => {
+    setIsLoading(true);
+    const url =
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      api.port +
+      "/api/request";
+
+    axios
+      .put(url, null, { params: { requestId, authorizerUserUsername } })
+      .then((response) => {
+        setIsLoading(false);
+        refreshFundsTableCallback();
+        refreshRequestsTableCallback();
+        toggleDetails(index);
+      })
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
-    <CDataTable
-      items={requestData.filter(
-        (request) => request.status === filterStatus.status
-      )}
-      // fields={fields}
-      columnFilter
-      tableFilter
-      footer
-      itemsPerPageSelect
-      itemsPerPage={5}
-      hover
-      sorter
-      pagination
-      scopedSlots={{
-        amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
-        balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
-        maxWithdrawalAmount: (item) => (
-          <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
-        ),
-        datetime: (item) => (
-          <td>{Moment(item.datetime).format(Constants.DATEFORMAT)}</td>
-        ),
-        status: (item) => (
-          <td>
-            <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
-          </td>
-        ),
-        show_details: (item, index) => {
-          return (
+      <CDataTable
+        items={
+          isApprover
+            ? requests.data.filter((request) => request.status === filterStatus)
+            : requests.data.filter(
+                (request) =>
+                  request.status === filterStatus &&
+                  request.authorizedUserDept ===
+                    auth.meta.keycloak.tokenParsed.groups[0]
+              )
+        }
+        fields={fields}
+        columnFilter
+        tableFilter
+        footer
+        itemsPerPageSelect
+        itemsPerPage={5}
+        hover
+        sorter
+        pagination
+        scopedSlots={{
+          amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
+          balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
+          maxWithdrawalAmount: (item) => (
+            <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
+          ),
+          datetime: (item) => (
+            <td>{Moment(item.datetime).format(Constants.DATEFORMAT)}</td>
+          ),
+          status: (item) => (
             <td>
-              <CButton
-                color="primary"
-                variant="outline"
-                shape="square"
-                size="sm"
-                onClick={() => {
-                  toggleDetails(index);
-                }}
-              >
-                {details.includes(index) ? "Hide" : "Show"}
-              </CButton>
+              <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
             </td>
-          );
-        },
-        details: (item, index) => {
-          return (
-            <CCollapse show={details.includes(index)}>
-              <CCard className="m-3">
-                <CCardHeader>
-                  Fund Details
-                </CCardHeader>
-                <CCardBody>
-                  {item.isReceived ? (
-                    <CRow className="mb-3">
-                      <CCol>
-                        <p className="text-muted">Total Assets Repatriated:</p>
-                        <CProgress
-                          value={(item.balance / item.amount) * 100}
-                          showPercentage
-                          striped
+          ),
+          show_details: (item, index) => {
+            return (
+              <td>
+                <CButton
+                  color="primary"
+                  variant="outline"
+                  shape="square"
+                  size="sm"
+                  onClick={() => {
+                    toggleDetails(index);
+                  }}
+                >
+                  {details.includes(index) ? "Hide" : "Show"}
+                </CButton>
+              </td>
+            );
+          },
+          details: (item, index) => {
+            return (
+              <CCollapse show={details.includes(index)}>
+                <CCard className="m-3">
+                  <CCardHeader>
+                    Request Details
+                    {item.status !== Constants.REQUEST_APPROVED &&
+                    isApprover ? (
+                      <div className="card-header-actions">
+                        <CButton
+                          className={"float-right mb-0"}
                           color="success"
-                          precision={2}
-                        />
+                          variant="outline"
+                          shape="square"
+                          size="sm"
+                          onClick={() =>
+                            onHandleApproveClick(
+                              item.linearId,
+                              auth.user.fullName,
+                              index
+                            )
+                          }
+                        >
+                          {isLoading ? (
+                            <CSpinner
+                              className="spinner-border spinner-border-sm mr-1"
+                              role="status"
+                              aria-hidden="true"
+                            />
+                          ) : null}
+                          Approve Request
+                        </CButton>
+                      </div>
+                    ) : null}
+                  </CCardHeader>
+                  <CCardBody>
+                    <CRow>
+                      <CCol xl="6" sm="4">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Requestor</p>
+                          <strong className="p">
+                            {item.authorizedUserUsername}
+                          </strong>
+                          <p className="text-muted mb-0">Department</p>
+                          <strong className="p">
+                            {item.authorizedUserDept}
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Amount</p>
+                          <strong className="p">
+                            {toCurrency(item.amount, item.currency)}
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Date/Time</p>
+                          <strong className="p">
+                            {Moment(item.dateTime).format(
+                              "DD/MMM/YYYY HH:mm:ss"
+                            )}
+                          </strong>
+                        </CCallout>
+                      </CCol>
+                      <CCol xl="6" sm="4">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">State ID</p>
+                          <strong className="p">{item.linearId}</strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Transaction ID</p>
+                          <strong className="p">{item.txId}</strong>
+                        </CCallout>
+                        <CCallout
+                          color={
+                            item.status === Constants.REQUEST_PENDING
+                              ? "warning"
+                              : "success"
+                          }
+                          className={"bg-light"}
+                        >
+                          <p className="text-muted mb-0">Status</p>
+                          <strong className="p">
+                            {item.status}
+                            {item.status === Constants.REQUEST_APPROVED
+                              ? " by " + item.authorizerUserUsername
+                              : null}
+                          </strong>
+                        </CCallout>
                       </CCol>
                     </CRow>
-                  ) : null}
-                  <CRow>
-                    <CCol md="3">
-                      ID:
-                      <br />
-                      Origin Country:
-                      <br />
-                      Receiving Country:
-                      <br />
-                      Amount:
-                      <br />
-                      Balance:
-                      <br />
-                      Max Withdrawal Amount
-                    </CCol>
-                    <CCol md="3">
-                      {item.linearId}
-                      <br />
-                      {item.originParty}
-                      <br />
-                      {item.receivingParty}
-                      <br />
-                      {toCurrency(item.amount, item.currency)}
-                      <br />
-                      {toCurrency(item.balance, item.currency)}
-                      <br />
-                      {toCurrency(item.maxWithdrawalAmount, item.currency)}
-                    </CCol>
-                  </CRow>
-                </CCardBody>
-              </CCard>
-            </CCollapse>
-          );
-        },
-      }}
-    />
-    
-      </>
+                  </CCardBody>
+                </CCard>
+              </CCollapse>
+            );
+          },
+        }}
+      />
+    </>
   );
 };

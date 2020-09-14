@@ -45,6 +45,7 @@ public class ApproveRequestFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
 
 
 
@@ -102,6 +103,7 @@ public class ApproveRequestFlowTests {
         participants.add(catanMoj);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
+        authorizedParties.add(catanMoj);
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
@@ -111,6 +113,7 @@ public class ApproveRequestFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -124,7 +127,8 @@ public class ApproveRequestFlowTests {
 
         //acknowledge the FundState
         ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
-                fs.getLinearId()
+                fs.getLinearId(),
+                ZonedDateTime.of(2020, 7, 27, 10, 30, 30, 0, ZoneId.of("America/New_York"))
         );
         Future<SignedTransaction> futureTwo = c.startFlow(receiveFundFlow);
         mockNetwork.runNetwork();
@@ -134,10 +138,12 @@ public class ApproveRequestFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
+                authorizedParties,
+                "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 fs.getLinearId(),
                 participants
@@ -150,8 +156,10 @@ public class ApproveRequestFlowTests {
 
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
-                rs.getLinearId()
-        );
+                rs.getLinearId(),
+                "Chris Jones",
+                ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York"))
+                );
 
         Future<SignedTransaction> futureFour = d.startFlow(approveRequestFlow);
         mockNetwork.runNetwork();
@@ -178,7 +186,7 @@ public class ApproveRequestFlowTests {
         Command command = stx4.getTx().getCommands().get(0);
         assert (command.getValue() instanceof RequestContract.Commands.Approve);
 
-        stx4.verifySignaturesExcept(usDoj.getOwningKey(),
+        stx4.verifySignaturesExcept(catanMoj.getOwningKey(),
                 mockNetwork.getDefaultNotaryNode().getInfo().getLegalIdentitiesAndCerts().get(0).getOwningKey());
     }
 
@@ -233,6 +241,7 @@ public class ApproveRequestFlowTests {
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
@@ -245,8 +254,9 @@ public class ApproveRequestFlowTests {
 
         //acknowledge the FundState
         ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
-                fs.getLinearId()
-        );
+                fs.getLinearId(),
+                ZonedDateTime.of(2020, 7, 27, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+                );
         Future<SignedTransaction> futureTwo = c.startFlow(receiveFundFlow);
         mockNetwork.runNetwork();
         futureTwo.get();
@@ -255,11 +265,13 @@ public class ApproveRequestFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
+                authorizedParties,
+                "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
-                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 fs.getLinearId(),
                 participants
         );
@@ -271,8 +283,10 @@ public class ApproveRequestFlowTests {
 
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
-                rs.getLinearId()
-        );
+                rs.getLinearId(),
+                "Chris Jones",
+                ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
+                );
 
         //run the flow as the a party that is not in the requiredSigners list.
         Future<SignedTransaction> futureFour = a.startFlow(approveRequestFlow);
@@ -291,6 +305,7 @@ public class ApproveRequestFlowTests {
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(5000000),
                 Currency.getInstance(Locale.US),
                 participants
@@ -303,8 +318,9 @@ public class ApproveRequestFlowTests {
 
         //acknowledge the FundState
         ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
-                fs.getLinearId()
-        );
+                fs.getLinearId(),
+                ZonedDateTime.of(2020, 7, 27, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+                );
         Future<SignedTransaction> futureTwo = c.startFlow(receiveFundFlow);
         mockNetwork.runNetwork();
         futureTwo.get();
@@ -313,11 +329,13 @@ public class ApproveRequestFlowTests {
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
                 "1234567890",
+                authorizedParties,
+                "build a school",
                 BigDecimal.valueOf(5000000),
                 Currency.getInstance(Locale.US),
-                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 fs.getLinearId(),
                 participants
         );
@@ -329,8 +347,10 @@ public class ApproveRequestFlowTests {
 
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
-                rs.getLinearId()
-        );
+                rs.getLinearId(),
+                "Chris Jones",
+                ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
+                );
 
         //run the flow as the a party that is not in the requiredSigners list.
         Future<SignedTransaction> futureFour = d.startFlow(approveRequestFlow);

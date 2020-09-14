@@ -1,0 +1,25 @@
+---
+# file: docker-engine/tasks/yum.yml
+
+# prepare system for the official Docker YUM repository
+- name: Add Docker official repository
+  become: True
+  yum_repository:
+    name: docker-ce-stable
+    description: 'Docker CE Stable - $basearch'
+    baseurl: 'https://download.docker.com/linux/centos/$releasever/$basearch/stable'
+    enabled: yes
+    gpgcheck: yes
+    gpgkey: 'https://download.docker.com/linux/centos/gpg'
+  tags:
+    - 'docker-engine'
+
+# install package
+- name: Install docker-engine package via yum from official Docker repository
+  become: True
+  yum:
+    name: '{{ docker_engine_package_name }}{% if docker_engine_package_install_version %}-{{ docker_engine_package_install_version }}{% endif %}'
+    state: '{% if docker_engine_package_install_latest %}latest{% else %}present{% endif %}'
+  tags:
+    - 'docker-engine'
+    - 'docker-engine-packages'

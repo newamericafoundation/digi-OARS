@@ -81,7 +81,7 @@ public class UpdateFundBalanceFlow {
                     requestState.getAuthorizedParties(),
                     requestState.getAmount(),
                     requestState.getCurrency(),
-                    requestState.getDatetime(),
+                    requestState.getUpdateDatetime(),
                     outputFundState.getLinearId(),
                     outputFundState.getPartialRequestParticipants()
                     )

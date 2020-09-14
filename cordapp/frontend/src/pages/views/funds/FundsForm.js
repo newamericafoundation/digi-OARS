@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   CRow,
   CCol,
@@ -12,13 +12,17 @@ import {
   CInputGroupPrepend,
   CInputGroupText,
   CInvalidFeedback,
+  CSpinner,
 } from "@coreui/react";
 import { NetworkContext } from "../../../providers/NetworkProvider";
 import useForm from "../../../form/index";
 import axios from "axios";
+import { APIContext } from "../../../providers/APIProvider";
 
 export const FundsForm = ({ onSubmit }) => {
+  const [api] = useContext(APIContext);
   const [network] = useContext(NetworkContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const stateSchema = {
     receivingParty: { value: "", error: "" },
@@ -49,24 +53,32 @@ export const FundsForm = ({ onSubmit }) => {
   };
 
   const onSubmitForm = (state) => {
+    setIsLoading(true);
     const url =
       "http://" +
       window._env_.API_CLIENT_URL +
       ":" +
-      window._env_.API_CLIENT_PORT +
+      api.port +
       "/api/fund";
 
     axios
       .post(url, {
-        originParty: "O=DoJ, L=New York, C=US",
+        originParty: "O=US_DoJ, L=New York, C=US",
         receivingParty: state.receivingParty,
         amount: state.amount,
         maxWithdrawalAmount: state.maxWithdrawalAmount,
       })
       .then((response) => {
         onSubmit(response.data);
+        setIsLoading(false);
       })
       .catch((err) => console.log(err));
+  };
+
+  const getTreasuryNodes = () => {
+    if (network.length > 0) {
+      return network.filter((node) => node.includes("_Treasury"));
+    }
   };
 
   const { values, errors, handleOnChange, handleOnSubmit, disable } = useForm(
@@ -76,6 +88,7 @@ export const FundsForm = ({ onSubmit }) => {
   );
 
   const { amount, maxWithdrawalAmount } = values;
+  const treasuryNodes = getTreasuryNodes();
 
   return (
     <>
@@ -91,9 +104,18 @@ export const FundsForm = ({ onSubmit }) => {
                   id="receivingParty"
                   onChange={handleOnChange}
                 >
-                  {network.map((item) => (
-                    <option key={item.toString()}>{item}</option>
-                  ))}
+                  <option placeholder={0}></option>
+                  {treasuryNodes
+                    ? treasuryNodes.map((item) => (
+                        <option
+                          key={item}
+                          label={item
+                            .split(/O=([a-zA-Z_]+)/)[1]
+                            .replace("_", " ")}
+                          value={item}
+                        />
+                      ))
+                    : null}
                 </CSelect>
               </CFormGroup>
             </CCol>
@@ -155,6 +177,13 @@ export const FundsForm = ({ onSubmit }) => {
                   type="submit"
                   disabled={disable}
                 >
+                  {isLoading ? (
+                    <CSpinner
+                      className="spinner-border spinner-border-sm mr-1"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  ) : null}
                   Submit
                 </CButton>
               </CFormGroup>
