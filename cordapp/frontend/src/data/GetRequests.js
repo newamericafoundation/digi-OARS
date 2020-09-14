@@ -1,13 +1,9 @@
 import axios from "axios";
 
-const url =
-  "http://" +
-  window._env_.API_CLIENT_URL +
-  ":" +
-  window._env_.API_CLIENT_PORT +
-  "/api/requests";
+const getRequests = async (port) => {
+  const url =
+    "http://" + window._env_.API_CLIENT_URL + ":" + port + "/api/requests";
 
-const getRequests = async () => {
   const res = await axios.get(url);
   return res.data.entity.map((ob, index) => ({
     authorizedUserUsername: ob.state.data.authorizedUserUsername,

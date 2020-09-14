@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   CCard,
   CCardHeader,
@@ -15,9 +15,11 @@ import {
 } from "@coreui/react";
 import Moment from "moment";
 import axios from "axios";
-import * as Constants from '../../../constants';
+import * as Constants from "../../../constants";
+import { APIContext } from "../../../providers/APIProvider";
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
+  const [api] = useContext(APIContext);
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,16 +67,22 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       if (status === "ISSUED") {
         return (
           <CButton
-              className={"float-right mb-0"}
-              color="success"
-              variant="outline"
-              shape="square"
-              size="sm"
-              onClick={() => onHandleReceiveClick(id, index)}
-            >
-              {isLoading ? <CSpinner className="spinner-border spinner-border-sm mr-1" role="status" aria-hidden="true" /> : null}
-              Receive Funds
-            </CButton>
+            className={"float-right mb-0"}
+            color="success"
+            variant="outline"
+            shape="square"
+            size="sm"
+            onClick={() => onHandleReceiveClick(id, index)}
+          >
+            {isLoading ? (
+              <CSpinner
+                className="spinner-border spinner-border-sm mr-1"
+                role="status"
+                aria-hidden="true"
+              />
+            ) : null}
+            Receive Funds
+          </CButton>
         );
       }
     }
@@ -93,7 +101,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       "http://" +
       window._env_.API_CLIENT_URL +
       ":" +
-      window._env_.API_CLIENT_PORT +
+      api.port +
       "/api/fund";
 
     axios
@@ -101,7 +109,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       .then((response) => {
         setIsLoading(false);
         refreshTableCallback();
-        toggleDetails(index)
+        toggleDetails(index);
       })
       .catch((err) => console.log(err));
   };
