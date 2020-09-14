@@ -25,3 +25,17 @@ resource "azurerm_network_security_rule" "api" {
   destination_application_security_group_ids = [azurerm_application_security_group.asg-nodes.id]
   destination_port_range                     = "8080"
 }
+
+resource "azurerm_network_security_rule" "p2p" {
+  name                                       = "p2p"
+  resource_group_name                        = data.azurerm_resource_group.resource_group.name
+  access                                     = "Allow"
+  direction                                  = "Inbound"
+  network_security_group_name                = module.nodes.network_security_group_name
+  priority                                   = 120
+  protocol                                   = "Tcp"
+  source_address_prefix                      = "Internet"
+  source_port_range                          = "*"
+  destination_application_security_group_ids = [azurerm_application_security_group.asg-nodes.id]
+  destination_port_range                     = "12000-12900"
+}

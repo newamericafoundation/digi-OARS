@@ -34,6 +34,29 @@ resource "azurerm_lb_rule" "ssh_rule_node" {
   frontend_ip_configuration_name = azurerm_lb.load_balancer.frontend_ip_configuration[0].name
 }
 
+resource "azurerm_lb_rule" "p2p_rule_node" {
+  for_each                       = var.node_to_p2p_port_map
+  resource_group_name            = data.azurerm_resource_group.resource_group.name
+  loadbalancer_id                = azurerm_lb.load_balancer.id
+  name                           = "p2p-node-${each.key}"
+  protocol                       = "Tcp"
+  frontend_port                  = each.value
+  backend_port                   = each.value
+  backend_address_pool_id        = data.azurerm_lb_backend_address_pool.backend_address_pool[each.key].id
+  frontend_ip_configuration_name = azurerm_lb.load_balancer.frontend_ip_configuration[0].name
+}
+
+resource "azurerm_lb_rule" "api_rule_node" {
+  for_each                       = var.lb_to_api_port_map
+  resource_group_name            = data.azurerm_resource_group.resource_group.name
+  loadbalancer_id                = azurerm_lb.load_balancer.id
+  name                           = "api-node-${each.key}"
+  protocol                       = "Tcp"
+  frontend_port                  = each.value
+  backend_port                   = 8080
+  backend_address_pool_id        = data.azurerm_lb_backend_address_pool.backend_address_pool[each.key].id
+  frontend_ip_configuration_name = azurerm_lb.load_balancer.frontend_ip_configuration[0].name
+}
 
 resource "azurerm_lb_rule" "frontend_rule_ui" {
   resource_group_name            = data.azurerm_resource_group.resource_group.name
