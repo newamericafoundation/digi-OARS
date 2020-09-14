@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
-import java.util.regex.Pattern;
 
 import static net.corda.testing.driver.Driver.driver;
 import static org.junit.Assert.assertEquals;
@@ -57,33 +56,19 @@ public class DriverBasedTest {
             // Start all nodes and wait for them to be ready.
             List<CordaFuture<NodeHandle>> handleFutures = ImmutableList.of(
                     dsl.startNode(new NodeParameters().withProvidedName(US_DOS)),
-                    dsl.startNode(new NodeParameters().withProvidedName(US_DOJ)),
-                    dsl.startNode(new NodeParameters().withProvidedName(US_CSO)),
-                    dsl.startNode(new NodeParameters().withProvidedName(US_TREASURY)),
-                    dsl.startNode(new NodeParameters().withProvidedName(NEW_AMERICA)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOF)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOJ)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_CSO)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_TREASURY))
+                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOF))
             );
 
             try {
                 NodeHandle usDOSHandle = handleFutures.get(0).get();
-                NodeHandle usDOJHandle = handleFutures.get(1).get();
-                NodeHandle usCSOHandle = handleFutures.get(2).get();
-                NodeHandle usTreasuryHandle = handleFutures.get(3).get();
-                NodeHandle newAmericaHandle = handleFutures.get(4).get();
-                NodeHandle catanMOFHandle = handleFutures.get(5).get();
-                NodeHandle catanMOJHandle = handleFutures.get(6).get();
-                NodeHandle catanCSOHandle = handleFutures.get(7).get();
-                NodeHandle catanTreasuryHandle = handleFutures.get(8).get();
+                NodeHandle catanMOFHandle = handleFutures.get(1).get();
 
                 // From each node, make an RPC call to retrieve another node's name from the network map, to verify that the
                 // nodes have started and can communicate.
 
                 // This is a very basic test: in practice tests would be starting flows, and verifying the states in the vault
                 // and other important metrics to ensure that your CorDapp is working as intended.
-                assertEquals(usDOSHandle.getRpc().wellKnownPartyFromX500Name(CATAN_MOF).getName(), CATAN_MOF);
+                assertEquals(Objects.requireNonNull(usDOSHandle.getRpc().wellKnownPartyFromX500Name(CATAN_MOF)).getName(), CATAN_MOF);
                 assertEquals(catanMOFHandle.getRpc().wellKnownPartyFromX500Name(US_DOS).getName(), US_DOS);
             } catch (Exception e) {
                 throw new RuntimeException("Caught exception during test: ", e);
@@ -99,26 +84,13 @@ public class DriverBasedTest {
             // Start all nodes and wait for them to be ready.
             List<CordaFuture<NodeHandle>> handleFutures = ImmutableList.of(
                     dsl.startNode(new NodeParameters().withProvidedName(US_DOS)),
-                    dsl.startNode(new NodeParameters().withProvidedName(US_DOJ)),
                     dsl.startNode(new NodeParameters().withProvidedName(US_CSO)),
-                    dsl.startNode(new NodeParameters().withProvidedName(US_TREASURY)),
-                    dsl.startNode(new NodeParameters().withProvidedName(NEW_AMERICA)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOF)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOJ)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_CSO)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_TREASURY))
+                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOF))
             );
 
             try {
                 NodeHandle usDOSHandle = handleFutures.get(0).get();
-                NodeHandle usDOJHandle = handleFutures.get(1).get();
-                NodeHandle usCSOHandle = handleFutures.get(2).get();
-                NodeHandle usTreasuryHandle = handleFutures.get(3).get();
-                NodeHandle newAmericaHandle = handleFutures.get(4).get();
-                NodeHandle catanMOFHandle = handleFutures.get(5).get();
-                NodeHandle catanMOJHandle = handleFutures.get(6).get();
-                NodeHandle catanCSOHandle = handleFutures.get(7).get();
-                NodeHandle catanTreasuryHandle = handleFutures.get(8).get();
+                NodeHandle catanMOFHandle = handleFutures.get(2).get();
 
                 CordaRPCClient usDOSClient = new CordaRPCClient(usDOSHandle.getRpcAddress());
                 CordaRPCOps usDOSProxy = usDOSClient.start("default", "default").getProxy();
@@ -127,14 +99,8 @@ public class DriverBasedTest {
                 CordaRPCOps catanMOFProxy = catanMOFClient.start("default", "default").getProxy();
 
                 Party usDOSParty = usDOSProxy.wellKnownPartyFromX500Name(US_DOS);
-                Party usDOJParty = usDOSProxy.wellKnownPartyFromX500Name(US_DOJ);
                 Party usCSOParty = usDOSProxy.wellKnownPartyFromX500Name(US_CSO);
-                Party usTreasuryParty = usDOSProxy.wellKnownPartyFromX500Name(US_TREASURY);
-                Party newAmericaParty = usDOSProxy.wellKnownPartyFromX500Name(NEW_AMERICA);
                 Party catanMOFParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_MOF);
-                Party catanMOJParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_MOJ);
-                Party catanCSOParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_CSO);
-                Party catanTreasuryParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_TREASURY);
 
                 List<Party> owners = new ArrayList<>();
                 owners.add(usDOSParty);
@@ -145,19 +111,11 @@ public class DriverBasedTest {
 
                 List<Party> participants = new ArrayList<>();
                 participants.add(usDOSParty);
-                participants.add(usDOJParty);
                 participants.add(usCSOParty);
-                participants.add(usTreasuryParty);
-                participants.add(newAmericaParty);
                 participants.add(catanMOFParty);
-                participants.add(catanMOJParty);
-                participants.add(catanCSOParty);
-                participants.add(catanTreasuryParty);
-
 
                 List<Party> partialRequestParticipants = new ArrayList<>();
                 partialRequestParticipants.add(usCSOParty);
-                partialRequestParticipants.add(catanCSOParty);
 
                 usDOSProxy.startFlowDynamic(IssueFundFlow.InitiatorFlow.class,
                         usDOSProxy.wellKnownPartyFromX500Name(US_DOS),
@@ -216,26 +174,15 @@ public class DriverBasedTest {
             // Start all nodes and wait for them to be ready.
             List<CordaFuture<NodeHandle>> handleFutures = ImmutableList.of(
                     dsl.startNode(new NodeParameters().withProvidedName(US_DOS)),
-                    dsl.startNode(new NodeParameters().withProvidedName(US_DOJ)),
                     dsl.startNode(new NodeParameters().withProvidedName(US_CSO)),
-                    dsl.startNode(new NodeParameters().withProvidedName(US_TREASURY)),
-                    dsl.startNode(new NodeParameters().withProvidedName(NEW_AMERICA)),
                     dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOF)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOJ)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_CSO)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_TREASURY))
+                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOJ))
             );
 
             try {
                 NodeHandle usDOSHandle = handleFutures.get(0).get();
-                NodeHandle usDOJHandle = handleFutures.get(1).get();
-                NodeHandle usCSOHandle = handleFutures.get(2).get();
-                NodeHandle usTreasuryHandle = handleFutures.get(3).get();
-                NodeHandle newAmericaHandle = handleFutures.get(4).get();
-                NodeHandle catanMOFHandle = handleFutures.get(5).get();
-                NodeHandle catanMOJHandle = handleFutures.get(6).get();
-                NodeHandle catanCSOHandle = handleFutures.get(7).get();
-                NodeHandle catanTreasuryHandle = handleFutures.get(8).get();
+                NodeHandle catanMOFHandle = handleFutures.get(2).get();
+                NodeHandle catanMOJHandle = handleFutures.get(3).get();
 
                 CordaRPCClient usDOSClient = new CordaRPCClient(usDOSHandle.getRpcAddress());
                 CordaRPCOps usDOSProxy = usDOSClient.start("default", "default").getProxy();
@@ -247,14 +194,10 @@ public class DriverBasedTest {
                 CordaRPCOps catanMOFProxy = catanMOFClient.start("default", "default").getProxy();
 
                 Party usDOSParty = usDOSProxy.wellKnownPartyFromX500Name(US_DOS);
-                Party usDOJParty = usDOSProxy.wellKnownPartyFromX500Name(US_DOJ);
                 Party usCSOParty = usDOSProxy.wellKnownPartyFromX500Name(US_CSO);
-                Party usTreasuryParty = usDOSProxy.wellKnownPartyFromX500Name(US_TREASURY);
-                Party newAmericaParty = usDOSProxy.wellKnownPartyFromX500Name(NEW_AMERICA);
                 Party catanMOFParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_MOF);
                 Party catanMOJParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_MOJ);
-                Party catanCSOParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_CSO);
-                Party catanTreasuryParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_TREASURY);
+
 
                 List<Party> owners = new ArrayList<>();
                 owners.add(usDOSParty);
@@ -265,19 +208,12 @@ public class DriverBasedTest {
 
                 List<Party> participants = new ArrayList<>();
                 participants.add(usDOSParty);
-                participants.add(usDOJParty);
-//                participants.add(usCSOParty);
-                participants.add(usTreasuryParty);
-                participants.add(newAmericaParty);
+                participants.add(usCSOParty);
                 participants.add(catanMOFParty);
                 participants.add(catanMOJParty);
-//                participants.add(catanCSOParty);
-                participants.add(catanTreasuryParty);
-
 
                 List<Party> partialRequestParticipants = new ArrayList<>();
                 partialRequestParticipants.add(usCSOParty);
-                partialRequestParticipants.add(catanCSOParty);
 
                 usDOSProxy.startFlowDynamic(IssueFundFlow.InitiatorFlow.class,
                         usDOSParty,
