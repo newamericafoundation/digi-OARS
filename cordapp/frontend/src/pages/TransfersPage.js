@@ -8,7 +8,6 @@ import {
   CCol,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
 import { RequestsTable } from "./views/withdrawals/RequestsTable";
 import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
