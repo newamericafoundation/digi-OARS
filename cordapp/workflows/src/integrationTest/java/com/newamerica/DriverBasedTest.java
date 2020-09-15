@@ -232,6 +232,11 @@ public class DriverBasedTest {
                 List<StateAndRef<FundState>> fundStatesUSDOS = usDOSProxy.vaultQuery(FundState.class).getStates();
                 FundState issuedFundState = fundStatesUSDOS.get(0).getState().getData();
 
+                catanMOFProxy.startFlowDynamic(ReceiveFundFlow.InitiatorFlow.class,
+                        issuedFundState.getLinearId(),
+                        ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+                ).getReturnValue().get();
+
                 catanMOJProxy.startFlowDynamic(IssueRequestFlow.InitiatorFlow.class,
                         "Alice Bob",
                         "Catan Ministry of Education",
