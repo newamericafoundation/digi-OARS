@@ -17,6 +17,7 @@ import Moment from "moment";
 import axios from "axios";
 import * as Constants from "../../../constants";
 import { APIContext } from "../../../providers/APIProvider";
+import EllipsesText from "react-ellipsis-text";
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [api] = useContext(APIContext);
@@ -39,7 +40,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     { key: "receivingParty", label: "Receiving Country" },
     { key: "amount" },
     { key: "balance" },
-    { key: "datetime", label: "Date" },
+    { key: "createdDateTime", label: "Created Date" },
     { key: "maxWithdrawalAmount" },
     { key: "status", _style: { width: "20%" } },
     {
@@ -98,11 +99,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const onHandleReceiveClick = (fundId, index) => {
     setIsLoading(true);
     const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      api.port +
-      "/api/fund";
+      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/fund";
 
     axios
       .put(url, null, { params: { fundId } })
@@ -132,8 +129,11 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         maxWithdrawalAmount: (item) => (
           <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
         ),
-        datetime: (item) => (
-          <td>{Moment(item.dateTime).format("DD/MMM/yyyy")}</td>
+        createdDateTime: (item) => (
+          <td>{Moment(item.createdDateTime).format("DD/MMM/yyyy")}</td>
+        ),
+        updatedDateTime: (item) => (
+          <td>{Moment(item.updatedDateTime).format("DD/MMM/yyyy")}</td>
         ),
         status: (item) => (
           <td>
@@ -186,6 +186,10 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                   <CRow>
                     <CCol xl="4" sm="3">
                       <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">State ID</p>
+                        <strong className="p">{item.linearId}</strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Origin Country</p>
                         <strong className="p">{item.originParty}</strong>
                       </CCallout>
@@ -193,6 +197,8 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                         <p className="text-muted mb-0">Receiving Country</p>
                         <strong className="p">{item.receivingParty}</strong>
                       </CCallout>
+                    </CCol>
+                    <CCol xl="4" sm="3">
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Amount</p>
                         <strong className="p">
@@ -213,22 +219,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                       </CCallout>
                     </CCol>
                     <CCol xl="4" sm="3">
-                      <CCallout color="info" className={"bg-light"}>
-                        <p className="text-muted mb-0">State ID</p>
-                        <strong className="p">{item.linearId}</strong>
-                      </CCallout>
-                      <CCallout color="info" className={"bg-light"}>
-                        <p className="text-muted mb-0">Transaction ID</p>
-                        <strong className="p">{item.txId}</strong>
-                      </CCallout>
-                      <CCallout color="info" className={"bg-light"}>
-                        <p className="text-muted mb-0">Date/Time</p>
-                        <strong className="p">
-                          {Moment(item.dateTime).format("DD/MMM/YYYY HH:mm:ss")}
-                        </strong>
-                      </CCallout>
-                    </CCol>
-                    <CCol xl="4" sm="3">
                       <CCallout
                         color={item.status === "ISSUED" ? "warning" : "success"}
                         className={"bg-light"}
@@ -236,6 +226,30 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                         <p className="text-muted mb-0">Status</p>
                         <strong className="p">{item.status}</strong>
                       </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Transaction ID</p>
+                        <strong className="p">
+                          <EllipsesText text={item.txId} length={40} />
+                        </strong>
+                      </CCallout>
+                      <CCallout color="info" className={"bg-light"}>
+                        <p className="text-muted mb-0">Created Date/Time</p>
+                        <strong className="p">
+                          {Moment(item.createdDateTime).format(
+                            "DD/MMM/YYYY HH:mm:ss"
+                          )}
+                        </strong>
+                      </CCallout>
+                      {item.createdDateTime !== item.updatedDateTime ?? (
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Updated Date/Time</p>
+                          <strong className="p">
+                            {Moment(item.updatedDateTime).format(
+                              "DD/MMM/YYYY HH:mm:ss"
+                            )}
+                          </strong>
+                        </CCallout>
+                      )}
                     </CCol>
                   </CRow>
                 </CCardBody>
