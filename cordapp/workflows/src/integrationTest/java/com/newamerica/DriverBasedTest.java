@@ -384,7 +384,7 @@ public class DriverBasedTest {
                 assertEquals(issuedRequestState.getAuthorizedParties(), issuedPartialRequestState.getAuthorizedParties());
                 assertEquals(issuedRequestState.getAmount(), issuedPartialRequestState.getAmount());
                 assertEquals(issuedRequestState.getCurrency(), issuedPartialRequestState.getCurrency());
-                assertEquals(issuedRequestState.getUpdateDatetime(), issuedPartialRequestState.getDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York")), issuedPartialRequestState.getDatetime());
                 assertEquals(issuedRequestState.getFundStateLinearId(), issuedPartialRequestState.getFundStateLinearId());
                 assertEquals(partialRequestParticipants, issuedPartialRequestState.getParticipants());
 
@@ -401,7 +401,7 @@ public class DriverBasedTest {
                 //check that the requestState is now in the APPROVED status
                 assertEquals(RequestState.RequestStateStatus.APPROVED, approvedRequestState.getStatus());
                 assertEquals(ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York")), approvedRequestState.getUpdateDatetime());
-                assertEquals("A Name", approvedRequestState.getAuthorizedUserUsername());
+                assertEquals("A Name", approvedRequestState.getAuthorizerUserUsername());
 
                 catanMOFProxy.startFlowDynamic(IssueTransferFlow.InitiatorFlow.class,
                         approvedRequestState.getLinearId(),
