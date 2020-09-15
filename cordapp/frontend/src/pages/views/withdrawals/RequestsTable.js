@@ -11,7 +11,7 @@ import {
   CCol,
   CRow,
   CCallout,
-  CSpinner
+  CSpinner,
 } from "@coreui/react";
 import Moment from "moment";
 import { useAuth } from "auth-hook";
@@ -77,11 +77,7 @@ export const RequestsTable = ({
   const onHandleApproveClick = (requestId, authorizerUserUsername, index) => {
     setIsLoading(true);
     const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      api.port +
-      "/api/request";
+      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request";
 
     axios
       .put(url, null, { params: { requestId, authorizerUserUsername } })
