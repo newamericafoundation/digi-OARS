@@ -125,6 +125,7 @@ public class DriverBasedTest {
                         partialRequestParticipants,
                         BigDecimal.valueOf(5000000),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                        ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                         BigDecimal.valueOf(1000000),
                         Currency.getInstance(Locale.US),
                         participants
@@ -141,7 +142,8 @@ public class DriverBasedTest {
                 assertEquals(requiredSigners, issuedFundState.getRequiredSigners());
                 assertEquals(partialRequestParticipants, issuedFundState.getPartialRequestParticipants());
                 assertEquals(BigDecimal.valueOf(5000000), issuedFundState.getAmount());
-                assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundState.getDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundState.getCreateDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundState.getUpdateDatetime());
                 assertEquals(BigDecimal.valueOf(1000000), issuedFundState.getMaxWithdrawalAmount());
                 assertEquals(Currency.getInstance(Locale.US), issuedFundState.getCurrency());
                 assertEquals(participants, issuedFundState.getParticipants());
@@ -157,7 +159,8 @@ public class DriverBasedTest {
                 assertEquals(requiredSigners, issuedFundStateCatanMOF.getRequiredSigners());
                 assertEquals(partialRequestParticipants, issuedFundStateCatanMOF.getPartialRequestParticipants());
                 assertEquals(BigDecimal.valueOf(5000000), issuedFundStateCatanMOF.getAmount());
-                assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundStateCatanMOF.getDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundStateCatanMOF.getCreateDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundStateCatanMOF.getUpdateDatetime());
                 assertEquals(BigDecimal.valueOf(1000000), issuedFundStateCatanMOF.getMaxWithdrawalAmount());
                 assertEquals(Currency.getInstance(Locale.US), issuedFundStateCatanMOF.getCurrency());
                 assertEquals(participants, issuedFundStateCatanMOF.getParticipants());
@@ -223,6 +226,7 @@ public class DriverBasedTest {
                         partialRequestParticipants,
                         BigDecimal.valueOf(5000000),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                        ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                         BigDecimal.valueOf(1000000),
                         Currency.getInstance(Locale.US),
                         participants
@@ -235,10 +239,11 @@ public class DriverBasedTest {
                 catanMOJProxy.startFlowDynamic(IssueRequestFlow.InitiatorFlow.class,
                         "Alice Bob",
                         "Catan Ministry of Education",
-                        "Chris Jones",
                         "1234567890",
+                        "Some purpose",
                         BigDecimal.valueOf(1000000),
                         Currency.getInstance(Locale.US),
+                        ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                         ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                         issuedFundState.getLinearId(),
                         participants
@@ -250,11 +255,13 @@ public class DriverBasedTest {
 
                 assertEquals("Alice Bob", issuedRequestStateCatanMOJ.getAuthorizedUserUsername());
                 assertEquals("Catan Ministry of Education", issuedRequestStateCatanMOJ.getAuthorizedUserDept());
-                assertEquals("Chris Jones", issuedRequestStateCatanMOJ.getAuthorizerUserUsername());
+                assertEquals("", issuedRequestStateCatanMOJ.getAuthorizerUserUsername());
+                assertEquals("Some purpose", issuedRequestStateCatanMOJ.getPurpose());
                 assertEquals("1234567890", issuedRequestStateCatanMOJ.getExternalAccountId());
                 assertEquals(BigDecimal.valueOf(1000000), issuedRequestStateCatanMOJ.getAmount());
                 assertEquals(Currency.getInstance(Locale.US), issuedRequestStateCatanMOJ.getCurrency());
-                assertEquals(ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOJ.getDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOJ.getCreateDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOJ.getUpdateDatetime());
                 assertEquals(issuedFundState.getLinearId(), issuedRequestStateCatanMOJ.getFundStateLinearId());
                 assertEquals(participants, issuedRequestStateCatanMOJ.getParticipants());
 
@@ -264,11 +271,13 @@ public class DriverBasedTest {
 
                 assertEquals("Alice Bob", issuedRequestStateCatanMOF.getAuthorizedUserUsername());
                 assertEquals("Catan Ministry of Education", issuedRequestStateCatanMOF.getAuthorizedUserDept());
-                assertEquals("Chris Jones", issuedRequestStateCatanMOF.getAuthorizerUserUsername());
+                assertEquals("", issuedRequestStateCatanMOF.getAuthorizerUserUsername());
+                assertEquals("Some purpose", issuedRequestStateCatanMOF.getPurpose());
                 assertEquals("1234567890", issuedRequestStateCatanMOF.getExternalAccountId());
                 assertEquals(BigDecimal.valueOf(1000000), issuedRequestStateCatanMOF.getAmount());
                 assertEquals(Currency.getInstance(Locale.US), issuedRequestStateCatanMOF.getCurrency());
-                assertEquals(ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOF.getDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOF.getCreateDatetime());
+                assertEquals(ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOF.getUpdateDatetime());
                 assertEquals(issuedFundState.getLinearId(), issuedRequestStateCatanMOF.getFundStateLinearId());
                 assertEquals(participants, issuedRequestStateCatanMOF.getParticipants());
             } catch (Exception e) {
@@ -337,29 +346,35 @@ public class DriverBasedTest {
                         partialRequestParticipants,
                         BigDecimal.valueOf(5000000),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                        ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                         BigDecimal.valueOf(1000000),
                         Currency.getInstance(Locale.US),
                         participants
                 ).getReturnValue().get().getTx().getOutputStates().get(0);
 
-                catanMOFProxy.startFlowDynamic(ReceiveFundFlow.InitiatorFlow.class, issuedFundState.getLinearId()).getReturnValue().get();
+                catanMOFProxy.startFlowDynamic(ReceiveFundFlow.InitiatorFlow.class,
+                        issuedFundState.getLinearId(),
+                        ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+                ).getReturnValue().get();
 
                 RequestState issuedRequestState = (RequestState) catanMOJProxy.startFlowDynamic(IssueRequestFlow.InitiatorFlow.class,
                         "Alice Bob",
                         "Catan Ministry of Education",
-                        "Chris Jones",
                         "1234567890",
+                        "Some purpose",
                         BigDecimal.valueOf(1000000),
                         Currency.getInstance(Locale.US),
+                        ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                         ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                         issuedFundState.getLinearId(),
                         participants
                 ).getReturnValue().get().getTx().getOutputStates().get(0);
 
-//                List<StateAndRef<RequestState>> requestStateCatanMOF = catanMOFProxy.vaultQuery(RequestState.class).getStates();
-//                RequestState issuedRequestStateCatanMOF = requestStateCatanMOF.get(0).getState().getData();
-
-                catanMOFProxy.startFlowDynamic(ApproveRequestFlow.InitiatorFlow.class, issuedRequestState.getLinearId()).getReturnValue().get();
+                catanMOFProxy.startFlowDynamic(ApproveRequestFlow.InitiatorFlow.class,
+                        issuedRequestState.getLinearId(),
+                        "A Name",
+                        ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York"))
+                ).getReturnValue().get();
 
                 // check that the PartialState has been issued to the CSO
                 List<StateAndRef<PartialRequestState>> partialRequestStates = usCSOProxy.vaultQuery(PartialRequestState.class).getStates();
@@ -369,7 +384,7 @@ public class DriverBasedTest {
                 assertEquals(issuedRequestState.getAuthorizedParties(), issuedPartialRequestState.getAuthorizedParties());
                 assertEquals(issuedRequestState.getAmount(), issuedPartialRequestState.getAmount());
                 assertEquals(issuedRequestState.getCurrency(), issuedPartialRequestState.getCurrency());
-                assertEquals(issuedRequestState.getDatetime(), issuedPartialRequestState.getDatetime());
+                assertEquals(issuedRequestState.getUpdateDatetime(), issuedPartialRequestState.getDatetime());
                 assertEquals(issuedRequestState.getFundStateLinearId(), issuedPartialRequestState.getFundStateLinearId());
                 assertEquals(partialRequestParticipants, issuedPartialRequestState.getParticipants());
 
@@ -385,6 +400,8 @@ public class DriverBasedTest {
 
                 //check that the requestState is now in the APPROVED status
                 assertEquals(RequestState.RequestStateStatus.APPROVED, approvedRequestState.getStatus());
+                assertEquals(ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York")), approvedRequestState.getUpdateDatetime());
+                assertEquals("A Name", approvedRequestState.getAuthorizedUserUsername());
 
                 catanMOFProxy.startFlowDynamic(IssueTransferFlow.InitiatorFlow.class,
                         approvedRequestState.getLinearId(),

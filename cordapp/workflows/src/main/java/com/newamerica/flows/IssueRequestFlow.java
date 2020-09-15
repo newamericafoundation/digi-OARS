@@ -18,10 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
@@ -36,7 +33,6 @@ public class IssueRequestFlow {
                 String authorizedUserUsername,
                 String authorizedUserDept,
                 String externalAccountId,
-                List<AbstractParty> authorizedParties,
                 String purpose,
                 BigDecimal amount,
                 Currency currency,
@@ -49,7 +45,7 @@ public class IssueRequestFlow {
                     authorizedUserUsername,
                     authorizedUserDept,
                     "",
-                    authorizedParties,
+                    Collections.emptyList(),
                     externalAccountId,
                     purpose,
                     amount,
@@ -73,6 +69,8 @@ public class IssueRequestFlow {
             Vault.Page results = getServiceHub().getVaultService().queryBy(FundState.class, queryCriteria);
             StateAndRef inputStateRef = (StateAndRef) results.getStates().get(0);
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
+            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getRequiredSigners());
+
             if (outputRequestState.amount.compareTo(inputStateRefFundState.maxWithdrawalAmount) > 0) {
                 outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
             }

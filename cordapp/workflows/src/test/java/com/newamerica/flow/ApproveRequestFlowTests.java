@@ -45,7 +45,6 @@ public class ApproveRequestFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
-    private final List<AbstractParty> authorizedParties = new ArrayList<>();
 
 
 
@@ -103,7 +102,6 @@ public class ApproveRequestFlowTests {
         participants.add(catanMoj);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
-        authorizedParties.add(catanMoj);
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
@@ -139,7 +137,6 @@ public class ApproveRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
-                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -266,7 +263,6 @@ public class ApproveRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
-                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -330,7 +326,6 @@ public class ApproveRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
-                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(5000000),
                 Currency.getInstance(Locale.US),
