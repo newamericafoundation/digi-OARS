@@ -7,7 +7,8 @@ const getFunds = async (port) => {
   const res = await axios.get(url);
   return res.data.entity.map((ob, index) => ({
     linearId: ob.state.data.linearId.id,
-    dateTime: ob.state.data.datetime,
+    createdDateTime: ob.state.data.createDatetime,
+    updatedDateTime: ob.state.data.updatedDateTime,
     originParty: ob.state.data.originParty,
     receivingParty: ob.state.data.receivingParty,
     currency: ob.state.data.currency,
