@@ -30,15 +30,11 @@ import static org.junit.Assert.assertEquals;
 public class DriverBasedTest {
     //testing constants
     private final CordaX500Name US_DOS = new CordaX500Name("US_DoS", "New York", "US");
-    private final CordaX500Name US_DOJ = new CordaX500Name("US_DoJ", "New York", "US");
     private final CordaX500Name US_CSO = new CordaX500Name("US_CSO", "New York", "US");
-    private final CordaX500Name US_TREASURY = new CordaX500Name("usTreasury", "New York", "US");
-    private final CordaX500Name NEW_AMERICA = new CordaX500Name("NewAmerica", "New York", "US");
     private final CordaX500Name CATAN_MOF = new CordaX500Name("Catan_MoFA", "London", "GB");
     private final CordaX500Name CATAN_MOJ = new CordaX500Name("Catan_MoJ", "London", "GB");
-    private final CordaX500Name CATAN_CSO = new CordaX500Name("Catan_CSO1", "London", "GB");
-    private final CordaX500Name CATAN_TREASURY = new CordaX500Name("Catan_Treasury", "London", "GB");
     List<TestCordapp> CORDAPPS = new ArrayList<>();
+
     @Before
     public void setup() {
         Map<String, String> config = new HashMap<>();
@@ -69,7 +65,7 @@ public class DriverBasedTest {
                 // This is a very basic test: in practice tests would be starting flows, and verifying the states in the vault
                 // and other important metrics to ensure that your CorDapp is working as intended.
                 assertEquals(Objects.requireNonNull(usDOSHandle.getRpc().wellKnownPartyFromX500Name(CATAN_MOF)).getName(), CATAN_MOF);
-                assertEquals(catanMOFHandle.getRpc().wellKnownPartyFromX500Name(US_DOS).getName(), US_DOS);
+                assertEquals(Objects.requireNonNull(catanMOFHandle.getRpc().wellKnownPartyFromX500Name(US_DOS)).getName(), US_DOS);
             } catch (Exception e) {
                 throw new RuntimeException("Caught exception during test: ", e);
             }
@@ -235,6 +231,11 @@ public class DriverBasedTest {
                 //make sure that the OriginParty (usDOSParty) node has the issued state in its vault
                 List<StateAndRef<FundState>> fundStatesUSDOS = usDOSProxy.vaultQuery(FundState.class).getStates();
                 FundState issuedFundState = fundStatesUSDOS.get(0).getState().getData();
+
+                catanMOFProxy.startFlowDynamic(ReceiveFundFlow.InitiatorFlow.class,
+                        issuedFundState.getLinearId(),
+                        ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+                ).getReturnValue().get();
 
                 catanMOJProxy.startFlowDynamic(IssueRequestFlow.InitiatorFlow.class,
                         "Alice Bob",

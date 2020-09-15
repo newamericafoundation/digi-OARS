@@ -69,6 +69,12 @@ public class IssueRequestFlow {
             Vault.Page results = getServiceHub().getVaultService().queryBy(FundState.class, queryCriteria);
             StateAndRef inputStateRef = (StateAndRef) results.getStates().get(0);
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
+
+            //a request state can only be issued once the FundState has been received by the receiving country.
+            if(inputStateRefFundState.getStatus() != FundState.FundStateStatus.RECEIVED){
+                throw new IllegalArgumentException("The FundState for the request must be in the RECEIVED status.");
+            }
+
             outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getRequiredSigners());
 
             if (outputRequestState.amount.compareTo(inputStateRefFundState.maxWithdrawalAmount) > 0) {

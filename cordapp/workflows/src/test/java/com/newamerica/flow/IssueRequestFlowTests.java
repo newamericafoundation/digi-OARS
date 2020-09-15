@@ -3,6 +3,7 @@ package com.newamerica.flow;
 import com.newamerica.contracts.RequestContract;
 import com.newamerica.flows.IssueFundFlow;
 import com.newamerica.flows.IssueRequestFlow;
+import com.newamerica.flows.ReceiveFundFlow;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.Command;
@@ -31,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 
 public class IssueRequestFlowTests {
     private MockNetwork mockNetwork;
-    private StartedMockNode a, b, c;
+    private StartedMockNode a, b, c, d;
     private Party usDoj;
     private Party usDos;
     private Party catanMoj;
@@ -57,7 +58,7 @@ public class IssueRequestFlowTests {
         a = mockNetwork.createNode(new MockNodeParameters());
         b = mockNetwork.createNode(new MockNodeParameters());
         c = mockNetwork.createNode(new MockNodeParameters());
-        StartedMockNode d = mockNetwork.createNode(new MockNodeParameters());
+        d = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode e = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode f = mockNetwork.createNode(new MockNodeParameters());
 
@@ -112,6 +113,15 @@ public class IssueRequestFlowTests {
         mockNetwork.runNetwork();
         SignedTransaction stx = future.get();
         FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
+
+        ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                fs.getLinearId(),
+                ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+        );
+
+        Future<SignedTransaction> future2 = d.startFlow(receiveFundFlow);
+        mockNetwork.runNetwork();
+        future2.get();
 
         //create RequestState
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
@@ -197,6 +207,15 @@ public class IssueRequestFlowTests {
         mockNetwork.runNetwork();
         SignedTransaction stx = future.get();
         FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
+
+        ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                fs.getLinearId(),
+                ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+        );
+
+        Future<SignedTransaction> future2 = d.startFlow(receiveFundFlow);
+        mockNetwork.runNetwork();
+        future2.get();
 
         //create RequestState
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
