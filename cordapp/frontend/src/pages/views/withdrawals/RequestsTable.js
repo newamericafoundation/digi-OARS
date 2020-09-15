@@ -11,7 +11,7 @@ import {
   CCol,
   CRow,
   CCallout,
-  CSpinner
+  CSpinner,
 } from "@coreui/react";
 import Moment from "moment";
 import { useAuth } from "auth-hook";
@@ -45,7 +45,7 @@ export const RequestsTable = ({
     { key: "authorizedUserUsername", label: "Requestor" },
     { key: "authorizedUserDept", label: "Department" },
     { key: "amount" },
-    { key: "datetime", label: "Date" },
+    { key: "createdDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
     {
       key: "show_details",
@@ -77,11 +77,7 @@ export const RequestsTable = ({
   const onHandleApproveClick = (requestId, authorizerUserUsername, index) => {
     setIsLoading(true);
     const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      api.port +
-      "/api/request";
+      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request";
 
     axios
       .put(url, null, { params: { requestId, authorizerUserUsername } })
@@ -122,8 +118,11 @@ export const RequestsTable = ({
           maxWithdrawalAmount: (item) => (
             <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
           ),
-          datetime: (item) => (
-            <td>{Moment(item.datetime).format(Constants.DATEFORMAT)}</td>
+          createDateTime: (item) => (
+            <td>{Moment(item.createDateTime).format(Constants.DATEFORMAT)}</td>
+          ),
+          updatedDateTime: (item) => (
+            <td>{Moment(item.updatedDateTime).format(Constants.DATEFORMAT)}</td>
           ),
           status: (item) => (
             <td>
