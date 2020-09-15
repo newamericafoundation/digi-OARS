@@ -77,7 +77,7 @@ export const AvailableFundsTable = ({
   const fields = [
     { key: "originParty", label: "Origin Country" },
     { key: "balance", label: "Balance Available" },
-    { key: "datetime", label: "Date" },
+    { key: "updatedDateTime", label: "Updated Date" },
     { key: "maxWithdrawalAmount" },
     { key: "status", _style: { width: "20%" } },
     {
@@ -128,8 +128,11 @@ export const AvailableFundsTable = ({
           maxWithdrawalAmount: (item) => (
             <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
           ),
-          datetime: (item) => (
-            <td>{Moment(item.datetime).format(Constants.DATEFORMAT)}</td>
+          createdDateTime: (item) => (
+            <td>{Moment(item.createdDateTime).format("DD/MMM/yyyy")}</td>
+          ),
+          updatedDateTime: (item) => (
+            <td>{Moment(item.updatedDateTime).format("DD/MMM/yyyy")}</td>
           ),
           status: (item) => (
             <td>
@@ -233,9 +236,17 @@ export const AvailableFundsTable = ({
                           <strong className="p">{item.txId}</strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Date/Time</p>
+                          <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
-                            {Moment(item.dateTime).format(
+                            {Moment(item.createdDateTime).format(
+                              "DD/MMM/YYYY HH:mm:ss"
+                            )}
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Updated Date/Time</p>
+                          <strong className="p">
+                            {Moment(item.updatedDateTime).format(
                               "DD/MMM/YYYY HH:mm:ss"
                             )}
                           </strong>
