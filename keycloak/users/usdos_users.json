@@ -1,0 +1,26 @@
+[
+  {
+    "entity": "usdos",
+    "firstName": "Jill",
+    "lastName": "Sanders",
+    "group": "US Department of State",
+    "country_code": "Us",
+    "password": "HJvkAk"
+  },
+  {
+    "entity": "usdos",
+    "firstName": "Chris",
+    "lastName": "Blackham",
+    "group": "US Department of State",
+    "country_code": "Us",
+    "password": "BIMH0M5lsKdm"
+  },
+  {
+    "entity": "usdos",
+    "firstName": "Ryley",
+    "lastName": "Drewson",
+    "group": "US Department of State",
+    "country_code": "Us",
+    "password": "DzqNWXdtoU35"
+  }
+]

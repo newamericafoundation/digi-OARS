@@ -1,0 +1,805 @@
+{
+	"info": {
+		"_postman_id": "957a8bc7-84ec-4a16-a983-ce89264e7875",
+		"name": "OARS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Keycloak",
+			"item": [
+				{
+					"name": "Get All Clients",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "04d281c4-786d-4260-b739-5b1501043f16",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"realm\": \"oars\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/clients",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get OARS Client - Set client_id Env Var",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d92838a0-21cb-48ba-a4de-1a8c3b12c935",
+								"exec": [
+									"let response = pm.response.json()",
+									"",
+									"for (var i = 0; i < response.length; i++){",
+									"  if (response[i].clientId == \"oars-client\"){",
+									"    pm.environment.set(\"client_id\", response[i].id);",
+									"  }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/clients",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"user\",\n    \"lastName\": \"automatic\",\n    \"email\": \"testing@test.com\",\n    \"enabled\": \"true\",\n    \"username\": \"app-user\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/users",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User-Role Mapping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/users/1c8d7c5a-c212-4be3-999a-f377ef720643/role-mappings/clients/{{client_id}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"users",
+								"1c8d7c5a-c212-4be3-999a-f377ef720643",
+								"role-mappings",
+								"clients",
+								"{{client_id}}"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Client Roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/clients/{{client_id}}/roles",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"clients",
+								"{{client_id}}",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "99aed70c-d4ee-463b-8fab-ba5672dcc6bd",
+								"exec": [
+									"var entity = data.entity;",
+									"var firstName = data.firstName;",
+									"var lastName = data.lastName;",
+									"var group = data.group;",
+									"var country_code = data.country_code;",
+									"var password = data.password;",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "760bae53-48bd-4d21-b5b2-2e5c7db3eb57",
+								"exec": [
+									"var location = pm.response.headers.get(\"Location\")",
+									"var user_id = location.substr(location.lastIndexOf('/') + 1);",
+									"pm.environment.set(\"last_created_user_id\", user_id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"{{firstName}}\",\n    \"lastName\": \"{{lastName}}\",\n    \"email\": \"{{firstName}}.{{lastName}}@{{entity}}.com\",\n    \"enabled\": \"true\",\n    \"username\": \"{{firstName}}.{{lastName}}\",\n    \"groups\": [\n        \"{{group}}\"\n    ],\n    \"attributes\": {\n        \"country\": [\n            \"{{country_code}}\"\n        ],\n        \"avatar\": [\n            \"{{firstName}}.{{lastName}}.jpg\"\n        ]\n    },\n    \"credentials\": [\n        {\n            \"type\": \"password\",\n            \"value\": \"{{password}}\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/users",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User-Role Mapping - Funds_Issuer",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c4a187cc-d772-4457-8642-47b252aad2c6",
+								"exec": [
+									"var user_id = pm.environment.get(\"last_created_user_id\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n{\n        \"id\": \"23765f61-34e5-44ce-acd7-2b1895e634fc\",\n        \"name\": \"funds_issuer\",\n        \"composite\": false,\n        \"clientRole\": true,\n        \"containerId\": \"cba85888-c6f1-4b35-a192-8c37f21f3207\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/users/{{last_created_user_id}}/role-mappings/clients/{{client_id}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"users",
+								"{{last_created_user_id}}",
+								"role-mappings",
+								"clients",
+								"{{client_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User-Role Mapping - Funds_Receiver",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "ff1d3e1c-1771-409c-9d67-b4311f50be5a",
+								"exec": [
+									"var user_id = pm.environment.get(\"last_created_user_id\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n{\n        \"id\": \"56f115c1-3b88-4de7-8117-e1ab79c29d82\",\n        \"name\": \"funds_receiver\",\n        \"composite\": false,\n        \"clientRole\": true,\n        \"containerId\": \"cba85888-c6f1-4b35-a192-8c37f21f3207\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/users/{{last_created_user_id}}/role-mappings/clients/{{client_id}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"users",
+								"{{last_created_user_id}}",
+								"role-mappings",
+								"clients",
+								"{{client_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User-Role Mapping - Funds_Requestor",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "45a84f29-b669-49fd-bf6e-b50904ddf65a",
+								"exec": [
+									"var user_id = pm.environment.get(\"last_created_user_id\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"id\": \"379909b0-b04d-47e0-bde4-3f7234e4a17a\",\n        \"name\": \"funds_requestor\",\n        \"composite\": false,\n        \"clientRole\": true,\n        \"containerId\": \"cba85888-c6f1-4b35-a192-8c37f21f3207\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/users/{{last_created_user_id}}/role-mappings/clients/{{client_id}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"users",
+								"{{last_created_user_id}}",
+								"role-mappings",
+								"clients",
+								"{{client_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User-Role Mapping - Request_Approver",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "c3c46e19-f5c3-4bdd-80dc-099f12e6f3df",
+								"exec": [
+									"var user_id = pm.environment.get(\"last_created_user_id\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"id\": \"f24ed7df-20a4-473a-bb5b-a579ed01f65c\",\n        \"name\": \"request_approver\",\n        \"composite\": false,\n        \"clientRole\": true,\n        \"containerId\": \"cba85888-c6f1-4b35-a192-8c37f21f3207\"\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{server}}/auth/admin/realms/oars/users/{{last_created_user_id}}/role-mappings/clients/{{client_id}}",
+							"host": [
+								"{{server}}"
+							],
+							"path": [
+								"auth",
+								"admin",
+								"realms",
+								"oars",
+								"users",
+								"{{last_created_user_id}}",
+								"role-mappings",
+								"clients",
+								"{{client_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e6ed316e-b800-4ea0-a910-1ffd73656eed",
+						"type": "text/javascript",
+						"exec": [
+							"var server       = pm.environment.get(\"server\");",
+							"var realm        = \"oars\";",
+							"var grantType    = \"client_credentials\";",
+							"var clientId     = \"oars-client\";",
+							"var clientSecret = pm.environment.get(\"client_secret\");",
+							"",
+							"var url  = `${server}/auth/realms/${realm}/protocol/openid-connect/token`;",
+							"var data = `grant_type=${grantType}&client_id=${clientId}&client_secret=${clientSecret}`;",
+							"",
+							"pm.sendRequest({",
+							"    url: url,",
+							"    method: 'POST',",
+							"    header: { 'Content-Type': 'application/x-www-form-urlencoded'},",
+							"    body: {",
+							"        mode: 'raw',",
+							"        raw: data",
+							"    }",
+							"},  function(err, response) {",
+							"    ",
+							"    var response_json = response.json();",
+							"    var token = response_json.access_token;",
+							"    pm.environment.set('token', token);",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cac4d807-00a9-409c-bdde-d0a236b54808",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Funds",
+			"item": [
+				{
+					"name": "Get Funds",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10050/api/funds",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10050",
+							"path": [
+								"api",
+								"funds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fund by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10050/api/fund/id?fundId=89f29a2d-d9d3-456e-bac9-d8241ae144d9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10050",
+							"path": [
+								"api",
+								"fund",
+								"id"
+							],
+							"query": [
+								{
+									"key": "fundId",
+									"value": "89f29a2d-d9d3-456e-bac9-d8241ae144d9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fund by Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10050/api/fund/status?status=RECEIVED",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10050",
+							"path": [
+								"api",
+								"fund",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "RECEIVED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Fund State",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"originParty\": \"O=US_DoJ,L=New York,C=US\",\n    \"receivingParty\": \"O=Catan_Treasury, L=London, C=GB\",\n    \"amount\": \"10000\",\n    \"maxWithdrawalAmount\": \"10000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10050/api/fund",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10050",
+							"path": [
+								"api",
+								"fund"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Fund State",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10055/api/fund?fundId=00f3d496-53dc-447a-9640-f9e3b58ee0a2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10055",
+							"path": [
+								"api",
+								"fund"
+							],
+							"query": [
+								{
+									"key": "fundId",
+									"value": "00f3d496-53dc-447a-9640-f9e3b58ee0a2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Requests",
+			"item": [
+				{
+					"name": "Create Request State",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"authorizedUserUsername\": \"test_authorized@test.com\",\n    \"authorizedUserDept\": \"Test Department\",\n    \"externalAccountId\": \"ABC12345\",\n    \"amount\": 5,\n    \"fundStateLinearId\": \"9fb01262-6601-4c70-b1af-2c4de596f363\",\n    \"purpose\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:10056/api/request",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10056",
+							"path": [
+								"api",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Requests",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10050/api/requests",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10050",
+							"path": [
+								"api",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10050/api/request/id?requestId=d1c8cf74-70da-4b41-9405-fe9bbf6ee150",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10050",
+							"path": [
+								"api",
+								"request",
+								"id"
+							],
+							"query": [
+								{
+									"key": "requestId",
+									"value": "d1c8cf74-70da-4b41-9405-fe9bbf6ee150"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request by Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10050/api/request/status?status=PENDING",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10050",
+							"path": [
+								"api",
+								"request",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PENDING"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Request State",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:10054/api/request?requestId=cf5a163b-9133-46fc-8270-457f29a8322e&authorizerUserUsername=TESTUSER",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "10054",
+							"path": [
+								"api",
+								"request"
+							],
+							"query": [
+								{
+									"key": "requestId",
+									"value": "cf5a163b-9133-46fc-8270-457f29a8322e"
+								},
+								{
+									"key": "authorizerUserUsername",
+									"value": "TESTUSER"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJYck0ybWNHU1lDSUNnUnZuREd5ZkxldXR5eDhMdUVpYUl4TmZVbEZ2YVhBIn0.eyJleHAiOjE2MDAwOTk5NjAsImlhdCI6MTYwMDA5OTkwMCwianRpIjoiYjBkYzA4NTItMjE3OC00Mzk2LWIwMWYtYTUwN2FmN2U2MDQxIiwiaXNzIjoiaHR0cDovL3NlY3VyZS1vYXJzLmVhc3R1cy5jbG91ZGFwcC5henVyZS5jb20vYXV0aC9yZWFsbXMvbWFzdGVyIiwic3ViIjoiNTkzZGE4MjktMWMwNy00ODVmLTk1YzQtZDA0YmM2YTMxZDMyIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoiYWRtaW4tY2xpIiwic2Vzc2lvbl9zdGF0ZSI6IjgwOWZkODU2LWUyMjEtNGIzNC04YWViLWRkZWQzYzA1YThkNCIsImFjciI6IjEiLCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluIn0.st-jxU13Z5jzE131r7kN5hmE5FcbEPaDJhcXylUk6Bbj1lpirMjRFTBQxEed8xUqwcZToLIt9y98XUJdXSwPptXsIEJkeacROnwR4jXlytYRpb7ou4ct-eRCXl1lwHh8zB1KFLSdjXS6lapKqqJBTh3sTzTd_Pa9fKBPWRQV02O68gcmjNIMlfc5gNNqwWedwvd1lPwjVGW5TKH08t3XL_0AL3fFp7p5AossvmzpRaEAbXw9klIktAYIhUwty8R276e4MxVFCxvX7RnYnQ6RIvhCf3rCx2pyMsUlZPZIubCwJ3G0cChq8taoksIQDakXLLszYtte5nCGWO0RqATr0g",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "178833e7-2d8b-4b5a-a9a2-7f9ebc6f5ac8",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "d0d0ff08-da9a-4c4a-8e84-7fc9425fa232",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
