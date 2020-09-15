@@ -40,9 +40,6 @@ public class IssueRequestFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
-    private final List<AbstractParty> authorizedParties = new ArrayList<>();
-
-
 
     @Before
     public void setup() throws ExecutionException, InterruptedException {
@@ -95,7 +92,6 @@ public class IssueRequestFlowTests {
         participants.add(catanMoj);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
-        authorizedParties.add(CATANMoJ.getParty());
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
@@ -122,7 +118,6 @@ public class IssueRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
-                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -208,7 +203,6 @@ public class IssueRequestFlowTests {
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
-                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(1000001),
                 Currency.getInstance(Locale.US),
