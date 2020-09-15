@@ -256,7 +256,6 @@ public class DriverBasedTest {
 
                 assertEquals("Alice Bob", issuedRequestStateCatanMOJ.getAuthorizedUserUsername());
                 assertEquals("Catan Ministry of Education", issuedRequestStateCatanMOJ.getAuthorizedUserDept());
-                assertEquals("", issuedRequestStateCatanMOJ.getAuthorizerUserUsername());
                 assertEquals("Some purpose", issuedRequestStateCatanMOJ.getPurpose());
                 assertEquals("1234567890", issuedRequestStateCatanMOJ.getExternalAccountId());
                 assertEquals(BigDecimal.valueOf(1000000), issuedRequestStateCatanMOJ.getAmount());
@@ -272,7 +271,6 @@ public class DriverBasedTest {
 
                 assertEquals("Alice Bob", issuedRequestStateCatanMOF.getAuthorizedUserUsername());
                 assertEquals("Catan Ministry of Education", issuedRequestStateCatanMOF.getAuthorizedUserDept());
-                assertEquals("", issuedRequestStateCatanMOF.getAuthorizerUserUsername());
                 assertEquals("Some purpose", issuedRequestStateCatanMOF.getPurpose());
                 assertEquals("1234567890", issuedRequestStateCatanMOF.getExternalAccountId());
                 assertEquals(BigDecimal.valueOf(1000000), issuedRequestStateCatanMOF.getAmount());
@@ -402,7 +400,6 @@ public class DriverBasedTest {
                 //check that the requestState is now in the APPROVED status
                 assertEquals(RequestState.RequestStateStatus.APPROVED, approvedRequestState.getStatus());
                 assertEquals(ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York")), approvedRequestState.getUpdateDatetime());
-                assertEquals("A Name", approvedRequestState.getAuthorizerUserUsername());
 
                 catanMOFProxy.startFlowDynamic(IssueTransferFlow.InitiatorFlow.class,
                         approvedRequestState.getLinearId(),

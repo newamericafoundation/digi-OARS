@@ -23,6 +23,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Currency;
@@ -130,7 +132,7 @@ public class FundsController extends BaseResource {
             Party US_CSO = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US_CSO,L=New York,C=US"));
 
             BigDecimal amountAndBalance = new BigDecimal(amountStr);
-            ZonedDateTime now = ZonedDateTime.now();
+            ZonedDateTime now = ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"));
             BigDecimal maxWithdrawalAmount = new BigDecimal(maxWithdrawalAmountStr);
             Currency currency = Currency.getInstance("USD");
 
@@ -169,7 +171,7 @@ public class FundsController extends BaseResource {
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     ReceiveFundFlow.InitiatorFlow.class,
                     new UniqueIdentifier(null, UUID.fromString(fundId)),
-                    ZonedDateTime.now()
+                    ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"))
             ).getReturnValue().get();
             FundState updated = (FundState) tx.getTx().getOutputs().get(0).getData();
             return Response.ok(createFundSuccessServiceResponse("Fund received successfully.", updated, resourcePath)).build();
