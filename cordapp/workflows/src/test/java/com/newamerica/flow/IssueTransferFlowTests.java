@@ -45,7 +45,6 @@ public class IssueTransferFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
-    private Map<AbstractParty, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
 
 
     @Before
@@ -108,7 +107,6 @@ public class IssueTransferFlowTests {
         participants.add(catanTreasury);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
-        authorizerUserPartyAndUsername.put(CATANMoJ.getParty(), "Chris Jones");
 
 
         //create FundState
