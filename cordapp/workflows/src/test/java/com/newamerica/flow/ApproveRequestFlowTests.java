@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
+import static com.newamerica.TestUtils.CATANMoJ;
 import static org.junit.Assert.assertEquals;
 
 public class ApproveRequestFlowTests {
@@ -45,6 +46,7 @@ public class ApproveRequestFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+
 
 
 
@@ -103,6 +105,7 @@ public class ApproveRequestFlowTests {
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
 
+
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDos,
@@ -154,7 +157,7 @@ public class ApproveRequestFlowTests {
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
                 rs.getLinearId(),
-                "Chris Jones",
+                "Sam Sung",
                 ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York"))
                 );
 
@@ -280,7 +283,7 @@ public class ApproveRequestFlowTests {
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
                 rs.getLinearId(),
-                "Chris Jones",
+                "Sam Sung",
                 ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
                 );
 
@@ -343,7 +346,7 @@ public class ApproveRequestFlowTests {
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
                 rs.getLinearId(),
-                "Chris Jones",
+                "Sam Sung",
                 ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
                 );
 

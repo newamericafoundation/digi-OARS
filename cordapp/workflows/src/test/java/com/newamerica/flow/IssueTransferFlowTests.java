@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
+import static com.newamerica.TestUtils.CATANMoJ;
 import static org.junit.Assert.assertEquals;
 
 public class IssueTransferFlowTests {
@@ -44,6 +45,7 @@ public class IssueTransferFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+
 
     @Before
     public void setup() throws ExecutionException, InterruptedException {
@@ -106,6 +108,7 @@ public class IssueTransferFlowTests {
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
 
+
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDoj,
@@ -158,7 +161,7 @@ public class IssueTransferFlowTests {
         //approve requestState
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
                 rs.getLinearId(),
-                "Chris Jones",
+                "Sam Sung",
                 ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
                 );
 

@@ -5,6 +5,7 @@ import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
+import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import net.corda.core.serialization.CordaSerializable;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Currency;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A RequestState is an on-ledger representation of request data that gets stored in the database.
@@ -31,7 +33,7 @@ import java.util.List;
 public class RequestState implements LinearState {
     public final String authorizedUserUsername;
     public final String authorizedUserDept;
-    public final String authorizerUserUsername;
+    public final Map<AbstractParty,String> authorizerUserPartyAndUsername;
     public final List<AbstractParty> authorizedParties;
     public final String externalAccountId;
     public final String purpose;
@@ -47,7 +49,7 @@ public class RequestState implements LinearState {
     @ConstructorForDeserialization
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
-                        String authorizerUserUsername,
+                        Map<AbstractParty,String> authorizerUserPartyAndUsername,
                         List<AbstractParty> authorizedParties,
                         String externalAccountId,
                         String purpose,
@@ -61,7 +63,7 @@ public class RequestState implements LinearState {
                         List<AbstractParty> participants) {
         this.authorizedUserUsername = authorizedUserUsername;
         this.authorizedUserDept = authorizedUserDept;
-        this.authorizerUserUsername = authorizerUserUsername;
+        this.authorizerUserPartyAndUsername = authorizerUserPartyAndUsername;
         this.authorizedParties = authorizedParties;
         this.externalAccountId = externalAccountId;
         this.purpose = purpose;
@@ -77,7 +79,7 @@ public class RequestState implements LinearState {
 
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
-                        String authorizerUsername,
+                        Map<AbstractParty,String> authorizerUserPartyAndUsername,
                         List<AbstractParty> authorizedParties,
                         String externalAccount,
                         String purpose,
@@ -88,7 +90,7 @@ public class RequestState implements LinearState {
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizedParties, externalAccount, purpose, amount, currency, createDatetime, updateDatetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUserPartyAndUsername, authorizedParties, externalAccount, purpose, amount, currency, createDatetime, updateDatetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -108,11 +110,11 @@ public class RequestState implements LinearState {
     public Currency getCurrency() { return currency; }
     public RequestStateStatus getStatus() { return status; }
     public UniqueIdentifier getFundStateLinearId() { return fundStateLinearId; }
-    public String getAuthorizerUserUsername() { return authorizerUserUsername; }
     public String getExternalAccountId() { return externalAccountId; }
     public String getPurpose() { return purpose; }
     public ZonedDateTime getCreateDatetime() { return createDatetime; }
     public ZonedDateTime getUpdateDatetime() { return updateDatetime; }
+    public Map<AbstractParty, String> getAuthorizerUserPartyAndUsername() { return authorizerUserPartyAndUsername; }
 
 
     //helper functions
@@ -120,7 +122,7 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserUsername,
+                this.authorizerUserPartyAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
@@ -139,7 +141,7 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserUsername,
+                this.authorizerUserPartyAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
@@ -158,7 +160,7 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserUsername,
+                this.authorizerUserPartyAndUsername,
                 authorizedParties,
                 this.externalAccountId,
                 this.purpose,
@@ -173,11 +175,11 @@ public class RequestState implements LinearState {
         );
     }
 
-    public RequestState update(String authorizerUserUsername, ZonedDateTime updateDatetime){
+    public RequestState update(Map<AbstractParty, String> authorizerUserPartyAndUsername, ZonedDateTime updateDatetime){
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                authorizerUserUsername,
+                authorizerUserPartyAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
