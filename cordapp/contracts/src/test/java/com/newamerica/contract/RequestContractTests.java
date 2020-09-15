@@ -7,6 +7,7 @@ import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
+import net.corda.serialization.internal.model.LocalTypeInformation;
 import net.corda.testing.node.MockServices;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +15,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Currency;
-import java.util.List;
+import java.util.*;
 
 import static com.newamerica.TestUtils.*;
 import static net.corda.testing.node.NodeTestUtils.ledger;
@@ -27,6 +25,8 @@ public class RequestContractTests {
             new MockServices(Arrays.asList("com.newamerica.contracts", "com.newamerica.flows"));
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> authorizedParties = new ArrayList<>();
+    private Map<AbstractParty, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
+
 
     private RequestState requestState;
     private RequestState requestState2;
@@ -47,12 +47,14 @@ public class RequestContractTests {
         participants.add(CATANMoJ.getParty());
         authorizedParties.add(CATANMoJ.getParty());
         authorizedParties.add(CATANMoFA.getParty());
+        authorizerUserPartyAndUsername.put(CATANMoJ.getParty(), "Chris Jones");
+
 
         //create request state
         requestState = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "",
+                new LinkedHashMap<>(),
                 authorizedParties,
                 "1234567890",
                 "build a school",
@@ -66,13 +68,13 @@ public class RequestContractTests {
         );
 
         //create request state
-        requestState2 = requestState.update("Helen Keller", ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        requestState2 = requestState.update(authorizerUserPartyAndUsername, ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")));
 
         //create request state
         requestState_diff = new RequestState(
                 "Alice Alice",
                 "Catan Ministry of Education",
-                "Chris Blue",
+                new LinkedHashMap<>(),
                 authorizedParties,
                 "1234567890",
                 "build a school",
@@ -88,7 +90,7 @@ public class RequestContractTests {
         requestState_negative_amount = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Blue",
+                new LinkedHashMap<>(),
                 authorizedParties,
                 "1234567890",
                 "build a school",

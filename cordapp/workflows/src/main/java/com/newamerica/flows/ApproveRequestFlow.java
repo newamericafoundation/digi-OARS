@@ -18,9 +18,7 @@ import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
@@ -57,8 +55,10 @@ public class ApproveRequestFlow {
                 throw new IllegalArgumentException("The initiator of this flow must be a authorizedParty");
             }
 
+            Map<AbstractParty, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
+            authorizerUserPartyAndUsername.put(getOurIdentity(), authorizerUserUsername);
             RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
-            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserUsername, updateDatetime);
+            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserPartyAndUsername, updateDatetime);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);

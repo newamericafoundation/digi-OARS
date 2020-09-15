@@ -44,7 +44,7 @@ public class IssueRequestFlow {
             this.outputRequestState = new RequestState(
                     authorizedUserUsername,
                     authorizedUserDept,
-                    "",
+                    new LinkedHashMap<>(),
                     Collections.emptyList(),
                     externalAccountId,
                     purpose,
@@ -75,6 +75,7 @@ public class IssueRequestFlow {
                 outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
             }
             outputRequestState = outputRequestState.updateParticipantList(inputStateRefFundState.getParticipants());
+            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getRequiredSigners());
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);

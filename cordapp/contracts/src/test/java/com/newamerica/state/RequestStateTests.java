@@ -1,9 +1,12 @@
 package com.newamerica.state;
 
+import com.google.common.collect.ImmutableMap;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
+import net.corda.core.identity.Party;
+import org.apache.shiro.crypto.hash.Hash;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,10 +14,7 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 import static com.newamerica.TestUtils.CATANMoFA;
 import static com.newamerica.TestUtils.CATANMoJ;
@@ -26,6 +26,7 @@ public class RequestStateTests {
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> authorizedParties = new ArrayList<>();
     private UniqueIdentifier uniqueIdentifier;
+    private Map<AbstractParty, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
 
     @Before
     public void setup(){
@@ -34,11 +35,12 @@ public class RequestStateTests {
         uniqueIdentifier =  new UniqueIdentifier();
         authorizedParties.add(CATANMoJ.getParty());
         authorizedParties.add(CATANMoFA.getParty());
+        authorizerUserPartyAndUsername.put(CATANMoJ.getParty(), "Chris Jones");
 
         requestState = new RequestState(
                 "Alice Bob",
                 "Catan Ministry of Education",
-                "Chris Jones",
+                authorizerUserPartyAndUsername,
                 authorizedParties,
                 "1234567890",
                 "build a school",
@@ -58,7 +60,7 @@ public class RequestStateTests {
     public void hasAllAttributes() throws NoSuchFieldException{
         Field authorizedUserUsername = RequestState.class.getDeclaredField("authorizedUserUsername");
         Field authorizedUserDept = RequestState.class.getDeclaredField("authorizedUserDept");
-        Field authorizerUserUsername = RequestState.class.getDeclaredField("authorizerUserUsername");
+        Field authorizerUserPartyAndUsername = RequestState.class.getDeclaredField("authorizerUserPartyAndUsername");
         Field authorizedParties = RequestState.class.getDeclaredField("authorizedParties");
         Field externalAccountId = RequestState.class.getDeclaredField("externalAccountId");
         Field purpose = RequestState.class.getDeclaredField("purpose");
@@ -72,7 +74,7 @@ public class RequestStateTests {
 
         assertTrue(authorizedUserUsername.getType().isAssignableFrom(String.class));
         assertTrue(authorizedUserDept.getType().isAssignableFrom(String.class));
-        assertTrue(authorizerUserUsername.getType().isAssignableFrom(String.class));
+        assertTrue(authorizerUserPartyAndUsername.getType().isAssignableFrom(Map.class));
         assertTrue(authorizedParties.getType().isAssignableFrom(List.class));
         assertTrue(externalAccountId.getType().isAssignableFrom(String.class));
         assertTrue(purpose.getType().isAssignableFrom(String.class));
@@ -92,7 +94,7 @@ public class RequestStateTests {
 
         assertEquals(requestState.getAuthorizedUserUsername(), "Alice Bob");
         assertEquals(requestState.getAuthorizedUserDept(), "Catan Ministry of Education");
-        assertEquals(requestState.getAuthorizerUserUsername(),"Chris Jones");
+        assertTrue(requestState.getAuthorizerUserPartyAndUsername().containsValue("Chris Jones"));
         assertEquals(requestState.getAuthorizedParties(), new ArrayList<>(authorizedParties));
         assertEquals(0, requestState.getAmount().compareTo(BigDecimal.valueOf(1000000)));
         assertEquals(requestState.getCreateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
