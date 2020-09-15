@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./scss/style.scss";
-import { KeycloakProvider } from "@react-keycloak/web";
-import keycloak from "keycloak";
 import { AppRouter } from "./routes/index";
 import FundsProvider from "./providers/FundsProvider";
 import RequestsProvider from "./providers/RequestsProvider";
 import ReactNotification from "react-notifications-component";
 import APIProvider from "providers/APIProvider";
 import { useAuth } from "./auth-hook";
-import { useKeycloak } from "@react-keycloak/web";
 
 
 
