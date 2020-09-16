@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class FundStateTests {
     private FundState fundState;
     private final List<AbstractParty> owners = new ArrayList<>();
-    private final List<AbstractParty> requiredSigners = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
 
@@ -30,8 +30,8 @@ public class FundStateTests {
     @Before
     public void setup(){
         owners.add(US.getParty());
-        requiredSigners.add(US.getParty());
-        requiredSigners.add(CATAN.getParty());
+        authorizedParties.add(US.getParty());
+        authorizedParties.add(CATAN.getParty());
         participants.add(US.getParty());
         participants.add(CATAN.getParty());
         partialRequestParticipants.add(US_CSO.getParty());
@@ -42,7 +42,7 @@ public class FundStateTests {
                 US.getParty(),
                 CATAN.getParty(),
                 owners,
-                requiredSigners,
+                authorizedParties,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
                 BigDecimal.valueOf(5000000),
@@ -61,7 +61,7 @@ public class FundStateTests {
         Field originParty = FundState.class.getDeclaredField("originParty");
         Field receivingParty = FundState.class.getDeclaredField("receivingParty");
         Field owners = FundState.class.getDeclaredField("owners");
-        Field requiredSigners = FundState.class.getDeclaredField("requiredSigners");
+        Field authorizedParties = FundState.class.getDeclaredField("authorizedParties");
         Field partialRequestParticipants = FundState.class.getDeclaredField("partialRequestParticipants");
         Field amount = FundState.class.getDeclaredField("amount");
         Field balance = FundState.class.getDeclaredField("balance");
@@ -75,7 +75,7 @@ public class FundStateTests {
         assertTrue(originParty.getType().isAssignableFrom(Party.class));
         assertTrue(receivingParty.getType().isAssignableFrom(Party.class));
         assertTrue(owners.getType().isAssignableFrom(List.class));
-        assertTrue(requiredSigners.getType().isAssignableFrom(List.class));
+        assertTrue(authorizedParties.getType().isAssignableFrom(List.class));
         assertTrue(partialRequestParticipants.getType().isAssignableFrom(List.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(balance.getType().isAssignableFrom(BigDecimal.class));
@@ -93,7 +93,7 @@ public class FundStateTests {
         assertEquals(fundState.getOriginParty(), US.getParty());
         assertEquals(fundState.getReceivingParty(), CATAN.getParty());
         assertEquals(fundState.getOwners(),owners);
-        assertEquals(fundState.getRequiredSigners(), requiredSigners);
+        assertEquals(fundState.getAuthorizedParties(), authorizedParties);
         assertEquals(fundState.getPartialRequestParticipants(), partialRequestParticipants);
         assertTrue(fundState.getAmount().compareTo(BigDecimal.valueOf(4999999)) > 0);
         assertTrue(fundState.getBalance().compareTo(BigDecimal.valueOf(4999999)) > 0);
