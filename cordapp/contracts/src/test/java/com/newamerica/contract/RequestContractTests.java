@@ -25,7 +25,7 @@ public class RequestContractTests {
             new MockServices(Arrays.asList("com.newamerica.contracts", "com.newamerica.flows"));
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> authorizedParties = new ArrayList<>();
-    private Map<AbstractParty, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
+    private Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
 
 
     private RequestState requestState;
@@ -47,7 +47,7 @@ public class RequestContractTests {
         participants.add(CATANMoJ.getParty());
         authorizedParties.add(CATANMoJ.getParty());
         authorizedParties.add(CATANMoFA.getParty());
-        authorizerUserPartyAndUsername.put(CATANMoJ.getParty(), "Chris Jones");
+        authorizerUserDeptAndUsername.put("Catan MOJ", "Chris Jones");
 
 
         //create request state
@@ -68,7 +68,7 @@ public class RequestContractTests {
         );
 
         //create request state
-        requestState2 = requestState.update(authorizerUserPartyAndUsername, ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        requestState2 = requestState.update(authorizerUserDeptAndUsername, ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")));
 
         //create request state
         requestState_diff = new RequestState(

@@ -46,7 +46,7 @@ public class RequestContract implements Contract {
                 require.using("The request output state must be in APPROVED status.", outputState.getStatus() == RequestState.RequestStateStatus.APPROVED);
                 require.using("The authorizedUserUsername cannot change.", inputState.getAuthorizedUserUsername().equals(outputState.getAuthorizedUserUsername()));
                 require.using("The authorizedUserDept cannot change.", inputState.getAuthorizedUserDept().equals(outputState.getAuthorizedUserDept()));
-                require.using("The authorizerUserPartyAndUsername cannot be null.", !outputState.getAuthorizerUserPartyAndUsername().isEmpty());
+                require.using("The authorizerUserDeptAndUsername cannot be null.", !outputState.getAuthorizerUserDeptAndUsername().isEmpty());
                 require.using("The authorizerDept cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The externalAccountId cannot change.", inputState.getExternalAccountId().equals(outputState.getExternalAccountId()));
                 require.using("The purpose cannot change.", inputState.getPurpose().equals(outputState.getPurpose()));

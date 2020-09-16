@@ -33,7 +33,7 @@ import java.util.Map;
 public class RequestState implements LinearState {
     public final String authorizedUserUsername;
     public final String authorizedUserDept;
-    public final Map<AbstractParty,String> authorizerUserPartyAndUsername;
+    public final Map<String,String> authorizerUserDeptAndUsername;
     public final List<AbstractParty> authorizedParties;
     public final String externalAccountId;
     public final String purpose;
@@ -49,7 +49,7 @@ public class RequestState implements LinearState {
     @ConstructorForDeserialization
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
-                        Map<AbstractParty,String> authorizerUserPartyAndUsername,
+                        Map<String,String> authorizerUserDeptAndUsername,
                         List<AbstractParty> authorizedParties,
                         String externalAccountId,
                         String purpose,
@@ -63,7 +63,7 @@ public class RequestState implements LinearState {
                         List<AbstractParty> participants) {
         this.authorizedUserUsername = authorizedUserUsername;
         this.authorizedUserDept = authorizedUserDept;
-        this.authorizerUserPartyAndUsername = authorizerUserPartyAndUsername;
+        this.authorizerUserDeptAndUsername = authorizerUserDeptAndUsername;
         this.authorizedParties = authorizedParties;
         this.externalAccountId = externalAccountId;
         this.purpose = purpose;
@@ -79,7 +79,7 @@ public class RequestState implements LinearState {
 
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
-                        Map<AbstractParty,String> authorizerUserPartyAndUsername,
+                        Map<String,String> authorizerUserDeptAndUsername,
                         List<AbstractParty> authorizedParties,
                         String externalAccount,
                         String purpose,
@@ -90,7 +90,7 @@ public class RequestState implements LinearState {
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUserPartyAndUsername, authorizedParties, externalAccount, purpose, amount, currency, createDatetime, updateDatetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUserDeptAndUsername, authorizedParties, externalAccount, purpose, amount, currency, createDatetime, updateDatetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -114,7 +114,7 @@ public class RequestState implements LinearState {
     public String getPurpose() { return purpose; }
     public ZonedDateTime getCreateDatetime() { return createDatetime; }
     public ZonedDateTime getUpdateDatetime() { return updateDatetime; }
-    public Map<AbstractParty, String> getAuthorizerUserPartyAndUsername() { return authorizerUserPartyAndUsername; }
+    public Map<String, String> getAuthorizerUserDeptAndUsername() { return authorizerUserDeptAndUsername; }
 
 
     //helper functions
@@ -122,7 +122,7 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserPartyAndUsername,
+                this.authorizerUserDeptAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
@@ -141,7 +141,7 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserPartyAndUsername,
+                this.authorizerUserDeptAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
@@ -160,7 +160,7 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserPartyAndUsername,
+                this.authorizerUserDeptAndUsername,
                 authorizedParties,
                 this.externalAccountId,
                 this.purpose,
@@ -175,11 +175,11 @@ public class RequestState implements LinearState {
         );
     }
 
-    public RequestState update(Map<AbstractParty, String> authorizerUserPartyAndUsername, ZonedDateTime updateDatetime){
+    public RequestState update(Map<String, String> authorizerUserDeptAndUsername, ZonedDateTime updateDatetime){
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                authorizerUserPartyAndUsername,
+                authorizerUserDeptAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
