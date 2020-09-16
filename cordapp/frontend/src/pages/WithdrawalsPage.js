@@ -19,11 +19,29 @@ const WithdrawalsPage = () => {
   const auth = useAuth();
   const [fundsState, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
-  const [isRequestApprover, setIsRequestApprover] = useState(false)
+  const [isFundsIssuer, setIsFundsIssuer] = useState(false);
+  const [isFundsReceiver, setIsFundsReceiver] = useState(false);
+  const [isFundsRequestor, setIsFundsRequestor] = useState(false);
+  const [isRequestApprover, setIsRequestApprover] = useState(false);
+  const [isRequestTransferer, setIsRequestTransferer] = useState(false);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
-      setIsRequestApprover(auth.meta.keycloak.hasResourceRole("request_approver"));
+      setIsFundsIssuer(
+        auth.meta.keycloak.hasResourceRole("funds_issuer")
+      );
+      setIsFundsReceiver(
+        auth.meta.keycloak.hasResourceRole("funds_receiver")
+      );
+      setIsFundsRequestor(
+        auth.meta.keycloak.hasResourceRole("funds_requestor")
+      );
+      setIsRequestApprover(
+        auth.meta.keycloak.hasResourceRole("request_approver")
+      );
+      setIsRequestTransferer(
+        auth.meta.keycloak.hasResourceRole("request_transferer")
+      );
     }
   }, [auth]);
 
@@ -35,13 +53,18 @@ const WithdrawalsPage = () => {
   };
 
   const requestsTotal = requestsState.data.reduce(
-    (totalRequestsAmount, request) => totalRequestsAmount + parseFloat(request.amount), 0
+    (totalRequestsAmount, request) =>
+      totalRequestsAmount + parseFloat(request.amount),
+    0
   );
 
   const requestsPendingTotal = requestsState.data
     .filter((request) => request.status === Constants.REQUEST_PENDING)
     .reduce(
-      (totalRequestsPendingAmount, request) => totalRequestsPendingAmount + parseFloat(request.amount), 0);
+      (totalRequestsPendingAmount, request) =>
+        totalRequestsPendingAmount + parseFloat(request.amount),
+      0
+    );
 
   return (
     <>
@@ -49,10 +72,15 @@ const WithdrawalsPage = () => {
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency((requestsTotal - requestsPendingTotal), "USD").toString()}
+            header={toCurrency(
+              requestsTotal - requestsPendingTotal,
+              "USD"
+            ).toString()}
             text="Approved Withdrawal Requests"
             color="gradient-success"
-            value={((requestsTotal - requestsPendingTotal) / requestsTotal) * 100}
+            value={
+              ((requestsTotal - requestsPendingTotal) / requestsTotal) * 100
+            }
           >
             <CIcon name="cil-check-circle" height="36" />
           </CWidgetProgressIcon>
@@ -78,6 +106,7 @@ const WithdrawalsPage = () => {
                 funds={fundsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
+                isRequestor={isFundsRequestor}
               />
             </CCardBody>
           </CCard>
@@ -94,6 +123,9 @@ const WithdrawalsPage = () => {
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
                 isApprover={isRequestApprover}
+                isIssuer={isFundsIssuer}
+                isReceiver={isFundsReceiver}
+                isTransferer={isRequestTransferer}
               />
             </CCardBody>
           </CCard>
@@ -108,6 +140,9 @@ const WithdrawalsPage = () => {
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
                 isApprover={isRequestApprover}
+                isIssuer={isFundsIssuer}
+                isReceiver={isFundsReceiver}
+                isTransferer={isRequestTransferer}
               />
             </CCardBody>
           </CCard>
