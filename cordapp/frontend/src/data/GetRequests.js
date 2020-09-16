@@ -19,8 +19,8 @@ const getRequests = async (port) => {
     status: ob.state.data.status,
     participants: ob.state.data.participants,
     txId: ob.ref.txhash,
-    createdDateTime: ob.state.data.createDatetime,
-    updatedDateTime: ob.state.data.updatedDateTime
+    createDateTime: ob.state.data.createDatetime,
+    updateDateTime: ob.state.data.updateDateTime
   }));
 };
 
