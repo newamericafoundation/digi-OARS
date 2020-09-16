@@ -26,7 +26,7 @@ public class RequestStateTests {
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> authorizedParties = new ArrayList<>();
     private UniqueIdentifier uniqueIdentifier;
-    private Map<AbstractParty, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
+    private Map<String, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
 
     @Before
     public void setup(){
@@ -35,7 +35,7 @@ public class RequestStateTests {
         uniqueIdentifier =  new UniqueIdentifier();
         authorizedParties.add(CATANMoJ.getParty());
         authorizedParties.add(CATANMoFA.getParty());
-        authorizerUserPartyAndUsername.put(CATANMoJ.getParty(), "Chris Jones");
+        authorizerUserPartyAndUsername.put("Catan MOJ", "Chris Jones");
 
         requestState = new RequestState(
                 "Alice Bob",
@@ -94,7 +94,7 @@ public class RequestStateTests {
 
         assertEquals(requestState.getAuthorizedUserUsername(), "Alice Bob");
         assertEquals(requestState.getAuthorizedUserDept(), "Catan Ministry of Education");
-        assertTrue(requestState.getAuthorizerUserPartyAndUsername().containsValue("Chris Jones"));
+        assertTrue(requestState.getAuthorizerUserDeptAndUsername().containsValue("Chris Jones"));
         assertEquals(requestState.getAuthorizedParties(), new ArrayList<>(authorizedParties));
         assertEquals(0, requestState.getAmount().compareTo(BigDecimal.valueOf(1000000)));
         assertEquals(requestState.getCreateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
