@@ -135,7 +135,7 @@ public class DriverBasedTest {
                 assertEquals(usDOSParty, issuedFundState.getOriginParty());
                 assertEquals(catanMOFParty, issuedFundState.getReceivingParty());
                 assertEquals(owners, issuedFundState.getOwners());
-                assertEquals(requiredSigners, issuedFundState.getRequiredSigners());
+                assertEquals(requiredSigners, issuedFundState.getAuthorizedParties());
                 assertEquals(partialRequestParticipants, issuedFundState.getPartialRequestParticipants());
                 assertEquals(BigDecimal.valueOf(5000000), issuedFundState.getAmount());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundState.getCreateDatetime());
@@ -152,7 +152,7 @@ public class DriverBasedTest {
                 assertEquals(usDOSParty, issuedFundStateCatanMOF.getOriginParty());
                 assertEquals(catanMOFParty, issuedFundStateCatanMOF.getReceivingParty());
                 assertEquals(owners, issuedFundStateCatanMOF.getOwners());
-                assertEquals(requiredSigners, issuedFundStateCatanMOF.getRequiredSigners());
+                assertEquals(requiredSigners, issuedFundStateCatanMOF.getAuthorizedParties());
                 assertEquals(partialRequestParticipants, issuedFundStateCatanMOF.getPartialRequestParticipants());
                 assertEquals(BigDecimal.valueOf(5000000), issuedFundStateCatanMOF.getAmount());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundStateCatanMOF.getCreateDatetime());

@@ -75,25 +75,25 @@ public class IssueRequestFlow {
                 throw new IllegalArgumentException("The FundState for the request must be in the RECEIVED status.");
             }
 
-            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getRequiredSigners());
+            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
 
             if (outputRequestState.amount.compareTo(inputStateRefFundState.maxWithdrawalAmount) > 0) {
                 outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
             }
             outputRequestState = outputRequestState.updateParticipantList(inputStateRefFundState.getParticipants());
-            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getRequiredSigners());
+            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Issue();
-            transactionBuilder.addCommand(commandData, inputStateRefFundState.getRequiredSigners().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, inputStateRefFundState.getAuthorizedParties().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
-            SignedTransaction stx = subFlow(new CollectSignaturesInitiatingFlow(partSignedTx, inputStateRefFundState.getRequiredSigners()));
+            SignedTransaction stx = subFlow(new CollectSignaturesInitiatingFlow(partSignedTx, inputStateRefFundState.getAuthorizedParties()));
 
             //create list of all parties minus ourIdentity for required signatures
             List<Party> otherParties = outputRequestState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());

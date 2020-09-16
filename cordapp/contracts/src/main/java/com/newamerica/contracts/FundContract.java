@@ -46,7 +46,7 @@ public class FundContract implements Contract {
                 FundState outputState = (FundState) tx.getOutputStates().get(0);
                 require.using("originParty and receivingParty cannot be the same Party.", outputState.originParty != outputState.receivingParty);
                 require.using("There must be at least one Party in the owner list.", !outputState.owners.isEmpty());
-                require.using("There must be at least one Party in the requiredSigners list.", !outputState.requiredSigners.isEmpty());
+                require.using("There must be at least one Party in the requiredSigners list.", !outputState.authorizedParties.isEmpty());
                 require.using("The amount must be greater than zero.", outputState.amount.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The balance must be greater than zero.", outputState.balance.compareTo(BigDecimal.ZERO) > 0);
                 require.using("The balance and amount fields must be equal during an issuance.", outputState.getAmount().compareTo(outputState.getBalance()) == 0);
@@ -54,7 +54,7 @@ public class FundContract implements Contract {
                 require.using("The status can only be ISSUED during an issuance transaction.", outputState.getStatus() == FundState.FundStateStatus.ISSUED);
                 require.using("The create datetime and update datetime must be the same when issue.", outputState.getCreateDatetime().equals(outputState.getUpdateDatetime()));
                 // combine the Lists
-                List<AbstractParty> combinedLists = Stream.concat(outputState.owners.stream(), outputState.requiredSigners.stream()) .collect(Collectors.toList());
+                List<AbstractParty> combinedLists = Stream.concat(outputState.owners.stream(), outputState.authorizedParties.stream()) .collect(Collectors.toList());
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));
                 return null;
             });
@@ -76,7 +76,7 @@ public class FundContract implements Contract {
                 require.using("The originParty cannot change.", inputState.getOriginParty().equals(outputState.getOriginParty()));
                 require.using("The receivingParty cannot change.", inputState.getReceivingParty().equals(outputState.getReceivingParty()));
                 require.using("The owners cannot change.", inputState.getOwners().equals(outputState.getOwners()));
-                require.using("The requiredSigners cannot change.", inputState.getRequiredSigners().equals(outputState.getRequiredSigners()));
+                require.using("The requiredSigners cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The amount cannot change.", inputState.getAmount().equals(outputState.getAmount()));
                 require.using("The maxWithdrawalAmount cannot change.", inputState.getMaxWithdrawalAmount().equals(outputState.getMaxWithdrawalAmount()));
                 require.using("The currency cannot change.", inputState.getCurrency().equals(outputState.getCurrency()));
@@ -105,7 +105,7 @@ public class FundContract implements Contract {
                 require.using("input originParty and output originParty must be the same", inputState.getOriginParty().equals(outputState.getOriginParty()));
                 require.using("input receivingParty and output receivingParty must be the same", inputState.getReceivingParty().equals(outputState.getReceivingParty()));
                 // combine the Lists
-                List<AbstractParty> combinedLists = Stream.of(outputState.getOwners(), outputState.getRequiredSigners()).flatMap(Collection::stream).collect(Collectors.toList());
+                List<AbstractParty> combinedLists = Stream.of(outputState.getOwners(), outputState.getAuthorizedParties()).flatMap(Collection::stream).collect(Collectors.toList());
                 require.using("All owners and requiredSigners must be in the participant List.", outputState.getParticipants().containsAll(combinedLists));
                 require.using("update datetime must be later than create datetime.", outputState.getUpdateDatetime().isAfter(outputState.getCreateDatetime()));
                 return null;
