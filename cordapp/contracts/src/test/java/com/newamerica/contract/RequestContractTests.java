@@ -125,6 +125,12 @@ public class RequestContractTests {
                 tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Approve());
                 return tx.verifies();
             });
+            l.transaction(tx -> {
+                tx.input(RequestContract.ID, requestState_diff);
+                tx.output(RequestContract.ID, requestState_diff.changeStatus(RequestState.RequestStateStatus.TRANSFERRED));
+                tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Approve());
+                return tx.verifies();
+            });
             return null;
         });
     }
