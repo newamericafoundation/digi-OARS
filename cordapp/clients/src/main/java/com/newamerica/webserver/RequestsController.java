@@ -187,7 +187,7 @@ public class RequestsController extends BaseResource {
                     ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"))
             ).getReturnValue().get();
             RequestState updated = (RequestState) tx.getTx().getOutputs().get(0).getData();
-            return Response.ok(createRequestSuccessServiceResponse("request approved.", updated, resourcePath)).build();
+            return Response.ok(createRequestSuccessServiceResponse("Request approved.", updated, resourcePath)).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {

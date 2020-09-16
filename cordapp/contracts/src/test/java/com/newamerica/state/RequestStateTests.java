@@ -60,7 +60,7 @@ public class RequestStateTests {
     public void hasAllAttributes() throws NoSuchFieldException{
         Field authorizedUserUsername = RequestState.class.getDeclaredField("authorizedUserUsername");
         Field authorizedUserDept = RequestState.class.getDeclaredField("authorizedUserDept");
-        Field authorizerUserPartyAndUsername = RequestState.class.getDeclaredField("authorizerUserPartyAndUsername");
+        Field authorizerUserDeptAndUsername = RequestState.class.getDeclaredField("authorizerUserDeptAndUsername");
         Field authorizedParties = RequestState.class.getDeclaredField("authorizedParties");
         Field externalAccountId = RequestState.class.getDeclaredField("externalAccountId");
         Field purpose = RequestState.class.getDeclaredField("purpose");
@@ -74,7 +74,7 @@ public class RequestStateTests {
 
         assertTrue(authorizedUserUsername.getType().isAssignableFrom(String.class));
         assertTrue(authorizedUserDept.getType().isAssignableFrom(String.class));
-        assertTrue(authorizerUserPartyAndUsername.getType().isAssignableFrom(Map.class));
+        assertTrue(authorizerUserDeptAndUsername.getType().isAssignableFrom(Map.class));
         assertTrue(authorizedParties.getType().isAssignableFrom(List.class));
         assertTrue(externalAccountId.getType().isAssignableFrom(String.class));
         assertTrue(purpose.getType().isAssignableFrom(String.class));

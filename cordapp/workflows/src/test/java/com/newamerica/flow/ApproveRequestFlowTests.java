@@ -158,6 +158,7 @@ public class ApproveRequestFlowTests {
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
                 rs.getLinearId(),
                 "Sam Sung",
+                "Catan MOJ",
                 ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York"))
                 );
 
@@ -284,6 +285,7 @@ public class ApproveRequestFlowTests {
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
                 rs.getLinearId(),
                 "Sam Sung",
+                "Catan MOJ",
                 ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
                 );
 
@@ -347,6 +349,7 @@ public class ApproveRequestFlowTests {
         ApproveRequestFlow.InitiatorFlow approveRequestFlow = new ApproveRequestFlow.InitiatorFlow(
                 rs.getLinearId(),
                 "Sam Sung",
+                "Catan MOJ",
                 ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
                 );
 
