@@ -35,7 +35,7 @@ public class FundState implements LinearState {
     public final Party originParty;
     public final Party receivingParty;
     public final List<AbstractParty> owners;
-    public final List<AbstractParty> requiredSigners;
+    public final List<AbstractParty> authorizedParties;
     public final List<AbstractParty> partialRequestParticipants;
     public final BigDecimal amount;
     public final BigDecimal balance;
@@ -51,7 +51,7 @@ public class FundState implements LinearState {
     public FundState(Party originParty,
                      Party receivingParty,
                      List<AbstractParty> owners,
-                     List<AbstractParty> requiredSigners,
+                     List<AbstractParty> authorizedParties,
                      List<AbstractParty> partialRequestParticipants,
                      BigDecimal amount,
                      BigDecimal balance,
@@ -65,7 +65,7 @@ public class FundState implements LinearState {
         this.originParty = originParty;
         this.receivingParty = receivingParty;
         this.owners = owners;
-        this.requiredSigners = requiredSigners;
+        this.authorizedParties = authorizedParties;
         this.partialRequestParticipants = partialRequestParticipants;
         this.amount = amount;
         this.balance = balance;
@@ -81,7 +81,7 @@ public class FundState implements LinearState {
     public FundState(Party originParty,
                      Party receivingParty,
                      List<AbstractParty> owners,
-                     List<AbstractParty> requiredSigners,
+                     List<AbstractParty> authorizedParties,
                      List<AbstractParty> partialRequestParticipants,
                      BigDecimal amount,
                      BigDecimal balance,
@@ -91,7 +91,7 @@ public class FundState implements LinearState {
                      Currency currency,
                      FundStateStatus status,
                      List<AbstractParty> participants){
-        this(originParty, receivingParty, owners, requiredSigners, partialRequestParticipants, amount, balance, createDatetime, updateDatetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
+        this(originParty, receivingParty, owners, authorizedParties, partialRequestParticipants, amount, balance, createDatetime, updateDatetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
     }
 
     //getters
@@ -105,7 +105,7 @@ public class FundState implements LinearState {
         return this.linearId;
     }
     public List<AbstractParty> getOwners(){ return owners; }
-    public List<AbstractParty> getRequiredSigners(){ return requiredSigners; }
+    public List<AbstractParty> getAuthorizedParties(){ return authorizedParties; }
     public List<AbstractParty> getPartialRequestParticipants(){ return partialRequestParticipants; }
     public BigDecimal getAmount() {        return amount;    }
     public BigDecimal getBalance() { return balance;    }
@@ -128,7 +128,7 @@ public class FundState implements LinearState {
                 this.originParty,
                 this.receivingParty,
                 this.owners,
-                this.requiredSigners,
+                this.authorizedParties,
                 this.partialRequestParticipants,
                 this.amount,
                 this.balance.subtract(withdrawalAmount),
@@ -147,7 +147,7 @@ public class FundState implements LinearState {
                 this.originParty,
                 this.receivingParty,
                 this.owners,
-                this.requiredSigners,
+                this.authorizedParties,
                 this.partialRequestParticipants,
                 this.amount,
                 this.balance,
@@ -166,7 +166,7 @@ public class FundState implements LinearState {
                 this.originParty,
                 this.receivingParty,
                 this.owners,
-                this.requiredSigners,
+                this.authorizedParties,
                 this.partialRequestParticipants,
                 this.amount,
                 this.balance,
