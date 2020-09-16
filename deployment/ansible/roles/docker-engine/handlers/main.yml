@@ -1,8 +1,0 @@
----
-# file: docker-engine/handlers/main.yml
-
-- name: Restart Docker engine
-  become: True
-  service:
-    name: '{{ docker_engine_service_name }}'
-    state: 'restarted'

@@ -1,7 +1,0 @@
-- name: Stop Database
-  docker_container:
-    name: "{{ corda_node_name }}_db"
-    state: absent
-
-- name: Delete Database Files
-  shell: "rm -rfv /opt/corda/{{ corda_node_name }}_db/data/*"

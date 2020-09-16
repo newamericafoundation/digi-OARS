@@ -1,6 +1,0 @@
-notary_legal_name: '{{ my_legal_name }}'
-identity_manager_ip: '{{ identity_manager_host_ip }}'
-network_map_ip: '{{ network_map_host_ip }}'
-notary1_internal_ip: '{{ notary1_private_ip }}'
-notary2_internal_ip: '{{ notary2_private_ip }}'
-notary3_internal_ip: '{{ notary3_private_ip }}'

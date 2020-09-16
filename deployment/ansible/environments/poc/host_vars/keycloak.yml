@@ -1,9 +1,0 @@
-docker_image_keycloak: quay.io/keycloak/keycloak
-docker_image_keycloak_version: latest
-
-keycloak_admin_username: admin
-keycloak_admin_password: Oars2020
-
-keycloak_db_name: keycloak
-keycloak_db_user: keycloak
-keycloak_db_password: "O$^P00dTKf3l"
