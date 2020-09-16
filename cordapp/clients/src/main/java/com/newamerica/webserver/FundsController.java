@@ -137,7 +137,7 @@ public class FundsController extends BaseResource {
             Currency currency = Currency.getInstance("USD");
 
             List<AbstractParty> owners = Arrays.asList(originParty);
-            List<AbstractParty> requiredSigners =  Arrays.asList(originParty, receivingParty);
+            List<AbstractParty> requiredSigners =  Arrays.asList(originParty, receivingParty, Catan_MoFA, Catan_MoJ);
             List<AbstractParty> partialRequestParticipants = Arrays.asList(Catan_CSO, US_CSO);
             List<AbstractParty> participants = Arrays.asList(originParty, US_DoS, NewAmerica, Catan_MoFA, Catan_MoJ, Catan_Treasury);
 
