@@ -198,7 +198,8 @@ public class RequestState implements LinearState {
     public enum RequestStateStatus {
         PENDING("PENDING"),
         FLAGGED("FLAGGED"),
-        APPROVED("APPROVED");
+        APPROVED("APPROVED"),
+        TRANSFERRED("TRANSFERRED");
 
         public final String status;
         RequestStateStatus(String status) {

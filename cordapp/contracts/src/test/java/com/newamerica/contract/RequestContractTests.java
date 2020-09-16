@@ -31,6 +31,7 @@ public class RequestContractTests {
     private RequestState requestState;
     private RequestState requestState2;
     private RequestState requestState_diff;
+    private RequestState requestState_diff2;
     private RequestState requestState_negative_amount;
 
     public interface Commands extends CommandData {
@@ -67,14 +68,14 @@ public class RequestContractTests {
                 participants
         );
 
-        //create request state
+        //issued request state
         requestState2 = requestState.update(authorizerUserDeptAndUsername, ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")));
 
-        //create request state
+        //approved request state
         requestState_diff = new RequestState(
                 "Alice Alice",
                 "Catan Ministry of Education",
-                new LinkedHashMap<>(),
+                authorizerUserDeptAndUsername,
                 authorizedParties,
                 "1234567890",
                 "build a school",
@@ -86,6 +87,25 @@ public class RequestContractTests {
                 new UniqueIdentifier(),
                 participants
         );
+
+        //approved request state
+        requestState_diff = new RequestState(
+                "Alice Alice",
+                "Catan Ministry of Education",
+                authorizerUserDeptAndUsername,
+                authorizedParties,
+                "1234567890",
+                "build a school",
+                BigDecimal.valueOf(1000000),
+                Currency.getInstance("USD"),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                RequestState.RequestStateStatus.APPROVED,
+                new UniqueIdentifier(),
+                participants
+        );
+
+        requestState_diff2 = requestState.changeStatus(RequestState.RequestStateStatus.TRANSFERRED);
 
         requestState_negative_amount = new RequestState(
                 "Alice Bob",
@@ -125,12 +145,18 @@ public class RequestContractTests {
                 tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Approve());
                 return tx.verifies();
             });
+            l.transaction(tx -> {
+                tx.input(RequestContract.ID, requestState_diff);
+                tx.output(RequestContract.ID, requestState_diff.changeStatus(RequestState.RequestStateStatus.TRANSFERRED));
+                tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Transfer());
+                return tx.verifies();
+            });
             return null;
         });
     }
 
     @Test(expected=AssertionError.class)
-    public void txMustHaveNoInputs() {
+    public void issueTxMustHaveNoInputs() {
         ledger(ledgerServices, (ledger -> {
             ledger.transaction(tx -> {
                 tx.input(RequestContract.ID, requestState);
@@ -149,7 +175,7 @@ public class RequestContractTests {
             ledger.transaction(tx -> {
                 tx.output(RequestContract.ID, requestState);
                 tx.output(RequestContract.ID, requestState);
-                tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Issue());
+                tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Transfer());
                 tx.failsWith("Only one output state should be created when issue.");
                 return null;
             });
@@ -192,6 +218,20 @@ public class RequestContractTests {
                 tx.output(RequestContract.ID, requestState_diff);
                 tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Approve());
                 tx.failsWith("only status of the output can change");
+                return null;
+            });
+            return null;
+        }));
+    }
+
+    @Test(expected=AssertionError.class)
+    public void transferTxMustHaveOneOutput() {
+        ledger(ledgerServices, (ledger -> {
+            ledger.transaction(tx -> {
+                tx.output(RequestContract.ID, requestState_diff2);
+                tx.output(RequestContract.ID, requestState_diff2);
+                tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Transfer());
+                tx.failsWith("Only one output state should be created when transfer.");
                 return null;
             });
             return null;
