@@ -176,17 +176,18 @@ public class RequestsController extends BaseResource {
     }
 
     @PutMapping(value = "/request", produces = "application/json", params = {"requestId", "authorizerUserUsername"})
-    private Response approveRequest (@QueryParam("requestId") String requestId, @QueryParam("authorizerUserUsername") String authorizerUserUsername) {
+    private Response approveRequest (@QueryParam("requestId") String requestId, @QueryParam("authorizerUserUsername") String authorizerUserUsername, @QueryParam("authorizerUserDept") String authorizerUserDept) {
         try {
             String resourcePath = String.format("/request?requestId=%s?authorizerUserUsername=%s", requestId, authorizerUserUsername);
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     ApproveRequestFlow.InitiatorFlow.class,
                     new UniqueIdentifier(null, UUID.fromString(requestId)),
                     authorizerUserUsername,
+                    authorizerUserDept,
                     ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"))
             ).getReturnValue().get();
             RequestState updated = (RequestState) tx.getTx().getOutputs().get(0).getData();
-            return Response.ok(createRequestSuccessServiceResponse("request approved.", updated, resourcePath)).build();
+            return Response.ok(createRequestSuccessServiceResponse("Request approved.", updated, resourcePath)).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {

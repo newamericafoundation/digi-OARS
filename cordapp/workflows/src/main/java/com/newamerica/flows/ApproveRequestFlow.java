@@ -30,12 +30,14 @@ public class ApproveRequestFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier requestStateLinearId;
         private final String authorizerUserUsername;
+        private final String authorizerUserDept;
         private final ZonedDateTime updateDatetime;
 
 
-        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername, ZonedDateTime updateDatetime) {
+        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername, String authorizerUserDept, ZonedDateTime updateDatetime) {
             this.requestStateLinearId = requestStateLinearId;
             this.authorizerUserUsername = authorizerUserUsername;
+            this.authorizerUserDept = authorizerUserDept;
             this.updateDatetime = updateDatetime;
         }
 
@@ -55,10 +57,10 @@ public class ApproveRequestFlow {
                 throw new IllegalArgumentException("The initiator of this flow must be a authorizedParty");
             }
 
-            Map<AbstractParty, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
-            authorizerUserPartyAndUsername.put(getOurIdentity(), authorizerUserUsername);
+            Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
+            authorizerUserDeptAndUsername.put(authorizerUserDept, authorizerUserUsername);
             RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
-            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserPartyAndUsername, updateDatetime);
+            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserDeptAndUsername, updateDatetime);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);

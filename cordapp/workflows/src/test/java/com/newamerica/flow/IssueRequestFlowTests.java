@@ -41,7 +41,7 @@ public class IssueRequestFlowTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
-    private Map<AbstractParty, String> authorizerUserPartyAndUsername = new LinkedHashMap<>();
+    private Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
 
 
     @Before
@@ -95,7 +95,7 @@ public class IssueRequestFlowTests {
         participants.add(catanMoj);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
-        authorizerUserPartyAndUsername.put(CATANMoJ.getParty(), "Chris Jones");
+        authorizerUserDeptAndUsername.put("Catan MOJ", "Chris Jones");
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
