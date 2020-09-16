@@ -1,8 +1,0 @@
----
-# file: docker-engine/vars/main.yml
-
-# determine if the latest package version has been requested
-docker_engine_package_install_latest: "{{ (docker_engine_package_version | lower) == 'latest' }}"
-
-# determine if package version should be used for package installation
-docker_engine_package_install_version: '{% if (docker_engine_package_version | lower) not in ["latest", "present"] %}{{ docker_engine_package_version }}{% endif %}'

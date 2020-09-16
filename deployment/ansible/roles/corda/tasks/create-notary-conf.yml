@@ -1,9 +1,0 @@
-- name: Copy Node Configuration
-  delegate_to: localhost
-  template:
-    src: notary.conf.j2
-    dest: "{{ corda_node_base_path }}/{{ corda_node_name }}_node.conf"
-#    owner: root
-#    group: root
-    mode: 0644
-    backup: no

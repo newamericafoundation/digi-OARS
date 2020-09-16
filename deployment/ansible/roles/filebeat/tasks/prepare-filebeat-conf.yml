@@ -1,8 +1,0 @@
-- name: Copy Filebeat Configuration
-  template:
-    src: filebeat.yml.j2
-    dest: "/opt/corda/filebeat/filebeat_{{ corda_node_name }}.yml"
-    owner: corda
-    group: root
-    mode: 0644
-    backup: no

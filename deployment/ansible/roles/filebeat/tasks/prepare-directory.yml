@@ -1,8 +1,0 @@
-- name: Create Corda Directory
-  file:
-    owner: corda
-    group: root
-    path: "{{ item }}"
-    state: directory
-  with_items:
-    - "/opt/corda/filebeat/"

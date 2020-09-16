@@ -1,7 +1,0 @@
----
-# file: docker-engine/tests/vagrant.yml
-
-- name: An empty playbook to initialise Ansible inventory from Vagrant
-  hosts: all
-  gather_facts: no
-  become: no

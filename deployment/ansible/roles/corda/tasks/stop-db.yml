@@ -1,4 +1,0 @@
-- name: Stop Database
-  docker_container:
-    name: "{{ corda_node_name }}_db"
-    state: stopped
