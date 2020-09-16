@@ -151,7 +151,6 @@ public class RequestsController extends BaseResource {
             Party Catan_MoFA = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan_MoFA,L=London,C=GB"));
             Party Catan_Treasury = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=Catan_Treasury,L=London,C=GB"));
 
-            List<AbstractParty> authorizedParties = Arrays.asList(Catan_MoJ,Catan_MoFA);
             List<AbstractParty> participants = Arrays.asList(Catan_MoFA, US_DoS, NewAmerica, Catan_MoJ, Catan_Treasury);
 
             SignedTransaction tx = rpcOps.startFlowDynamic(
