@@ -76,13 +76,13 @@ public class IssueTransferFlow {
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
-            List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
+            List<FlowSession> flowSessions = otherParties.stream().map(this::initiateFlow).collect(Collectors.toList());
 
-            SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
+            SignedTransaction finalizedTransaction = subFlow(new FinalityFlow(subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions)), flowSessions));
             subFlow(new ChangeRequestStatusFlow.InitiatorFlow(
                     requestStateRef
             ));
-            return subFlow(new FinalityFlow(signedTransaction, flowSessions));
+            return finalizedTransaction;
         }
     }
 

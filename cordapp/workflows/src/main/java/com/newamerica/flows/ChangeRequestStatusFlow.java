@@ -6,13 +6,10 @@ import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
-import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
-import net.corda.core.node.services.Vault;
-import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
@@ -40,7 +37,7 @@ public class ChangeRequestStatusFlow {
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
-            CommandData commandData = new RequestContract.Commands.Approve();
+            CommandData commandData = new RequestContract.Commands.Transfer();
             transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addInputState(inputRequestStateAndRef);
             transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
@@ -50,14 +47,17 @@ public class ChangeRequestStatusFlow {
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = outputRequestState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
+            List<Party> otherParties = outputRequestState
+                    .getParticipants()
+                    .stream()
+                    .map(i -> ((Party) i)).collect(Collectors.toList());
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
-            List<FlowSession> flowSessions = otherParties.stream().map(this::initiateFlow).collect(Collectors.toList());
+            List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
 
-            SignedTransaction finalizedTransaction = subFlow(new FinalityFlow( subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions)), flowSessions));
-            return subFlow(new FinalityFlow(finalizedTransaction, flowSessions));
+            SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
+            return subFlow(new FinalityFlow(signedTransaction, flowSessions));
         }
     }
 
