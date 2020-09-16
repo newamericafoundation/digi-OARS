@@ -159,7 +159,6 @@ public class RequestsController extends BaseResource {
                     authorizedUserUsername,
                     authorizedUserDept,
                     externalAccountId,
-                    authorizedParties,
                     purpose,
                     amountAndBalance,
                     currency,
