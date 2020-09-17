@@ -14,7 +14,6 @@ import {
   CSpinner,
   CTooltip,
 } from "@coreui/react";
-import Moment from "moment";
 import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
 import axios from "axios";

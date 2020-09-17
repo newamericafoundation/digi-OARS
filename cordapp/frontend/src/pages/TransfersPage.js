@@ -13,14 +13,11 @@ import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
-import { TransfersTable } from "./views/transfers/TransfersTable";
-import { TransfersContext } from "../providers/TransfersProvider";
 
 const TransfersPage = () => {
   const auth = useAuth();
   const [, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
-  const [transfersState, transfersStateCallback] = useContext(TransfersContext);
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
   const [isRequestApprover, setIsRequestApprover] = useState(false);
