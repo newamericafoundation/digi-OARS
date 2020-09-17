@@ -18,12 +18,24 @@ const TransfersPage = () => {
   const auth = useAuth();
   const [, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
+  const [isFundsIssuer, setIsFundsIssuer] = useState(false);
+  const [isFundsReceiver, setIsFundsReceiver] = useState(false);
   const [isRequestApprover, setIsRequestApprover] = useState(false);
+  const [isRequestTransferer, setIsRequestTransferer] = useState(false);
 
   useEffect(() => {
     if (auth.isAuthenticated) {
+      setIsFundsIssuer(
+        auth.meta.keycloak.hasResourceRole("funds_issuer")
+      );
+      setIsFundsReceiver(
+        auth.meta.keycloak.hasResourceRole("funds_receiver")
+      );
       setIsRequestApprover(
         auth.meta.keycloak.hasResourceRole("request_approver")
+      );
+      setIsRequestTransferer(
+        auth.meta.keycloak.hasResourceRole("request_transferer")
       );
     }
   }, [auth]);
@@ -91,6 +103,9 @@ const TransfersPage = () => {
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
                 isApprover={isRequestApprover}
+                isIssuer={isFundsIssuer}
+                isReceiver={isFundsReceiver}
+                isTransferer={isRequestTransferer}
               />
             </CCardBody>
           </CCard>

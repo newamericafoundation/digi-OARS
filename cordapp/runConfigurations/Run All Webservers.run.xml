@@ -1,0 +1,12 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Run All Webservers" type="CompoundRunConfigurationType">
+    <toRun name="Run Webserver - US DoJ" type="Application" />
+    <toRun name="Run Webserver - US CSO" type="Application" />
+    <toRun name="Run Webserver - Catan MoFA" type="Application" />
+    <toRun name="Run Webserver - US DoS" type="Application" />
+    <toRun name="Run Webserver - Catan MoJ" type="Application" />
+    <toRun name="Run Webserver - New America" type="Application" />
+    <toRun name="Run Webserver - Catan Treasury" type="Application" />
+    <method v="2" />
+  </configuration>
+</component>

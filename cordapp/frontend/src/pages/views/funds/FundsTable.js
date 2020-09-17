@@ -140,9 +140,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
             <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
           </td>
         ),
-        isReceived: (item) => (
-          <td>{getReceivedButton(item.status, item.linearId)}</td>
-        ),
         show_details: (item, index) => {
           return (
             <td>

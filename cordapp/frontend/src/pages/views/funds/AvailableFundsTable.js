@@ -26,6 +26,7 @@ export const AvailableFundsTable = ({
   funds,
   refreshFundsTableCallback,
   refreshRequestsTableCallback,
+  isRequestor,
 }) => {
   const [details, setDetails] = useState([]);
   const [show, setShow] = useState(false);
@@ -107,6 +108,23 @@ export const AvailableFundsTable = ({
     }).format(number);
   };
 
+  const getRequestButton = (item, index) => {
+    if (isRequestor) {
+      return (
+        <CButton
+          className={"float-right mb-0"}
+          color="success"
+          variant="outline"
+          shape="square"
+          size="sm"
+          onClick={() => handleShow(item, index)}
+        >
+          Request Withdrawal
+        </CButton>
+      );
+    }
+  };
+
   return (
     <>
       <CDataTable
@@ -162,7 +180,7 @@ export const AvailableFundsTable = ({
                 <CCard className="m-3">
                   <CCardHeader>
                     Fund Details
-                    <div className="card-header-actions">
+                    {/* <div className="card-header-actions">
                       <CButton
                         className={"float-right mb-0"}
                         color="success"
@@ -173,7 +191,8 @@ export const AvailableFundsTable = ({
                       >
                         Request Withdrawal
                       </CButton>
-                    </div>
+                    </div> */}
+                    {getRequestButton(item, index)}
                   </CCardHeader>
                   <CCardBody>
                     {item.status === Constants.FUND_RECEIVED ? (

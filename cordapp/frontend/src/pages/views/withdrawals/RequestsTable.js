@@ -17,6 +17,7 @@ import Moment from "moment";
 import { useAuth } from "auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
+import EllipsesText from "react-ellipsis-text";
 
 export const RequestsTable = ({
   filterStatus,
@@ -24,6 +25,9 @@ export const RequestsTable = ({
   refreshFundsTableCallback,
   refreshRequestsTableCallback,
   isApprover,
+  isIssuer,
+  isReceiver,
+  isTransferer,
 }) => {
   const auth = useAuth();
   const [api] = useContext(APIContext);
@@ -45,7 +49,7 @@ export const RequestsTable = ({
     { key: "authorizedUserUsername", label: "Requestor" },
     { key: "authorizedUserDept", label: "Department" },
     { key: "amount" },
-    { key: "createdDateTime", label: "Created Date" },
+    { key: "createDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
     {
       key: "show_details",
@@ -90,19 +94,88 @@ export const RequestsTable = ({
       .catch((err) => console.log(err));
   };
 
+  const onHandleTransferClick = (requestId, index) => {
+    setIsLoading(true);
+    const url =
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      api.port +
+      "/api/transfer";
+
+    axios
+      .post(url, null, { params: { requestId } })
+      .then((response) => {
+        setIsLoading(false);
+        refreshFundsTableCallback();
+        refreshRequestsTableCallback();
+        toggleDetails(index);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const getData = () => {
+    if (isApprover || isIssuer || isTransferer || isReceiver) {
+      return requests.data.filter((request) => request.status === filterStatus);
+    }
+    return requests.data.filter(
+      (request) =>
+        request.status === filterStatus &&
+        request.authorizedUserDept === auth.meta.keycloak.tokenParsed.groups[0]
+    );
+  };
+
+  const getActionButton = (item, index) => {
+    if (item.status !== Constants.REQUEST_APPROVED && isApprover) {
+      return (
+        <CButton
+          className={"float-right mb-0"}
+          color="success"
+          variant="outline"
+          shape="square"
+          size="sm"
+          onClick={() =>
+            onHandleApproveClick(item.linearId, auth.user.fullName, index)
+          }
+        >
+          {isLoading ? (
+            <CSpinner
+              className="spinner-border spinner-border-sm mr-1"
+              role="status"
+              aria-hidden="true"
+            />
+          ) : null}
+          Approve Request
+        </CButton>
+      );
+    }
+    if (item.status === Constants.REQUEST_APPROVED && isTransferer) {
+      return (
+        <CButton
+          className={"float-right mb-0"}
+          color="success"
+          variant="outline"
+          shape="square"
+          size="sm"
+          onClick={() => onHandleTransferClick(item.linearId, index)}
+        >
+          {isLoading ? (
+            <CSpinner
+              className="spinner-border spinner-border-sm mr-1"
+              role="status"
+              aria-hidden="true"
+            />
+          ) : null}
+          Transfer Requested Funds
+        </CButton>
+      );
+    }
+  };
+
   return (
     <>
       <CDataTable
-        items={
-          isApprover
-            ? requests.data.filter((request) => request.status === filterStatus)
-            : requests.data.filter(
-                (request) =>
-                  request.status === filterStatus &&
-                  request.authorizedUserDept ===
-                    auth.meta.keycloak.tokenParsed.groups[0]
-              )
-        }
+        items={getData()}
         fields={fields}
         columnFilter
         tableFilter
@@ -121,8 +194,8 @@ export const RequestsTable = ({
           createDateTime: (item) => (
             <td>{Moment(item.createDateTime).format(Constants.DATEFORMAT)}</td>
           ),
-          updatedDateTime: (item) => (
-            <td>{Moment(item.updatedDateTime).format(Constants.DATEFORMAT)}</td>
+          updateDateTime: (item) => (
+            <td>{Moment(item.updateDateTime).format(Constants.DATEFORMAT)}</td>
           ),
           status: (item) => (
             <td>
@@ -152,34 +225,7 @@ export const RequestsTable = ({
                 <CCard className="m-3">
                   <CCardHeader>
                     Request Details
-                    {item.status !== Constants.REQUEST_APPROVED &&
-                    isApprover ? (
-                      <div className="card-header-actions">
-                        <CButton
-                          className={"float-right mb-0"}
-                          color="success"
-                          variant="outline"
-                          shape="square"
-                          size="sm"
-                          onClick={() =>
-                            onHandleApproveClick(
-                              item.linearId,
-                              auth.user.fullName,
-                              index
-                            )
-                          }
-                        >
-                          {isLoading ? (
-                            <CSpinner
-                              className="spinner-border spinner-border-sm mr-1"
-                              role="status"
-                              aria-hidden="true"
-                            />
-                          ) : null}
-                          Approve Request
-                        </CButton>
-                      </div>
-                    ) : null}
+                    {getActionButton(item, index)}
                   </CCardHeader>
                   <CCardBody>
                     <CRow>
@@ -203,7 +249,7 @@ export const RequestsTable = ({
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Date/Time</p>
                           <strong className="p">
-                            {Moment(item.dateTime).format(
+                            {Moment(item.createDateTime).format(
                               "DD/MMM/YYYY HH:mm:ss"
                             )}
                           </strong>
@@ -212,11 +258,15 @@ export const RequestsTable = ({
                       <CCol xl="6" sm="4">
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">State ID</p>
-                          <strong className="p">{item.linearId}</strong>
+                          <strong className="p">
+                            <EllipsesText text={item.linearId} length={30} />
+                          </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Transaction ID</p>
-                          <strong className="p">{item.txId}</strong>
+                          <strong className="p">
+                            <EllipsesText text={item.txId} length={30} />
+                          </strong>
                         </CCallout>
                         <CCallout
                           color={
@@ -233,6 +283,15 @@ export const RequestsTable = ({
                               ? " by " + item.authorizerUserUsername
                               : null}
                           </strong>
+                        </CCallout>
+                      </CCol>
+                    </CRow>
+                    <CRow>
+                      <CCol>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Purpose</p>
+
+                          <strong className="p">{item.purpose}</strong>
                         </CCallout>
                       </CCol>
                     </CRow>
