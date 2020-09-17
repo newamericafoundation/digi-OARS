@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import {
   CCard,
   CCardBody,
@@ -8,18 +8,14 @@ import {
   CCol,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { RequestsTable } from "./views/withdrawals/RequestsTable";
-import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
-import { useAuth } from "auth-hook";
 import { TransfersTable } from "./views/transfers/TransfersTable";
 import { TransfersContext } from "../providers/TransfersProvider";
 
 const TransfersPage = () => {
-  const auth = useAuth();
-  const [requestsState, requestsCallback] = useContext(RequestsContext);
-  const [transfersState, transfersStateCallback] = useContext(TransfersContext);
+  const [requestsState,] = useContext(RequestsContext);
+  const [transfersState,] = useContext(TransfersContext);
 
   const toCurrency = (number, currency) => {
     return new Intl.NumberFormat("en-US", {

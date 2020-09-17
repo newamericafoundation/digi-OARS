@@ -12,7 +12,6 @@ import {
   CCallout,
 } from "@coreui/react";
 import moment from "moment-timezone";
-import EllipsesText from "react-ellipsis-text";
 
 export const TransfersTable = ({ transfers }) => {
   const [details, setDetails] = useState([]);
@@ -122,76 +121,6 @@ export const TransfersTable = ({ transfers }) => {
                         </CCallout>
                       </CCol>
                     </CRow>
-                    {/* <CRow>
-                      <CCol xl="6" sm="4">
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Requestor</p>
-                          <strong className="p">
-                            {item.authorizedUserUsername}
-                          </strong>
-                          <p className="text-muted mb-0">Department</p>
-                          <strong className="p">
-                            {item.authorizedUserDept}
-                          </strong>
-                        </CCallout>
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Amount</p>
-                          <strong className="p">
-                            {toCurrency(item.amount, item.currency)}
-                          </strong>
-                        </CCallout>
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Date/Time</p>
-                          <strong className="p">
-                            {Moment(item.createDateTime).format(
-                              "DD/MMM/YYYY HH:mm:ss"
-                            )}
-                          </strong>
-                        </CCallout>
-                      </CCol>
-                      <CCol xl="6" sm="4">
-                        <CTooltip content={item.linearId} placement="right-end">
-                          <CCallout color="info" className={"bg-light"}>
-                            <p className="text-muted mb-0">State ID</p>
-                            <strong className="p">
-                              <EllipsesText text={item.linearId} length={30} />
-                            </strong>
-                          </CCallout>
-                        </CTooltip>
-                        <CTooltip content={item.txId} placement="right-end">
-                          <CCallout color="info" className={"bg-light"}>
-                            <p className="text-muted mb-0">Transaction ID</p>
-                            <strong className="p">
-                              <EllipsesText text={item.txId} length={30} />
-                            </strong>
-                          </CCallout>
-                        </CTooltip>
-                        <CCallout
-                          color={
-                            item.status === Constants.REQUEST_PENDING
-                              ? "warning"
-                              : "success"
-                          }
-                          className={"bg-light"}
-                        >
-                          <p className="text-muted mb-0">Status</p>
-                          <strong className="p">
-                            {item.status}
-                            {item.status === Constants.REQUEST_APPROVED
-                              ? " by " + item.authorizerUserUsername
-                              : null}
-                          </strong>
-                        </CCallout>
-                      </CCol>
-                    </CRow>
-                    <CRow>
-                      <CCol>
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Purpose</p>
-                          <strong className="p">{item.purpose}</strong>
-                        </CCallout>
-                      </CCol>
-                    </CRow> */}
                   </CCardBody>
                 </CCard>
               </CCollapse>
