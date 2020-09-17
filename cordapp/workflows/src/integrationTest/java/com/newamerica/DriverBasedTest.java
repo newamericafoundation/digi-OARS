@@ -372,6 +372,7 @@ public class DriverBasedTest {
                 catanMOFProxy.startFlowDynamic(ApproveRequestFlow.InitiatorFlow.class,
                         issuedRequestState.getLinearId(),
                         "A Name",
+                        "A Dept",
                         ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York"))
                 ).getReturnValue().get();
 
