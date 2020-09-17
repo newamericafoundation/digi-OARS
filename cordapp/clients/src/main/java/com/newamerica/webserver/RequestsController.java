@@ -175,13 +175,13 @@ public class RequestsController extends BaseResource {
         }
     }
 
-    @PutMapping(value = "/request", produces = "application/json", params = {"requestId", "authorizerUserUsername"})
-    private Response approveRequest (@QueryParam("requestId") String requestId, @QueryParam("authorizerUserUsername") String authorizerUserUsername, @QueryParam("authorizerUserDept") String authorizerUserDept) {
+    @PutMapping(value = "/request", produces = "application/json", params = {"requestStateLinearId", "authorizerUserUsername", "authorizerUserDept"})
+    private Response approveRequest (@QueryParam("requestStateLinearId") String requestStateLinearId, @QueryParam("authorizerUserUsername") String authorizerUserUsername, @QueryParam("authorizerUserDept") String authorizerUserDept) {
         try {
-            String resourcePath = String.format("/request?requestId=%s?authorizerUserUsername=%s", requestId, authorizerUserUsername);
+            String resourcePath = String.format("/request?requestStateLinearId=%s?authorizerUserUsername=%s?authorizerUserDept=%s", requestStateLinearId, authorizerUserUsername, authorizerUserDept);
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     ApproveRequestFlow.InitiatorFlow.class,
-                    new UniqueIdentifier(null, UUID.fromString(requestId)),
+                    new UniqueIdentifier(null, UUID.fromString(requestStateLinearId)),
                     authorizerUserUsername,
                     authorizerUserDept,
                     ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"))

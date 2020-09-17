@@ -15,6 +15,7 @@ import {
   CTooltip,
 } from "@coreui/react";
 import Moment from "moment";
+import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
@@ -195,10 +196,10 @@ export const RequestsTable = ({
             <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
           ),
           createDateTime: (item) => (
-            <td>{Moment(item.createDateTime).format(Constants.DATEFORMAT)}</td>
+            <td>{moment.tz(item.createDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
           ),
           updateDateTime: (item) => (
-            <td>{Moment(item.updateDateTime).format(Constants.DATEFORMAT)}</td>
+            <td>{moment.tz(item.updateDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
           ),
           status: (item) => (
             <td>
@@ -254,9 +255,7 @@ export const RequestsTable = ({
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
-                            {Moment(item.createDateTime).format(
-                              "DD/MMM/YYYY HH:mm:ss"
-                            )}
+                            {moment.tz(item.createDateTime, "UTC").format(Constants.DATETIME_FORMAT)}
                           </strong>
                         </CCallout>
                       </CCol>
