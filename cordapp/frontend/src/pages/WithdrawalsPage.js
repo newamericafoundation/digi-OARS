@@ -53,16 +53,16 @@ const WithdrawalsPage = () => {
   };
 
   const requestsTotal = requestsState.data.reduce(
-    (totalRequestsAmount, request) =>
-      totalRequestsAmount + parseFloat(request.amount),
+    (total, request) =>
+      total + parseFloat(request.amount),
     0
   );
 
   const requestsPendingTotal = requestsState.data
     .filter((request) => request.status === Constants.REQUEST_PENDING)
     .reduce(
-      (totalRequestsPendingAmount, request) =>
-        totalRequestsPendingAmount + parseFloat(request.amount),
+      (total, request) =>
+      total + parseFloat(request.amount),
       0
     );
 

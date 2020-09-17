@@ -22,9 +22,20 @@ export default [
     icon: "cil-wallet",
   },
   {
-    _tag: "CSidebarNavItem",
+    _tag: "CSidebarNavDropdown",
     name: "Transfers",
-    to: "/transfers",
     icon: "cil-chevron-right",
+    _children: [
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'Requests Awaiting Transfer',
+        to: '/transfers/approvals',
+      },
+      {
+        _tag: 'CSidebarNavItem',
+        name: 'History',
+        to: '/transfers/history',
+      }
+    ]
   }
 ];

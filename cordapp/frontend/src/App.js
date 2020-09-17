@@ -6,6 +6,7 @@ import RequestsProvider from "./providers/RequestsProvider";
 import ReactNotification from "react-notifications-component";
 import APIProvider from "providers/APIProvider";
 import { useAuth } from "./auth-hook";
+import TransfersProvider from "./providers/TransfersProvider";
 
 
 
@@ -23,12 +24,12 @@ const App = () => {
     <APIProvider port={apiPort}>
       <FundsProvider>
         <RequestsProvider>
-          {/* <KeycloakProvider keycloak={keycloak}> */}
+          <TransfersProvider>
             <div className="App">
               <ReactNotification />
               <AppRouter />
             </div>
-          {/* </KeycloakProvider> */}
+          </TransfersProvider>
         </RequestsProvider>
       </FundsProvider>
     </APIProvider>
