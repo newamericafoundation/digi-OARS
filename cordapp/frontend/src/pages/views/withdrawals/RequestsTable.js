@@ -12,6 +12,7 @@ import {
   CRow,
   CCallout,
   CSpinner,
+  CTooltip,
 } from "@coreui/react";
 import Moment from "moment";
 import { useAuth } from "auth-hook";
@@ -256,18 +257,22 @@ export const RequestsTable = ({
                         </CCallout>
                       </CCol>
                       <CCol xl="6" sm="4">
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">State ID</p>
-                          <strong className="p">
-                            <EllipsesText text={item.linearId} length={30} />
-                          </strong>
-                        </CCallout>
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Transaction ID</p>
-                          <strong className="p">
-                            <EllipsesText text={item.txId} length={30} />
-                          </strong>
-                        </CCallout>
+                        <CTooltip content={item.linearId} placement="right-end">
+                          <CCallout color="info" className={"bg-light"}>
+                            <p className="text-muted mb-0">State ID</p>
+                            <strong className="p">
+                              <EllipsesText text={item.linearId} length={30} />
+                            </strong>
+                          </CCallout>
+                        </CTooltip>
+                        <CTooltip content={item.txId} placement="right-end">
+                          <CCallout color="info" className={"bg-light"}>
+                            <p className="text-muted mb-0">Transaction ID</p>
+                            <strong className="p">
+                              <EllipsesText text={item.txId} length={30} />
+                            </strong>
+                          </CCallout>
+                        </CTooltip>
                         <CCallout
                           color={
                             item.status === Constants.REQUEST_PENDING
@@ -290,7 +295,6 @@ export const RequestsTable = ({
                       <CCol>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Purpose</p>
-
                           <strong className="p">{item.purpose}</strong>
                         </CCallout>
                       </CCol>

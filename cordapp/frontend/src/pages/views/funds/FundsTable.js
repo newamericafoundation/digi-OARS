@@ -12,6 +12,7 @@ import {
   CProgress,
   CCallout,
   CSpinner,
+  CTooltip,
 } from "@coreui/react";
 import Moment from "moment";
 import axios from "axios";
@@ -182,10 +183,12 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                   ) : null}
                   <CRow>
                     <CCol xl="4" sm="3">
-                      <CCallout color="info" className={"bg-light"}>
-                        <p className="text-muted mb-0">State ID</p>
-                        <strong className="p">{item.linearId}</strong>
-                      </CCallout>
+                      <CTooltip content={item.linearId} placement="right-end">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">State ID</p>
+                          <strong className="p">{item.linearId}</strong>
+                        </CCallout>
+                      </CTooltip>
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Origin Country</p>
                         <strong className="p">{item.originParty}</strong>
@@ -223,12 +226,14 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                         <p className="text-muted mb-0">Status</p>
                         <strong className="p">{item.status}</strong>
                       </CCallout>
-                      <CCallout color="info" className={"bg-light"}>
-                        <p className="text-muted mb-0">Transaction ID</p>
-                        <strong className="p">
-                          <EllipsesText text={item.txId} length={40} />
-                        </strong>
-                      </CCallout>
+                      <CTooltip content={item.txId} placement="right-end">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Transaction ID</p>
+                          <strong className="p">
+                            <EllipsesText text={item.txId} length={40} />
+                          </strong>
+                        </CCallout>
+                      </CTooltip>
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Created Date/Time</p>
                         <strong className="p">
