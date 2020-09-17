@@ -8,3 +8,4 @@ export const FUND_RECEIVED = "RECEIVED"
 //Request Status
 export const REQUEST_PENDING = "PENDING"
 export const REQUEST_APPROVED = "APPROVED"
+export const REQUEST_TRANSFERRED = "TRANSFERRED"

@@ -13,11 +13,14 @@ import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
+import { TransfersTable } from "./views/transfers/TransfersTable";
+import { TransfersContext } from "../providers/TransfersProvider";
 
 const TransfersPage = () => {
   const auth = useAuth();
   const [, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
+  const [transfersState, transfersStateCallback] = useContext(TransfersContext);
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
   const [isRequestApprover, setIsRequestApprover] = useState(false);
@@ -25,12 +28,8 @@ const TransfersPage = () => {
 
   useEffect(() => {
     if (auth.isAuthenticated) {
-      setIsFundsIssuer(
-        auth.meta.keycloak.hasResourceRole("funds_issuer")
-      );
-      setIsFundsReceiver(
-        auth.meta.keycloak.hasResourceRole("funds_receiver")
-      );
+      setIsFundsIssuer(auth.meta.keycloak.hasResourceRole("funds_issuer"));
+      setIsFundsReceiver(auth.meta.keycloak.hasResourceRole("funds_receiver"));
       setIsRequestApprover(
         auth.meta.keycloak.hasResourceRole("request_approver")
       );
@@ -53,13 +52,19 @@ const TransfersPage = () => {
     0
   );
 
-  const requestsPendingTotal = requestsState.data
-    .filter((request) => request.status === Constants.REQUEST_PENDING)
+  const requestsApprovedTotal = requestsState.data
+    .filter((request) => request.status === Constants.REQUEST_APPROVED)
     .reduce(
-      (totalRequestsPendingAmount, request) =>
-        totalRequestsPendingAmount + parseFloat(request.amount),
+      (total, request) =>
+        total + parseFloat(request.amount),
       0
     );
+
+  const requestsTransferredTotal = requestsState.data
+    .filter((request) => request.status === Constants.REQUEST_TRANSFERRED)
+    .reduce(
+      (total, request) => total + parseFloat(request.amount), 0
+      );
 
   return (
     <>
@@ -67,38 +72,53 @@ const TransfersPage = () => {
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(
-              requestsTotal - requestsPendingTotal,
-              "USD"
-            ).toString()}
-            text="Approved Withdrawal Requests"
-            color="gradient-success"
-            value={
-              ((requestsTotal - requestsPendingTotal) / requestsTotal) * 100
-            }
+            header={toCurrency(requestsTransferredTotal, "USD").toString()}
+            text="Transferred Withdrawal Requests"
+            color="gradient-info"
+            value={(requestsTransferredTotal / requestsTotal) * 100}
           >
-            <CIcon name="cil-check-circle" height="36" />
+            <CIcon name="cil-chevron-right" height="36" />
           </CWidgetProgressIcon>
         </CCol>
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(requestsPendingTotal, "USD").toString()}
-            text="Transferred Withdrawal Requests"
-            color="gradient-info"
-            value={(requestsPendingTotal / requestsTotal) * 100}
+            header={toCurrency(
+              requestsApprovedTotal,
+              "USD"
+            ).toString()}
+            text="Requests Awaiting Transfer"
+            color="gradient-warning"
+            value={
+              (requestsApprovedTotal / requestsTotal) * 100
+            }
           >
-            <CIcon name="cil-chevron-right" height="36" />
+            <CIcon name="cil-av-timer" height="36" />
           </CWidgetProgressIcon>
         </CCol>
       </CRow>
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Requests Approved</CCardHeader>
+            <CCardHeader>Approved Withdrawal Requests</CCardHeader>
             <CCardBody>
               <RequestsTable
                 filterStatus={Constants.REQUEST_APPROVED}
+                requests={requestsState}
+                refreshFundsTableCallback={fundsCallback}
+                refreshRequestsTableCallback={requestsCallback}
+                isApprover={isRequestApprover}
+                isIssuer={isFundsIssuer}
+                isReceiver={isFundsReceiver}
+                isTransferer={isRequestTransferer}
+              />
+            </CCardBody>
+          </CCard>
+          <CCard>
+            <CCardHeader>Transferred Withdrawal Requests</CCardHeader>
+            <CCardBody>
+              <RequestsTable
+                filterStatus={Constants.REQUEST_TRANSFERRED}
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}

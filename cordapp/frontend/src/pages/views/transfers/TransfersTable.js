@@ -1,9 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import * as Constants from "../../../constants";
 import {
   CCard,
   CCardHeader,
-  CBadge,
   CButton,
   CCardBody,
   CDataTable,
@@ -11,29 +10,12 @@ import {
   CCol,
   CRow,
   CCallout,
-  CSpinner,
-  CTooltip,
 } from "@coreui/react";
 import Moment from "moment";
-import { useAuth } from "auth-hook";
-import axios from "axios";
-import { APIContext } from "../../../providers/APIProvider";
 import EllipsesText from "react-ellipsis-text";
 
-export const RequestsTable = ({
-  filterStatus,
-  requests,
-  refreshFundsTableCallback,
-  refreshRequestsTableCallback,
-  isApprover,
-  isIssuer,
-  isReceiver,
-  isTransferer,
-}) => {
-  const auth = useAuth();
-  const [api] = useContext(APIContext);
+export const TransfersTable = ({ transfers }) => {
   const [details, setDetails] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);
@@ -47,11 +29,10 @@ export const RequestsTable = ({
   };
 
   const fields = [
+    { key: "receivingDept", label: "Department" },
     { key: "authorizedUserUsername", label: "Requestor" },
-    { key: "authorizedUserDept", label: "Department" },
     { key: "amount" },
     { key: "createDateTime", label: "Created Date" },
-    { key: "status", _style: { width: "20%" } },
     {
       key: "show_details",
       label: "",
@@ -61,19 +42,6 @@ export const RequestsTable = ({
     },
   ];
 
-  const getStatusBadge = (status) => {
-    switch (status) {
-      case "TRANSFERRED":
-        return "primary";
-      case "APPROVED":
-        return "success";
-      case "PENDING":
-        return "warning";
-      default:
-        return "primary";
-    }
-  };
-
   const toCurrency = (number, currency) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -81,98 +49,8 @@ export const RequestsTable = ({
     }).format(number);
   };
 
-  const onHandleApproveClick = (requestStateLinearId, authorizerUserUsername, authorizerUserDept, index) => {
-    setIsLoading(true);
-    const url =
-      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request";
-
-    axios
-      .put(url, null, { params: { requestStateLinearId, authorizerUserUsername, authorizerUserDept } })
-      .then((response) => {
-        setIsLoading(false);
-        refreshFundsTableCallback();
-        refreshRequestsTableCallback();
-        toggleDetails(index);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const onHandleTransferClick = (requestId, index) => {
-    setIsLoading(true);
-    const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      api.port +
-      "/api/transfer";
-
-    axios
-      .post(url, null, { params: { requestId } })
-      .then((response) => {
-        setIsLoading(false);
-        refreshFundsTableCallback();
-        refreshRequestsTableCallback();
-        toggleDetails(index);
-      })
-      .catch((err) => console.log(err));
-  };
-
   const getData = () => {
-    if (isApprover || isIssuer || isTransferer || isReceiver) {
-      return requests.data.filter((request) => request.status === filterStatus);
-    }
-    return requests.data.filter(
-      (request) =>
-        request.status === filterStatus &&
-        request.authorizedUserDept === auth.meta.keycloak.tokenParsed.groups[0]
-    );
-  };
-
-  const getActionButton = (item, index) => {
-    if (item.status !== Constants.REQUEST_APPROVED && isApprover) {
-      return (
-        <CButton
-          className={"float-right mb-0"}
-          color="success"
-          variant="outline"
-          shape="square"
-          size="sm"
-          onClick={() =>
-            onHandleApproveClick(item.linearId, auth.user.fullName, auth.meta.keycloak.tokenParsed.groups[0], index)
-          }
-        >
-          {isLoading ? (
-            <CSpinner
-              className="spinner-border spinner-border-sm mr-1"
-              role="status"
-              aria-hidden="true"
-            />
-          ) : null}
-          Approve Request
-        </CButton>
-      );
-    }
-    if (item.status === Constants.REQUEST_APPROVED && isTransferer) {
-      return (
-        <CButton
-          className={"float-right mb-0"}
-          color="success"
-          variant="outline"
-          shape="square"
-          size="sm"
-          onClick={() => onHandleTransferClick(item.linearId, index)}
-        >
-          {isLoading ? (
-            <CSpinner
-              className="spinner-border spinner-border-sm mr-1"
-              role="status"
-              aria-hidden="true"
-            />
-          ) : null}
-          Transfer Requested Funds
-        </CButton>
-      );
-    }
+    return transfers.data;
   };
 
   return (
@@ -190,20 +68,8 @@ export const RequestsTable = ({
         pagination
         scopedSlots={{
           amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
-          balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
-          maxWithdrawalAmount: (item) => (
-            <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
-          ),
           createDateTime: (item) => (
             <td>{Moment(item.createDateTime).format(Constants.DATEFORMAT)}</td>
-          ),
-          updateDateTime: (item) => (
-            <td>{Moment(item.updateDateTime).format(Constants.DATEFORMAT)}</td>
-          ),
-          status: (item) => (
-            <td>
-              <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
-            </td>
           ),
           show_details: (item, index) => {
             return (
@@ -226,10 +92,7 @@ export const RequestsTable = ({
             return (
               <CCollapse show={details.includes(index)}>
                 <CCard className="m-3">
-                  <CCardHeader>
-                    Request Details
-                    {getActionButton(item, index)}
-                  </CCardHeader>
+                  <CCardHeader>Transfer Details</CCardHeader>
                   <CCardBody>
                     <CRow>
                       <CCol xl="6" sm="4">
@@ -240,6 +103,34 @@ export const RequestsTable = ({
                           </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Department</p>
+                          <strong className="p">{item.receivingDept}</strong>
+                        </CCallout>
+                      </CCol>
+                      <CCol xl="6" sm="4">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Amount</p>
+                          <strong className="p">
+                            {toCurrency(item.amount, item.currency)}
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Created Date/Time</p>
+                          <strong className="p">
+                            {Moment(item.createDateTime).format(
+                              "DD/MMM/YYYY HH:mm:ss"
+                            )}
+                          </strong>
+                        </CCallout>
+                      </CCol>
+                    </CRow>
+                    {/* <CRow>
+                      <CCol xl="6" sm="4">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Requestor</p>
+                          <strong className="p">
+                            {item.authorizedUserUsername}
+                          </strong>
                           <p className="text-muted mb-0">Department</p>
                           <strong className="p">
                             {item.authorizedUserDept}
@@ -252,7 +143,7 @@ export const RequestsTable = ({
                           </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Created Date/Time</p>
+                          <p className="text-muted mb-0">Date/Time</p>
                           <strong className="p">
                             {Moment(item.createDateTime).format(
                               "DD/MMM/YYYY HH:mm:ss"
@@ -279,7 +170,9 @@ export const RequestsTable = ({
                         </CTooltip>
                         <CCallout
                           color={
-                            getStatusBadge(item.status)
+                            item.status === Constants.REQUEST_PENDING
+                              ? "warning"
+                              : "success"
                           }
                           className={"bg-light"}
                         >
@@ -300,7 +193,7 @@ export const RequestsTable = ({
                           <strong className="p">{item.purpose}</strong>
                         </CCallout>
                       </CCol>
-                    </CRow>
+                    </CRow> */}
                   </CCardBody>
                 </CCard>
               </CCollapse>
