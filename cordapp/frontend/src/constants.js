@@ -1,5 +1,6 @@
 //DateTime
-export const DATEFORMAT = "DD/MMM/yyyy"
+export const DATE_FORMAT = "DD/MMM/yyyy"
+export const DATETIME_FORMAT = "DD/MMM/YYYY HH:mm:ss z"
 
 //Fund Status
 export const FUND_ISSUED = "ISSUED"

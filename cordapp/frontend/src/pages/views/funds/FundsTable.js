@@ -14,7 +14,7 @@ import {
   CSpinner,
   CTooltip,
 } from "@coreui/react";
-import Moment from "moment";
+import moment from "moment-timezone";
 import axios from "axios";
 import * as Constants from "../../../constants";
 import { APIContext } from "../../../providers/APIProvider";
@@ -131,10 +131,10 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
         ),
         createdDateTime: (item) => (
-          <td>{Moment(item.createdDateTime).format("DD/MMM/yyyy")}</td>
+          <td>{moment.tz(item.createdDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
         ),
         updatedDateTime: (item) => (
-          <td>{Moment(item.updatedDateTime).format("DD/MMM/yyyy")}</td>
+          <td>{moment.tz(item.updateDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
         ),
         status: (item) => (
           <td>
@@ -237,18 +237,14 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Created Date/Time</p>
                         <strong className="p">
-                          {Moment(item.createdDateTime).format(
-                            "DD/MMM/YYYY HH:mm:ss"
-                          )}
+                          {moment.tz(item.createdDateTime, "UTC").format(Constants.DATETIME_FORMAT)}
                         </strong>
                       </CCallout>
                       {item.createdDateTime !== item.updatedDateTime ?? (
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Updated Date/Time</p>
                           <strong className="p">
-                            {Moment(item.updatedDateTime).format(
-                              "DD/MMM/YYYY HH:mm:ss"
-                            )}
+                            {moment.tz(item.updateDateTime, "UTC").format(Constants.DATETIME_FORMAT)}
                           </strong>
                         </CCallout>
                       )}

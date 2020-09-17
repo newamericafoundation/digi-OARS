@@ -11,7 +11,7 @@ import {
   CRow,
   CCallout,
 } from "@coreui/react";
-import Moment from "moment";
+import moment from "moment-timezone";
 import EllipsesText from "react-ellipsis-text";
 
 export const TransfersTable = ({ transfers }) => {
@@ -69,7 +69,7 @@ export const TransfersTable = ({ transfers }) => {
         scopedSlots={{
           amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
           createDateTime: (item) => (
-            <td>{Moment(item.createDateTime).format(Constants.DATEFORMAT)}</td>
+            <td>{moment.tz(item.createDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
           ),
           show_details: (item, index) => {
             return (
@@ -117,9 +117,7 @@ export const TransfersTable = ({ transfers }) => {
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
-                            {Moment(item.createDateTime).format(
-                              "DD/MMM/YYYY HH:mm:ss"
-                            )}
+                            {moment.tz(item.createDateTime, "UTC").format(Constants.DATETIME_FORMAT)}
                           </strong>
                         </CCallout>
                       </CCol>
