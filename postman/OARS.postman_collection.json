@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "957a8bc7-84ec-4a16-a983-ce89264e7875",
+		"_postman_id": "467b08f4-9efe-403e-8c04-fd59bce5114c",
 		"name": "OARS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -14,7 +14,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "04d281c4-786d-4260-b739-5b1501043f16",
+								"id": "5245ab76-b524-47b6-9904-fa58af5d5ba7",
 								"exec": [
 									""
 								],
@@ -59,7 +59,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "d92838a0-21cb-48ba-a4de-1a8c3b12c935",
+								"id": "f0084881-0821-46ba-b0fd-b3a87f3bf56e",
 								"exec": [
 									"let response = pm.response.json()",
 									"",
@@ -199,7 +199,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "99aed70c-d4ee-463b-8fab-ba5672dcc6bd",
+								"id": "49d27519-4633-4c67-a898-7f97ef3d021d",
 								"exec": [
 									"var entity = data.entity;",
 									"var firstName = data.firstName;",
@@ -215,7 +215,7 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "760bae53-48bd-4d21-b5b2-2e5c7db3eb57",
+								"id": "9767ac72-67aa-478a-b488-6e3481b22f49",
 								"exec": [
 									"var location = pm.response.headers.get(\"Location\")",
 									"var user_id = location.substr(location.lastIndexOf('/') + 1);",
@@ -259,7 +259,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "c4a187cc-d772-4457-8642-47b252aad2c6",
+								"id": "4a2b4e56-0f7c-4dc6-b7b4-f0eb404d7f6c",
 								"exec": [
 									"var user_id = pm.environment.get(\"last_created_user_id\");"
 								],
@@ -305,7 +305,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "ff1d3e1c-1771-409c-9d67-b4311f50be5a",
+								"id": "0eca6c6c-53a7-467e-9daf-960f400b9fb8",
 								"exec": [
 									"var user_id = pm.environment.get(\"last_created_user_id\");"
 								],
@@ -351,7 +351,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "45a84f29-b669-49fd-bf6e-b50904ddf65a",
+								"id": "b5901d49-bcc8-4cd3-a509-9bcda0f4ae4a",
 								"exec": [
 									"var user_id = pm.environment.get(\"last_created_user_id\");"
 								],
@@ -397,7 +397,7 @@
 						{
 							"listen": "prerequest",
 							"script": {
-								"id": "c3c46e19-f5c3-4bdd-80dc-099f12e6f3df",
+								"id": "dcb95391-6bd8-4340-b158-8107d93cfbd6",
 								"exec": [
 									"var user_id = pm.environment.get(\"last_created_user_id\");"
 								],
@@ -452,7 +452,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "e6ed316e-b800-4ea0-a910-1ffd73656eed",
+						"id": "332d4ec1-0629-41bc-9d85-98461fe909b1",
 						"type": "text/javascript",
 						"exec": [
 							"var server       = pm.environment.get(\"server\");",
@@ -484,7 +484,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "cac4d807-00a9-409c-bdde-d0a236b54808",
+						"id": "b1b89f20-f431-424e-b198-bf8b622f0e38",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -814,13 +814,733 @@
 				}
 			],
 			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Smoke Tests",
+			"item": [
+				{
+					"name": "Get Fund List Size Before Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1e8a713b-b0a3-4fd7-94f1-504beaaf9b80",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.environment.set(\"funds_list_size\", jsonData.length);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/funds",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"funds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fund List Size by Status Before Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0c61b189-59d2-4d97-b3e9-abdcd0fa1b14",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.environment.set(\"funds_list_status_size\", jsonData.length);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/fund/status?status=ISSUED",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"fund",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "ISSUED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Issue Fund State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c952b4ed-fabe-49ee-97a0-17cc4b186783",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.originParty).to.eql(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.receivingParty).to.eql(\"O=Catan_Treasury, L=London, C=GB\");\r",
+									"    pm.expect(data.owners).to.include(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\", \"O=Catan_Treasury, L=London, C=GB\", \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.partialRequestParticipants).to.include(\"O=Catan_CSO, L=London, C=GB\", \"O=US_CSO, L=New York, C=US\");\r",
+									"    pm.expect(data.amount).to.eql(\"10000\")\r",
+									"    pm.expect(data.balance).to.eql(\"10000\")\r",
+									"    pm.expect(data.maxWithdrawalAmount).to.eql(\"10000\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"ISSUED\")\r",
+									"\r",
+									"    pm.environment.set(\"fund_state_linearId\", data.linearId.id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"originParty\": \"O=US_DoJ,L=New York,C=US\",\n    \"receivingParty\": \"O=Catan_Treasury, L=London, C=GB\",\n    \"amount\": \"10000\",\n    \"maxWithdrawalAmount\": \"10000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/fund",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"fund"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fund List Size After Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b2cd06d4-d18b-4f38-bc1e-adbb5fcb4bbd",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The new Fund State has been returned successfully.\", function(){\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.expect(Number(postman.getEnvironmentVariable(\"funds_list_size\"))).to.be.lessThan(jsonData.length)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/funds",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"funds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fund List Size by Status After Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0df1cb7a-3b8f-4d1c-a824-a3a9610e6be6",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The new Fund State has been returned successfully.\", function(){\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.expect(Number(postman.getEnvironmentVariable(\"funds_list_status_size\"))).to.be.lessThan(jsonData.length)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/fund/status?status=ISSUED",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"fund",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "ISSUED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Fund State by LinearID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5782eb3b-ae81-475f-9495-ad86ba10d87a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity;\r",
+									"    pm.expect(data.originParty).to.eql(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.receivingParty).to.eql(\"O=Catan_Treasury, L=London, C=GB\");\r",
+									"    pm.expect(data.owners).to.include(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\",\r",
+									"                \"O=Catan_Treasury, L=London, C=GB\",\r",
+									"                \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.partialRequestParticipants).to.include(\"O=Catan_CSO, L=London, C=GB\", \"O=US_CSO, L=New York, C=US\");\r",
+									"    pm.expect(data.amount).to.eql(\"10000\")\r",
+									"    pm.expect(data.balance).to.eql(\"10000\")\r",
+									"    pm.expect(data.maxWithdrawalAmount).to.eql(\"10000\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"ISSUED\")\r",
+									"\r",
+									"    pm.environment.set(\"fund_state_linearId\", data.linearId.id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/fund/id?fundId={{fund_state_linearId}}",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"fund",
+								"id"
+							],
+							"query": [
+								{
+									"key": "fundId",
+									"value": "{{fund_state_linearId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Fund State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "bff110ab-ac39-477c-93c1-8abec52dd87c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.originParty).to.eql(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.receivingParty).to.eql(\"O=Catan_Treasury, L=London, C=GB\");\r",
+									"    pm.expect(data.owners).to.include(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\", \"O=Catan_Treasury, L=London, C=GB\", \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.partialRequestParticipants).to.include(\"O=Catan_CSO, L=London, C=GB\", \"O=US_CSO, L=New York, C=US\");\r",
+									"    pm.expect(data.amount).to.eql(\"10000\")\r",
+									"    pm.expect(data.balance).to.eql(\"10000\")\r",
+									"    pm.expect(data.maxWithdrawalAmount).to.eql(\"10000\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"RECEIVED\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{CATAN_TREASURY}}/api/fund?fundId={{fund_state_linearId}}",
+							"host": [
+								"{{localhost}}{{CATAN_TREASURY}}"
+							],
+							"path": [
+								"api",
+								"fund"
+							],
+							"query": [
+								{
+									"key": "fundId",
+									"value": "{{fund_state_linearId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Requests List Size Before Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "12e7fe39-0e66-4569-a071-5af357c64f36",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.environment.set(\"request_list_size\", jsonData.length);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/requests",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request List Size by Status Before Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "87dee3dc-e3cd-4f0e-838f-642ecce6ffc2",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.environment.set(\"request_list_status_size\", jsonData.length);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/request/status?status=PENDING",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"request",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PENDING"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Issue Request State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b1fb578e-1053-4059-8a36-dcf794d3f2b0",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.authorizedUserUsername).to.eql(\"test_authorized@test.com\");\r",
+									"    pm.expect(data.authorizedUserDept).to.eql(\"Test Department\");\r",
+									"    pm.expect(data.authorizerUserDeptAndUsername).to.be.empty;\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\", \"O=Catan_Treasury, L=London, C=GB\", \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.externalAccountId).to.eql(\"ABC12345\");\r",
+									"    pm.expect(data.purpose).to.eql(\"test\")\r",
+									"    pm.expect(data.amount).to.eql(\"5\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"PENDING\")\r",
+									"    pm.expect(data.fundStateLinearId.id).to.eql(pm.environment.get(\"fund_state_linearId\"));\r",
+									"\r",
+									"    pm.environment.set(\"request_state_linearId\", data.linearId.id);   \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"authorizedUserUsername\": \"test_authorized@test.com\",\n    \"authorizedUserDept\": \"Test Department\",\n    \"externalAccountId\": \"ABC12345\",\n    \"amount\": 5,\n    \"fundStateLinearId\": \"{{fund_state_linearId}}\",\n    \"purpose\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}{{CATAN_MOFA}}/api/request",
+							"host": [
+								"{{localhost}}{{CATAN_MOFA}}"
+							],
+							"path": [
+								"api",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Requests List Size After Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "a0964f0f-2853-4fab-b3cc-a3cd068c3375",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The new Fund State has been returned successfully.\", function(){\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.expect(pm.environment.get(\"request_list_size\")).to.be.lessThan(jsonData.length)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/requests",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"requests"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request List Size by Status After Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7e40c407-7116-43b2-968f-44e1abafcd04",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The new Request State has been returned successfully.\", function(){\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.expect(pm.environment.get(\"request_list_status_size\")).to.be.lessThan(jsonData.length)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/request/status?status=PENDING",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"request",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "PENDING"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Approve Request State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3c025c43-300d-49fd-ab3b-b266a5691a61",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.authorizedUserUsername).to.eql(\"test_authorized@test.com\");\r",
+									"    pm.expect(data.authorizedUserDept).to.eql(\"Test Department\");\r",
+									"    pm.expect(data.authorizerUserDeptAndUsername.testing).to.eql(\"TESTUSER\");\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\", \"O=Catan_Treasury, L=London, C=GB\", \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.externalAccountId).to.eql(\"ABC12345\")\r",
+									"    pm.expect(data.purpose).to.eql(\"test\")\r",
+									"    pm.expect(data.amount).to.eql(\"5\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"APPROVED\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{CATAN_MOJ}}/api/request?requestId={{request_state_linearId}}&authorizerUserUsername=TESTUSER&authorizerUserDept=testing",
+							"host": [
+								"{{localhost}}{{CATAN_MOJ}}"
+							],
+							"path": [
+								"api",
+								"request"
+							],
+							"query": [
+								{
+									"key": "requestId",
+									"value": "{{request_state_linearId}}"
+								},
+								{
+									"key": "authorizerUserUsername",
+									"value": "TESTUSER"
+								},
+								{
+									"key": "authorizerUserDept",
+									"value": "testing"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transfers Before Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9eeabe6f-68a3-4fa4-bce4-8867f4339afc",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.environment.set(\"transfers_list_size\", jsonData.length);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{CATAN_TREASURY}}/api/transfers",
+							"host": [
+								"{{localhost}}{{CATAN_TREASURY}}"
+							],
+							"path": [
+								"api",
+								"transfers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Issue Transfer State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f0021bd6-7658-4f96-9f3b-e565c34f6129",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.issuanceParty).to.eql(\"O=Catan_Treasury, L=London, C=GB\");\r",
+									"    pm.expect(data.receivingDept).to.eql(\"Test Department\");\r",
+									"    pm.expect(data.authorizedUserUsername).to.eql(\"test_authorized@test.com\");\r",
+									"    pm.expect(data.externalAccountId).to.eql(\"ABC12345\")\r",
+									"    pm.expect(data.amount).to.eql(\"5\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.requestStateLinearId.id).to.eql(pm.environment.get(\"request_state_linearId\"))\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{CATAN_TREASURY}}/api/transfer?requestId={{request_state_linearId}}",
+							"host": [
+								"{{localhost}}{{CATAN_TREASURY}}"
+							],
+							"path": [
+								"api",
+								"transfer"
+							],
+							"query": [
+								{
+									"key": "requestId",
+									"value": "{{request_state_linearId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transfers After Issuance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5bfffcf2-09df-456b-8bc3-ca6587279b69",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The new Transfer State has been returned successfully.\", function(){\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.expect(pm.environment.get(\"transfers_list_size\")).to.be.lessThan(jsonData.length)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{CATAN_TREASURY}}/api/transfers",
+							"host": [
+								"{{localhost}}{{CATAN_TREASURY}}"
+							],
+							"path": [
+								"api",
+								"transfers"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
 		}
 	],
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "178833e7-2d8b-4b5a-a9a2-7f9ebc6f5ac8",
+				"id": "6b8409a4-c45a-4a24-b21d-85d426d33b92",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -830,7 +1550,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "d0d0ff08-da9a-4c4a-8e84-7fc9425fa232",
+				"id": "6587296f-9f4a-4419-86a5-b44212d00a9f",
 				"type": "text/javascript",
 				"exec": [
 					""
