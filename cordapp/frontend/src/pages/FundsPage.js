@@ -8,7 +8,11 @@ import {
   CModalHeader,
   CModalBody,
   CModalTitle,
+  CRow,
+  CWidgetProgressIcon,
+  CCol,
 } from "@coreui/react";
+import CIcon from "@coreui/icons-react";
 import { FundsTable } from "./views/funds/FundsTable";
 import { FundsForm } from "./views/funds/FundsForm";
 import NetworkProvider from "../providers/NetworkProvider";
@@ -16,6 +20,7 @@ import UseToaster from "../notification/Toaster";
 import { FundsContext } from "../providers/FundsProvider";
 import EllipsesText from "react-ellipsis-text";
 import { useAuth } from "../auth-hook";
+import * as Constants from "../constants";
 
 const FundsPage = () => {
   const auth = useAuth();
@@ -56,8 +61,52 @@ const FundsPage = () => {
     fundsCallback();
   };
 
+  const toCurrency = (number, currency) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: currency,
+    }).format(number);
+  };
+
+  const fundsTotal = fundsState.data.reduce(
+    (total, fund) => total + parseFloat(fund.amount),
+    0
+  );
+
+  const fundsIssuedTotal = fundsState.data
+    .filter((fund) => fund.status === Constants.FUND_ISSUED)
+    .reduce((total, fund) => total + parseFloat(fund.amount), 0);
+
+  const fundsReceivedTotal = fundsState.data
+    .filter((fund) => fund.status === Constants.FUND_RECEIVED)
+    .reduce((total, fund) => total + parseFloat(fund.amount), 0);
+
   return (
     <>
+      <CRow>
+        <CCol xs="12" sm="6" lg="3">
+          <CWidgetProgressIcon
+            inverse
+            header={toCurrency(fundsReceivedTotal, "USD").toString()}
+            text="Funds Received"
+            color="gradient-success"
+            value={(fundsReceivedTotal / fundsTotal) * 100}
+          >
+            <CIcon name="cil-check-circle" height="36" />
+          </CWidgetProgressIcon>
+        </CCol>
+        <CCol xs="12" sm="6" lg="3">
+          <CWidgetProgressIcon
+            inverse
+            header={toCurrency(fundsIssuedTotal, "USD").toString()}
+            text="Issued Funds"
+            color="gradient-warning"
+            value={(fundsIssuedTotal / fundsTotal) * 100}
+          >
+            <CIcon name="cil-av-timer" height="36" />
+          </CWidgetProgressIcon>
+        </CCol>
+      </CRow>
       <CCard>
         <CCardHeader>
           Funds
