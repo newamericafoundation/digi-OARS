@@ -199,6 +199,7 @@ public class RequestState implements LinearState {
         PENDING("PENDING"),
         FLAGGED("FLAGGED"),
         APPROVED("APPROVED"),
+        REJECTED("REJECTED"),
         TRANSFERRED("TRANSFERRED");
 
         public final String status;

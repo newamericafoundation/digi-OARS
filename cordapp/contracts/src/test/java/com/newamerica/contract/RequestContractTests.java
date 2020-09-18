@@ -88,23 +88,6 @@ public class RequestContractTests {
                 participants
         );
 
-        //approved request state
-        requestState_diff = new RequestState(
-                "Alice Alice",
-                "Catan Ministry of Education",
-                authorizerUserDeptAndUsername,
-                authorizedParties,
-                "1234567890",
-                "build a school",
-                BigDecimal.valueOf(1000000),
-                Currency.getInstance("USD"),
-                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                RequestState.RequestStateStatus.APPROVED,
-                new UniqueIdentifier(),
-                participants
-        );
-
         requestState_diff2 = requestState.changeStatus(RequestState.RequestStateStatus.TRANSFERRED);
 
         requestState_negative_amount = new RequestState(

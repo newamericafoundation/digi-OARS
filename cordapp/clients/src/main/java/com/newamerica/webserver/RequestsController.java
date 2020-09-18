@@ -2,6 +2,7 @@ package com.newamerica.webserver;
 
 import com.newamerica.flows.ApproveRequestFlow;
 import com.newamerica.flows.IssueRequestFlow;
+import com.newamerica.flows.RejectRequestFlow;
 import com.newamerica.states.PartialRequestState;
 import com.newamerica.states.RequestState;
 import com.newamerica.webserver.dtos.Request;
@@ -175,7 +176,7 @@ public class RequestsController extends BaseResource {
         }
     }
 
-    @PutMapping(value = "/request", produces = "application/json", params = {"requestStateLinearId", "authorizerUserUsername", "authorizerUserDept"})
+    @PutMapping(value = "/request/approve", produces = "application/json", params = {"requestStateLinearId", "authorizerUserUsername", "authorizerUserDept"})
     private Response approveRequest (@QueryParam("requestStateLinearId") String requestStateLinearId, @QueryParam("authorizerUserUsername") String authorizerUserUsername, @QueryParam("authorizerUserDept") String authorizerUserDept) {
         try {
             String resourcePath = String.format("/request?requestStateLinearId=%s?authorizerUserUsername=%s?authorizerUserDept=%s", requestStateLinearId, authorizerUserUsername, authorizerUserDept);
@@ -188,6 +189,26 @@ public class RequestsController extends BaseResource {
             ).getReturnValue().get();
             RequestState updated = (RequestState) tx.getTx().getOutputs().get(0).getData();
             return Response.ok(createRequestSuccessServiceResponse("Request approved.", updated, resourcePath)).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        }catch (Exception e) {
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PutMapping(value = "/request/reject", produces = "application/json", params = {"requestStateLinearId", "authorizerUserUsername", "authorizerUserDept"})
+    private Response rejectRequest (@QueryParam("requestStateLinearId") String requestStateLinearId, @QueryParam("authorizerUserUsername") String authorizerUserUsername, @QueryParam("authorizerUserDept") String authorizerUserDept) {
+        try {
+            String resourcePath = String.format("/request?requestStateLinearId=%s?authorizerUserUsername=%s?authorizerUserDept=%s", requestStateLinearId, authorizerUserUsername, authorizerUserDept);
+            SignedTransaction tx = rpcOps.startFlowDynamic(
+                    RejectRequestFlow.InitiatorFlow.class,
+                    new UniqueIdentifier(null, UUID.fromString(requestStateLinearId)),
+                    authorizerUserUsername,
+                    authorizerUserDept,
+                    ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"))
+            ).getReturnValue().get();
+            RequestState updated = (RequestState) tx.getTx().getOutputs().get(0).getData();
+            return Response.ok(createRequestSuccessServiceResponse("Request rejected.", updated, resourcePath)).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {
