@@ -66,7 +66,7 @@ public class RequestContract implements Contract {
                 RequestState inputState = (RequestState) tx.getInputStates().get(0);
                 RequestState outputState = (RequestState) tx.getOutputStates().get(0);
                 require.using("The request input state must be in PENDING status.", inputState.getStatus() == RequestState.RequestStateStatus.PENDING);
-                require.using("The request output state must be in REJECTED status.", outputState.getStatus() == RequestState.RequestStateStatus.APPROVED);
+                require.using("The request output state must be in REJECTED status.", outputState.getStatus() == RequestState.RequestStateStatus.REJECTED);
                 require.using("The authorizedUserUsername cannot change.", inputState.getAuthorizedUserUsername().equals(outputState.getAuthorizedUserUsername()));
                 require.using("The authorizedUserDept cannot change.", inputState.getAuthorizedUserDept().equals(outputState.getAuthorizedUserDept()));
                 require.using("The authorizerUserDeptAndUsername cannot be null.", !outputState.getAuthorizerUserDeptAndUsername().isEmpty());
