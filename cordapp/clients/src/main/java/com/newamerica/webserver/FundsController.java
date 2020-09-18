@@ -94,7 +94,7 @@ public class FundsController extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/fund/status/{status}", produces = "application/json", params = "status")
+    @GetMapping(value = "/fund/status", produces = "application/json", params = "status")
     private Response getFundByStatus (@PathParam("status") String status) {
         try {
             String resourcePath = String.format("/fund/status/%s", status);
