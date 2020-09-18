@@ -38,7 +38,7 @@ export const UsersTable = () => {
     if (auth.isAuthenticated) {
       fetchData();
     }
-  }, []);
+  }, [auth]);
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);

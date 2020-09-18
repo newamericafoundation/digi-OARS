@@ -6,5 +6,13 @@
     "group": "Catan Ministry of Education",
     "country_code": "Catan",
     "password": "A1JbyuAD"
+  },
+  {
+    "entity": "catanmod",
+    "firstName": "Alex",
+    "lastName": "Cross",
+    "group": "Catan Ministry of Defence",
+    "country_code": "Catan",
+    "password": "IOF7jKL"
   }
 ]
