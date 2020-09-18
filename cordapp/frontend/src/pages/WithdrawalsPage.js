@@ -132,7 +132,7 @@ const WithdrawalsPage = () => {
         </CCol>
         <CCol>
           <CCard>
-            <CCardHeader>Approved Withdrawal Requests</CCardHeader>
+            <CCardHeader>Approved Withdrawal Requests (Awaiting Transfer)</CCardHeader>
             <CCardBody>
               <RequestsTable
                 filterStatus={Constants.REQUEST_APPROVED}
