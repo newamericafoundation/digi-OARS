@@ -1386,13 +1386,14 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{localhost}}{{CATAN_MOJ}}/api/request?requestStateLinearId={{request_state_linearId}}&authorizerUserUsername=TESTUSER&authorizerUserDept=testing",
+							"raw": "{{localhost}}{{CATAN_MOJ}}/api/request/approve?requestStateLinearId={{request_state_linearId}}&authorizerUserUsername=TESTUSER&authorizerUserDept=testing",
 							"host": [
 								"{{localhost}}{{CATAN_MOJ}}"
 							],
 							"path": [
 								"api",
-								"request"
+								"request",
+								"approve"
 							],
 							"query": [
 								{
@@ -1527,6 +1528,317 @@
 							"path": [
 								"api",
 								"transfers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Issue Fund State For Rejection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f2baa3ed-e85b-4f34-a1f7-e5c1186306bc",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.originParty).to.eql(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.receivingParty).to.eql(\"O=Catan_Treasury, L=London, C=GB\");\r",
+									"    pm.expect(data.owners).to.include(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\", \"O=Catan_Treasury, L=London, C=GB\", \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.partialRequestParticipants).to.include(\"O=Catan_CSO, L=London, C=GB\", \"O=US_CSO, L=New York, C=US\");\r",
+									"    pm.expect(data.amount).to.eql(\"10000\")\r",
+									"    pm.expect(data.balance).to.eql(\"10000\")\r",
+									"    pm.expect(data.maxWithdrawalAmount).to.eql(\"10000\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"ISSUED\")\r",
+									"\r",
+									"    pm.environment.set(\"fund_state_linearId\", data.linearId.id);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"originParty\": \"O=US_DoJ,L=New York,C=US\",\n    \"receivingParty\": \"O=Catan_Treasury, L=London, C=GB\",\n    \"amount\": \"10000\",\n    \"maxWithdrawalAmount\": \"10000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/fund",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"fund"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Fund State For Rejection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cd589639-3ce1-4026-b736-9dc6d58a0747",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.originParty).to.eql(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.receivingParty).to.eql(\"O=Catan_Treasury, L=London, C=GB\");\r",
+									"    pm.expect(data.owners).to.include(\"O=US_DoJ, L=New York, C=US\");\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\", \"O=Catan_Treasury, L=London, C=GB\", \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.partialRequestParticipants).to.include(\"O=Catan_CSO, L=London, C=GB\", \"O=US_CSO, L=New York, C=US\");\r",
+									"    pm.expect(data.amount).to.eql(\"10000\")\r",
+									"    pm.expect(data.balance).to.eql(\"10000\")\r",
+									"    pm.expect(data.maxWithdrawalAmount).to.eql(\"10000\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"RECEIVED\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{CATAN_TREASURY}}/api/fund?fundId={{fund_state_linearId}}",
+							"host": [
+								"{{localhost}}{{CATAN_TREASURY}}"
+							],
+							"path": [
+								"api",
+								"fund"
+							],
+							"query": [
+								{
+									"key": "fundId",
+									"value": "{{fund_state_linearId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Issue Request State For Rejection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "adb522a5-c1f9-4d04-acb2-88e21c4612cb",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.authorizedUserUsername).to.eql(\"test_authorized@test.com\");\r",
+									"    pm.expect(data.authorizedUserDept).to.eql(\"Test Department\");\r",
+									"    pm.expect(data.authorizerUserDeptAndUsername).to.be.empty;\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\", \"O=Catan_Treasury, L=London, C=GB\", \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.externalAccountId).to.eql(\"ABC12345\");\r",
+									"    pm.expect(data.purpose).to.eql(\"test\")\r",
+									"    pm.expect(data.amount).to.eql(\"5\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"PENDING\")\r",
+									"    pm.expect(data.fundStateLinearId.id).to.eql(pm.environment.get(\"fund_state_linearId\"));\r",
+									"\r",
+									"    pm.environment.set(\"request_state_linearId\", data.linearId.id);   \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"authorizedUserUsername\": \"test_authorized@test.com\",\n    \"authorizedUserDept\": \"Test Department\",\n    \"externalAccountId\": \"ABC12345\",\n    \"amount\": 5,\n    \"fundStateLinearId\": \"{{fund_state_linearId}}\",\n    \"purpose\": \"test\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{localhost}}{{CATAN_MOFA}}/api/request",
+							"host": [
+								"{{localhost}}{{CATAN_MOFA}}"
+							],
+							"path": [
+								"api",
+								"request"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request List Size by Status Before Rejection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b1b334c3-3839-4207-bd52-1f778ac3ec7c",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.environment.set(\"request_list_status_size\", jsonData.length);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/request/status?status=REJECTED",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"request",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "REJECTED"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reject Request State",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "db049eaf-08cf-464a-a6d9-504884aad1a5",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Evaluate State Attributes\", function () {\r",
+									"    var data = pm.response.json().context.entity.data;\r",
+									"    pm.expect(data.authorizedUserUsername).to.eql(\"test_authorized@test.com\");\r",
+									"    pm.expect(data.authorizedUserDept).to.eql(\"Test Department\");\r",
+									"    pm.expect(data.authorizerUserDeptAndUsername.testing).to.eql(\"TESTUSER\");\r",
+									"    pm.expect(data.authorizedParties).to.include(\"O=US_DoJ, L=New York, C=US\", \"O=Catan_Treasury, L=London, C=GB\", \"O=Catan_MoJ, L=London, C=GB\");\r",
+									"    pm.expect(data.externalAccountId).to.eql(\"ABC12345\")\r",
+									"    pm.expect(data.purpose).to.eql(\"test\")\r",
+									"    pm.expect(data.amount).to.eql(\"5\")\r",
+									"    pm.expect(data.currency).to.eql(\"USD\")\r",
+									"    pm.expect(data.status).to.eql(\"REJECTED\")\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{CATAN_MOJ}}/api/request/reject?requestStateLinearId={{request_state_linearId}}&authorizerUserUsername=TESTUSER&authorizerUserDept=testing",
+							"host": [
+								"{{localhost}}{{CATAN_MOJ}}"
+							],
+							"path": [
+								"api",
+								"request",
+								"reject"
+							],
+							"query": [
+								{
+									"key": "requestStateLinearId",
+									"value": "{{request_state_linearId}}"
+								},
+								{
+									"key": "authorizerUserUsername",
+									"value": "TESTUSER"
+								},
+								{
+									"key": "authorizerUserDept",
+									"value": "testing"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Request List Size by Status After Rejection",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "b0190ab0-68bd-4ab7-a9b6-8a96fe88b18b",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"The new Request State has been returned successfully.\", function(){\r",
+									"    var jsonData = pm.response.json().context.entity;\r",
+									"    pm.expect(pm.environment.get(\"request_list_status_size\")).to.be.lessThan(jsonData.length)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/request/status?status=REJECTED",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"request",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "REJECTED"
+								}
 							]
 						}
 					},
