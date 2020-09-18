@@ -64,7 +64,7 @@ public class RejectRequestFlow {
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
-            CommandData commandData = new RequestContract.Commands.Approve();
+            CommandData commandData = new RequestContract.Commands.Reject();
             transactionBuilder.addCommand(commandData, outputRequestStateFinal.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addInputState(stateRef);
             transactionBuilder.addOutputState(outputRequestStateFinal, RequestContract.ID);
