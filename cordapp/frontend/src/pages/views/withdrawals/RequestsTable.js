@@ -81,13 +81,24 @@ export const RequestsTable = ({
     }).format(number);
   };
 
-  const onHandleApproveClick = (requestStateLinearId, authorizerUserUsername, authorizerUserDept, index) => {
+  const onHandleApproveClick = (
+    requestStateLinearId,
+    authorizerUserUsername,
+    authorizerUserDept,
+    index
+  ) => {
     setIsLoading(true);
     const url =
       "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request";
 
     axios
-      .put(url, null, { params: { requestStateLinearId, authorizerUserUsername, authorizerUserDept } })
+      .put(url, null, {
+        params: {
+          requestStateLinearId,
+          authorizerUserUsername,
+          authorizerUserDept,
+        },
+      })
       .then((response) => {
         setIsLoading(false);
         refreshFundsTableCallback();
@@ -138,7 +149,12 @@ export const RequestsTable = ({
           shape="square"
           size="sm"
           onClick={() =>
-            onHandleApproveClick(item.linearId, auth.user.fullName, auth.meta.keycloak.tokenParsed.groups[0], index)
+            onHandleApproveClick(
+              item.linearId,
+              auth.user.fullName,
+              auth.meta.keycloak.tokenParsed.groups[0],
+              index
+            )
           }
         >
           {isLoading ? (
@@ -195,10 +211,18 @@ export const RequestsTable = ({
             <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
           ),
           createDateTime: (item) => (
-            <td>{moment.tz(item.createDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
+            <td>
+              {moment
+                .tz(item.createDateTime, "UTC")
+                .format(Constants.DATE_FORMAT)}
+            </td>
           ),
           updateDateTime: (item) => (
-            <td>{moment.tz(item.updateDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
+            <td>
+              {moment
+                .tz(item.updateDateTime, "UTC")
+                .format(Constants.DATE_FORMAT)}
+            </td>
           ),
           status: (item) => (
             <td>
@@ -254,7 +278,9 @@ export const RequestsTable = ({
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
-                            {moment.tz(item.createDateTime, "UTC").format(Constants.DATETIME_FORMAT)}
+                            {moment
+                              .tz(item.createDateTime, "UTC")
+                              .format(Constants.DATETIME_FORMAT)}
                           </strong>
                         </CCallout>
                       </CCol>
@@ -276,16 +302,23 @@ export const RequestsTable = ({
                           </CCallout>
                         </CTooltip>
                         <CCallout
-                          color={
-                            getStatusBadge(item.status)
-                          }
+                          color={getStatusBadge(item.status)}
                           className={"bg-light"}
                         >
                           <p className="text-muted mb-0">Status</p>
                           <strong className="p">
                             {item.status}
                             {item.status === Constants.REQUEST_APPROVED
-                              ? " by " + item.authorizerUserUsername
+                              ? " by " +
+                                Object.keys(
+                                  item.authorizerUserDeptAndUsername
+                                ).map(
+                                  (key) =>
+                                    item.authorizerUserDeptAndUsername[key] +
+                                    " [" +
+                                    key +
+                                    "]"
+                                )
                               : null}
                           </strong>
                         </CCallout>

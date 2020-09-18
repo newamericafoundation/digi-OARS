@@ -8,7 +8,7 @@ const getRequests = async (port) => {
   return res.data.entity.map((ob, index) => ({
     authorizedUserUsername: ob.state.data.authorizedUserUsername,
     authorizedUserDept: ob.state.data.authorizedUserDept,
-    authorizerUserUsername: ob.state.data.authorizerUserUsername,
+    authorizerUserDeptAndUsername: ob.state.data.authorizerUserDeptAndUsername,
     authorizedParties: ob.state.data.authorizedParties,
     linearId: ob.state.data.linearId.id,
     fundStateLinearId: ob.state.data.fundStateLinearId.id,
