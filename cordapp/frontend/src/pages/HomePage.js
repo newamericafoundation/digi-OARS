@@ -1,36 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from "react";
 import {
   CButton,
-  CCard,
-  CCardBody,
-  CCardFooter,
   CCol,
-  CProgress,
   CRow,
-  CJumbotron
-} from '@coreui/react';
-import CIcon from '@coreui/icons-react';
-import { useAuth } from '../auth-hook';
+  CJumbotron,
+  CWidgetSimple,
+} from "@coreui/react";
+import CIcon from "@coreui/icons-react";
+import { useAuth } from "../auth-hook";
+import { FundsContext } from "providers/FundsProvider";
 
 const HomePage = () => {
   const auth = useAuth();
   const [hour, setHour] = useState();
   const [greeting, setGreeting] = useState();
+  const [fundsState] = useContext(FundsContext);
 
   useEffect(() => {
-    const fetchGreeting = async() => {
-      const date = new Date();    
+    const fetchGreeting = async () => {
+      const date = new Date();
       setHour(date.getHours());
 
       if (hour) {
-        switch(true) {
-          case (hour < 12):
+        switch (true) {
+          case hour < 12:
             setGreeting("Good morning, ");
             break;
-          case (hour > 12 && hour < 17):
+          case hour > 12 && hour < 17:
             setGreeting("Good afternoon, ");
             break;
-          case (hour >= 17):
+          case hour >= 17:
             setGreeting("Good evening, ");
             break;
           default:
@@ -38,7 +37,7 @@ const HomePage = () => {
             break;
         }
       }
-    }
+    };
     if (auth.isAuthenticated) {
       fetchGreeting();
     }
@@ -46,71 +45,76 @@ const HomePage = () => {
 
   return (
     <>
-      <CJumbotron className="bg-dark">
+      {!auth.isAuthenticated ? (
         <CRow>
           <CCol>
-            {!auth.isAuthenticated ? 
-              <h1 className="display-3">Welcome to OARS!</h1> :
-              <h1 className="display-3">{greeting}{auth.user.firstName}!</h1>
-            }
-            <p className="lead">The Open Asset Repatriation System increases transparency and accountability in the asset return process.</p>
-            <p>For more information visit website</p>
-            {!auth.isAuthenticated && <CButton color="primary" onClick={() => auth.login()}>Login</CButton>}
-            {auth.isAuthenticated && <CButton color="light" onClick={() => auth.logout()}>Logout</CButton>}
+            <CJumbotron>
+              <h1 className="display-3">Welcome to OARS!</h1>
+              <p className="lead">
+                The Open Asset Repatriation System increases transparency and
+                accountability in the asset return process.
+              </p>
+              <CButton color="primary" onClick={() => auth.login()}>
+                Login
+              </CButton>
+            </CJumbotron>
           </CCol>
         </CRow>
-      </CJumbotron>
-      {auth.isAuthenticated &&
-      <CCard>
-        <CCardBody>
-          <CRow>
-            <CCol sm="5">
-              <h1 id="traffic" className="card-title mb-0">Home</h1>
-            </CCol>
-            <CCol sm="7" className="d-none d-md-block">
-              <CButton color="primary" className="float-right">
-                <CIcon name="cil-cloud-download"/>
+      ) : (
+        <CRow>
+          <CCol>
+            <CJumbotron>
+              <h1 className="display-3">
+                {greeting}
+                {auth.user.firstName}!
+              </h1>
+              <p className="lead">
+                The Open Asset Repatriation System increases transparency and
+                accountability in the asset return process.
+              </p>
+              <CButton color="light" onClick={() => auth.logout()}>
+                Logout
               </CButton>
-            </CCol>
-          </CRow>
-        </CCardBody>
-        <CCardFooter>
-          <CRow className="text-center">
-            <CCol md sm="12" className="mb-sm-2 mb-0">
-              <div className="text-muted">Total Assets Repatriated</div>
-              <strong>$5,000,000</strong>
-              <CProgress
-                className="progress-xs mt-2"
-                precision={1}
-                color="success"
-                value={40}
-              />
-            </CCol>
-            <CCol md sm="12" className="mb-sm-2 mb-0 d-md-down-none">
-              <div className="text-muted">Blah</div>
-              <strong>24.093</strong>
-              <CProgress
-                className="progress-xs mt-2"
-                precision={1}
-                color="info"
-                value={40}
-              />
-            </CCol>
-            <CCol md sm="12" className="mb-sm-2 mb-0">
-              <div className="text-muted">Blah</div>
-              <strong>78.706</strong>
-              <CProgress
-                className="progress-xs mt-2"
-                precision={1}
-                color="warning"
-                value={40}
-              />
-            </CCol>
-          </CRow>
-        </CCardFooter>
-      </CCard>}
-  </>
-  )
-}
+            </CJumbotron>
+          </CCol>
+        </CRow>
+      )}
+      {/* <CCol>
+          <CJumbotron>
+            {!auth.isAuthenticated ? (
+              <h1 className="display-3">Welcome to OARS!</h1>
+            ) : (
+              <h1 className="display-3">
+                {greeting}
+                {auth.user.firstName}!
+              </h1>
+            )}
+            <p className="lead">
+              The Open Asset Repatriation System increases transparency and
+              accountability in the asset return process.
+            </p>
+            <p>For more information visit website</p>
+            {!auth.isAuthenticated && (
+              <CButton color="primary" onClick={() => auth.login()}>
+                Login
+              </CButton>
+            )}
+            {auth.isAuthenticated && (
+              <CButton color="light" onClick={() => auth.logout()}>
+                Logout
+              </CButton>
+            )}
+          </CJumbotron>
+        </CCol> */}
+
+      {(auth.isAuthenticated && auth.meta.keycloak.hasResourceRole("funds_issuer")) && (
+        <CCol xl="2">
+          <CWidgetSimple header="# Funds Issued" text={fundsState.data.length.toString()}></CWidgetSimple>
+        </CCol>
+        
+      )}
+    </>
+  );
+};
 
 export default HomePage;
