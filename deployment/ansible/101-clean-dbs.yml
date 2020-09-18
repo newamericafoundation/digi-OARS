@@ -16,7 +16,8 @@
         path: "{{ item }}"
         state: absent
       with_items:
-        - "/opt/corda/persistence/*"
+        - "/opt/corda/persistence/persistence.mv.db"
+        - "/opt/corda/persistence/persistence.trace.db"
       tags:
         - remove-dirs
     - name: Remove Docker Container
