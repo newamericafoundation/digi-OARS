@@ -19,6 +19,7 @@ import { useAuth } from "auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
 import EllipsesText from "react-ellipsis-text";
+import { toCurrency } from "../../../utilities"
 
 export const RequestsTable = ({
   filterStatus,
@@ -64,7 +65,7 @@ export const RequestsTable = ({
   const getStatusBadge = (status) => {
     switch (status) {
       case "TRANSFERRED":
-        return "primary";
+        return "secondary";
       case "APPROVED":
         return "success";
       case "PENDING":
@@ -72,13 +73,6 @@ export const RequestsTable = ({
       default:
         return "primary";
     }
-  };
-
-  const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
   };
 
   const onHandleApproveClick = (

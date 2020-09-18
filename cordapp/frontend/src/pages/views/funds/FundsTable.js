@@ -19,7 +19,7 @@ import axios from "axios";
 import * as Constants from "../../../constants";
 import { APIContext } from "../../../providers/APIProvider";
 import EllipsesText from "react-ellipsis-text";
-import lookup from "country-code-lookup";
+import { toCountryByIsoFromX500 ,toCurrency } from "../../../utilities"
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [api] = useContext(APIContext);
@@ -89,21 +89,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         );
       }
     }
-  };
-
-  const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
-
-  const toCountryByIsoFromX500 = (x500) => {
-    const country = lookup.byIso(x500.split(/C=([a-zA-Z_]+)/)[1]).country;
-    if (country === "United Kingdom") {
-      return "Catan";
-    }
-    return country
   };
 
   const onHandleReceiveClick = (fundId, index) => {
@@ -214,11 +199,11 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                       </CTooltip>
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Origin Country</p>
-                        <strong className="p">{item.originParty}</strong>
+                        <strong className="p">{toCountryByIsoFromX500(item.originParty)}</strong>
                       </CCallout>
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Receiving Country</p>
-                        <strong className="p">{item.receivingParty}</strong>
+                        <strong className="p">{toCountryByIsoFromX500(item.receivingParty)}</strong>
                       </CCallout>
                     </CCol>
                     <CCol xl="4" sm="3">
