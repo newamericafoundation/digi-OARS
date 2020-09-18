@@ -94,21 +94,21 @@ public class FundsController extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/fund/status/{status}", produces = "application/json", params = "status")
+    @GetMapping(value = "/fund/status", produces = "application/json", params = "status")
     private Response getFundByStatus (@PathParam("status") String status) {
-        try {
+//        try {
             String resourcePath = String.format("/fund/status/%s", status);
             FundState.FundStateStatus fundStateStatus = FundState.FundStateStatus.valueOf(status);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<FundState>> funds = rpcOps.vaultQueryByCriteria(queryCriteria, FundState.class).getStates();
             List<FundState> result = funds.stream().filter(it -> it.getState().getData().getStatus().equals(fundStateStatus)).map(it -> it.getState().getData()).collect(Collectors.toList());
             return Response.ok(result).build();
-        }catch (IllegalArgumentException e) {
-            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
+//        }catch (IllegalArgumentException e) {
+//            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+//        }
     }
 
     @PostMapping(value = "/fund", consumes = "application/json", produces = "application/json")
