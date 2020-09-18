@@ -12,6 +12,7 @@ import {
   CCallout,
 } from "@coreui/react";
 import moment from "moment-timezone";
+import { toCurrency } from "../../../utilities"
 
 export const TransfersTable = ({ transfers }) => {
   const [details, setDetails] = useState([]);
@@ -40,13 +41,6 @@ export const TransfersTable = ({ transfers }) => {
       filter: false,
     },
   ];
-
-  const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
 
   const getData = () => {
     return transfers.data;

@@ -19,6 +19,7 @@ import axios from "axios";
 import * as Constants from "../../../constants";
 import { APIContext } from "../../../providers/APIProvider";
 import EllipsesText from "react-ellipsis-text";
+import { toCountryByIsoFromX500 ,toCurrency } from "../../../utilities"
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [api] = useContext(APIContext);
@@ -90,13 +91,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     }
   };
 
-  const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
-
   const onHandleReceiveClick = (fundId, index) => {
     setIsLoading(true);
     const url =
@@ -125,16 +119,30 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       sorter
       pagination
       scopedSlots={{
+        originParty: (item) => (
+          <td>{toCountryByIsoFromX500(item.originParty)}</td>
+        ),
+        receivingParty: (item) => (
+          <td>{toCountryByIsoFromX500(item.receivingParty)}</td>
+        ),
         amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
         balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
         maxWithdrawalAmount: (item) => (
           <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
         ),
         createdDateTime: (item) => (
-          <td>{moment.tz(item.createdDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
+          <td>
+            {moment
+              .tz(item.createdDateTime, "UTC")
+              .format(Constants.DATE_FORMAT)}
+          </td>
         ),
         updatedDateTime: (item) => (
-          <td>{moment.tz(item.updateDateTime, "UTC").format(Constants.DATE_FORMAT)}</td>
+          <td>
+            {moment
+              .tz(item.updateDateTime, "UTC")
+              .format(Constants.DATE_FORMAT)}
+          </td>
         ),
         status: (item) => (
           <td>
@@ -191,11 +199,11 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                       </CTooltip>
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Origin Country</p>
-                        <strong className="p">{item.originParty}</strong>
+                        <strong className="p">{toCountryByIsoFromX500(item.originParty)}</strong>
                       </CCallout>
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Receiving Country</p>
-                        <strong className="p">{item.receivingParty}</strong>
+                        <strong className="p">{toCountryByIsoFromX500(item.receivingParty)}</strong>
                       </CCallout>
                     </CCol>
                     <CCol xl="4" sm="3">
@@ -237,14 +245,18 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Created Date/Time</p>
                         <strong className="p">
-                          {moment.tz(item.createdDateTime, "UTC").format(Constants.DATETIME_FORMAT)}
+                          {moment
+                            .tz(item.createdDateTime, "UTC")
+                            .format(Constants.DATETIME_FORMAT)}
                         </strong>
                       </CCallout>
                       {item.createdDateTime !== item.updatedDateTime ?? (
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Updated Date/Time</p>
                           <strong className="p">
-                            {moment.tz(item.updateDateTime, "UTC").format(Constants.DATETIME_FORMAT)}
+                            {moment
+                              .tz(item.updateDateTime, "UTC")
+                              .format(Constants.DATETIME_FORMAT)}
                           </strong>
                         </CCallout>
                       )}

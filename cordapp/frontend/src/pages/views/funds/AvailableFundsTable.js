@@ -21,6 +21,7 @@ import Moment from "moment";
 import { RequestForm } from "../withdrawals/RequestForm";
 import UseToaster from "../../../notification/Toaster";
 import EllipsesText from "react-ellipsis-text";
+import { toCountryByIsoFromX500 ,toCurrency } from "../../../utilities"
 
 export const AvailableFundsTable = ({
   funds,
@@ -101,13 +102,6 @@ export const AvailableFundsTable = ({
     }
   };
 
-  const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
-
   const getRequestButton = (item, index) => {
     if (isRequestor) {
       return (
@@ -141,6 +135,7 @@ export const AvailableFundsTable = ({
         sorter
         pagination
         scopedSlots={{
+          originParty: (item) => <td>{toCountryByIsoFromX500(item.originParty)}</td>,
           amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
           balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
           maxWithdrawalAmount: (item) => (
@@ -180,18 +175,6 @@ export const AvailableFundsTable = ({
                 <CCard className="m-3">
                   <CCardHeader>
                     Fund Details
-                    {/* <div className="card-header-actions">
-                      <CButton
-                        className={"float-right mb-0"}
-                        color="success"
-                        variant="outline"
-                        shape="square"
-                        size="sm"
-                        onClick={() => handleShow(item, index)}
-                      >
-                        Request Withdrawal
-                      </CButton>
-                    </div> */}
                     {getRequestButton(item, index)}
                   </CCardHeader>
                   <CCardBody>
@@ -215,11 +198,11 @@ export const AvailableFundsTable = ({
                       <CCol xl="4" sm="3">
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Origin Country</p>
-                          <strong className="p">{item.originParty}</strong>
+                          <strong className="p">{toCountryByIsoFromX500(item.originParty)}</strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Receiving Country</p>
-                          <strong className="p">{item.receivingParty}</strong>
+                          <strong className="p">{toCountryByIsoFromX500(item.receivingParty)}</strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Amount</p>
