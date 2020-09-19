@@ -8,6 +8,7 @@ import React, {
 import getFunds from "../data/GetFunds";
 import { APIContext } from "./APIProvider";
 import * as Constants from "../constants";
+import { addAmounts } from "../utilities"
 
 
 export const FundsContext = createContext();
@@ -30,8 +31,8 @@ const reducer = (state, action) => {
         data: action.payload,
         issued: issued,
         received: received,
-        issuedAmount: issued.reduce((total, fund) => total + parseFloat(fund.amount), 0),
-        receivedAmount: received.reduce((total, fund) => total + parseFloat(fund.amount), 0),
+        issuedAmount: addAmounts(issued),
+        receivedAmount: addAmounts(received),
         loading: false,
       };
     default:

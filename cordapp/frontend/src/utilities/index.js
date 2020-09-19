@@ -14,3 +14,7 @@ export const toCurrency = (number, currency) => {
     currency: currency,
   }).format(number);
 };
+
+export const addAmounts = (data) => {
+  return data.reduce((total, item) => total + parseFloat(item.amount), 0)
+}
