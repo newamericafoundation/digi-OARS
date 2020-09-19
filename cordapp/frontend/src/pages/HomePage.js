@@ -1,20 +1,17 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CButton,
   CCol,
   CRow,
   CJumbotron,
-  CWidgetSimple,
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
 import { useAuth } from "../auth-hook";
-import { FundsContext } from "providers/FundsProvider";
+import { Widgets } from "../pages/views/home/Widgets";
 
 const HomePage = () => {
   const auth = useAuth();
   const [hour, setHour] = useState();
   const [greeting, setGreeting] = useState();
-  const [fundsState] = useContext(FundsContext);
 
   useEffect(() => {
     const fetchGreeting = async () => {
@@ -79,40 +76,7 @@ const HomePage = () => {
           </CCol>
         </CRow>
       )}
-      {/* <CCol>
-          <CJumbotron>
-            {!auth.isAuthenticated ? (
-              <h1 className="display-3">Welcome to OARS!</h1>
-            ) : (
-              <h1 className="display-3">
-                {greeting}
-                {auth.user.firstName}!
-              </h1>
-            )}
-            <p className="lead">
-              The Open Asset Repatriation System increases transparency and
-              accountability in the asset return process.
-            </p>
-            <p>For more information visit website</p>
-            {!auth.isAuthenticated && (
-              <CButton color="primary" onClick={() => auth.login()}>
-                Login
-              </CButton>
-            )}
-            {auth.isAuthenticated && (
-              <CButton color="light" onClick={() => auth.logout()}>
-                Logout
-              </CButton>
-            )}
-          </CJumbotron>
-        </CCol> */}
-
-      {(auth.isAuthenticated && auth.meta.keycloak.hasResourceRole("funds_issuer")) && (
-        <CCol xl="2">
-          <CWidgetSimple header="# Funds Issued" text={fundsState.data.length.toString()}></CWidgetSimple>
-        </CCol>
-        
-      )}
+      <Widgets auth={auth}/>
     </>
   );
 };

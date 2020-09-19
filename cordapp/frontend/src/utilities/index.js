@@ -9,8 +9,8 @@ export const toCountryByIsoFromX500 = (x500) => {
 };
 
 export const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
+  }).format(number);
+};
