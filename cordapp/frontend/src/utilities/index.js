@@ -16,5 +16,5 @@ export const toCurrency = (number, currency) => {
 };
 
 export const addAmounts = (data) => {
-  return data.reduce((total, item) => total + parseFloat(item.amount), 0)
-}
+  return data.reduce((total, item) => total + parseFloat(item.amount), 0);
+};

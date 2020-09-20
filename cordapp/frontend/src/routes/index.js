@@ -1,8 +1,6 @@
 import React from "react";
 import { useKeycloak } from "@react-keycloak/web";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
-import { privateRoutes } from "../routes";
-import { Content } from "containers";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -11,7 +9,8 @@ const loading = (
 );
 
 const Layout = React.lazy(() => import("../containers/Layout"));
-// const Login = React.lazy(() => import('../views/Login'));
+// const Content = React.lazy(() => import("../containers/Content"));
+// const Login = React.lazy(() => import("../pages/views/login/Login"));
 
 export const AppRouter = () => {
   const [initialized] = useKeycloak();
@@ -29,19 +28,6 @@ export const AppRouter = () => {
             name="Home"
             render={(props) => <Layout {...props} />}
           />
-          {privateRoutes.map(
-            (route, idx) =>
-              route.component && (
-                <Route
-                  key={idx}
-                  path={route.path}
-                  name={route.name}
-                  exact={route.exact}
-                  render={(props) => <Content {...props} />}
-                />
-              )
-          )}
-          {/* <Route path="/login" name="Login" render={props => <Login {...props} />}/> */}
         </Switch>
       </React.Suspense>
     </BrowserRouter>

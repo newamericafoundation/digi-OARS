@@ -7,9 +7,7 @@ const TransfersPage = React.lazy(() => import('./pages/TransfersPage'));
 const TransfersHistoryPage = React.lazy(() => import('./pages/TransfersHistoryPage'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
 
-// const SecuredPage = React.lazy(() => import('./views/SecuredPage'));
-// const Login = React.lazy(() => import('./views/Login'));
-
+// const Login = React.lazy(() => import('./pages/views/login/Login'));
 
 export const publicRoutes = [
   { path: '/', exact: true, name: 'Home', component: HomePage},
