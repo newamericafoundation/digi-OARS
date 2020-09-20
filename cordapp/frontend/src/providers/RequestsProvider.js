@@ -8,7 +8,7 @@ import React, {
 import getRequests from "../data/GetRequests";
 import { APIContext } from "./APIProvider";
 import * as Constants from "../constants";
-import { addAmounts } from "../utilities"
+import { addAmounts } from "../utilities";
 
 
 export const RequestsContext = createContext();
