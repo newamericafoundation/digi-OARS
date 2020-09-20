@@ -7,19 +7,32 @@ import React, {
 } from "react";
 import getFunds from "../data/GetFunds";
 import { APIContext } from "./APIProvider";
+import * as Constants from "../constants";
+import { addAmounts } from "../utilities"
+
 
 export const FundsContext = createContext();
 
 const initialState = {
   data: [],
+  issued: [],
+  received: [],
+  issueAmount: 0,
+  receivedAmount: 0,
   loading: true,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "UPDATE_FUNDS":
+      const issued = action.payload.filter((fund) => fund.status === Constants.FUND_ISSUED)
+      const received = action.payload.filter((fund) => fund.status === Constants.FUND_RECEIVED)
       return {
         data: action.payload,
+        issued: issued,
+        received: received,
+        issuedAmount: addAmounts(issued),
+        receivedAmount: addAmounts(received),
         loading: false,
       };
     default:

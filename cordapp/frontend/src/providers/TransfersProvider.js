@@ -7,19 +7,23 @@ import React, {
 } from "react";
 import getTransfers from "../data/GetTransfers";
 import { APIContext } from "./APIProvider";
+import { addAmounts } from "../utilities";
 
 export const TransfersContext = createContext();
 
 const initialState = {
   data: [],
+  amount: [],
   loading: true,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case "UPDATE_TRANSFERS":
+      const data = action.payload
       return {
-        data: action.payload,
+        data: data,
+        amount: addAmounts(data),
         loading: false,
       };
     default:

@@ -8,8 +8,6 @@ import APIProvider from "providers/APIProvider";
 import { useAuth } from "./auth-hook";
 import TransfersProvider from "./providers/TransfersProvider";
 
-
-
 const App = () => {
   const auth = useAuth();
   const [apiPort, setApiPort] = useState();
@@ -17,8 +15,8 @@ const App = () => {
   useEffect(() => {
     if (auth.isAuthenticated) {
       setApiPort(auth.meta.keycloak.tokenParsed.port);
-    } 
-  }, [auth])
+    }
+  }, [auth]);
 
   return (
     <APIProvider port={apiPort}>
@@ -34,6 +32,6 @@ const App = () => {
       </FundsProvider>
     </APIProvider>
   );
-}
+};
 
 export default App;

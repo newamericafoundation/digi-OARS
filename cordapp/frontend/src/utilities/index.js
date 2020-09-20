@@ -9,8 +9,12 @@ export const toCountryByIsoFromX500 = (x500) => {
 };
 
 export const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
+  }).format(number);
+};
+
+export const addAmounts = (data) => {
+  return data.reduce((total, item) => total + parseFloat(item.amount), 0);
+};
