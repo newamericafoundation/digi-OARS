@@ -232,7 +232,7 @@ export const Widgets = ({ auth }) => {
                   </div>
                 }
               >
-                <CIcon name="cil-wallet" height="56" className="my-4" />
+                <CIcon name="cil-chevron-right" height="56" className="my-4" />
               </CWidgetBrand>
             </CCol>
           )}
