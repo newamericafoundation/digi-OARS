@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  CCol,
-  CRow,
-  CJumbotron,
-  CButton
-} from "@coreui/react";
+import { CCol, CRow, CJumbotron, CButton, CCallout } from "@coreui/react";
 
 export const Jumbotron = ({ auth }) => {
   const [hour, setHour] = useState();
@@ -40,34 +35,32 @@ export const Jumbotron = ({ auth }) => {
   return (
     <CRow>
       <CCol>
-        <CJumbotron>
-          <CRow>
-            <CCol>
-              {!auth.isAuthenticated ? (
+        {!auth.isAuthenticated && (
+          <CJumbotron>
+            <CRow>
+              <CCol>
                 <h1 className="display-3">Welcome to OARS!</h1>
-              ) : (
-                <h1 className="display-3">
-                  {greeting}
-                  {auth.user.firstName}
-                </h1>
-              )}
-              <p className="lead">
-                The Open Asset Repatriation System increases transparency and
-                accountability in the asset return process.
-              </p>
-              <hr className="my-4"/>
-              {!auth.isAuthenticated ? (
+                <p className="lead">
+                  The Open Asset Repatriation System increases transparency and
+                  accountability in the asset return process.
+                </p>
+                <hr className="my-4" />
                 <CButton color="primary" onClick={() => auth.login()}>
                   Login
                 </CButton>
-              ) : (
-                <CButton color="light" onClick={() => auth.logout()}>
-                  Logout
-                </CButton>
-              )}
-            </CCol>
-          </CRow>
-        </CJumbotron>
+              </CCol>
+            </CRow>
+          </CJumbotron>
+        )}
+        {auth.isAuthenticated && (
+          <CCallout color="dark" className="bg-light mt-0">
+            <h1 className="text-muted">
+              {greeting}
+              {auth.user.firstName}!
+            </h1>
+            <h6>Your daily summary:</h6>
+          </CCallout>
+        )}
       </CCol>
     </CRow>
   );
