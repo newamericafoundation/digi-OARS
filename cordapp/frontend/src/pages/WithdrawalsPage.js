@@ -14,11 +14,13 @@ import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
+import { TransfersContext } from "../providers/TransfersProvider";
 
 const WithdrawalsPage = () => {
   const auth = useAuth();
   const [fundsState, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
+  const [, transfersCallback] = useContext(TransfersContext);
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
   const [isFundsRequestor, setIsFundsRequestor] = useState(false);
@@ -122,6 +124,7 @@ const WithdrawalsPage = () => {
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
+                refreshTransfersTableCallback={transfersCallback}
                 isApprover={isRequestApprover}
                 isIssuer={isFundsIssuer}
                 isReceiver={isFundsReceiver}
@@ -139,6 +142,7 @@ const WithdrawalsPage = () => {
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
+                refreshTransfersTableCallback={transfersCallback}
                 isApprover={isRequestApprover}
                 isIssuer={isFundsIssuer}
                 isReceiver={isFundsReceiver}
