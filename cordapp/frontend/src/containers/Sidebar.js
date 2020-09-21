@@ -16,13 +16,13 @@ import { useAuth } from "../auth-hook";
 
 import nav from "./_nav";
 import nav_secure from "./_nav_secure";
+import nav_partial_request_viewer from "./_nav_partial_request_viewer";
 import nav_admin from "./_nav_admin";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const show = useSelector((state) => state.sidebarShow);
   const auth = useAuth();
-  const navAdmin = [...nav_secure, ...nav_admin];
 
   return (
     <CSidebar
@@ -53,7 +53,7 @@ const Sidebar = () => {
           }}
         />
         {/* Privately visible navigation */}
-        {auth.meta.keycloak.hasResourceRole("admin") ? (
+        {/* {auth.meta.keycloak.hasResourceRole("admin") ? (
           <CCreateElement
             items={navAdmin}
             components={{
@@ -73,7 +73,40 @@ const Sidebar = () => {
               CSidebarNavTitle,
             }}
           />
-        ) : null}
+        ) : null} */}
+        {auth.meta.keycloak.hasResourceRole("user") && (
+          <CCreateElement
+            items={nav_secure}
+            components={{
+              CSidebarNavDivider,
+              CSidebarNavDropdown,
+              CSidebarNavItem,
+              CSidebarNavTitle,
+            }}
+          />
+        )}
+        {auth.meta.keycloak.hasResourceRole("partial_request_viewer") && (
+          <CCreateElement
+            items={nav_partial_request_viewer}
+            components={{
+              CSidebarNavDivider,
+              CSidebarNavDropdown,
+              CSidebarNavItem,
+              CSidebarNavTitle,
+            }}
+          />
+        )}
+        {auth.meta.keycloak.hasResourceRole("admin") && (
+          <CCreateElement
+            items={nav_admin}
+            components={{
+              CSidebarNavDivider,
+              CSidebarNavDropdown,
+              CSidebarNavItem,
+              CSidebarNavTitle,
+            }}
+          />
+        )}
       </CSidebarNav>
       <CSidebarMinimizer className="c-d-md-down-none" />
     </CSidebar>

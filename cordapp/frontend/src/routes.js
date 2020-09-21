@@ -17,6 +17,7 @@ export const publicRoutes = [
 export const privateRoutes = [
   { roles: ['user'], path: '/funds', exact: true, name: 'Funds', component: FundsPage },
   { roles: ['user'], path: '/withdrawals', exact: true, name: 'Withdrawals', component: WithdrawalsPage },
+  { roles: ['partial_request_viewer'], path: '/withdrawals/partial', exact: true, name: 'Withdrawals', component: WithdrawalsPage },
   { roles: ['user'], path: '/transfers/approvals', exact: true, name: 'Transfers', component: TransfersPage },
   { roles: ['request_transferer'], path: '/transfers/history', exact: true, name: 'History', component: TransfersHistoryPage },
   { roles: ['admin'], path: '/admin', exact: true, name: 'Admin', component: AdminPage},
