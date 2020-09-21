@@ -29,12 +29,8 @@ const WithdrawalsPage = () => {
 
   useEffect(() => {
     if (auth.isAuthenticated) {
-      setIsFundsIssuer(
-        auth.meta.keycloak.hasResourceRole("funds_issuer")
-      );
-      setIsFundsReceiver(
-        auth.meta.keycloak.hasResourceRole("funds_receiver")
-      );
+      setIsFundsIssuer(auth.meta.keycloak.hasResourceRole("funds_issuer"));
+      setIsFundsReceiver(auth.meta.keycloak.hasResourceRole("funds_receiver"));
       setIsFundsRequestor(
         auth.meta.keycloak.hasResourceRole("funds_requestor")
       );
@@ -54,34 +50,21 @@ const WithdrawalsPage = () => {
     }).format(number);
   };
 
-  const requestsTotal = requestsState.data.reduce(
-    (total, request) =>
-      total + parseFloat(request.amount),
-    0
-  );
-
-  const requestsPendingTotal = requestsState.data
-    .filter((request) => request.status === Constants.REQUEST_PENDING)
-    .reduce(
-      (total, request) =>
-      total + parseFloat(request.amount),
-      0
-    );
-
   return (
     <>
       <CRow>
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(
-              requestsTotal - requestsPendingTotal,
-              "USD"
-            ).toString()}
+            header={toCurrency(requestsState.approvedAmount, "USD").toString()}
             text="Approved Withdrawal Requests"
             color="gradient-success"
             value={
-              ((requestsTotal - requestsPendingTotal) / requestsTotal) * 100
+              (requestsState.approvedAmount /
+                (requestsState.pendingAmount +
+                  requestsState.approvedAmount +
+                  requestsState.transferredAmount)) *
+              100
             }
           >
             <CIcon name="cil-check-circle" height="36" />
@@ -90,10 +73,16 @@ const WithdrawalsPage = () => {
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(requestsPendingTotal, "USD").toString()}
+            header={toCurrency(requestsState.pendingAmount, "USD").toString()}
             text="Pending Withdrawal Requests"
             color="gradient-warning"
-            value={(requestsPendingTotal / requestsTotal) * 100}
+            value={
+              (requestsState.pendingAmount /
+                (requestsState.pendingAmount +
+                  requestsState.approvedAmount +
+                  requestsState.transferredAmount)) *
+              100
+            }
           >
             <CIcon name="cil-av-timer" height="36" />
           </CWidgetProgressIcon>
@@ -135,7 +124,9 @@ const WithdrawalsPage = () => {
         </CCol>
         <CCol>
           <CCard>
-            <CCardHeader>Approved Withdrawal Requests (Awaiting Transfer)</CCardHeader>
+            <CCardHeader>
+              Approved Withdrawal Requests (Awaiting Transfer)
+            </CCardHeader>
             <CCardBody>
               <RequestsTable
                 filterStatus={Constants.REQUEST_APPROVED}
