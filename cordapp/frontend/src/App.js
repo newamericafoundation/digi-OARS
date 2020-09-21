@@ -7,6 +7,7 @@ import ReactNotification from "react-notifications-component";
 import APIProvider from "providers/APIProvider";
 import { useAuth } from "./auth-hook";
 import TransfersProvider from "./providers/TransfersProvider";
+import PartialRequestsProvider from "./providers/PartialRequestsProvider";
 
 const App = () => {
   const auth = useAuth();
@@ -23,10 +24,12 @@ const App = () => {
       <FundsProvider>
         <RequestsProvider>
           <TransfersProvider>
-            <div className="App">
-              <ReactNotification />
-              <AppRouter />
-            </div>
+            <PartialRequestsProvider>
+              <div className="App">
+                <ReactNotification />
+                <AppRouter />
+              </div>
+            </PartialRequestsProvider>
           </TransfersProvider>
         </RequestsProvider>
       </FundsProvider>
