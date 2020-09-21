@@ -16,6 +16,7 @@ import { useAuth } from "../auth-hook";
 
 import nav from "./_nav";
 import nav_secure from "./_nav_secure";
+import nav_funds_transferer from "./_nav_funds_transferer";
 import nav_partial_request_viewer from "./_nav_partial_request_viewer";
 import nav_admin from "./_nav_admin";
 
@@ -53,30 +54,20 @@ const Sidebar = () => {
           }}
         />
         {/* Privately visible navigation */}
-        {/* {auth.meta.keycloak.hasResourceRole("admin") ? (
-          <CCreateElement
-            items={navAdmin}
-            components={{
-              CSidebarNavDivider,
-              CSidebarNavDropdown,
-              CSidebarNavItem,
-              CSidebarNavTitle,
-            }}
-          />
-        ) : auth.meta.keycloak.hasResourceRole("user") ? (
-          <CCreateElement
-            items={nav_secure}
-            components={{
-              CSidebarNavDivider,
-              CSidebarNavDropdown,
-              CSidebarNavItem,
-              CSidebarNavTitle,
-            }}
-          />
-        ) : null} */}
         {auth.meta.keycloak.hasResourceRole("user") && (
           <CCreateElement
             items={nav_secure}
+            components={{
+              CSidebarNavDivider,
+              CSidebarNavDropdown,
+              CSidebarNavItem,
+              CSidebarNavTitle,
+            }}
+          />
+        )}
+        {(auth.meta.keycloak.hasResourceRole("request_transferer") || auth.meta.keycloak.hasResourceRole("funds_receiver")) && (
+          <CCreateElement
+            items={nav_funds_transferer}
             components={{
               CSidebarNavDivider,
               CSidebarNavDropdown,

@@ -7,11 +7,13 @@ import React, {
 } from "react";
 import getPartialRequests from "../data/GetPartialRequests";
 import { APIContext } from "./APIProvider";
+import { addAmounts } from "../utilities";
 
 export const PartialRequestsContext = createContext();
 
 const initialState = {
   data: [],
+  totalAmount: 0,
   loading: true,
 };
 
@@ -20,6 +22,7 @@ const reducer = (state, action) => {
     case "UPDATE_PARTIAL_REQUESTS":
       return {
         data: action.payload,
+        totalAmount: addAmounts(action.payload),
         loading: false,
       };
     default:

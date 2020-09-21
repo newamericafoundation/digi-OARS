@@ -10,7 +10,7 @@ const PartialWithdrawalsPage = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Requests by Authorized Departments</CCardHeader>
+            <CCardHeader><h4 className="mb-0">Requests by Authorized Departments</h4></CCardHeader>
             <CCardBody>
               <PartialRequestsTable
                 partialRequests={partialRequestsState.data}
