@@ -20,7 +20,6 @@ import UseToaster from "../notification/Toaster";
 import { FundsContext } from "../providers/FundsProvider";
 import EllipsesText from "react-ellipsis-text";
 import { useAuth } from "../auth-hook";
-import * as Constants from "../constants";
 
 const FundsPage = () => {
   const auth = useAuth();
@@ -68,29 +67,39 @@ const FundsPage = () => {
     }).format(number);
   };
 
-  const fundsTotal = fundsState.data.reduce(
-    (total, fund) => total + parseFloat(fund.amount),
-    0
-  );
-
-  const fundsIssuedTotal = fundsState.data
-    .filter((fund) => fund.status === Constants.FUND_ISSUED)
-    .reduce((total, fund) => total + parseFloat(fund.amount), 0);
-
-  const fundsReceivedTotal = fundsState.data
-    .filter((fund) => fund.status === Constants.FUND_RECEIVED)
-    .reduce((total, fund) => total + parseFloat(fund.amount), 0);
-
   return (
     <>
       <CRow>
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(fundsReceivedTotal, "USD").toString()}
-            text="Funds Received"
+            header={toCurrency(fundsState.paidAmount, "USD").toString()}
+            text="Paid Funds"
+            color="gradient-dark"
+            value={
+              (fundsState.paidAmount /
+                (fundsState.issuedAmount +
+                  fundsState.receivedAmount +
+                  fundsState.paidAmount)) *
+              100
+            }
+          >
+            <CIcon name="cil-money" height="36" />
+          </CWidgetProgressIcon>
+        </CCol>
+        <CCol xs="12" sm="6" lg="3">
+          <CWidgetProgressIcon
+            inverse
+            header={toCurrency(fundsState.receivedAmount, "USD").toString()}
+            text="Received Funds"
             color="gradient-success"
-            value={(fundsReceivedTotal / fundsTotal) * 100}
+            value={
+              (fundsState.receivedAmount /
+                (fundsState.issuedAmount +
+                  fundsState.receivedAmount +
+                  fundsState.paidAmount)) *
+              100
+            }
           >
             <CIcon name="cil-check-circle" height="36" />
           </CWidgetProgressIcon>
@@ -98,10 +107,16 @@ const FundsPage = () => {
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(fundsIssuedTotal, "USD").toString()}
+            header={toCurrency(fundsState.issuedAmount, "USD").toString()}
             text="Issued Funds"
             color="gradient-warning"
-            value={(fundsIssuedTotal / fundsTotal) * 100}
+            value={
+              (fundsState.issuedAmount /
+                (fundsState.issuedAmount +
+                  fundsState.receivedAmount +
+                  fundsState.paidAmount)) *
+              100
+            }
           >
             <CIcon name="cil-av-timer" height="36" />
           </CWidgetProgressIcon>

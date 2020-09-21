@@ -26,6 +26,7 @@ export const RequestsTable = ({
   requests,
   refreshFundsTableCallback,
   refreshRequestsTableCallback,
+  refreshTransfersTableCallback,
   isApprover,
   isIssuer,
   isReceiver,
@@ -83,7 +84,7 @@ export const RequestsTable = ({
   ) => {
     setIsLoading(true);
     const url =
-      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request";
+      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request/approve";
 
     axios
       .put(url, null, {
@@ -97,6 +98,7 @@ export const RequestsTable = ({
         setIsLoading(false);
         refreshFundsTableCallback();
         refreshRequestsTableCallback();
+        refreshTransfersTableCallback();
         toggleDetails(index);
       })
       .catch((err) => console.log(err));

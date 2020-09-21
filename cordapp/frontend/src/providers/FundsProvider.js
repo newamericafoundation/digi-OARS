@@ -17,8 +17,10 @@ const initialState = {
   data: [],
   issued: [],
   received: [],
-  issueAmount: 0,
+  paid: [],
+  issuedAmount: 0,
   receivedAmount: 0,
+  paidAmount: 0,
   loading: true,
 };
 
@@ -27,12 +29,14 @@ const reducer = (state, action) => {
     case "UPDATE_FUNDS":
       const issued = action.payload.filter((fund) => fund.status === Constants.FUND_ISSUED)
       const received = action.payload.filter((fund) => fund.status === Constants.FUND_RECEIVED)
+      const paid = action.payload.filter((fund) => fund.status === Constants.FUND_PAID)
       return {
         data: action.payload,
         issued: issued,
         received: received,
         issuedAmount: addAmounts(issued),
         receivedAmount: addAmounts(received),
+        paidAmount: addAmounts(paid),
         loading: false,
       };
     default:

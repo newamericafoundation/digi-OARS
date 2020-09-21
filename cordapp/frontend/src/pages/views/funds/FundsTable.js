@@ -56,6 +56,8 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
 
   const getStatusBadge = (status) => {
     switch (status) {
+      case "PAID":
+        return "light";
       case "RECEIVED":
         return "success";
       case "ISSUED":
@@ -112,7 +114,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       fields={fields}
       columnFilter
       tableFilter
-      footer
+      // footer
       itemsPerPageSelect
       itemsPerPage={5}
       hover
