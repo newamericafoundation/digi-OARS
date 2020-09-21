@@ -18,6 +18,9 @@ const initialState = {
   pending: [],
   approved: [],
   transferred: [],
+  pendingAmount: 0,
+  approvedAmount: 0,
+  transferredAmount: 0,
   loading: true,
 };
 
