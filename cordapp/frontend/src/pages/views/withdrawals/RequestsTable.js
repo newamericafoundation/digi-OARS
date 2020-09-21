@@ -83,7 +83,7 @@ export const RequestsTable = ({
   ) => {
     setIsLoading(true);
     const url =
-      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request";
+      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request/approve";
 
     axios
       .put(url, null, {
