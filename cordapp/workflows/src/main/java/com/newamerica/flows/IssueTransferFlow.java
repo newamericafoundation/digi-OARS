@@ -52,8 +52,6 @@ public class IssueTransferFlow {
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new TransferContract.Commands.Issue();
-            transactionBuilder.addCommand(commandData, getOurIdentity().getOwningKey());
-
             outputTransferState = new TransferState(
                     getOurIdentity(),
                     requestState.getAuthorizedUserDept(),
@@ -65,7 +63,7 @@ public class IssueTransferFlow {
                     requestStateLinearId,
                     participants
             );
-
+            transactionBuilder.addCommand(commandData,  outputTransferState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputTransferState, TransferContract.ID);
             transactionBuilder.verify(getServiceHub());
 
