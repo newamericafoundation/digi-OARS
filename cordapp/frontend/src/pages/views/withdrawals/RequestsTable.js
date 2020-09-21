@@ -26,6 +26,7 @@ export const RequestsTable = ({
   requests,
   refreshFundsTableCallback,
   refreshRequestsTableCallback,
+  refreshTransfersTableCallback,
   isApprover,
   isIssuer,
   isReceiver,
@@ -97,6 +98,7 @@ export const RequestsTable = ({
         setIsLoading(false);
         refreshFundsTableCallback();
         refreshRequestsTableCallback();
+        refreshTransfersTableCallback();
         toggleDetails(index);
       })
       .catch((err) => console.log(err));
