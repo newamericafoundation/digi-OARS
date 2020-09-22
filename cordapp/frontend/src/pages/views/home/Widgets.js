@@ -234,7 +234,7 @@ export const Widgets = ({ auth }) => {
               <CIcon name="cil-wallet" height="56" className="my-4" />
             </CWidgetBrand>
           </CCol>
-          {auth.meta.keycloak.hasResourceRole("request_transferer") && (
+          {!auth.meta.keycloak.hasResourceRole("partial_request_viewer") && (
             <CCol xs="12" sm="4">
               <CWidgetBrand
                 color="gradient-dark"
