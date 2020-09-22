@@ -74,6 +74,8 @@ export const RequestsTable = ({
         return "warning";
       case "REJECTED":
         return "danger";
+      case "FLAGGED":
+          return "info";
       default:
         return "primary";
     }

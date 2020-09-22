@@ -22,6 +22,7 @@ const initialState = {
   approvedAmount: 0,
   transferredAmount: 0,
   rejectedAmount: 0,
+  flaggedAmount: 0,
   loading: true,
 };
 
@@ -40,6 +41,9 @@ const reducer = (state, action) => {
       const rejected = action.payload.filter(
         (request) => request.status === Constants.REQUEST_REJECTED
       );
+      const flagged = action.payload.filter(
+        (request) => request.status === Constants.REQUEST_FLAGGED
+      );
       const totalAmount = addAmounts(action.payload)
       return {
         ...state,
@@ -52,6 +56,7 @@ const reducer = (state, action) => {
         approvedAmount: addAmounts(approved),
         transferredAmount: addAmounts(transferred),
         rejectedAmount: addAmounts(rejected),
+        flaggedAmount: addAmounts(flagged),
         loading: false,
       };
     default:
