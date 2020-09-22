@@ -15,7 +15,7 @@ export const WelcomeCallout = ({ auth }) => {
           case hour < 12:
             setGreeting("Good morning, " + auth.user.firstName + "!");
             break;
-          case hour > 12 && hour < 17:
+          case hour >= 12 && hour < 17:
             setGreeting("Good afternoon, " + auth.user.firstName + "!");
             break;
           case hour >= 17:

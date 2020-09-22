@@ -13,11 +13,14 @@ import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
+import { TransfersContext } from "../providers/TransfersProvider";
+import { toCurrency } from "../utilities";
 
 const TransfersPage = () => {
   const auth = useAuth();
   const [, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
+  const [, transfersCallback] = useContext(TransfersContext);
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
   const [isRequestApprover, setIsRequestApprover] = useState(false);
@@ -36,58 +39,35 @@ const TransfersPage = () => {
     }
   }, [auth]);
 
-  const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
-
-  const requestsTotal = requestsState.data.reduce(
-    (totalRequestsAmount, request) =>
-      totalRequestsAmount + parseFloat(request.amount),
-    0
-  );
-
-  const requestsApprovedTotal = requestsState.data
-    .filter((request) => request.status === Constants.REQUEST_APPROVED)
-    .reduce(
-      (total, request) =>
-        total + parseFloat(request.amount),
-      0
-    );
-
-  const requestsTransferredTotal = requestsState.data
-    .filter((request) => request.status === Constants.REQUEST_TRANSFERRED)
-    .reduce(
-      (total, request) => total + parseFloat(request.amount), 0
-      );
-
   return (
     <>
       <CRow>
-        <CCol xs="12" sm="6" lg="3">
+        <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(requestsTransferredTotal, "USD").toString()}
+            header={toCurrency(requestsState.transferredAmount, "USD").toString()}
             text="Transferred Withdrawal Requests"
             color="gradient-info"
-            value={(requestsTransferredTotal / requestsTotal) * 100}
+            value={(requestsState.transferredAmount / (requestsState.pendingAmount +
+              requestsState.approvedAmount +
+              requestsState.transferredAmount)) * 100}
           >
             <CIcon name="cil-chevron-right" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-        <CCol xs="12" sm="6" lg="3">
+        <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
             header={toCurrency(
-              requestsApprovedTotal,
+              requestsState.approvedAmount,
               "USD"
             ).toString()}
-            text="Requests Awaiting Transfer"
+            text="Withdrawal Requests Awaiting Transfer"
             color="gradient-warning"
             value={
-              (requestsApprovedTotal / requestsTotal) * 100
+              (requestsState.approvedAmount / (requestsState.pendingAmount +
+                requestsState.approvedAmount +
+                requestsState.transferredAmount)) * 100
             }
           >
             <CIcon name="cil-av-timer" height="36" />
@@ -104,6 +84,7 @@ const TransfersPage = () => {
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
+                refreshTransfersTableCallback={transfersCallback}
                 isApprover={isRequestApprover}
                 isIssuer={isFundsIssuer}
                 isReceiver={isFundsReceiver}
@@ -119,6 +100,7 @@ const TransfersPage = () => {
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
+                refreshTransfersTableCallback={transfersCallback}
                 isApprover={isRequestApprover}
                 isIssuer={isFundsIssuer}
                 isReceiver={isFundsReceiver}

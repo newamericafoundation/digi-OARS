@@ -98,7 +98,6 @@ export const RequestsTable = ({
         setIsLoading(false);
         refreshFundsTableCallback();
         refreshRequestsTableCallback();
-        refreshTransfersTableCallback();
         toggleDetails(index);
       })
       .catch((err) => console.log(err));
@@ -119,6 +118,7 @@ export const RequestsTable = ({
         setIsLoading(false);
         refreshFundsTableCallback();
         refreshRequestsTableCallback();
+        refreshTransfersTableCallback();
         toggleDetails(index);
       })
       .catch((err) => console.log(err));
