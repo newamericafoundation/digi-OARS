@@ -6,6 +6,7 @@ import {
   CWidgetProgressIcon,
   CRow,
   CCol,
+  CCallout,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
@@ -47,12 +48,10 @@ const WithdrawalsPage = () => {
   return (
     <>
       <CRow>
-        <CCol xs="12" sm="6" lg="3">
+        <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
-            header={
-              toCurrency(requestsState.approvedAmount, "USD").toString()
-            }
+            header={toCurrency(requestsState.approvedAmount, "USD").toString()}
             text="Approved Withdrawal Requests"
             color="gradient-success"
             value={
@@ -66,12 +65,10 @@ const WithdrawalsPage = () => {
             <CIcon name="cil-check-circle" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-        <CCol xs="12" sm="6" lg="3">
+        <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
-            header={
-              toCurrency(requestsState.pendingAmount, "USD").toString()
-            }
+            header={toCurrency(requestsState.pendingAmount, "USD").toString()}
             text="Pending Withdrawal Requests"
             color="gradient-warning"
             value={
@@ -89,7 +86,13 @@ const WithdrawalsPage = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Available Funds</CCardHeader>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Available Funds</h4>
+                </CCallout>
+              </div>
+            </CCardHeader>
             <CCardBody>
               <AvailableFundsTable
                 funds={fundsState}
@@ -104,7 +107,13 @@ const WithdrawalsPage = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Pending Withdrawal Requests</CCardHeader>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Pending Withdrawal Requests</h4>
+                </CCallout>
+              </div>
+            </CCardHeader>{" "}
             <CCardBody>
               <RequestsTable
                 filterStatus={Constants.REQUEST_PENDING}
@@ -123,7 +132,13 @@ const WithdrawalsPage = () => {
         <CCol>
           <CCard>
             <CCardHeader>
-              Approved Withdrawal Requests (Awaiting Transfer)
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">
+                    Approved Withdrawal Requests (Awaiting Transfer)
+                  </h4>
+                </CCallout>
+              </div>
             </CCardHeader>
             <CCardBody>
               <RequestsTable

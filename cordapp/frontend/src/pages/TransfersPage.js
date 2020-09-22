@@ -6,6 +6,7 @@ import {
   CWidgetProgressIcon,
   CRow,
   CCol,
+  CCallout,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { RequestsTable } from "./views/withdrawals/RequestsTable";
@@ -45,12 +46,19 @@ const TransfersPage = () => {
         <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(requestsState.transferredAmount, "USD").toString()}
+            header={toCurrency(
+              requestsState.transferredAmount,
+              "USD"
+            ).toString()}
             text="Transferred Withdrawal Requests"
             color="gradient-info"
-            value={(requestsState.transferredAmount / (requestsState.pendingAmount +
-              requestsState.approvedAmount +
-              requestsState.transferredAmount)) * 100}
+            value={
+              (requestsState.transferredAmount /
+                (requestsState.pendingAmount +
+                  requestsState.approvedAmount +
+                  requestsState.transferredAmount)) *
+              100
+            }
           >
             <CIcon name="cil-chevron-right" height="36" />
           </CWidgetProgressIcon>
@@ -58,16 +66,15 @@ const TransfersPage = () => {
         <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(
-              requestsState.approvedAmount,
-              "USD"
-            ).toString()}
+            header={toCurrency(requestsState.approvedAmount, "USD").toString()}
             text="Withdrawal Requests Awaiting Transfer"
             color="gradient-warning"
             value={
-              (requestsState.approvedAmount / (requestsState.pendingAmount +
-                requestsState.approvedAmount +
-                requestsState.transferredAmount)) * 100
+              (requestsState.approvedAmount /
+                (requestsState.pendingAmount +
+                  requestsState.approvedAmount +
+                  requestsState.transferredAmount)) *
+              100
             }
           >
             <CIcon name="cil-av-timer" height="36" />
@@ -77,7 +84,13 @@ const TransfersPage = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Approved Withdrawal Requests</CCardHeader>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Approved Withdrawal Requests</h4>
+                </CCallout>
+              </div>
+            </CCardHeader>
             <CCardBody>
               <RequestsTable
                 filterStatus={Constants.REQUEST_APPROVED}
@@ -93,7 +106,13 @@ const TransfersPage = () => {
             </CCardBody>
           </CCard>
           <CCard>
-            <CCardHeader>Transferred Withdrawal Requests</CCardHeader>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Transferred Withdrawal Requests</h4>
+                </CCallout>
+              </div>
+            </CCardHeader>{" "}
             <CCardBody>
               <RequestsTable
                 filterStatus={Constants.REQUEST_TRANSFERRED}
