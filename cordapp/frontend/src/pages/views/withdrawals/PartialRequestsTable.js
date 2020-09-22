@@ -50,7 +50,6 @@ export const PartialRequestsTable = ({ partialRequests }) => {
         fields={fields}
         columnFilter
         tableFilter
-        footer
         itemsPerPageSelect
         itemsPerPage={5}
         hover
