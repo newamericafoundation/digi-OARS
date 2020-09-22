@@ -96,7 +96,7 @@ public class FundsController extends BaseResource {
     @GetMapping(value = "/fund/aggregate", produces = "application/json", params = {"startDate", "endDate"})
     private Response getFundAggregate (@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) throws ParseException {
         try {
-            String resourcePath = String.format("/request?startDate=%s?endDate=%s", startDate, endDate);
+            String resourcePath = String.format("/fund?startDate=%s?endDate=%s", startDate, endDate);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
             List<StateAndRef<FundState>> funds = rpcOps.vaultQueryByCriteria(queryCriteria, FundState.class).getStates();
             List<FundState> resultSet = funds.stream().filter(it -> it.getState().getData().getStatus().equals(FundState.FundStateStatus.ISSUED)).map(it -> it.getState().getData()).collect(Collectors.toList());
