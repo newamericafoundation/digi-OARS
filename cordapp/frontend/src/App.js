@@ -22,8 +22,8 @@ const App = () => {
   return (
     <APIProvider port={apiPort}>
       <FundsProvider>
-        <RequestsProvider>
-          <TransfersProvider>
+        <RequestsProvider authorizedUser={auth}>
+          <TransfersProvider authorizedUser={auth}>
             <PartialRequestsProvider>
               <div className="App">
                 <ReactNotification />

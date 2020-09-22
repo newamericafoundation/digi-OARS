@@ -15,6 +15,7 @@ import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
 import { TransfersContext } from "../providers/TransfersProvider";
+import { toCurrency } from "../utilities";
 
 const WithdrawalsPage = () => {
   const auth = useAuth();
@@ -43,20 +44,15 @@ const WithdrawalsPage = () => {
     }
   }, [auth]);
 
-  const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
-
   return (
     <>
       <CRow>
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(requestsState.approvedAmount, "USD").toString()}
+            header={
+              toCurrency(requestsState.approvedAmount, "USD").toString()
+            }
             text="Approved Withdrawal Requests"
             color="gradient-success"
             value={
@@ -73,7 +69,9 @@ const WithdrawalsPage = () => {
         <CCol xs="12" sm="6" lg="3">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(requestsState.pendingAmount, "USD").toString()}
+            header={
+              toCurrency(requestsState.pendingAmount, "USD").toString()
+            }
             text="Pending Withdrawal Requests"
             color="gradient-warning"
             value={

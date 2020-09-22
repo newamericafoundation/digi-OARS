@@ -10,7 +10,6 @@ import { APIContext } from "./APIProvider";
 import * as Constants from "../constants";
 import { addAmounts } from "../utilities";
 
-
 export const RequestsContext = createContext();
 
 const initialState = {
@@ -27,10 +26,17 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case "UPDATE_REQUESTS":
-      const pending = action.payload.filter((request) => request.status === Constants.REQUEST_PENDING);
-      const approved = action.payload.filter((request) => request.status === Constants.REQUEST_APPROVED);
-      const transferred = action.payload.filter((request) => request.status === Constants.REQUEST_TRANSFERRED);
+      const pending = action.payload.filter(
+        (request) => request.status === Constants.REQUEST_PENDING
+      );
+      const approved = action.payload.filter(
+        (request) => request.status === Constants.REQUEST_APPROVED
+      );
+      const transferred = action.payload.filter(
+        (request) => request.status === Constants.REQUEST_TRANSFERRED
+      );
       return {
+        ...state,
         data: action.payload,
         pending: pending,
         approved: approved,
@@ -45,25 +51,58 @@ const reducer = (state, action) => {
   }
 };
 
-const RequestsProvider = ({ children }) => {
+const RequestsProvider = ({ children, authorizedUser }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [api] = useContext(APIContext);
 
   const callback = useCallback(
-    () =>
-      getRequests(api.port).then((data) =>
-        dispatch({ type: "UPDATE_REQUESTS", payload: data })
-      ),
-    [dispatch, api.port]
+    () => {
+      if (authorizedUser.isAuthenticated && authorizedUser.meta.keycloak.hasResourceRole("funds_requestor")) {
+        getRequests(api.port).then((data) =>
+          dispatch({
+            type: "UPDATE_REQUESTS",
+            payload: data.filter(
+              (request) =>
+                request.authorizedUserDept ===
+                authorizedUser.meta.keycloak.tokenParsed.groups[0]
+            ),
+          })
+        );
+      } else {
+        getRequests(api.port).then((data) =>
+          dispatch({
+            type: "UPDATE_REQUESTS",
+            payload: data,
+          })
+        );
+      }
+    },
+    [dispatch, authorizedUser.isAuthenticated, authorizedUser.meta.keycloak, api.port]
   );
 
   useEffect(() => {
     if (api.port) {
-      getRequests(api.port).then((data) =>
-        dispatch({ type: "UPDATE_REQUESTS", payload: data })
-      );
+      if (authorizedUser.isAuthenticated && authorizedUser.meta.keycloak.hasResourceRole("funds_requestor")) {
+        getRequests(api.port).then((data) =>
+          dispatch({
+            type: "UPDATE_REQUESTS",
+            payload: data.filter(
+              (request) =>
+                request.authorizedUserDept ===
+                authorizedUser.meta.keycloak.tokenParsed.groups[0]
+            ),
+          })
+        );
+      } else {
+        getRequests(api.port).then((data) =>
+          dispatch({
+            type: "UPDATE_REQUESTS",
+            payload: data,
+          })
+        );
+      }
     }
-  }, [api.port]);
+  }, [api.port, authorizedUser.isAuthenticated, authorizedUser.meta.keycloak]);
 
   return (
     <RequestsContext.Provider value={[state, callback]}>
