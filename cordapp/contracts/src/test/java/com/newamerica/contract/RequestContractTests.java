@@ -33,6 +33,8 @@ public class RequestContractTests {
     private RequestState requestState_diff;
     private RequestState requestState_diff2;
     private RequestState requestState_negative_amount;
+    private RequestState requestState_flagged;
+    private RequestState requestState_flagged_approved;
 
     public interface Commands extends CommandData {
         class DummyCommand extends TypeOnlyCommandData implements Commands{}
@@ -105,6 +107,26 @@ public class RequestContractTests {
                 new UniqueIdentifier(),
                 participants
         );
+
+        //flagged request state
+        requestState_flagged = new RequestState(
+                "Alice Alice",
+                "Catan Ministry of Education",
+                authorizerUserDeptAndUsername,
+                authorizedParties,
+                "1234567890",
+                "build a school",
+                BigDecimal.valueOf(1000000),
+                Currency.getInstance("USD"),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                RequestState.RequestStateStatus.FLAGGED,
+                new UniqueIdentifier(),
+                participants
+        );
+
+        requestState_flagged_approved = requestState_flagged.changeStatus(RequestState.RequestStateStatus.APPROVED);
+
     }
 
     // issue
@@ -138,6 +160,19 @@ public class RequestContractTests {
         });
     }
 
+    @Test
+    public void flaggedRequestCanBeApproved() {
+        ledger(ledgerServices, (ledger -> {
+            ledger.transaction(tx -> {
+                tx.input(RequestContract.ID, requestState_flagged);
+                tx.output(RequestContract.ID, requestState_flagged_approved);
+                tx.command(CATANMoFA.getPublicKey(), new RequestContract.Commands.Approve());
+                return tx.verifies();
+            });
+            return null;
+        }));
+    }
+
     @Test(expected=AssertionError.class)
     public void issueTxMustHaveNoInputs() {
         ledger(ledgerServices, (ledger -> {
@@ -151,6 +186,7 @@ public class RequestContractTests {
             return null;
         }));
     }
+
 
     @Test(expected=AssertionError.class)
     public void txMustHaveOneOutput() {

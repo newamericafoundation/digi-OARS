@@ -43,7 +43,7 @@ public class RequestContract implements Contract {
                 require.using("Only one output state should be created when approving a RequestState.", tx.getOutputStates().size() == 1);
                 RequestState inputState = (RequestState) tx.getInputStates().get(0);
                 RequestState outputState = (RequestState) tx.getOutputStates().get(0);
-                require.using("The request input state must be in PENDING status.", inputState.getStatus() == RequestState.RequestStateStatus.PENDING);
+                require.using("The request input state must be in PENDING or FLAGGED status.", inputState.getStatus().equals(RequestState.RequestStateStatus.PENDING) || inputState.getStatus().equals(RequestState.RequestStateStatus.FLAGGED));
                 require.using("The request output state must be in APPROVED status.", outputState.getStatus() == RequestState.RequestStateStatus.APPROVED);
                 require.using("The authorizedUserUsername cannot change.", inputState.getAuthorizedUserUsername().equals(outputState.getAuthorizedUserUsername()));
                 require.using("The authorizedUserDept cannot change.", inputState.getAuthorizedUserDept().equals(outputState.getAuthorizedUserDept()));
@@ -65,7 +65,7 @@ public class RequestContract implements Contract {
                 require.using("Only one output state should be created when rejecting a RequestState.", tx.getOutputStates().size() == 1);
                 RequestState inputState = (RequestState) tx.getInputStates().get(0);
                 RequestState outputState = (RequestState) tx.getOutputStates().get(0);
-                require.using("The request input state must be in PENDING status.", inputState.getStatus() == RequestState.RequestStateStatus.PENDING);
+                require.using("The request input state must be in PENDING or FLAGGED status.", inputState.getStatus().equals(RequestState.RequestStateStatus.PENDING) || inputState.getStatus().equals(RequestState.RequestStateStatus.FLAGGED));
                 require.using("The request output state must be in REJECTED status.", outputState.getStatus() == RequestState.RequestStateStatus.REJECTED);
                 require.using("The authorizedUserUsername cannot change.", inputState.getAuthorizedUserUsername().equals(outputState.getAuthorizedUserUsername()));
                 require.using("The authorizedUserDept cannot change.", inputState.getAuthorizedUserDept().equals(outputState.getAuthorizedUserDept()));
