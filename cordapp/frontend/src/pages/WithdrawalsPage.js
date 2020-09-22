@@ -84,7 +84,7 @@ const WithdrawalsPage = () => {
               (requestsState.rejectedAmount / requestsState.totalAmount) * 100
             }
           >
-            <CIcon name="cil-av-timer" height="36" />
+            <CIcon name="cil-x-circle" height="36" />
           </CWidgetProgressIcon>
         </CCol>
         <CCol xs="12" sm="6" lg="3">
@@ -97,7 +97,7 @@ const WithdrawalsPage = () => {
               (requestsState.flaggedAmount / requestsState.totalAmount) * 100
             }
           >
-            <CIcon name="cil-av-timer" height="36" />
+            <CIcon name="cil-flag-alt" height="36" />
           </CWidgetProgressIcon>
         </CCol>
       </CRow>
