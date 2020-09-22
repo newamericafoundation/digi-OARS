@@ -17,9 +17,11 @@ const initialState = {
   pending: [],
   approved: [],
   transferred: [],
+  totalAmount: 0,
   pendingAmount: 0,
   approvedAmount: 0,
   transferredAmount: 0,
+  rejectedAmount: 0,
   loading: true,
 };
 
@@ -35,15 +37,21 @@ const reducer = (state, action) => {
       const transferred = action.payload.filter(
         (request) => request.status === Constants.REQUEST_TRANSFERRED
       );
+      const rejected = action.payload.filter(
+        (request) => request.status === Constants.REQUEST_REJECTED
+      );
+      const totalAmount = addAmounts(action.payload)
       return {
         ...state,
         data: action.payload,
         pending: pending,
         approved: approved,
         transferred: transferred,
+        totalAmount: totalAmount,
         pendingAmount: addAmounts(pending),
         approvedAmount: addAmounts(approved),
         transferredAmount: addAmounts(transferred),
+        rejectedAmount: addAmounts(rejected),
         loading: false,
       };
     default:

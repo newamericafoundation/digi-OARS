@@ -11,3 +11,5 @@ export const FUND_PAID = "PAID"
 export const REQUEST_PENDING = "PENDING"
 export const REQUEST_APPROVED = "APPROVED"
 export const REQUEST_TRANSFERRED = "TRANSFERRED"
+export const REQUEST_REJECTED = "REJECTED"
+

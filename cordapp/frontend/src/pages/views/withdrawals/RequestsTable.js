@@ -13,13 +13,14 @@ import {
   CCallout,
   CSpinner,
   CTooltip,
+  CButtonGroup,
 } from "@coreui/react";
 import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
 import EllipsesText from "react-ellipsis-text";
-import { toCurrency } from "../../../utilities"
+import { toCurrency } from "../../../utilities";
 
 export const RequestsTable = ({
   filterStatus,
@@ -71,6 +72,8 @@ export const RequestsTable = ({
         return "success";
       case "PENDING":
         return "warning";
+      case "REJECTED":
+        return "danger";
       default:
         return "primary";
     }
@@ -84,7 +87,42 @@ export const RequestsTable = ({
   ) => {
     setIsLoading(true);
     const url =
-      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request/approve";
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      api.port +
+      "/api/request/approve";
+
+    axios
+      .put(url, null, {
+        params: {
+          requestStateLinearId,
+          authorizerUserUsername,
+          authorizerUserDept,
+        },
+      })
+      .then((response) => {
+        setIsLoading(false);
+        refreshFundsTableCallback();
+        refreshRequestsTableCallback();
+        toggleDetails(index);
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const onHandleRejectClick = (
+    requestStateLinearId,
+    authorizerUserUsername,
+    authorizerUserDept,
+    index
+  ) => {
+    setIsLoading(true);
+    const url =
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      api.port +
+      "/api/request/reject";
 
     axios
       .put(url, null, {
@@ -136,32 +174,62 @@ export const RequestsTable = ({
   };
 
   const getActionButton = (item, index) => {
-    if (item.status !== Constants.REQUEST_APPROVED && isApprover) {
+    if (item.status === Constants.REQUEST_PENDING && isApprover) {
       return (
-        <CButton
-          className={"float-right mb-0"}
-          color="success"
-          variant="outline"
-          shape="square"
-          size="sm"
-          onClick={() =>
-            onHandleApproveClick(
-              item.linearId,
-              auth.user.fullName,
-              auth.meta.keycloak.tokenParsed.groups[0],
-              index
-            )
-          }
-        >
-          {isLoading ? (
-            <CSpinner
-              className="spinner-border spinner-border-sm mr-1"
-              role="status"
-              aria-hidden="true"
-            />
-          ) : null}
-          Approve Request
-        </CButton>
+        <div className="float-right mb-0">
+          <CButtonGroup className="float-right mb-0">
+            <CButton
+              className={"float-right mb-0"}
+              color="success"
+              variant="outline"
+              shape="square"
+              size="sm"
+              onClick={() =>
+                onHandleApproveClick(
+                  item.linearId,
+                  auth.user.fullName,
+                  auth.meta.keycloak.tokenParsed.groups[0],
+                  index
+                )
+              }
+            >
+              {isLoading ? (
+                <CSpinner
+                  className="spinner-border spinner-border-sm mr-1"
+                  role="status"
+                  aria-hidden="true"
+                />
+              ) : null}
+              Approve Request
+            </CButton>
+          </CButtonGroup>
+          <CButtonGroup className="float-right mb-0 mr-2">
+            <CButton
+              className={"float-right mb-0"}
+              color="danger"
+              variant="outline"
+              shape="square"
+              size="sm"
+              onClick={() =>
+                onHandleRejectClick(
+                  item.linearId,
+                  auth.user.fullName,
+                  auth.meta.keycloak.tokenParsed.groups[0],
+                  index
+                )
+              }
+            >
+              {isLoading ? (
+                <CSpinner
+                  className="spinner-border spinner-border-sm mr-1"
+                  role="status"
+                  aria-hidden="true"
+                />
+              ) : null}
+              Reject Request
+            </CButton>
+          </CButtonGroup>
+        </div>
       );
     }
     if (item.status === Constants.REQUEST_APPROVED && isTransferer) {

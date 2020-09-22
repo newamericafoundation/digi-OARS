@@ -55,11 +55,7 @@ const WithdrawalsPage = () => {
             text="Approved Withdrawal Requests"
             color="gradient-success"
             value={
-              (requestsState.approvedAmount /
-                (requestsState.pendingAmount +
-                  requestsState.approvedAmount +
-                  requestsState.transferredAmount)) *
-              100
+              (requestsState.approvedAmount / requestsState.totalAmount) * 100
             }
           >
             <CIcon name="cil-check-circle" height="36" />
@@ -72,11 +68,20 @@ const WithdrawalsPage = () => {
             text="Pending Withdrawal Requests"
             color="gradient-warning"
             value={
-              (requestsState.pendingAmount /
-                (requestsState.pendingAmount +
-                  requestsState.approvedAmount +
-                  requestsState.transferredAmount)) *
-              100
+              (requestsState.pendingAmount / requestsState.totalAmount) * 100
+            }
+          >
+            <CIcon name="cil-av-timer" height="36" />
+          </CWidgetProgressIcon>
+        </CCol>
+        <CCol xs="12" sm="6" lg="4">
+          <CWidgetProgressIcon
+            inverse
+            header={toCurrency(requestsState.rejectedAmount, "USD").toString()}
+            text="Rejected Withdrawal Requests"
+            color="gradient-danger"
+            value={
+              (requestsState.rejectedAmount / requestsState.totalAmount) * 100
             }
           >
             <CIcon name="cil-av-timer" height="36" />
@@ -143,6 +148,32 @@ const WithdrawalsPage = () => {
             <CCardBody>
               <RequestsTable
                 filterStatus={Constants.REQUEST_APPROVED}
+                requests={requestsState}
+                refreshFundsTableCallback={fundsCallback}
+                refreshRequestsTableCallback={requestsCallback}
+                refreshTransfersTableCallback={transfersCallback}
+                isApprover={isRequestApprover}
+                isIssuer={isFundsIssuer}
+                isReceiver={isFundsReceiver}
+                isTransferer={isRequestTransferer}
+              />
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <CCard>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Rejected Withdrawal Requests</h4>
+                </CCallout>
+              </div>
+            </CCardHeader>
+            <CCardBody>
+              <RequestsTable
+                filterStatus={Constants.REQUEST_REJECTED}
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
