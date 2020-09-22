@@ -114,7 +114,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       fields={fields}
       columnFilter
       tableFilter
-      // footer
       itemsPerPageSelect
       itemsPerPage={5}
       hover

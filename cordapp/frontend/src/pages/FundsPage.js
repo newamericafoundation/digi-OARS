@@ -10,7 +10,7 @@ import {
   CModalTitle,
   CRow,
   CWidgetProgressIcon,
-  CCol,
+  CCol,CCallout
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { FundsTable } from "./views/funds/FundsTable";
@@ -70,7 +70,7 @@ const FundsPage = () => {
   return (
     <>
       <CRow>
-        <CCol xs="12" sm="6" lg="3">
+        <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
             header={toCurrency(fundsState.paidAmount, "USD").toString()}
@@ -87,7 +87,7 @@ const FundsPage = () => {
             <CIcon name="cil-money" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-        <CCol xs="12" sm="6" lg="3">
+        <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
             header={toCurrency(fundsState.receivedAmount, "USD").toString()}
@@ -104,7 +104,7 @@ const FundsPage = () => {
             <CIcon name="cil-check-circle" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-        <CCol xs="12" sm="6" lg="3">
+        <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
             header={toCurrency(fundsState.issuedAmount, "USD").toString()}
@@ -124,19 +124,21 @@ const FundsPage = () => {
       </CRow>
       <CCard>
         <CCardHeader>
-          Funds
-          {auth.isAuthenticated && isFundsIssuer ? (
-            <div className="card-header-actions">
+          <div className="mb-0">
+            <CCallout className="float-left mt-1 mb-1">
+              <h4 className="mt-1">Funds</h4>
+            </CCallout>
+            {auth.isAuthenticated && isFundsIssuer ? (
               <CButton
-                className={"float-right mb-0"}
+                className={"float-right"}
                 color={"primary"}
                 tabIndex="0"
                 onClick={handleShow}
               >
                 Issue Funds
               </CButton>
-            </div>
-          ) : null}
+            ) : null}
+          </div>
         </CCardHeader>
         <CCardBody>
           <FundsTable

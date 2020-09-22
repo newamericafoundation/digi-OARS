@@ -6,6 +6,7 @@ import {
   CWidgetProgressIcon,
   CRow,
   CCol,
+  CCallout,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { TransfersTable } from "./views/transfers/TransfersTable";
@@ -33,7 +34,13 @@ const TransfersPage = () => {
       <CRow>
         <CCol>
           <CCard>
-            <CCardHeader>Transfers History</CCardHeader>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Transfers History</h4>
+                </CCallout>
+              </div>
+            </CCardHeader>
             <CCardBody>
               <TransfersTable transfers={transfersState} />
             </CCardBody>
