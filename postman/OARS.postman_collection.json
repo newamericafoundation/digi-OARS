@@ -1854,11 +1854,6 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"The new Fund State has been returned successfully.\", function(){\r",
-									"    var jsonData = pm.response.json().context.entity;\r",
-									"    pm.expect(Number(postman.getEnvironmentVariable(\"funds_list_status_size\"))).to.be.lessThan(jsonData.length)\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1886,6 +1881,57 @@
 								{
 									"key": "endDate",
 									"value": "11-12-2020"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get RequestState Aggregate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1f22c700-53e8-4a93-9c9d-d090940b4912",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{localhost}}{{US_DOJ}}/api/fund/aggregate?startDate=9-11-2020&endDate=11-12-2020&department=Test Department&status=APPROVED",
+							"host": [
+								"{{localhost}}{{US_DOJ}}"
+							],
+							"path": [
+								"api",
+								"fund",
+								"aggregate"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "9-11-2020"
+								},
+								{
+									"key": "endDate",
+									"value": "11-12-2020"
+								},
+								{
+									"key": "department",
+									"value": "Test Department"
+								},
+								{
+									"key": "status",
+									"value": "APPROVED"
 								}
 							]
 						}
