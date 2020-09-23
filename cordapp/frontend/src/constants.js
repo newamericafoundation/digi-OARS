@@ -1,3 +1,6 @@
+//Interval
+export const REFRESH_INTERVAL_MS = 5000
+
 //DateTime
 export const DATE_FORMAT = "DD/MMM/yyyy"
 export const DATETIME_FORMAT = "DD/MMM/YYYY HH:mm:ss z"

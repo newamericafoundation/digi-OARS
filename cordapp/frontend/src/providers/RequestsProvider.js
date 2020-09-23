@@ -9,6 +9,7 @@ import getRequests from "../data/GetRequests";
 import { APIContext } from "./APIProvider";
 import * as Constants from "../constants";
 import { addAmounts } from "../utilities";
+import  useInterval  from "../interval-hook";
 
 export const RequestsContext = createContext();
 
@@ -92,6 +93,10 @@ const RequestsProvider = ({ children, authorizedUser }) => {
     },
     [dispatch, authorizedUser.isAuthenticated, authorizedUser.meta.keycloak, api.port]
   );
+
+  useInterval(() => {
+    callback();
+  }, Constants.REFRESH_INTERVAL_MS);
 
   useEffect(() => {
     if (api.port) {
