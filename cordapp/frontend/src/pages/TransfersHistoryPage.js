@@ -12,9 +12,16 @@ import CIcon from "@coreui/icons-react";
 import { TransfersTable } from "./views/transfers/TransfersTable";
 import { TransfersContext } from "../providers/TransfersProvider";
 import { toCurrency } from "../utilities";
+import useInterval from "../interval-hook";
+import * as Constants from "../constants";
+
 
 const TransfersPage = () => {
-  const [transfersState] = useContext(TransfersContext);
+  const [transfersState, transfersCallback] = useContext(TransfersContext);
+
+  useInterval(() => {
+    transfersCallback();
+  }, Constants.REFRESH_INTERVAL_MS);
 
   return (
     <>

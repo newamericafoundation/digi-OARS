@@ -21,6 +21,8 @@ import UseToaster from "../notification/Toaster";
 import { FundsContext } from "../providers/FundsProvider";
 import EllipsesText from "react-ellipsis-text";
 import { useAuth } from "../auth-hook";
+import useInterval from "../interval-hook";
+import * as Constants from "../constants";
 
 const FundsPage = () => {
   const auth = useAuth();
@@ -38,6 +40,10 @@ const FundsPage = () => {
       setIsFundsIssuer(auth.meta.keycloak.hasResourceRole("funds_issuer"));
     }
   }, [auth]);
+
+  useInterval(() => {
+    fundsCallback();
+  }, Constants.REFRESH_INTERVAL_MS);
 
   const responseMessage = (message) => {
     return (

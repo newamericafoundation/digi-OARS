@@ -8,8 +8,6 @@ import React, {
 import getTransfers from "../data/GetTransfers";
 import { APIContext } from "./APIProvider";
 import { addAmounts } from "../utilities";
-import useInterval from "../interval-hook";
-import * as Constants from "../constants";
 
 export const TransfersContext = createContext();
 
@@ -63,12 +61,6 @@ const TransfersProvider = ({ children, authorizedUser }) => {
     authorizedUser.meta.keycloak,
     api.port,
   ]);
-
-  useInterval(() => {
-    if (api.port) {
-      callback();
-    }
-  }, Constants.REFRESH_INTERVAL_MS);
 
   useEffect(() => {
     if (api.port) {
