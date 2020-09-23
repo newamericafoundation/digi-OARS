@@ -2,9 +2,16 @@ import React, { useContext } from "react";
 import { CCard, CCardBody, CCardHeader, CRow, CCol, CCallout } from "@coreui/react";
 import { PartialRequestsTable } from "./views/withdrawals/PartialRequestsTable";
 import { PartialRequestsContext } from "../providers/PartialRequestsProvider";
+import useInterval from "../interval-hook";
+import * as Constants from "../constants";
 
 const PartialWithdrawalsPage = () => {
-  const [partialRequestsState] = useContext(PartialRequestsContext);
+  const [partialRequestsState, partialRequestsCallback] = useContext(PartialRequestsContext);
+
+  useInterval(() => {
+    partialRequestsCallback();
+  }, Constants.REFRESH_INTERVAL_MS);
+
   return (
     <>
       <CRow>

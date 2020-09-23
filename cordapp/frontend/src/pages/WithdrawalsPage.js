@@ -17,6 +17,8 @@ import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
 import { TransfersContext } from "../providers/TransfersProvider";
 import { toCurrency } from "../utilities";
+import useInterval from "../interval-hook";
+
 
 const WithdrawalsPage = () => {
   const auth = useAuth();
@@ -44,6 +46,12 @@ const WithdrawalsPage = () => {
       );
     }
   }, [auth]);
+
+  useInterval(() => {
+    fundsCallback();
+    requestsCallback();
+    transfersCallback();
+  }, Constants.REFRESH_INTERVAL_MS);
 
   return (
     <>

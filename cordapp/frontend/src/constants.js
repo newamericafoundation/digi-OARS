@@ -1,5 +1,5 @@
 //Interval
-export const REFRESH_INTERVAL_MS = 5000
+export const REFRESH_INTERVAL_MS = 10000
 
 //DateTime
 export const DATE_FORMAT = "DD/MMM/yyyy"

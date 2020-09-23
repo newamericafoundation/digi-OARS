@@ -7,12 +7,14 @@ import { RequestsContext } from "../../../providers/RequestsProvider";
 import { addAmounts } from "../../../utilities";
 import { TransfersContext } from "../../../providers/TransfersProvider";
 import { PartialRequestsContext } from "../../../providers/PartialRequestsProvider";
+import useInterval from "../../../interval-hook";
+import * as Constants from "../../../constants";
 
 export const Widgets = ({ auth }) => {
-  const [fundsState] = useContext(FundsContext);
-  const [requestsState] = useContext(RequestsContext);
-  const [partialRequestsState] = useContext(PartialRequestsContext);
-  const [transfersState] = useContext(TransfersContext);
+  const [fundsState, fundsCallback] = useContext(FundsContext);
+  const [requestsState, requestsCallback] = useContext(RequestsContext);
+  const [partialRequestsState, partialRequestsCallback] = useContext(PartialRequestsContext);
+  const [transfersState, transfersCallback] = useContext(TransfersContext);
 
   const getRequestorData = (data) => {
     return data.filter(
@@ -20,6 +22,13 @@ export const Widgets = ({ auth }) => {
         request.authorizedUserDept === auth.meta.keycloak.tokenParsed.groups[0]
     );
   };
+
+  useInterval(() => {
+    fundsCallback();
+    requestsCallback();
+    partialRequestsCallback();
+    transfersCallback();
+  }, Constants.REFRESH_INTERVAL_MS);
 
   const getSpinner = () => {
     return (
@@ -209,7 +218,9 @@ export const Widgets = ({ auth }) => {
                       </CCol>
                     </CRow>
                   )}
-                  {auth.meta.keycloak.hasResourceRole("partial_request_viewer") && (
+                  {auth.meta.keycloak.hasResourceRole(
+                    "partial_request_viewer"
+                  ) && (
                     <CRow className="mb-3">
                       <CCol>
                         <div className="text-value-lg mb-2">
@@ -223,7 +234,10 @@ export const Widgets = ({ auth }) => {
                         <div className="text-value-md mt-2 mb-0">
                           {partialRequestsState.loading
                             ? getSpinner()
-                            : toCurrency(partialRequestsState.totalAmount, "USD")}
+                            : toCurrency(
+                                partialRequestsState.totalAmount,
+                                "USD"
+                              )}
                         </div>
                       </CCol>
                     </CRow>
