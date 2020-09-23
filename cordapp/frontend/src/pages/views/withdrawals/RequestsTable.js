@@ -14,6 +14,11 @@ import {
   CSpinner,
   CTooltip,
   CButtonGroup,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
 } from "@coreui/react";
 import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
@@ -37,6 +42,19 @@ export const RequestsTable = ({
   const [api] = useContext(APIContext);
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [show, setShow] = useState(false);
+  const [currentItem, setCurrentItem] = useState({});
+  const [currentItemIndex, setCurrentItemIndex] = useState();
+  const [currentRequestAction, setCurrentRequestAction] = useState("");
+
+  const handleShow = (item) => {
+    setCurrentItem(item);
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+  };
 
   const toggleDetails = (index) => {
     const position = details.indexOf(index);
@@ -64,6 +82,19 @@ export const RequestsTable = ({
     },
   ];
 
+  const getCurrentActionColor = (action) => {
+    switch (action) {
+      case "transfer":
+        return "info";
+      case "approve":
+        return "success";
+      case "reject":
+        return "danger";
+      default:
+        return "primary";
+    }
+  };
+
   const getStatusBadge = (status) => {
     switch (status) {
       case "TRANSFERRED":
@@ -75,93 +106,74 @@ export const RequestsTable = ({
       case "REJECTED":
         return "danger";
       case "FLAGGED":
-          return "info";
+        return "info";
       default:
         return "primary";
     }
   };
 
-  const onHandleApproveClick = (
+  const getUrl = () => {
+    if (currentRequestAction !== "transfer") {
+      return (
+        "http://" +
+        window._env_.API_CLIENT_URL +
+        ":" +
+        api.port +
+        "/api/request/" +
+        currentRequestAction
+      );
+    }
+    return (
+      "http://" +
+      window._env_.API_CLIENT_URL +
+      ":" +
+      api.port +
+      "/api/" +
+      currentRequestAction
+    );
+  };
+
+  const onHandleConfirmationClick = (
     requestStateLinearId,
     authorizerUserUsername,
     authorizerUserDept,
     index
   ) => {
     setIsLoading(true);
-    const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      api.port +
-      "/api/request/approve";
 
-    axios
-      .put(url, null, {
-        params: {
-          requestStateLinearId,
-          authorizerUserUsername,
-          authorizerUserDept,
-        },
-      })
-      .then((response) => {
-        setIsLoading(false);
-        refreshFundsTableCallback();
-        refreshRequestsTableCallback();
-        toggleDetails(index);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const onHandleRejectClick = (
-    requestStateLinearId,
-    authorizerUserUsername,
-    authorizerUserDept,
-    index
-  ) => {
-    setIsLoading(true);
-    const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      api.port +
-      "/api/request/reject";
-
-    axios
-      .put(url, null, {
-        params: {
-          requestStateLinearId,
-          authorizerUserUsername,
-          authorizerUserDept,
-        },
-      })
-      .then((response) => {
-        setIsLoading(false);
-        refreshFundsTableCallback();
-        refreshRequestsTableCallback();
-        toggleDetails(index);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const onHandleTransferClick = (requestId, index) => {
-    setIsLoading(true);
-    const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      api.port +
-      "/api/transfer";
-
-    axios
-      .post(url, null, { params: { requestId } })
-      .then((response) => {
-        setIsLoading(false);
-        refreshFundsTableCallback();
-        refreshRequestsTableCallback();
-        refreshTransfersTableCallback();
-        toggleDetails(index);
-      })
-      .catch((err) => console.log(err));
+    if (currentRequestAction !== "transfer") {
+      axios
+        .put(getUrl(), null, {
+          params: {
+            requestStateLinearId,
+            authorizerUserUsername,
+            authorizerUserDept,
+          },
+        })
+        .then((response) => {
+          setIsLoading(false);
+          refreshFundsTableCallback();
+          refreshRequestsTableCallback();
+          handleClose();
+          toggleDetails(currentItemIndex);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      axios
+        .post(getUrl(), null, {
+          params: {
+            requestId: requestStateLinearId,
+          },
+        })
+        .then((response) => {
+          setIsLoading(false);
+          refreshFundsTableCallback();
+          refreshRequestsTableCallback();
+          handleClose();
+          toggleDetails(currentItemIndex);
+        })
+        .catch((err) => console.log(err));
+    }
   };
 
   const getData = () => {
@@ -186,22 +198,11 @@ export const RequestsTable = ({
               variant="outline"
               shape="square"
               size="sm"
-              onClick={() =>
-                onHandleApproveClick(
-                  item.linearId,
-                  auth.user.fullName,
-                  auth.meta.keycloak.tokenParsed.groups[0],
-                  index
-                )
-              }
+              onClick={() => {
+                setCurrentRequestAction("approve");
+                handleShow(item);
+              }}
             >
-              {isLoading ? (
-                <CSpinner
-                  className="spinner-border spinner-border-sm mr-1"
-                  role="status"
-                  aria-hidden="true"
-                />
-              ) : null}
               Approve Request
             </CButton>
           </CButtonGroup>
@@ -212,22 +213,11 @@ export const RequestsTable = ({
               variant="outline"
               shape="square"
               size="sm"
-              onClick={() =>
-                onHandleRejectClick(
-                  item.linearId,
-                  auth.user.fullName,
-                  auth.meta.keycloak.tokenParsed.groups[0],
-                  index
-                )
-              }
+              onClick={() => {
+                setCurrentRequestAction("reject");
+                handleShow(item);
+              }}
             >
-              {isLoading ? (
-                <CSpinner
-                  className="spinner-border spinner-border-sm mr-1"
-                  role="status"
-                  aria-hidden="true"
-                />
-              ) : null}
               Reject Request
             </CButton>
           </CButtonGroup>
@@ -242,7 +232,11 @@ export const RequestsTable = ({
           variant="outline"
           shape="square"
           size="sm"
-          onClick={() => onHandleTransferClick(item.linearId, index)}
+          // onClick={() => onHandleTransferClick(item.linearId, index)}
+          onClick={() => {
+            setCurrentRequestAction("transfer");
+            handleShow(item);
+          }}
         >
           {isLoading ? (
             <CSpinner
@@ -303,6 +297,7 @@ export const RequestsTable = ({
                   shape="square"
                   size="sm"
                   onClick={() => {
+                    setCurrentItemIndex(index);
                     toggleDetails(index);
                   }}
                 >
@@ -404,6 +399,95 @@ export const RequestsTable = ({
           },
         }}
       />
+      <CModal
+        color={getCurrentActionColor(currentRequestAction)}
+        show={show}
+        onClose={handleClose}
+      >
+        <CModalHeader closeButton>
+          <CModalTitle>
+            {currentRequestAction.charAt(0).toUpperCase() +
+              currentRequestAction.slice(1)}{" "}
+            Confirmation
+          </CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CCallout
+            color={getCurrentActionColor(currentRequestAction)}
+            className={"bg-light"}
+          >
+            <p className="text-muted mb-0">Request State ID</p>
+            <strong className="p">{currentItem.linearId}</strong>
+          </CCallout>
+          <CCallout
+            color={getCurrentActionColor(currentRequestAction)}
+            className={"bg-light"}
+          >
+            <p className="text-muted mb-0">Requestor</p>
+            <strong className="p">{currentItem.authorizedUserUsername}</strong>
+          </CCallout>
+          <CCallout
+            color={getCurrentActionColor(currentRequestAction)}
+            className={"bg-light"}
+          >
+            <p className="text-muted mb-0">Department</p>
+            <strong className="p">{currentItem.authorizedUserDept}</strong>
+          </CCallout>
+          <CCallout
+            color={getCurrentActionColor(currentRequestAction)}
+            className={"bg-light"}
+          >
+            <p className="text-muted mb-0">Amount</p>
+            <strong className="p">
+              {toCurrency(currentItem.amount, "USD")}
+            </strong>
+          </CCallout>
+          {currentRequestAction === "transfer" ? (
+            <CCallout
+              color={getStatusBadge(currentItem.status)}
+              className={"bg-light"}
+            >
+              <p className="text-muted mb-0">Status</p>
+              <strong className="p">
+                {currentItem.status} " by " +{" "}
+                {Object.keys(currentItem.authorizerUserDeptAndUsername).map(
+                  (key) =>
+                    currentItem.authorizerUserDeptAndUsername[key] +
+                    " [" +
+                    key +
+                    "]"
+                )}
+              </strong>
+            </CCallout>
+          ) : null}
+        </CModalBody>
+        <CModalFooter>
+          <CButton
+            color={getCurrentActionColor(currentRequestAction)}
+            onClick={() =>
+              onHandleConfirmationClick(
+                currentItem.linearId,
+                auth.user.fullName,
+                auth.meta.keycloak.tokenParsed.groups[0]
+              )
+            }
+          >
+            {isLoading ? (
+              <CSpinner
+                className="spinner-border spinner-border-sm mr-1"
+                role="status"
+                aria-hidden="true"
+              />
+            ) : null}
+            {currentRequestAction.charAt(0).toUpperCase() +
+              currentRequestAction.slice(1)}{" "}
+            Request
+          </CButton>
+          <CButton color="secondary" onClick={handleClose}>
+            Cancel
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </>
   );
 };
