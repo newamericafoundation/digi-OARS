@@ -3,43 +3,40 @@ import { CCol, CRow, CCallout } from "@coreui/react";
 
 export const WelcomeCallout = ({ auth }) => {
   const [hour, setHour] = useState();
-  const [greeting, setGreeting] = useState();
+  const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
-    const fetchGreeting = async () => {
+    const fetchGreeting = () => {
       const date = new Date();
       setHour(date.getHours());
 
       if (hour) {
         switch (true) {
           case hour < 12:
-            setGreeting("Good morning, " + auth.user.firstName + "!");
+            setGreeting("Good morning, ");
             break;
           case hour >= 12 && hour < 17:
-            setGreeting("Good afternoon, " + auth.user.firstName + "!");
+            setGreeting("Good afternoon, ");
             break;
           case hour >= 17:
-            setGreeting("Good evening, " + auth.user.firstName + "!");
+            setGreeting("Good evening, ");
             break;
           default:
-            setGreeting("Hello, " + auth.user.firstName + "!");
+            setGreeting("Hello, ");
             break;
         }
       }
     };
-    if (auth.isAuthenticated) {
-      fetchGreeting();
-    }
-  }, [hour, greeting, auth]);
+
+    fetchGreeting();
+  }, [hour]);
 
   return (
     <CRow>
       <CCol>
-        {auth.isAuthenticated && (
+        {(auth.isAuthenticated && auth.user.firstName !== undefined) && (
           <CCallout color="dark" className="bg-light mt-0 mb-4">
-            <h1 className="text-muted">
-              {greeting}
-            </h1>
+            <h1 className="text-muted">{greeting}{auth.user.firstName}!</h1>
             <h6>Your daily summary:</h6>
           </CCallout>
         )}
