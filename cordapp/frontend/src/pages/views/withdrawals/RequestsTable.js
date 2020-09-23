@@ -449,7 +449,7 @@ export const RequestsTable = ({
             >
               <p className="text-muted mb-0">Status</p>
               <strong className="p">
-                {currentItem.status} " by " +{" "}
+                {currentItem.status + " by "}
                 {Object.keys(currentItem.authorizerUserDeptAndUsername).map(
                   (key) =>
                     currentItem.authorizerUserDeptAndUsername[key] +
