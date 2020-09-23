@@ -57,7 +57,9 @@ const FundsProvider = ({ children }) => {
   );
 
   useInterval(() => {
-    callback();
+    if (api.port) {
+      callback();
+    }
   }, Constants.REFRESH_INTERVAL_MS);
 
   useEffect(() => {

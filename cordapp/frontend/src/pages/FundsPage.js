@@ -10,7 +10,8 @@ import {
   CModalTitle,
   CRow,
   CWidgetProgressIcon,
-  CCol,CCallout
+  CCol,
+  CCallout,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { FundsTable } from "./views/funds/FundsTable";
@@ -122,32 +123,75 @@ const FundsPage = () => {
           </CWidgetProgressIcon>
         </CCol>
       </CRow>
-      <CCard>
-        <CCardHeader>
-          <div className="mb-0">
-            <CCallout className="float-left mt-1 mb-1">
-              <h4 className="mt-1">Funds</h4>
-            </CCallout>
-            {auth.isAuthenticated && isFundsIssuer ? (
-              <CButton
-                className={"float-right"}
-                color={"primary"}
-                tabIndex="0"
-                onClick={handleShow}
-              >
-                Issue Funds
-              </CButton>
-            ) : null}
-          </div>
-        </CCardHeader>
-        <CCardBody>
-          <FundsTable
-            funds={fundsState}
-            isReceiver={isFundsReceiver}
-            refreshTableCallback={fundsCallback}
-          />
-        </CCardBody>
-      </CCard>
+      <CRow>
+        <CCol>
+          <CCard>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Funds Issued</h4>
+                </CCallout>
+                {auth.isAuthenticated && isFundsIssuer ? (
+                  <CButton
+                    className={"float-right"}
+                    color={"primary"}
+                    tabIndex="0"
+                    onClick={handleShow}
+                  >
+                    Issue Funds
+                  </CButton>
+                ) : null}
+              </div>
+            </CCardHeader>
+            <CCardBody>
+              <FundsTable
+                funds={fundsState.issued}
+                isReceiver={isFundsReceiver}
+                refreshTableCallback={fundsCallback}
+              />
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+      <CRow>
+        <CCol>
+          <CCard>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Funds Received</h4>
+                </CCallout>
+              </div>
+            </CCardHeader>
+            <CCardBody>
+              <FundsTable
+                funds={fundsState.received}
+                isReceiver={isFundsReceiver}
+                refreshTableCallback={fundsCallback}
+              />
+            </CCardBody>
+          </CCard>
+        </CCol>
+        <CCol>
+          <CCard>
+            <CCardHeader>
+              <div className="mb-0">
+                <CCallout className="float-left mt-1 mb-1">
+                  <h4 className="mt-1">Funds Paid</h4>
+                </CCallout>
+              </div>
+            </CCardHeader>
+            <CCardBody>
+              <FundsTable
+                funds={fundsState.paid}
+                isReceiver={isFundsReceiver}
+                refreshTableCallback={fundsCallback}
+              />
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
       <CModal show={show} onClose={handleClose}>
         <CModalHeader closeButton>
           <CModalTitle>Funds Form</CModalTitle>

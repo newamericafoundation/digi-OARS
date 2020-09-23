@@ -38,12 +38,11 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   };
 
   const fields = [
-    { key: "originParty", label: "Origin Country" },
     { key: "receivingParty", label: "Receiving Country" },
     { key: "amount" },
     { key: "balance" },
-    { key: "createdDateTime", label: "Created Date" },
     { key: "maxWithdrawalAmount" },
+    { key: "createdDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
     {
       key: "show_details",
@@ -110,7 +109,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
 
   return (
     <CDataTable
-      items={funds.data}
+      items={funds}
       fields={fields}
       columnFilter
       tableFilter
