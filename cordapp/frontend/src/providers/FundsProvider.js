@@ -8,8 +8,8 @@ import React, {
 import getFunds from "../data/GetFunds";
 import { APIContext } from "./APIProvider";
 import * as Constants from "../constants";
-import { addAmounts } from "../utilities"
-
+import { addAmounts } from "../utilities";
+import  useInterval  from "../interval-hook";
 
 export const FundsContext = createContext();
 
@@ -55,6 +55,10 @@ const FundsProvider = ({ children }) => {
       ),
     [dispatch, api.port]
   );
+
+  useInterval(() => {
+    callback();
+  }, Constants.REFRESH_INTERVAL_MS);
 
   useEffect(() => {
     if (api.port) {
