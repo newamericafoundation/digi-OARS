@@ -8,7 +8,7 @@ import React, {
 import getPartialRequests from "../data/GetPartialRequests";
 import { APIContext } from "./APIProvider";
 import { addAmounts } from "../utilities";
-import  useInterval  from "../interval-hook";
+import useInterval from "../interval-hook";
 import * as Constants from "../constants";
 
 export const PartialRequestsContext = createContext();
@@ -45,7 +45,9 @@ const PartialRequestsProvider = ({ children }) => {
   );
 
   useInterval(() => {
-    callback();
+    if (api.port) {
+      callback();
+    }
   }, Constants.REFRESH_INTERVAL_MS);
 
   useEffect(() => {
