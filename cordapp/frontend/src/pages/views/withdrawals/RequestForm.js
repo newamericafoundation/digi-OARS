@@ -19,6 +19,7 @@ import useForm from "../../../form/index";
 import { useAuth } from "../../../auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
+import CurrencyInput from "../../../form/CurrencyInput";
 
 export const RequestForm = ({ onSubmit, request }) => {
   const auth = useAuth();
@@ -53,11 +54,7 @@ export const RequestForm = ({ onSubmit, request }) => {
   const onSubmitForm = (state) => {
     setIsLoading(true);
     const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      api.port +
-      "/api/request";
+      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/request";
 
     axios
       .post(url, {
@@ -84,7 +81,6 @@ export const RequestForm = ({ onSubmit, request }) => {
   const {
     fundStateId,
     authorizedUserUsername,
-    amount,
     externalAccountId,
     purpose,
   } = values;
@@ -119,18 +115,18 @@ export const RequestForm = ({ onSubmit, request }) => {
                 <CInputGroupPrepend>
                   <CInputGroupText>$</CInputGroupText>
                 </CInputGroupPrepend>
-                <CInput
-                  type="number"
+                <CurrencyInput
+                  className="form-control"
+                  placeholder="0.00"
+                  type="text"
                   name="amount"
                   id="amount"
-                  value={amount}
-                  placeholder={0}
-                  valid={errors.amount.length === 0}
-                  invalid={errors.amount.length > 0}
                   onChange={handleOnChange}
                 />
-                <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
               </CInputGroup>
+              <div className="text-muted small">
+                <p className="text-danger">{errors.amount}</p>
+              </div>
               <CFormGroup>
                 <CLabel htmlFor="purpose">Purpose</CLabel>
                 <CInputGroup className="input-prepend">
@@ -149,6 +145,9 @@ export const RequestForm = ({ onSubmit, request }) => {
                     onChange={handleOnChange}
                   />
                 </CInputGroup>
+                <div className="text-muted small">
+                <p className="text-danger">{errors.purpose}</p>
+              </div>
               </CFormGroup>
             </CFormGroup>
           </CCol>
