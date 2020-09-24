@@ -27,7 +27,6 @@ export const Widgets = ({ auth }) => {
 
   useInterval(() => {
     if (auth.isAuthenticated) {
-        console.log(auth.isAuthenticated)
       fundsCallback();
       requestsCallback();
       partialRequestsCallback();
