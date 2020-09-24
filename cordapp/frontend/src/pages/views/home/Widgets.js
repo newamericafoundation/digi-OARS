@@ -13,7 +13,9 @@ import * as Constants from "../../../constants";
 export const Widgets = ({ auth }) => {
   const [fundsState, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
-  const [partialRequestsState, partialRequestsCallback] = useContext(PartialRequestsContext);
+  const [partialRequestsState, partialRequestsCallback] = useContext(
+    PartialRequestsContext
+  );
   const [transfersState, transfersCallback] = useContext(TransfersContext);
 
   const getRequestorData = (data) => {
@@ -24,10 +26,13 @@ export const Widgets = ({ auth }) => {
   };
 
   useInterval(() => {
-    fundsCallback();
-    requestsCallback();
-    partialRequestsCallback();
-    transfersCallback();
+    if (auth.isAuthenticated) {
+        console.log(auth.isAuthenticated)
+      fundsCallback();
+      requestsCallback();
+      partialRequestsCallback();
+      transfersCallback();
+    }
   }, Constants.REFRESH_INTERVAL_MS);
 
   const getSpinner = () => {

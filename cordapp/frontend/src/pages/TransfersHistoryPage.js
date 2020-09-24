@@ -14,13 +14,16 @@ import { TransfersContext } from "../providers/TransfersProvider";
 import { toCurrency } from "../utilities";
 import useInterval from "../interval-hook";
 import * as Constants from "../constants";
-
+import { useAuth } from "../auth-hook";
 
 const TransfersPage = () => {
+  const auth = useAuth();
   const [transfersState, transfersCallback] = useContext(TransfersContext);
 
   useInterval(() => {
-    transfersCallback();
+    if (auth.isAuthenticated) {
+      transfersCallback();
+    }
   }, Constants.REFRESH_INTERVAL_MS);
 
   return (
