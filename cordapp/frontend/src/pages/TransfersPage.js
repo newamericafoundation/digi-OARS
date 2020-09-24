@@ -42,9 +42,11 @@ const TransfersPage = () => {
   }, [auth]);
 
   useInterval(() => {
-    fundsCallback();
-    requestsCallback();
-    transfersCallback();
+    if (auth.isAuthenticated) {
+      fundsCallback();
+      requestsCallback();
+      transfersCallback();
+    }
   }, Constants.REFRESH_INTERVAL_MS);
 
   return (

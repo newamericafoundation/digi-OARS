@@ -19,7 +19,6 @@ import { TransfersContext } from "../providers/TransfersProvider";
 import { toCurrency } from "../utilities";
 import useInterval from "../interval-hook";
 
-
 const WithdrawalsPage = () => {
   const auth = useAuth();
   const [fundsState, fundsCallback] = useContext(FundsContext);
@@ -48,9 +47,11 @@ const WithdrawalsPage = () => {
   }, [auth]);
 
   useInterval(() => {
-    fundsCallback();
-    requestsCallback();
-    transfersCallback();
+    if (auth.isAuthenticated) {
+      fundsCallback();
+      requestsCallback();
+      transfersCallback();
+    }
   }, Constants.REFRESH_INTERVAL_MS);
 
   return (

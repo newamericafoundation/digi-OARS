@@ -42,7 +42,9 @@ const FundsPage = () => {
   }, [auth]);
 
   useInterval(() => {
-    fundsCallback();
+    if (auth.isAuthenticated) {
+      fundsCallback();
+    }
   }, Constants.REFRESH_INTERVAL_MS);
 
   const responseMessage = (message) => {
