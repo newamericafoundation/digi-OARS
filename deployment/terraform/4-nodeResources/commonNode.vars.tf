@@ -27,9 +27,6 @@ variable "node_virtual_machines" {
     "uscso" = {
       public_ip_dns_label = ""
     }
-    "ustreasury" = {
-      public_ip_dns_label = ""
-    }
     "catanmofa" = {
       public_ip_dns_label = ""
     }
