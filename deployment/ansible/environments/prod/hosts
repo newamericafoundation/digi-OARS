@@ -2,7 +2,6 @@
 usdos ansible_host=node-oars.eastus.cloudapp.azure.com ansible_port=22100 organisation="US_DoS"
 usdoj ansible_host=node-oars.eastus.cloudapp.azure.com ansible_port=22200 organisation="US_DoJ"
 uscso ansible_host=node-oars.eastus.cloudapp.azure.com ansible_port=22300 organisation="US_CSO"
-ustreasury ansible_host=node-oars.eastus.cloudapp.azure.com ansible_port=22400 organisation="US_Treasury"
 catanmoj ansible_host=node-oars.eastus.cloudapp.azure.com ansible_port=22600 organisation="Catan_MoJ"
 catanmofa ansible_host=node-oars.eastus.cloudapp.azure.com ansible_port=22500 organisation="Catan_MoFA"
 catantreasury ansible_host=node-oars.eastus.cloudapp.azure.com ansible_port=22800 organisation="Catan_Treasury"
