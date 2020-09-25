@@ -33,6 +33,7 @@ const reducer = (state, action) => {
         data: action.payload,
         issued: issued,
         received: received,
+        paid: paid,
         issuedAmount: addAmounts(issued),
         receivedAmount: addAmounts(received),
         paidAmount: addAmounts(paid),
