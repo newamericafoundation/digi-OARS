@@ -30,7 +30,7 @@ import java.util.Map;
  *  fundStateLinearId -  A reference to the fund state that this request is based on
  */
 @BelongsToContract(RequestContract.class)
-public class RequestState implements LinearState {
+public class RequestState implements LinearState, Comparable<RequestState> {
     public final String authorizedUserUsername;
     public final String authorizedUserDept;
     public final Map<String,String> authorizerUserDeptAndUsername;
@@ -194,6 +194,11 @@ public class RequestState implements LinearState {
         );
     }
 
+    @Override
+    public int compareTo(RequestState a) {
+        return (-1)*(getCreateDatetime().compareTo(a.getCreateDatetime()));
+    }
+
     @CordaSerializable
     public enum RequestStateStatus {
         PENDING("PENDING"),
@@ -207,4 +212,7 @@ public class RequestState implements LinearState {
             this.status = status;
         }
     }
+
+
+
 }

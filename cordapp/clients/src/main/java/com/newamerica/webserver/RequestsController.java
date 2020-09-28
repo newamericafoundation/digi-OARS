@@ -65,14 +65,21 @@ public class RequestsController extends BaseResource {
         }
     }
 
-    @GetMapping(value = "/request/{fundId}", produces = "application/json", params = "fundId")
-    private Response getRequestByFundId (@PathParam("fundId") String fundId) {
+    @GetMapping(value = "/requests", produces = "application/json", params = "fundId")
+    private Response getRequestsByFundId (@QueryParam("fundId") String fundId) {
         try {
-            String resourcePath = String.format("/request/%s", fundId);
+            String resourcePath = "/requests";
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(fundId)));
-            StateAndRef<RequestState> request = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates().get(0);
-            return Response.ok(request.getState().getData()).build();
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
+            List<StateAndRef<RequestState>> requestStates = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates();
+            List<RequestState> list = new ArrayList<>();
+            for (StateAndRef<RequestState> requestStateStateAndRef : requestStates) {
+                if(requestStateStateAndRef.getState().getData().getFundStateLinearId().getId().equals(UUID.fromString(fundId))) {
+                    list.add(requestStateStateAndRef.getState().getData());
+                }
+            }
+            Collections.sort(list);
+            return Response.ok(list).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
