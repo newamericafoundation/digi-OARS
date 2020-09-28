@@ -30,6 +30,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE_NUM;
 
@@ -68,7 +69,12 @@ public class FundsController extends BaseResource {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
             List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
-            return Response.ok(fundList).build();
+            List<FundState> list = new ArrayList<>();
+            for (StateAndRef<FundState> fundStateStateAndRef : fundList) {
+                list.add(fundStateStateAndRef.getState().getData());
+            }
+            Collections.sort(list);
+            return Response.ok(list).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -94,7 +100,7 @@ public class FundsController extends BaseResource {
     }
 
     @GetMapping(value = "/fund/aggregate", produces = "application/json", params = {"startDate", "endDate"})
-    private Response getFundAggregate (@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) throws ParseException {
+    private Response getFundAggregate (@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
         try {
             String resourcePath = String.format("/fund?startDate=%s?endDate=%s", startDate, endDate);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);

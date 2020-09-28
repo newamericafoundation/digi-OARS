@@ -31,7 +31,7 @@ import java.util.List;
  */
 
 @BelongsToContract(FundContract.class)
-public class FundState implements LinearState {
+public class FundState implements LinearState, Comparable<FundState> {
     public final Party originParty;
     public final Party receivingParty;
     public final List<AbstractParty> owners;
@@ -179,6 +179,12 @@ public class FundState implements LinearState {
                 this.linearId
         );
     }
+
+    @Override
+    public int compareTo(FundState a) {
+        return (-1)*(getCreateDatetime().compareTo(a.getCreateDatetime()));
+    }
+
 
     @CordaSerializable
     public enum FundStateStatus{

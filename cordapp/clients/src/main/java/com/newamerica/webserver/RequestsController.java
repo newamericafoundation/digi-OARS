@@ -65,6 +65,22 @@ public class RequestsController extends BaseResource {
         }
     }
 
+    @GetMapping(value = "/request/{fundId}", produces = "application/json", params = "fundId")
+    private Response getRequestByFundId (@PathParam("fundId") String fundId) {
+        try {
+            String resourcePath = String.format("/request/%s", fundId);
+            PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(fundId)));
+            StateAndRef<RequestState> request = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates().get(0);
+            return Response.ok(request.getState().getData()).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
     @GetMapping(value = "/request/{requestId}", produces = "application/json", params = "requestId")
     private Response getRequestById (@PathParam("requestId") String requestId) {
         try {
