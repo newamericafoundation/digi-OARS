@@ -17,6 +17,7 @@ import useForm from "../../../form/index";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
 import CurrencyInput from "../../../form/CurrencyInput";
+import { toCountryByIsoFromX500 } from "../../../utilities"
 
 export const FundsForm = ({ onSubmit }) => {
   const [api] = useContext(APIContext);
@@ -103,9 +104,7 @@ export const FundsForm = ({ onSubmit }) => {
                     ? treasuryNodes.map((item) => (
                         <option
                           key={item}
-                          label={item
-                            .split(/O=([a-zA-Z_]+)/)[1]
-                            .replace("_", " ")}
+                          label={toCountryByIsoFromX500(item)}
                           value={item}
                         />
                       ))
