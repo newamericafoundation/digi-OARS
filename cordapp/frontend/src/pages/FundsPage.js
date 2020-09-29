@@ -12,6 +12,7 @@ import {
   CWidgetProgressIcon,
   CCol,
   CCallout,
+  CButtonGroup,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { FundsTable } from "./views/funds/FundsTable";
@@ -29,10 +30,16 @@ const FundsPage = () => {
   const [fundsState, fundsCallback] = useContext(FundsContext);
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
+  const [fundsFilterStatus, setFundsFilterStatus] = useState("ISSUED");
 
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
   const handleClose = () => setShow(false);
+
+  const handleTableFilter = (filterValue) => {
+    setFundsFilterStatus(filterValue);
+    fundsCallback(filterValue);
+  };
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -62,11 +69,13 @@ const FundsPage = () => {
 
   const onFormSubmit = (response) => {
     handleClose();
-    response.status === 200
-      ? UseToaster("Success", responseMessage(response), "success")
-      : UseToaster("Error", response.entity.message, "danger");
 
-    fundsCallback();
+    if (response.status === 200) {
+      UseToaster("Success", responseMessage(response), "success");
+      fundsCallback();
+    } else {
+      UseToaster("Error", response.entity.message, "danger");
+    }
   };
 
   const toCurrency = (number, currency) => {
@@ -74,6 +83,21 @@ const FundsPage = () => {
       style: "currency",
       currency: currency,
     }).format(number);
+  };
+
+  const getCalloutColor = () => {
+    switch (fundsFilterStatus) {
+      case "ALL":
+        return "secondary";
+      case "ISSUED":
+        return "warning";
+      case "RECEIVED":
+        return "success";
+      case "PAID":
+        return "dark";
+      default:
+        return "warning";
+    }
   };
 
   return (
@@ -136,12 +160,19 @@ const FundsPage = () => {
           <CCard>
             <CCardHeader>
               <div className="mb-0">
-                <CCallout className="float-left mt-1 mb-1">
-                  <h4 className="mt-1">Funds Issued</h4>
+                <CCallout
+                  className="float-left mt-1 mb-1"
+                  color={getCalloutColor()}
+                >
+                  <h4 className="mt-1 text-dark">
+                    {fundsFilterStatus.charAt(0).toUpperCase() +
+                      fundsFilterStatus.slice(1).toLowerCase()}{" "}
+                    Funds
+                  </h4>
                 </CCallout>
                 {auth.isAuthenticated && isFundsIssuer ? (
                   <CButton
-                    className={"float-right"}
+                    className="float-right mt-1 mb-1"
                     color={"primary"}
                     tabIndex="0"
                     onClick={handleShow}
@@ -149,11 +180,49 @@ const FundsPage = () => {
                     Issue Funds
                   </CButton>
                 ) : null}
+                <CButtonGroup className="float-right mr-3 mt-1 mb-1">
+                  <CButton
+                    color="outline-dark"
+                    className="mx-0"
+                    key="All"
+                    active={"ALL" === fundsFilterStatus}
+                    onClick={() => handleTableFilter("ALL")}
+                  >
+                    All
+                  </CButton>
+                  <CButton
+                    color="outline-dark"
+                    className="mx-0"
+                    key="Issued"
+                    active={"ISSUED" === fundsFilterStatus}
+                    onClick={() => handleTableFilter("ISSUED")}
+                  >
+                    Issued
+                  </CButton>
+                  <CButton
+                    color="outline-dark"
+                    className="mx-0"
+                    key="Received"
+                    active={"RECEIVED" === fundsFilterStatus}
+                    onClick={() => handleTableFilter("RECEIVED")}
+                  >
+                    Received
+                  </CButton>
+                  <CButton
+                    color="outline-dark"
+                    className="mx-0"
+                    key="Paid"
+                    active={"PAID" === fundsFilterStatus}
+                    onClick={() => handleTableFilter("PAID")}
+                  >
+                    Paid
+                  </CButton>
+                </CButtonGroup>
               </div>
             </CCardHeader>
             <CCardBody>
               <FundsTable
-                funds={fundsState.issued}
+                funds={fundsState.filteredData}
                 isReceiver={isFundsReceiver}
                 refreshTableCallback={fundsCallback}
               />
@@ -161,45 +230,6 @@ const FundsPage = () => {
           </CCard>
         </CCol>
       </CRow>
-      <CRow>
-        <CCol>
-          <CCard>
-            <CCardHeader>
-              <div className="mb-0">
-                <CCallout className="float-left mt-1 mb-1">
-                  <h4 className="mt-1">Funds Received</h4>
-                </CCallout>
-              </div>
-            </CCardHeader>
-            <CCardBody>
-              <FundsTable
-                funds={fundsState.received}
-                isReceiver={isFundsReceiver}
-                refreshTableCallback={fundsCallback}
-              />
-            </CCardBody>
-          </CCard>
-        </CCol>
-        <CCol>
-          <CCard>
-            <CCardHeader>
-              <div className="mb-0">
-                <CCallout className="float-left mt-1 mb-1">
-                  <h4 className="mt-1">Funds Paid</h4>
-                </CCallout>
-              </div>
-            </CCardHeader>
-            <CCardBody>
-              <FundsTable
-                funds={fundsState.paid}
-                isReceiver={isFundsReceiver}
-                refreshTableCallback={fundsCallback}
-              />
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-
       <CModal show={show} onClose={handleClose}>
         <CModalHeader closeButton>
           <CModalTitle>Funds Form</CModalTitle>

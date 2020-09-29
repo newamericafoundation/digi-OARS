@@ -14,6 +14,7 @@ export const FundsContext = createContext();
 
 const initialState = {
   data: [],
+  filteredData: [],
   issued: [],
   received: [],
   paid: [],
@@ -25,10 +26,30 @@ const initialState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
+    case "FILTER_FUNDS":
+      if (action.filterValue === "ALL") {
+        return {
+          ...state,
+          filteredData: state.data,
+        };
+      } else {
+        return {
+          ...state,
+          filteredData: state.data.filter(
+            (fund) => fund.status === action.filterValue
+          ),
+        };
+      }
     case "UPDATE_FUNDS":
-      const issued = action.payload.filter((fund) => fund.status === Constants.FUND_ISSUED)
-      const received = action.payload.filter((fund) => fund.status === Constants.FUND_RECEIVED)
-      const paid = action.payload.filter((fund) => fund.status === Constants.FUND_PAID)
+      const issued = action.payload.filter(
+        (fund) => fund.status === Constants.FUND_ISSUED
+      );
+      const received = action.payload.filter(
+        (fund) => fund.status === Constants.FUND_RECEIVED
+      );
+      const paid = action.payload.filter(
+        (fund) => fund.status === Constants.FUND_PAID
+      );
       return {
         data: action.payload,
         issued: issued,
@@ -49,18 +70,24 @@ const FundsProvider = ({ children }) => {
   const [api] = useContext(APIContext);
 
   const callback = useCallback(
-    () =>
-      getFunds(api.port).then((data) =>
-        dispatch({ type: "UPDATE_FUNDS", payload: data })
-      ),
+    (filter) => {
+      if (filter) {
+        dispatch({ type: "FILTER_FUNDS", filterValue: filter });
+      } else {
+        getFunds(api.port).then((data) => {
+          dispatch({ type: "UPDATE_FUNDS", payload: data });
+        });
+      }
+    },
     [dispatch, api.port]
   );
 
   useEffect(() => {
     if (api.port) {
-      getFunds(api.port).then((data) =>
-        dispatch({ type: "UPDATE_FUNDS", payload: data })
-      );
+      getFunds(api.port).then((data) => {
+        dispatch({ type: "UPDATE_FUNDS", payload: data });
+        dispatch({ type: "FILTER_FUNDS", filterValue: "ISSUED" });
+      });
     }
   }, [api.port]);
 
