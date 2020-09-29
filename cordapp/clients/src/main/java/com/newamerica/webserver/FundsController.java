@@ -54,7 +54,8 @@ public class FundsController extends BaseResource {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
-            return Response.ok(fundList).build();
+            List<FundState> resultSet = fundList.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(FundState::getCreateDatetime).reversed()).collect(Collectors.toList());
+            return Response.ok(resultSet).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -69,12 +70,8 @@ public class FundsController extends BaseResource {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
             List<StateAndRef<FundState>> fundList = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates();
-            List<FundState> list = new ArrayList<>();
-            for (StateAndRef<FundState> fundStateStateAndRef : fundList) {
-                list.add(fundStateStateAndRef.getState().getData());
-            }
-            Collections.sort(list);
-            return Response.ok(list).build();
+            List<FundState> resultSet = fundList.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(FundState::getCreateDatetime).reversed()).collect(Collectors.toList());
+            return Response.ok(resultSet).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
