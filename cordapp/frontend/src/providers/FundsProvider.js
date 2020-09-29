@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useReducer,
   useCallback,
-  useContext
+  useContext,
 } from "react";
 import getFunds from "../data/GetFunds";
 import { APIContext } from "./APIProvider";
@@ -14,7 +14,6 @@ export const FundsContext = createContext();
 
 const initialState = {
   data: [],
-  filteredData: [],
   issued: [],
   received: [],
   paid: [],
@@ -26,21 +25,7 @@ const initialState = {
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "FILTER_FUNDS":
-      if (action.filterValue === "ALL") {
-        return {
-          ...state,
-          filteredData: state.data,
-        };
-      } else {
-        return {
-          ...state,
-          filteredData: state.data.filter(
-            (fund) => fund.status === action.filterValue
-          ),
-        };
-      }
-    case "UPDATE_FUNDS":
+    case "GET_FUNDS":
       const issued = action.payload.filter(
         (fund) => fund.status === Constants.FUND_ISSUED
       );
@@ -69,24 +54,20 @@ const FundsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [api] = useContext(APIContext);
 
+
   const callback = useCallback(
-    (filter) => {
-      if (filter) {
-        dispatch({ type: "FILTER_FUNDS", filterValue: filter });
-      } else {
-        getFunds(api.port).then((data) => {
-          dispatch({ type: "UPDATE_FUNDS", payload: data });
-        });
-      }
+    () => {
+      getFunds(api.port).then((data) => {
+        dispatch({ type: "GET_FUNDS", payload: data });
+      })
     },
-    [dispatch, api.port]
-  );
+    [dispatch, api.port],
+  )
 
   useEffect(() => {
     if (api.port) {
       getFunds(api.port).then((data) => {
-        dispatch({ type: "UPDATE_FUNDS", payload: data });
-        dispatch({ type: "FILTER_FUNDS", filterValue: "ISSUED" });
+        dispatch({ type: "GET_FUNDS", payload: data });
       });
     }
   }, [api.port]);
