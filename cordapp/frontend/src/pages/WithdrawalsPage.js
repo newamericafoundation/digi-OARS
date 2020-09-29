@@ -61,6 +61,25 @@ const WithdrawalsPage = () => {
     }
   }, Constants.REFRESH_INTERVAL_MS);
 
+  const getCalloutColor = () => {
+    switch (requestsFilterStatus) {
+      case "ALL":
+        return "secondary";
+      case "PENDING":
+        return "warning";
+      case "APPROVED":
+        return "success";
+      case "TRANSFERRED":
+        return "dark";
+      case "REJECTED":
+        return "danger";
+      case "FLAGGED":
+        return "info";
+      default:
+        return "warning";
+    }
+  };
+
   return (
     <>
       <CRow>
@@ -143,8 +162,15 @@ const WithdrawalsPage = () => {
           <CCard>
             <CCardHeader>
               <div className="mb-0">
-                <CCallout className="float-left mt-1 mb-1">
-                  <h4 className="mt-1">Pending Withdrawal Requests</h4>
+                <CCallout
+                  className="float-left mt-1 mb-1"
+                  color={getCalloutColor()}
+                >
+                  <h4 className="mt-1 text-dark">
+                    {requestsFilterStatus.charAt(0).toUpperCase() +
+                      requestsFilterStatus.slice(1).toLowerCase()}{" "}
+                    Withdrawal Requests
+                  </h4>
                 </CCallout>
                 <CButtonGroup className="float-right mr-3 mt-1 mb-1">
                   <CButton

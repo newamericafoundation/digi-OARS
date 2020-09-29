@@ -364,14 +364,6 @@ export const RequestsTable = ({
                             </strong>
                           </CCallout>
                         </CTooltip>
-                        <CTooltip content={item.txId} placement="right-end">
-                          <CCallout color="info" className={"bg-light"}>
-                            <p className="text-muted mb-0">Transaction ID</p>
-                            <strong className="p">
-                              <EllipsesText text={item.txId} length={30} />
-                            </strong>
-                          </CCallout>
-                        </CTooltip>
                         <CCallout
                           color={getStatusBadge(item.status)}
                           className={"bg-light"}
