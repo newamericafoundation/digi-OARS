@@ -30,7 +30,7 @@ const FundsPage = () => {
   const [fundsState, fundsCallback] = useContext(FundsContext);
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
-  const [fundsFilterStatus, setFundsFilterStatus] = useState("ISSUED");
+  const [fundsFilterStatus, setFundsFilterStatus] = useState("ALL");
 
   const [show, setShow] = useState(false);
   const handleShow = () => setShow(true);
@@ -220,7 +220,7 @@ const FundsPage = () => {
             </CCardHeader>
             <CCardBody>
               <FundsTable
-                funds={fundsState.data.filter(
+                funds={fundsFilterStatus === "ALL" ? fundsState.data : fundsState.data.filter(
                   (fund) => fund.status === fundsFilterStatus
                 )}
                 isReceiver={isFundsReceiver}
