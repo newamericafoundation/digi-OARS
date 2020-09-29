@@ -1,6 +1,8 @@
 package com.newamerica.webserver;
 
 import com.newamerica.flows.IssueTransferFlow;
+import com.newamerica.states.FundState;
+import com.newamerica.states.RequestState;
 import com.newamerica.states.TransferState;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -19,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE_NUM;
 
@@ -41,7 +45,8 @@ public class TransferController extends BaseResource {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<TransferState>> transferList = rpcOps.vaultQueryByWithPagingSpec(TransferState.class, queryCriteria, pagingSpec).getStates();
-            return Response.ok(transferList).build();
+            List<TransferState> resultSet = transferList.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(TransferState::getDatetime).reversed()).collect(Collectors.toList());
+            return Response.ok(resultSet).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {

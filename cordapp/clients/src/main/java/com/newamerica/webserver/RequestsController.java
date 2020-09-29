@@ -72,14 +72,8 @@ public class RequestsController extends BaseResource {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
             List<StateAndRef<RequestState>> requestStates = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates();
-            List<RequestState> list = new ArrayList<>();
-            for (StateAndRef<RequestState> requestStateStateAndRef : requestStates) {
-                if(requestStateStateAndRef.getState().getData().getFundStateLinearId().getId().equals(UUID.fromString(fundId))) {
-                    list.add(requestStateStateAndRef.getState().getData());
-                }
-            }
-            Collections.sort(list);
-            return Response.ok(list).build();
+            List<RequestState> resultSet = requestStates.stream().map(it -> it.getState().getData()).filter(it -> it.getFundStateLinearId().getId().equals(UUID.fromString(fundId))).sorted(Comparator.comparing(RequestState::getCreateDatetime).reversed()).collect(Collectors.toList());
+            return Response.ok(resultSet).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
@@ -127,7 +121,8 @@ public class RequestsController extends BaseResource {
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<PartialRequestState>> partialRequestList = rpcOps.vaultQueryByWithPagingSpec(PartialRequestState.class, queryCriteria, pagingSpec).getStates();
-            return Response.ok(partialRequestList).build();
+            List<PartialRequestState> resultSet = partialRequestList.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(PartialRequestState::getDatetime).reversed()).collect(Collectors.toList());
+            return Response.ok(resultSet).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
