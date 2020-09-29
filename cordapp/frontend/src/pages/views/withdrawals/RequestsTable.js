@@ -178,7 +178,18 @@ export const RequestsTable = ({
 
   const getData = () => {
     if (isApprover || isIssuer || isTransferer || isReceiver) {
+      if (filterStatus === "ALL") {
+        return requests.data;
+      }
       return requests.data.filter((request) => request.status === filterStatus);
+    }
+
+    if (filterStatus === "ALL") {
+      return requests.data.filter(
+        (request) =>
+          request.authorizedUserDept ===
+          auth.meta.keycloak.tokenParsed.groups[0]
+      );
     }
     return requests.data.filter(
       (request) =>
@@ -369,6 +380,18 @@ export const RequestsTable = ({
                           <strong className="p">
                             {item.status}
                             {item.status === Constants.REQUEST_APPROVED
+                              ? " by " +
+                                Object.keys(
+                                  item.authorizerUserDeptAndUsername
+                                ).map(
+                                  (key) =>
+                                    item.authorizerUserDeptAndUsername[key] +
+                                    " [" +
+                                    key +
+                                    "]"
+                                )
+                              : null}
+                            {item.status === Constants.REQUEST_REJECTED
                               ? " by " +
                                 Object.keys(
                                   item.authorizerUserDeptAndUsername
