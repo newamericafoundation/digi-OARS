@@ -38,7 +38,6 @@ const FundsPage = () => {
 
   const handleTableFilter = (filterValue) => {
     setFundsFilterStatus(filterValue);
-    fundsCallback(filterValue);
   };
 
   useEffect(() => {
@@ -69,7 +68,6 @@ const FundsPage = () => {
 
   const onFormSubmit = (response) => {
     handleClose();
-
     if (response.status === 200) {
       UseToaster("Success", responseMessage(response), "success");
       fundsCallback();
@@ -222,7 +220,9 @@ const FundsPage = () => {
             </CCardHeader>
             <CCardBody>
               <FundsTable
-                funds={fundsState.filteredData}
+                funds={fundsState.data.filter(
+                  (fund) => fund.status === fundsFilterStatus
+                )}
                 isReceiver={isFundsReceiver}
                 refreshTableCallback={fundsCallback}
               />
