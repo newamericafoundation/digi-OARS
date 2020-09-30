@@ -81,7 +81,7 @@ export const AvailableFundsTable = ({
     { key: "balance", label: "Balance Available" },
     { key: "updatedDateTime", label: "Updated Date" },
     { key: "maxWithdrawalAmount" },
-    { key: "status", _style: { width: "20%" } },
+    { key: "status", _style: { width: "20%" }, filter: false },
     {
       key: "show_details",
       label: "",
