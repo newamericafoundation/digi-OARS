@@ -7,6 +7,8 @@ import {
   CRow,
   CCol,
   CCallout,
+  CButtonGroup,
+  CButton,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { RequestsTable } from "./views/withdrawals/RequestsTable";
@@ -27,6 +29,11 @@ const TransfersPage = () => {
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
   const [isRequestApprover, setIsRequestApprover] = useState(false);
   const [isRequestTransferer, setIsRequestTransferer] = useState(false);
+  const [requestsFilterStatus, setRequestsFilterStatus] = useState("APPROVED");
+
+  const handleTableFilter = (filterValue) => {
+    setRequestsFilterStatus(filterValue);
+  };
 
   useEffect(() => {
     if (auth.isAuthenticated) {
@@ -48,6 +55,17 @@ const TransfersPage = () => {
       transfersCallback();
     }
   }, Constants.REFRESH_INTERVAL_MS);
+
+  const getCalloutColor = () => {
+    switch (requestsFilterStatus) {
+      case "APPROVED":
+        return "success";
+      case "TRANSFERRED":
+        return "dark";
+      default:
+        return "warning";
+    }
+  };
 
   return (
     <>
@@ -76,7 +94,7 @@ const TransfersPage = () => {
           <CWidgetProgressIcon
             inverse
             header={toCurrency(requestsState.approvedAmount, "USD").toString()}
-            text="Withdrawal Requests Awaiting Transfer"
+            text="Approved Withdrawal Requests"
             color="gradient-warning"
             value={
               (requestsState.approvedAmount /
@@ -95,36 +113,41 @@ const TransfersPage = () => {
           <CCard>
             <CCardHeader>
               <div className="mb-0">
-                <CCallout className="float-left mt-1 mb-1">
-                  <h4 className="mt-1">Approved Withdrawal Requests</h4>
+                <CCallout
+                  className="float-left mt-1 mb-1"
+                  color={getCalloutColor()}
+                >
+                  <h4 className="mt-1 text-dark">
+                    {requestsFilterStatus.charAt(0).toUpperCase() +
+                      requestsFilterStatus.slice(1).toLowerCase()}{" "}
+                    Withdrawal Requests
+                  </h4>
                 </CCallout>
+                <CButtonGroup className="float-right mr-3 mt-1 mb-1">
+                  <CButton
+                    color="outline-dark"
+                    className="mx-0"
+                    key="APPROVED"
+                    active={"APPROVED" === requestsFilterStatus}
+                    onClick={() => handleTableFilter("APPROVED")}
+                  >
+                    Approved
+                  </CButton>
+                  <CButton
+                    color="outline-dark"
+                    className="mx-0"
+                    key="TRANSFERRED"
+                    active={"TRANSFERRED" === requestsFilterStatus}
+                    onClick={() => handleTableFilter("TRANSFERRED")}
+                  >
+                    Transferred
+                  </CButton>
+                </CButtonGroup>
               </div>
             </CCardHeader>
             <CCardBody>
               <RequestsTable
-                filterStatus={Constants.REQUEST_APPROVED}
-                requests={requestsState}
-                refreshFundsTableCallback={fundsCallback}
-                refreshRequestsTableCallback={requestsCallback}
-                refreshTransfersTableCallback={transfersCallback}
-                isApprover={isRequestApprover}
-                isIssuer={isFundsIssuer}
-                isReceiver={isFundsReceiver}
-                isTransferer={isRequestTransferer}
-              />
-            </CCardBody>
-          </CCard>
-          <CCard>
-            <CCardHeader>
-              <div className="mb-0">
-                <CCallout className="float-left mt-1 mb-1">
-                  <h4 className="mt-1">Transferred Withdrawal Requests</h4>
-                </CCallout>
-              </div>
-            </CCardHeader>{" "}
-            <CCardBody>
-              <RequestsTable
-                filterStatus={Constants.REQUEST_TRANSFERRED}
+                filterStatus={requestsFilterStatus}
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}

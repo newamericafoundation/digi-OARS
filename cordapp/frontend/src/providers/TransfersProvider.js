@@ -3,7 +3,7 @@ import React, {
   useEffect,
   useReducer,
   useCallback,
-  useContext,
+  useContext
 } from "react";
 import getTransfers from "../data/GetTransfers";
 import { APIContext } from "./APIProvider";
