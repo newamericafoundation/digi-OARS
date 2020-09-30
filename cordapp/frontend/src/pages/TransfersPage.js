@@ -94,7 +94,7 @@ const TransfersPage = () => {
           <CWidgetProgressIcon
             inverse
             header={toCurrency(requestsState.approvedAmount, "USD").toString()}
-            text="Withdrawal Requests Awaiting Transfer"
+            text="Approved Withdrawal Requests"
             color="gradient-warning"
             value={
               (requestsState.approvedAmount /
