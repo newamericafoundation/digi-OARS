@@ -32,7 +32,6 @@ export const RequestsTable = ({
   requests,
   refreshFundsTableCallback,
   refreshRequestsTableCallback,
-  refreshTransfersTableCallback,
   isApprover,
   isIssuer,
   isReceiver,
@@ -73,6 +72,7 @@ export const RequestsTable = ({
     { key: "amount" },
     { key: "createDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
+    { key: "actions", _style: { width: "15%" }, sorter: false, filter: false },
     {
       key: "show_details",
       label: "",
@@ -201,10 +201,9 @@ export const RequestsTable = ({
   const getActionButton = (item, index) => {
     if (item.status === Constants.REQUEST_PENDING && isApprover) {
       return (
-        <div className="float-right mb-0">
-          <CButtonGroup className="float-right mb-0">
+        <div className="float-left mb-0">
+          <CButtonGroup className="mb-0 mr-2">
             <CButton
-              className={"float-right mb-0"}
               color="success"
               variant="outline"
               shape="square"
@@ -214,12 +213,11 @@ export const RequestsTable = ({
                 handleShow(item);
               }}
             >
-              Approve Request
+              Approve
             </CButton>
           </CButtonGroup>
-          <CButtonGroup className="float-right mb-0 mr-2">
+          <CButtonGroup className="mb-0">
             <CButton
-              className={"float-right mb-0"}
               color="danger"
               variant="outline"
               shape="square"
@@ -229,7 +227,7 @@ export const RequestsTable = ({
                 handleShow(item);
               }}
             >
-              Reject Request
+              Reject
             </CButton>
           </CButtonGroup>
         </div>
@@ -299,6 +297,9 @@ export const RequestsTable = ({
               <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
             </td>
           ),
+          actions: (item, index) => {
+            return <td>{getActionButton(item, index)}</td>;
+          },
           show_details: (item, index) => {
             return (
               <td>
