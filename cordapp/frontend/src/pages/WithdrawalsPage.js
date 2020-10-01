@@ -57,7 +57,6 @@ const WithdrawalsPage = () => {
     if (auth.isAuthenticated) {
       fundsCallback();
       requestsCallback();
-      transfersCallback();
     }
   }, Constants.REFRESH_INTERVAL_MS);
 
@@ -236,7 +235,6 @@ const WithdrawalsPage = () => {
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
-                refreshTransfersTableCallback={transfersCallback}
                 isApprover={isRequestApprover}
                 isIssuer={isFundsIssuer}
                 isReceiver={isFundsReceiver}
