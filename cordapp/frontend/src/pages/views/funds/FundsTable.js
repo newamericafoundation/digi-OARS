@@ -24,14 +24,18 @@ import axios from "axios";
 import * as Constants from "../../../constants";
 import { APIContext } from "../../../providers/APIProvider";
 import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
+import getRequestsByFundId from "../../../data/GetRequestsByFundId";
+import { RequestsSnapshotTable } from "../withdrawals/RequestsSnapshotTable";
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [api] = useContext(APIContext);
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
+  const [showRequests, setShowRequests] = useState(false);
   const [currentItem, setCurrentItem] = useState({});
   const [currentAction, setCurrentAction] = useState("");
+  const [requestsFromFundId, setRequestsFromFundId] = useState([]);
 
   const handleShow = (item) => {
     setCurrentItem(item);
@@ -40,6 +44,18 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
 
   const handleClose = () => {
     setShow(false);
+  };
+
+  const handleRequestsShow = (fundId) => {
+    const data = getRequestsByFundId(api.port, fundId);
+    data.then((response) => {
+      setRequestsFromFundId(response);
+    });
+    setShowRequests(true);
+  };
+
+  const handleRequestsClose = () => {
+    setShowRequests(false);
   };
 
   const toggleDetails = (index) => {
@@ -61,7 +77,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     { key: "maxWithdrawalAmount" },
     { key: "createdDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
-    { key: "actions", _style: { width: "10%" }, sorter: false, filter: false },
+    { key: "actions", _style: { width: "15%" }, sorter: false, filter: false },
     {
       key: "show_details",
       label: "Details",
@@ -104,9 +120,24 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     }
   };
 
-  const onHandleConfirmationClick = (
-    fundId
-  ) => {
+  const getRequestsButton = (item) => {
+    if (item.status !== "ISSUED") {
+      return (
+        <CButton
+          className={"float-left mb-0"}
+          color="dark"
+          variant="outline"
+          shape="square"
+          size="sm"
+          onClick={() => handleRequestsShow(item.linearId)}
+        >
+          Requests
+        </CButton>
+      );
+    }
+  };
+
+  const onHandleConfirmationClick = (fundId) => {
     setIsLoading(true);
     const url =
       "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/fund";
@@ -167,7 +198,10 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           ),
           actions: (item, index) => {
             return (
-              <td>{getActionButton(item, index)}</td>
+              <td>
+                {getActionButton(item, index)}
+                {getRequestsButton(item)}
+              </td>
             );
           },
           show_details: (item, index) => {
@@ -300,30 +334,24 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       >
         <CModalHeader closeButton>
           <CModalTitle>
-            {currentAction.charAt(0).toUpperCase() +
-              currentAction.slice(1)}{" "}
+            {currentAction.charAt(0).toUpperCase() + currentAction.slice(1)}{" "}
             Confirmation
           </CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <CCallout
-            color="success"
-            className={"bg-light"}
-          >
+          <CCallout color="success" className={"bg-light"}>
             <p className="text-muted mb-0">Request State ID</p>
             <strong className="p">{currentItem.linearId}</strong>
           </CCallout>
-          <CCallout
-            color="success"
-            className={"bg-light"}
-          >
+          <CCallout color="success" className={"bg-light"}>
             <p className="text-muted mb-0">Origin Country</p>
-            <strong className="p">{currentItem.originParty ? toCountryByIsoFromX500(currentItem.originParty) : null}</strong>
+            <strong className="p">
+              {currentItem.originParty
+                ? toCountryByIsoFromX500(currentItem.originParty)
+                : null}
+            </strong>
           </CCallout>
-          <CCallout
-            color="success"
-            className={"bg-light"}
-          >
+          <CCallout color="success" className={"bg-light"}>
             <p className="text-muted mb-0">Amount</p>
             <strong className="p">
               {toCurrency(currentItem.amount, "USD")}
@@ -333,11 +361,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         <CModalFooter>
           <CButton
             color="success"
-            onClick={() =>
-              onHandleConfirmationClick(
-                currentItem.linearId
-              )
-            }
+            onClick={() => onHandleConfirmationClick(currentItem.linearId)}
           >
             {isLoading ? (
               <CSpinner
@@ -346,12 +370,24 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                 aria-hidden="true"
               />
             ) : null}
-            {currentAction.charAt(0).toUpperCase() +
-              currentAction.slice(1)}{" "}
+            {currentAction.charAt(0).toUpperCase() + currentAction.slice(1)}{" "}
             Funds
           </CButton>
           <CButton color="secondary" onClick={handleClose}>
             Cancel
+          </CButton>
+        </CModalFooter>
+      </CModal>
+      <CModal show={showRequests} size="xl" closeOnBackdrop={false}>
+        <CModalHeader>
+          <CModalTitle>Fund Requests</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <RequestsSnapshotTable requests={requestsFromFundId} />
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={handleRequestsClose}>
+            Close
           </CButton>
         </CModalFooter>
       </CModal>
