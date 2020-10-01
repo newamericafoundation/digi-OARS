@@ -10,18 +10,23 @@ import {
   CInputGroup,
   CInputGroupPrepend,
   CInputGroupText,
-  CInvalidFeedback,
   CTextarea,
   CSpinner,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalBody,
+  CModalFooter,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import useForm from "../../../form/index";
 import { useAuth } from "../../../auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
+import { toCurrency } from "../../../utilities";
 import CurrencyInput from "../../../form/CurrencyInput";
 
-export const RequestForm = ({ onSubmit, request }) => {
+export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
   const auth = useAuth();
   const [api] = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -80,138 +85,174 @@ export const RequestForm = ({ onSubmit, request }) => {
 
   const {
     fundStateId,
+    fundStateBalance,
     authorizedUserUsername,
+    authorizedUserDept,
     externalAccountId,
     purpose,
   } = values;
 
   return (
-    <CCol>
+    <CModal show={show} onClose={handleClose} size="lg" closeOnBackdrop={false}>
       <CForm onSubmit={handleOnSubmit}>
-        <CRow>
-          <CCol xs="12" md="9" xl="6">
-            <CFormGroup>
-              <CLabel htmlFor="authorizedUserUsername">Requestor</CLabel>
-              <CInputGroup className="input-prepend">
-                <CInputGroupPrepend>
-                  <CInputGroupText>
-                    <CIcon name="cil-user"></CIcon>
-                  </CInputGroupText>
-                </CInputGroupPrepend>
-                <CInput
-                  type="text"
-                  name="authorizedUserUsername"
-                  id="authorizedUserUsername"
-                  placeholder={auth.user.fullName}
-                  value={authorizedUserUsername}
-                  disabled
-                />
-                <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
-              </CInputGroup>
-            </CFormGroup>
-            <CFormGroup>
-              <CLabel htmlFor="amount">Request Amount</CLabel>
-              <CInputGroup className="input-prepend">
-                <CInputGroupPrepend>
-                  <CInputGroupText>$</CInputGroupText>
-                </CInputGroupPrepend>
-                <CurrencyInput
-                  className="form-control"
-                  placeholder="0.00"
-                  type="text"
-                  name="amount"
-                  id="amount"
-                  onChange={handleOnChange}
-                />
-              </CInputGroup>
-              <div className="text-muted small">
-                <p className="text-danger">{errors.amount}</p>
-              </div>
+        <CModalHeader closeButton>
+          <CModalTitle>Withdrawal Request Form</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CRow>
+            <CCol>
               <CFormGroup>
-                <CLabel htmlFor="purpose">Purpose</CLabel>
+                <CLabel htmlFor="fundStateId">Fund State ID</CLabel>
                 <CInputGroup className="input-prepend">
                   <CInputGroupPrepend>
                     <CInputGroupText>
-                      <CIcon name="cil-speech"></CIcon>
+                      <CIcon name="cil-bank"></CIcon>
                     </CInputGroupText>
                   </CInputGroupPrepend>
-                  <CTextarea
+                  <CInput
                     type="text"
-                    name="purpose"
-                    id="purpose"
-                    placeholder="Purpose of funds requested"
-                    rows={3}
-                    value={purpose}
-                    onChange={handleOnChange}
+                    name="fundStateId"
+                    id="fundStateId"
+                    placeholder={request.linearId}
+                    value={fundStateId}
+                    disabled
                   />
                 </CInputGroup>
-                <div className="text-muted small">
-                <p className="text-danger">{errors.purpose}</p>
-              </div>
               </CFormGroup>
-            </CFormGroup>
-          </CCol>
-          <CCol xs="12" md="9" xl="6">
-            <CFormGroup>
-              <CLabel htmlFor="fundStateId">Fund State ID</CLabel>
-              <CInputGroup className="input-prepend">
-                <CInputGroupPrepend>
-                  <CInputGroupText>
-                    <CIcon name="cil-wallet"></CIcon>
-                  </CInputGroupText>
-                </CInputGroupPrepend>
-                <CInput
-                  type="text"
-                  name="fundStateId"
-                  id="fundStateId"
-                  placeholder={request.linearId}
-                  value={fundStateId}
-                  disabled
-                />
-              </CInputGroup>
-            </CFormGroup>
-            <CFormGroup>
-              <CLabel htmlFor="externalAccountId">External Account ID</CLabel>
-              <CInputGroup className="input-prepend">
-                <CInputGroupPrepend>
-                  <CInputGroupText>
-                    <CIcon name="cil-briefcase"></CIcon>
-                  </CInputGroupText>
-                </CInputGroupPrepend>
-                <CInput
-                  type="text"
-                  name="externalAccountId"
-                  id="externalAccountId"
-                  placeholder=""
-                  value={externalAccountId}
-                  onChange={handleOnChange}
-                />
-              </CInputGroup>
-            </CFormGroup>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol xs="12">
-            <CFormGroup>
-              <CButton
-                className={"float-right"}
-                color="primary"
-                type="submit"
-                disabled={disable}
-              >
-                {isLoading ? (
-                  <CSpinner
-                    className="spinner-border spinner-border-sm mr-1"
-                    role="status"
-                    aria-hidden="true"
+            </CCol>
+            <CCol>
+              <CFormGroup>
+                <CLabel htmlFor="fundStateBalance">Fund Balance</CLabel>
+                <CInputGroup className="input-prepend">
+                  <CInputGroupPrepend>
+                    <CInputGroupText>$</CInputGroupText>
+                  </CInputGroupPrepend>
+                  <CInput
+                    type="text"
+                    name="fundStateBalance"
+                    id="fundStateBalance"
+                    placeholder={toCurrency(request.balance, "USD").substring(
+                      1
+                    )}
+                    value={fundStateBalance}
+                    disabled
                   />
-                ) : null}
-                Submit
-              </CButton>
-            </CFormGroup>
-          </CCol>
-        </CRow>
+                </CInputGroup>
+              </CFormGroup>
+            </CCol>
+          </CRow>
+          <CFormGroup>
+            <CLabel htmlFor="authorizedUserUsername">Requestor</CLabel>
+            <CInputGroup className="input-prepend">
+              <CInputGroupPrepend>
+                <CInputGroupText>
+                  <CIcon name="cil-user"></CIcon>
+                </CInputGroupText>
+              </CInputGroupPrepend>
+              <CInput
+                type="text"
+                name="authorizedUserUsername"
+                id="authorizedUserUsername"
+                placeholder={auth.user.fullName}
+                value={authorizedUserUsername}
+                disabled
+              />
+            </CInputGroup>
+          </CFormGroup>
+          <CFormGroup>
+            <CLabel htmlFor="authorizedUserUsername">Department</CLabel>
+            <CInputGroup className="input-prepend">
+              <CInputGroupPrepend>
+                <CInputGroupText>
+                  <CIcon name="cil-user"></CIcon>
+                </CInputGroupText>
+              </CInputGroupPrepend>
+              <CInput
+                type="text"
+                name="authorizedUserDept"
+                id="authorizedUserDept"
+                placeholder={auth.meta.keycloak.tokenParsed.groups[0]}
+                value={authorizedUserDept}
+                disabled
+              />
+            </CInputGroup>
+          </CFormGroup>
+          <CFormGroup>
+            <CLabel htmlFor="amount">Request Amount</CLabel>
+            <CInputGroup className="input-prepend">
+              <CInputGroupPrepend>
+                <CInputGroupText>$</CInputGroupText>
+              </CInputGroupPrepend>
+              <CurrencyInput
+                className="form-control"
+                placeholder="0.00"
+                type="text"
+                name="amount"
+                id="amount"
+                onChange={handleOnChange}
+              />
+            </CInputGroup>
+            <div className="text-muted small">
+              <p className="text-danger">{errors.amount}</p>
+            </div>
+          </CFormGroup>
+          <CFormGroup>
+            <CLabel htmlFor="purpose">Purpose</CLabel>
+            <CInputGroup className="input-prepend">
+              <CInputGroupPrepend>
+                <CInputGroupText>
+                  <CIcon name="cil-speech"></CIcon>
+                </CInputGroupText>
+              </CInputGroupPrepend>
+              <CTextarea
+                type="text"
+                name="purpose"
+                id="purpose"
+                placeholder="Purpose of funds requested"
+                rows={3}
+                value={purpose}
+                onChange={handleOnChange}
+              />
+            </CInputGroup>
+            <div className="text-muted small">
+              <p className="text-danger">{errors.purpose}</p>
+            </div>
+          </CFormGroup>
+          <CFormGroup>
+            <CLabel htmlFor="externalAccountId">External Account ID</CLabel>
+            <CInputGroup className="input-prepend">
+              <CInputGroupPrepend>
+                <CInputGroupText>
+                  <CIcon name="cil-briefcase"></CIcon>
+                </CInputGroupText>
+              </CInputGroupPrepend>
+              <CInput
+                type="text"
+                name="externalAccountId"
+                id="externalAccountId"
+                placeholder=""
+                value={externalAccountId}
+                onChange={handleOnChange}
+              />
+            </CInputGroup>
+          </CFormGroup>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="primary" type="submit" disabled={disable}>
+            {isLoading ? (
+              <CSpinner
+                className="spinner-border spinner-border-sm mr-1"
+                role="status"
+                aria-hidden="true"
+              />
+            ) : null}
+            Submit
+          </CButton>
+          <CButton color="secondary" onClick={handleClose}>
+            Cancel
+          </CButton>
+        </CModalFooter>
       </CForm>
-    </CCol>
+    </CModal>
   );
 };
