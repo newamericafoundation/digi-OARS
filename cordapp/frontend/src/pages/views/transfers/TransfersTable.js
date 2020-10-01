@@ -12,7 +12,7 @@ import {
   CCallout,
 } from "@coreui/react";
 import moment from "moment-timezone";
-import { toCurrency } from "../../../utilities"
+import { toCurrency, toCountryByIsoFromX500 } from "../../../utilities"
 
 export const TransfersTable = ({ transfers }) => {
   const [details, setDetails] = useState([]);
@@ -88,6 +88,10 @@ export const TransfersTable = ({ transfers }) => {
                   <CCardBody>
                     <CRow>
                       <CCol xl="6" sm="4">
+                      <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Issuance Country</p>
+                          <strong className="p">{toCountryByIsoFromX500(item.issuanceParty)}</strong>
+                        </CCallout>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Requestor</p>
                           <strong className="p">
@@ -104,6 +108,12 @@ export const TransfersTable = ({ transfers }) => {
                           <p className="text-muted mb-0">Amount</p>
                           <strong className="p">
                             {toCurrency(item.amount, item.currency)}
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">External Account ID</p>
+                          <strong className="p">
+                            {item.externalAccountId}
                           </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
