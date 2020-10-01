@@ -313,6 +313,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         color="success"
         show={show}
         onClose={handleClose}
+        closeOnBackdrop={false}
       >
         <CModalHeader closeButton>
           <CModalTitle>
