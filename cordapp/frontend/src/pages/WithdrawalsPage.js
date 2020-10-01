@@ -17,7 +17,6 @@ import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
-import { TransfersContext } from "../providers/TransfersProvider";
 import { toCurrency } from "../utilities";
 import useInterval from "../interval-hook";
 
@@ -25,7 +24,6 @@ const WithdrawalsPage = () => {
   const auth = useAuth();
   const [fundsState, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
-  const [, transfersCallback] = useContext(TransfersContext);
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
   const [isFundsRequestor, setIsFundsRequestor] = useState(false);

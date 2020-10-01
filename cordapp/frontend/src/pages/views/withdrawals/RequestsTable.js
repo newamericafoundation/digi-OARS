@@ -12,7 +12,6 @@ import {
   CRow,
   CCallout,
   CSpinner,
-  CTooltip,
   CButtonGroup,
   CModal,
   CModalHeader,
@@ -24,7 +23,6 @@ import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
-import EllipsesText from "react-ellipsis-text";
 import { toCurrency } from "../../../utilities";
 
 export const RequestsTable = ({
@@ -236,25 +234,17 @@ export const RequestsTable = ({
     if (item.status === Constants.REQUEST_APPROVED && isTransferer) {
       return (
         <CButton
-          className={"float-right mb-0"}
-          color="success"
+          className={"float-left mb-0"}
+          color="info"
           variant="outline"
           shape="square"
           size="sm"
-          // onClick={() => onHandleTransferClick(item.linearId, index)}
           onClick={() => {
             setCurrentRequestAction("transfer");
             handleShow(item);
           }}
         >
-          {isLoading ? (
-            <CSpinner
-              className="spinner-border spinner-border-sm mr-1"
-              role="status"
-              aria-hidden="true"
-            />
-          ) : null}
-          Transfer Requested Funds
+          Transfer
         </CButton>
       );
     }
@@ -322,10 +312,7 @@ export const RequestsTable = ({
             return (
               <CCollapse show={details.includes(index)}>
                 <CCard className="m-3">
-                  <CCardHeader>
-                    Request Details
-                    {getActionButton(item, index)}
-                  </CCardHeader>
+                  <CCardHeader>Request Details</CCardHeader>
                   <CCardBody>
                     <CRow>
                       <CCol xl="6" sm="4">
@@ -357,14 +344,16 @@ export const RequestsTable = ({
                         </CCallout>
                       </CCol>
                       <CCol xl="6" sm="4">
-                        <CTooltip content={item.linearId} placement="right-end">
-                          <CCallout color="info" className={"bg-light"}>
-                            <p className="text-muted mb-0">State ID</p>
-                            <strong className="p">
-                              <EllipsesText text={item.linearId} length={30} />
-                            </strong>
-                          </CCallout>
-                        </CTooltip>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">State ID</p>
+                          <strong className="p">{item.linearId}</strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">External Account ID</p>
+                          <strong className="p">
+                            {item.externalAccountId}
+                          </strong>
+                        </CCallout>
                         <CCallout
                           color={getStatusBadge(item.status)}
                           className={"bg-light"}
