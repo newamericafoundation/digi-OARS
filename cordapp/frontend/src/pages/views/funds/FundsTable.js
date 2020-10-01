@@ -77,7 +77,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     { key: "maxWithdrawalAmount" },
     { key: "createdDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
-    { key: "actions", _style: { width: "15%" }, sorter: false, filter: false },
+    { key: "actions", _style: { width: "20%" }, sorter: false, filter: false },
     {
       key: "show_details",
       label: "Details",
@@ -131,7 +131,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           size="sm"
           onClick={() => handleRequestsShow(item.linearId)}
         >
-          Requests
+          View Requests
         </CButton>
       );
     }

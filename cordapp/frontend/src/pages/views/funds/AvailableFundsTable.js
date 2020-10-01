@@ -147,7 +147,7 @@ export const AvailableFundsTable = ({
           size="sm"
           onClick={() => handleRequestsShow(item.linearId)}
         >
-          Requests
+          View Requests
         </CButton>
       );
     }
