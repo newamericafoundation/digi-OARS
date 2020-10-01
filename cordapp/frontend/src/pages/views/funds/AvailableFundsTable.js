@@ -11,17 +11,13 @@ import {
   CCol,
   CRow,
   CProgress,
-  CCallout,
-  CModal,
-  CModalHeader,
-  CModalTitle,
-  CModalBody,
+  CCallout
 } from "@coreui/react";
 import Moment from "moment";
 import { RequestForm } from "../withdrawals/RequestForm";
 import UseToaster from "../../../notification/Toaster";
 import EllipsesText from "react-ellipsis-text";
-import { toCountryByIsoFromX500 ,toCurrency } from "../../../utilities"
+import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
 
 export const AvailableFundsTable = ({
   funds,
@@ -32,11 +28,11 @@ export const AvailableFundsTable = ({
   const [details, setDetails] = useState([]);
   const [show, setShow] = useState(false);
   const [request, setRequest] = useState({});
-  const [itemIndex, setItemIndex] = useState();
+  // const [itemIndex, setItemIndex] = useState();
 
   const handleShow = (item, index) => {
     setRequest(item);
-    setItemIndex(index);
+    // setItemIndex(index);
     setShow(true);
   };
   const handleClose = () => setShow(false);
@@ -56,7 +52,6 @@ export const AvailableFundsTable = ({
 
   const onFormSubmit = (response) => {
     handleClose();
-    toggleDetails(itemIndex);
     response.status === 200
       ? UseToaster("Success", responseMessage(response), "success")
       : UseToaster("Error", response.entity.message, "danger");
@@ -81,7 +76,8 @@ export const AvailableFundsTable = ({
     { key: "balance", label: "Balance Available" },
     { key: "updatedDateTime", label: "Updated Date" },
     { key: "maxWithdrawalAmount" },
-    { key: "status", _style: { width: "20%" }, filter: false },
+    { key: "status", _style: { width: "10%" }, filter: false },
+    { key: "actions", _style: { width: "10%" }, sorter: false, filter: false },
     {
       key: "show_details",
       label: "",
@@ -106,14 +102,14 @@ export const AvailableFundsTable = ({
     if (isRequestor) {
       return (
         <CButton
-          className={"float-right mb-0"}
+          className={"float-left mb-0"}
           color="success"
           variant="outline"
           shape="square"
           size="sm"
           onClick={() => handleShow(item, index)}
         >
-          Request Withdrawal
+          Request Funds
         </CButton>
       );
     }
@@ -134,7 +130,9 @@ export const AvailableFundsTable = ({
         sorter
         pagination
         scopedSlots={{
-          originParty: (item) => <td>{toCountryByIsoFromX500(item.originParty)}</td>,
+          originParty: (item) => (
+            <td>{toCountryByIsoFromX500(item.originParty)}</td>
+          ),
           amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
           balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
           maxWithdrawalAmount: (item) => (
@@ -151,6 +149,9 @@ export const AvailableFundsTable = ({
               <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
             </td>
           ),
+          actions: (item, index) => {
+            return <td>{getRequestButton(item, index)}</td>;
+          },
           show_details: (item, index) => {
             return (
               <td>
@@ -174,7 +175,6 @@ export const AvailableFundsTable = ({
                 <CCard className="m-3">
                   <CCardHeader>
                     Fund Details
-                    {getRequestButton(item, index)}
                   </CCardHeader>
                   <CCardBody>
                     {item.status === Constants.FUND_RECEIVED ? (
@@ -197,11 +197,15 @@ export const AvailableFundsTable = ({
                       <CCol xl="4" sm="3">
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Origin Country</p>
-                          <strong className="p">{toCountryByIsoFromX500(item.originParty)}</strong>
+                          <strong className="p">
+                            {toCountryByIsoFromX500(item.originParty)}
+                          </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Receiving Country</p>
-                          <strong className="p">{toCountryByIsoFromX500(item.receivingParty)}</strong>
+                          <strong className="p">
+                            {toCountryByIsoFromX500(item.receivingParty)}
+                          </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Amount</p>
@@ -272,14 +276,12 @@ export const AvailableFundsTable = ({
           },
         }}
       />
-      <CModal show={show} onClose={handleClose} size="lg">
-        <CModalHeader closeButton>
-          <CModalTitle>Withdrawal Request Form</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <RequestForm onSubmit={onFormSubmit} request={request} />
-        </CModalBody>
-      </CModal>
+      <RequestForm
+        show={show}
+        onSubmit={onFormSubmit}
+        request={request}
+        handleClose={handleClose}
+      />
     </>
   );
 };
