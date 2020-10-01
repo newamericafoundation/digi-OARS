@@ -18,7 +18,7 @@ import moment from "moment-timezone";
 import axios from "axios";
 import * as Constants from "../../../constants";
 import { APIContext } from "../../../providers/APIProvider";
-import { toCountryByIsoFromX500, toCurrency } from "../../../utilities"
+import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [api] = useContext(APIContext);
@@ -43,9 +43,10 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     { key: "maxWithdrawalAmount" },
     { key: "createdDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
+    { key: "actions", _style: { width: "10%" }, sorter: false, filter: false },
     {
       key: "show_details",
-      label: "",
+      label: "Details",
       _style: { width: "1%" },
       sorter: false,
       filter: false,
@@ -70,7 +71,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       if (status === "ISSUED") {
         return (
           <CButton
-            className={"float-right mb-0"}
+            className={"float-left mb-0"}
             color="success"
             variant="outline"
             shape="square"
@@ -84,7 +85,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                 aria-hidden="true"
               />
             ) : null}
-            Receive Funds
+            Receive
           </CButton>
         );
       }
@@ -149,6 +150,11 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
             <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
           </td>
         ),
+        actions: (item, index) => {
+          return (
+            <td>{getReceivedButton(item.status, item.linearId, index)}</td>
+          );
+        },
         show_details: (item, index) => {
           return (
             <td>
@@ -172,7 +178,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
               <CCard className="m-3">
                 <CCardHeader>
                   Fund Details
-                  {getReceivedButton(item.status, item.linearId, index)}
                 </CCardHeader>
                 <CCardBody>
                   {item.status === Constants.FUND_RECEIVED ? (
@@ -199,11 +204,15 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                       </CTooltip>
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Origin Country</p>
-                        <strong className="p">{toCountryByIsoFromX500(item.originParty)}</strong>
+                        <strong className="p">
+                          {toCountryByIsoFromX500(item.originParty)}
+                        </strong>
                       </CCallout>
                       <CCallout color="info" className={"bg-light"}>
                         <p className="text-muted mb-0">Receiving Country</p>
-                        <strong className="p">{toCountryByIsoFromX500(item.receivingParty)}</strong>
+                        <strong className="p">
+                          {toCountryByIsoFromX500(item.receivingParty)}
+                        </strong>
                       </CCallout>
                     </CCol>
                     <CCol xl="4" sm="3">
