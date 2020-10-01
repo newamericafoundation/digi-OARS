@@ -230,7 +230,7 @@ const FundsPage = () => {
           </CCard>
         </CCol>
       </CRow>
-      <CModal show={show} onClose={handleClose}>
+      <CModal show={show} onClose={handleClose} closeOnBackdrop={false}>
         <CModalHeader closeButton>
           <CModalTitle>Funds Form</CModalTitle>
         </CModalHeader>

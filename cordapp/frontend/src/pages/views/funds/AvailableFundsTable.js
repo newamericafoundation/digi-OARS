@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import * as Constants from "../../../constants";
 import {
   CCard,
@@ -11,13 +11,21 @@ import {
   CCol,
   CRow,
   CProgress,
-  CCallout
+  CCallout,
+  CModal,
+  CModalHeader,
+  CModalTitle,
+  CModalFooter,
+  CModalBody
 } from "@coreui/react";
 import Moment from "moment";
 import { RequestForm } from "../withdrawals/RequestForm";
 import UseToaster from "../../../notification/Toaster";
 import EllipsesText from "react-ellipsis-text";
 import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
+import getRequestsByFundId from "../../../data/GetRequestsByFundId";
+import { RequestsSnapshotTable } from "../withdrawals/RequestsSnapshotTable";
+import { APIContext } from "../../../providers/APIProvider";
 
 export const AvailableFundsTable = ({
   funds,
@@ -25,17 +33,30 @@ export const AvailableFundsTable = ({
   refreshRequestsTableCallback,
   isRequestor,
 }) => {
+  const [api] = useContext(APIContext);
   const [details, setDetails] = useState([]);
   const [show, setShow] = useState(false);
   const [request, setRequest] = useState({});
-  // const [itemIndex, setItemIndex] = useState();
+  const [showRequests, setShowRequests] = useState(false);
+  const [requestsFromFundId, setRequestsFromFundId] = useState([]);
 
   const handleShow = (item, index) => {
     setRequest(item);
-    // setItemIndex(index);
     setShow(true);
   };
   const handleClose = () => setShow(false);
+
+  const handleRequestsShow = (fundId) => {
+    const data = getRequestsByFundId(api.port, fundId);
+    data.then((response) => {
+      setRequestsFromFundId(response);
+    });
+    setShowRequests(true);
+  };
+
+  const handleRequestsClose = () => {
+    setShowRequests(false);
+  };
 
   const responseMessage = (message) => {
     return (
@@ -77,10 +98,10 @@ export const AvailableFundsTable = ({
     { key: "updatedDateTime", label: "Updated Date" },
     { key: "maxWithdrawalAmount" },
     { key: "status", _style: { width: "10%" }, filter: false },
-    { key: "actions", _style: { width: "10%" }, sorter: false, filter: false },
+    { key: "actions", _style: { width: "20%" }, sorter: false, filter: false },
     {
       key: "show_details",
-      label: "",
+      label: "Details",
       _style: { width: "1%" },
       sorter: false,
       filter: false,
@@ -102,7 +123,7 @@ export const AvailableFundsTable = ({
     if (isRequestor) {
       return (
         <CButton
-          className={"float-left mb-0"}
+          className={"float-left mb-0 mr-2"}
           color="success"
           variant="outline"
           shape="square"
@@ -110,6 +131,23 @@ export const AvailableFundsTable = ({
           onClick={() => handleShow(item, index)}
         >
           Request Funds
+        </CButton>
+      );
+    }
+  };
+
+  const getRequestsButton = (item) => {
+    if (item.status !== "ISSUED") {
+      return (
+        <CButton
+          className={"float-left mb-0"}
+          color="dark"
+          variant="outline"
+          shape="square"
+          size="sm"
+          onClick={() => handleRequestsShow(item.linearId)}
+        >
+          View Requests
         </CButton>
       );
     }
@@ -150,7 +188,12 @@ export const AvailableFundsTable = ({
             </td>
           ),
           actions: (item, index) => {
-            return <td>{getRequestButton(item, index)}</td>;
+            return (
+              <td>
+                {getRequestButton(item, index)}
+                {getRequestsButton(item)}
+              </td>
+            );
           },
           show_details: (item, index) => {
             return (
@@ -173,9 +216,7 @@ export const AvailableFundsTable = ({
             return (
               <CCollapse show={details.includes(index)}>
                 <CCard className="m-3">
-                  <CCardHeader>
-                    Fund Details
-                  </CCardHeader>
+                  <CCardHeader>Fund Details</CCardHeader>
                   <CCardBody>
                     {item.status === Constants.FUND_RECEIVED ? (
                       <CRow className="mb-3">
@@ -282,6 +323,19 @@ export const AvailableFundsTable = ({
         request={request}
         handleClose={handleClose}
       />
+      <CModal show={showRequests} size="xl" closeOnBackdrop={false}>
+        <CModalHeader>
+          <CModalTitle>Fund Requests</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <RequestsSnapshotTable requests={requestsFromFundId} />
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={handleRequestsClose}>
+            Close
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </>
   );
 };
