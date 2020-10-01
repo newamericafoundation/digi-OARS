@@ -31,8 +31,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [currentItem, setCurrentItem] = useState({});
-  const [currentItemIndex, setCurrentItemIndex] = useState();
-  const [currentRequestAction, setCurrentRequestAction] = useState("");
+  const [currentAction, setCurrentAction] = useState("");
 
   const handleShow = (item) => {
     setCurrentItem(item);
@@ -85,7 +84,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     }
   };
 
-  const getActionButton = (item) => {
+  const getActionButton = (item, index) => {
     if (item.status === "ISSUED" && isReceiver) {
       return (
         <CButton
@@ -95,7 +94,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           shape="square"
           size="sm"
           onClick={() => {
-            setCurrentRequestAction("receive");
+            setCurrentAction("receive");
             handleShow(item);
           }}
         >
@@ -118,22 +117,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         setIsLoading(false);
         refreshTableCallback();
         handleClose();
-        toggleDetails(currentItemIndex);
-      })
-      .catch((err) => console.log(err));
-  };
-
-  const onHandleReceiveClick = (fundId, index) => {
-    setIsLoading(true);
-    const url =
-      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/fund";
-
-    axios
-      .put(url, null, { params: { fundId } })
-      .then((response) => {
-        setIsLoading(false);
-        refreshTableCallback();
-        toggleDetails(index);
       })
       .catch((err) => console.log(err));
   };
@@ -182,9 +165,9 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
               <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
             </td>
           ),
-          actions: (item) => {
+          actions: (item, index) => {
             return (
-              <td>{getActionButton(item)}</td>
+              <td>{getActionButton(item, index)}</td>
             );
           },
           show_details: (item, index) => {
@@ -317,8 +300,8 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       >
         <CModalHeader closeButton>
           <CModalTitle>
-            {currentRequestAction.charAt(0).toUpperCase() +
-              currentRequestAction.slice(1)}{" "}
+            {currentAction.charAt(0).toUpperCase() +
+              currentAction.slice(1)}{" "}
             Confirmation
           </CModalTitle>
         </CModalHeader>
@@ -363,8 +346,8 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                 aria-hidden="true"
               />
             ) : null}
-            {currentRequestAction.charAt(0).toUpperCase() +
-              currentRequestAction.slice(1)}{" "}
+            {currentAction.charAt(0).toUpperCase() +
+              currentAction.slice(1)}{" "}
             Funds
           </CButton>
           <CButton color="secondary" onClick={handleClose}>
