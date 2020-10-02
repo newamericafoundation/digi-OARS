@@ -16,16 +16,15 @@ import {
   CModalHeader,
   CModalTitle,
   CModalFooter,
-  CModalBody
+  CModalBody,
 } from "@coreui/react";
 import Moment from "moment";
 import { RequestForm } from "../withdrawals/RequestForm";
-import UseToaster from "../../../notification/Toaster";
-import EllipsesText from "react-ellipsis-text";
 import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
 import getRequestsByFundId from "../../../data/GetRequestsByFundId";
 import { RequestsSnapshotTable } from "../withdrawals/RequestsSnapshotTable";
 import { APIContext } from "../../../providers/APIProvider";
+import cogoToast from "cogo-toast";
 
 export const AvailableFundsTable = ({
   funds,
@@ -61,22 +60,38 @@ export const AvailableFundsTable = ({
   const responseMessage = (message) => {
     return (
       <div>
-        {message.entity.message}
+        <strong>Request ID:</strong> {message.entity.data.linearId.id}
         <br />
-        <strong>State ID:</strong>{" "}
-        <EllipsesText text={message.entity.data.linearId.id} length={25} />
+        <strong>Status:</strong>{" "}
+        <CBadge color="warning">{message.entity.data.status}</CBadge>
         <br />
-        <strong>Status:</strong> {message.entity.data.status}
+        <strong>Amount:</strong>{" "}
+        {toCurrency(message.entity.data.amount, "USD")}
       </div>
     );
   };
 
   const onFormSubmit = (response) => {
     handleClose();
-    response.status === 200
-      ? UseToaster("Success", responseMessage(response), "success")
-      : UseToaster("Error", response.entity.message, "danger");
-
+    if (response.status === 200) {
+      const { hide } = cogoToast.success(responseMessage(response), {
+        heading: "Withdrawal Request Created",
+        position: "top-right",
+        hideAfter: 8,
+        onClick: () => {
+          hide();
+        },
+      });
+    } else {
+      const { hide } = cogoToast.error(response.entity.message, {
+        heading: "Error Receiving Funds",
+        position: "top-right",
+        hideAfter: 8,
+        onClick: () => {
+          hide();
+        },
+      });
+    }
     refreshFundsTableCallback();
     refreshRequestsTableCallback();
   };

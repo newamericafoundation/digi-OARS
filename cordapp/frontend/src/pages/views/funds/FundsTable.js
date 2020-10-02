@@ -17,7 +17,7 @@ import {
   CModalHeader,
   CModalTitle,
   CModalBody,
-  CModalFooter
+  CModalFooter,
 } from "@coreui/react";
 import moment from "moment-timezone";
 import axios from "axios";
@@ -26,6 +26,7 @@ import { APIContext } from "../../../providers/APIProvider";
 import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
 import getRequestsByFundId from "../../../data/GetRequestsByFundId";
 import { RequestsSnapshotTable } from "../withdrawals/RequestsSnapshotTable";
+import cogoToast from "cogo-toast";
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [api] = useContext(APIContext);
@@ -137,6 +138,20 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     }
   };
 
+  const responseMessage = (message) => {
+    return (
+      <div>
+        <strong>Fund ID:</strong> {message.data.entity.data.linearId.id}
+        <br />
+        <strong>Status:</strong>{" "}
+        <CBadge color="success">{message.data.entity.data.status}</CBadge>
+        <br />
+        <strong>Amount:</strong>{" "}
+        {toCurrency(message.data.entity.data.amount, "USD")}
+      </div>
+    );
+  };
+
   const onHandleConfirmationClick = (fundId) => {
     setIsLoading(true);
     const url =
@@ -148,8 +163,25 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         setIsLoading(false);
         refreshTableCallback();
         handleClose();
+        const { hide } = cogoToast.success(responseMessage(response), {
+          heading: "Repatriated Funds Received",
+          position: "top-right",
+          hideAfter: 8,
+          onClick: () => {
+            hide();
+          },
+        });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        const { hide } = cogoToast.error(err.message, {
+          heading: "Error Receiving Funds",
+          position: "top-right",
+          hideAfter: 8,
+          onClick: () => {
+            hide();
+          },
+        });
+      });
   };
 
   return (

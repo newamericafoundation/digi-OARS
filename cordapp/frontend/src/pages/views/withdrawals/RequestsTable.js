@@ -24,6 +24,7 @@ import { useAuth } from "auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
 import { toCurrency } from "../../../utilities";
+import cogoToast from "cogo-toast";
 
 export const RequestsTable = ({
   filterStatus,
@@ -41,7 +42,7 @@ export const RequestsTable = ({
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
   const [currentItem, setCurrentItem] = useState({});
-  const [currentItemIndex, setCurrentItemIndex] = useState();
+  const [, setCurrentItemIndex] = useState();
   const [currentRequestAction, setCurrentRequestAction] = useState("");
 
   const handleShow = (item) => {
@@ -131,6 +132,22 @@ export const RequestsTable = ({
     );
   };
 
+  const responseMessage = (message) => {
+    return (
+      <div>
+        <strong>Request ID:</strong> {message.data.entity.data.linearId.id}
+        <br />
+        <strong>Status:</strong>{" "}
+        <CBadge color={message.data.entity.data.status ? getStatusBadge(message.data.entity.data.status) : getStatusBadge("TRANSFERRED")}>
+          {message.data.entity.data.status ? message.data.entity.data.status : "TRANSFERRED"}
+        </CBadge>
+        <br />
+        <strong>Amount:</strong>{" "}
+        {toCurrency(message.data.entity.data.amount, "USD")}
+      </div>
+    );
+  };
+
   const onHandleConfirmationClick = (
     requestStateLinearId,
     authorizerUserUsername,
@@ -153,9 +170,37 @@ export const RequestsTable = ({
           refreshFundsTableCallback();
           refreshRequestsTableCallback();
           handleClose();
-          toggleDetails(currentItemIndex);
+          if (currentRequestAction === "approve") {
+            const { hide } = cogoToast.success(responseMessage(response), {
+              heading: "Withdrawal Request Approved",
+              position: "top-right",
+              hideAfter: 8,
+              onClick: () => {
+                hide();
+              },
+            });
+          }
+          if (currentRequestAction === "reject") {
+            const { hide } = cogoToast.warn(responseMessage(response), {
+              heading: "Withdrawal Request Rejected",
+              position: "top-right",
+              hideAfter: 8,
+              onClick: () => {
+                hide();
+              },
+            });
+          }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          const { hide } = cogoToast.error(err.message, {
+            heading: "Error Accepting/Rejecting Request",
+            position: "top-right",
+            hideAfter: 8,
+            onClick: () => {
+              hide();
+            },
+          });
+        });
     } else {
       axios
         .post(getUrl(), null, {
@@ -168,9 +213,25 @@ export const RequestsTable = ({
           refreshFundsTableCallback();
           refreshRequestsTableCallback();
           handleClose();
-          toggleDetails(currentItemIndex);
+          const { hide } = cogoToast.info(responseMessage(response), {
+            heading: "Withdrawal Request Transferred",
+            position: "top-right",
+            hideAfter: 8,
+            onClick: () => {
+              hide();
+            },
+          });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {
+          const { hide } = cogoToast.error(err.message, {
+            heading: "Error Transferring Request",
+            position: "top-right",
+            hideAfter: 8,
+            onClick: () => {
+              hide();
+            },
+          });
+        });
     }
   };
 
