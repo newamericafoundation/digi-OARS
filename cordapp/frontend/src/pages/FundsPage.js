@@ -13,17 +13,17 @@ import {
   CCol,
   CCallout,
   CButtonGroup,
+  CBadge,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { FundsTable } from "./views/funds/FundsTable";
 import { FundsForm } from "./views/funds/FundsForm";
 import NetworkProvider from "../providers/NetworkProvider";
-import UseToaster from "../notification/Toaster";
 import { FundsContext } from "../providers/FundsProvider";
-import EllipsesText from "react-ellipsis-text";
 import { useAuth } from "../auth-hook";
 import useInterval from "../interval-hook";
 import * as Constants from "../constants";
+import cogoToast from "cogo-toast";
 
 const FundsPage = () => {
   const auth = useAuth();
@@ -56,12 +56,12 @@ const FundsPage = () => {
   const responseMessage = (message) => {
     return (
       <div>
-        {message.entity.message}
+        <strong>Fund ID:</strong> {message.entity.data.linearId.id}
         <br />
-        <strong>State ID:</strong>{" "}
-        <EllipsesText text={message.entity.data.linearId.id} length={25} />
+        <strong>Status:</strong>{" "}
+        <CBadge color="warning">{message.entity.data.status}</CBadge>
         <br />
-        <strong>Status:</strong> {message.entity.data.status}
+        <strong>Amount:</strong> {toCurrency(message.entity.data.amount, "USD")}
       </div>
     );
   };
@@ -69,10 +69,24 @@ const FundsPage = () => {
   const onFormSubmit = (response) => {
     handleClose();
     if (response.status === 200) {
-      UseToaster("Success", responseMessage(response), "success");
+      const { hide } = cogoToast.success(responseMessage(response), {
+        heading: "Funds Repatriated",
+        position: "top-right",
+        hideAfter: 8,
+        onClick: () => {
+          hide();
+        },
+      });
       fundsCallback();
     } else {
-      UseToaster("Error", response.entity.message, "danger");
+      const { hide } = cogoToast.error(response.entity.message, {
+        heading: "Error Repatriating Funds",
+        position: "top-right",
+        hideAfter: 8,
+        onClick: () => {
+          hide();
+        },
+      });
     }
   };
 
@@ -220,9 +234,13 @@ const FundsPage = () => {
             </CCardHeader>
             <CCardBody>
               <FundsTable
-                funds={fundsFilterStatus === "ALL" ? fundsState.data : fundsState.data.filter(
-                  (fund) => fund.status === fundsFilterStatus
-                )}
+                funds={
+                  fundsFilterStatus === "ALL"
+                    ? fundsState.data
+                    : fundsState.data.filter(
+                        (fund) => fund.status === fundsFilterStatus
+                      )
+                }
                 isReceiver={isFundsReceiver}
                 refreshTableCallback={fundsCallback}
               />
