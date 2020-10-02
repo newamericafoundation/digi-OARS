@@ -29,6 +29,7 @@ const WithdrawalsPage = () => {
   const [isFundsRequestor, setIsFundsRequestor] = useState(false);
   const [isRequestApprover, setIsRequestApprover] = useState(false);
   const [isRequestTransferer, setIsRequestTransferer] = useState(false);
+  const [isObserver, setIsObserver] = useState(false);
   const [requestsFilterStatus, setRequestsFilterStatus] = useState("ALL");
 
   const handleTableFilter = (filterValue) => {
@@ -47,6 +48,9 @@ const WithdrawalsPage = () => {
       );
       setIsRequestTransferer(
         auth.meta.keycloak.hasResourceRole("request_transferer")
+      );
+      setIsObserver(
+        auth.meta.keycloak.hasResourceRole("observer")
       );
     }
   }, [auth]);
@@ -237,6 +241,7 @@ const WithdrawalsPage = () => {
                 isIssuer={isFundsIssuer}
                 isReceiver={isFundsReceiver}
                 isTransferer={isRequestTransferer}
+                isObserver={isObserver}
               />
             </CCardBody>
           </CCard>

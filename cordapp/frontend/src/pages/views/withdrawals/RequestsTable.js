@@ -35,6 +35,7 @@ export const RequestsTable = ({
   isIssuer,
   isReceiver,
   isTransferer,
+  isObserver
 }) => {
   const auth = useAuth();
   const [api] = useContext(APIContext);
@@ -236,7 +237,7 @@ export const RequestsTable = ({
   };
 
   const getData = () => {
-    if (isApprover || isIssuer || isTransferer || isReceiver) {
+    if (isApprover || isIssuer || isTransferer || isReceiver || isObserver) {
       if (filterStatus === "ALL") {
         return requests.data;
       }
