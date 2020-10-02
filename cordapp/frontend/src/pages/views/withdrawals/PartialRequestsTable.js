@@ -123,14 +123,6 @@ export const PartialRequestsTable = ({ partialRequests }) => {
                             </strong>
                           </CCallout>
                         </CTooltip>
-                        <CTooltip content={item.txId} placement="right-end">
-                          <CCallout color="info" className={"bg-light"}>
-                            <p className="text-muted mb-0">Transaction ID</p>
-                            <strong className="p">
-                              <EllipsesText text={item.txId} length={30} />
-                            </strong>
-                          </CCallout>
-                        </CTooltip>
                       </CCol>
                     </CRow>
                   </CCardBody>
