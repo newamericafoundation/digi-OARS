@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE_NUM;
@@ -76,7 +77,10 @@ public class TransferController extends BaseResource {
                     participants
             ).getReturnValue().get();
             TransferState created = (TransferState) tx.getTx().getOutputs().get(0).getData();
-            return Response.ok(createTransferSuccessServiceResponse("Transfer created successfully.", created, resourcePath)).build();
+            UUID requestUUID = created.getRequestStateLinearId().getId();
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(requestUUID));
+            StateAndRef<RequestState> req = rpcOps.vaultQueryByCriteria(queryCriteria,RequestState.class).getStates().get(0);
+            return Response.ok(req.getState().getData()).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         }catch (Exception e) {
