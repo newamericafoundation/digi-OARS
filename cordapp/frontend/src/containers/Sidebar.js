@@ -17,6 +17,7 @@ import { useAuth } from "../auth-hook";
 import nav from "./_nav";
 import nav_secure from "./_nav_secure";
 import nav_partial_request_viewer from "./_nav_partial_request_viewer";
+import nav_funds_requestor from "./_nav_funds_requestor";
 import nav_admin from "./_nav_admin";
 
 const Sidebar = () => {
@@ -56,6 +57,17 @@ const Sidebar = () => {
         {auth.meta.keycloak.hasResourceRole("user") && (
           <CCreateElement
             items={nav_secure}
+            components={{
+              CSidebarNavDivider,
+              CSidebarNavDropdown,
+              CSidebarNavItem,
+              CSidebarNavTitle,
+            }}
+          />
+        )}
+        {auth.meta.keycloak.hasResourceRole("funds_requestor") && (
+          <CCreateElement
+            items={nav_funds_requestor}
             components={{
               CSidebarNavDivider,
               CSidebarNavDropdown,
