@@ -2,6 +2,7 @@ package com.newamerica.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.newamerica.contracts.RequestContract;
+import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
@@ -16,6 +17,7 @@ import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -32,13 +34,19 @@ public class ApproveRequestFlow {
         private final String authorizerUserUsername;
         private final String authorizerUserDept;
         private final ZonedDateTime updateDatetime;
+        private final UniqueIdentifier fundStateLinearId;
 
 
-        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername, String authorizerUserDept, ZonedDateTime updateDatetime) {
+        public InitiatorFlow(UniqueIdentifier requestStateLinearId,
+                             String authorizerUserUsername,
+                             String authorizerUserDept,
+                             ZonedDateTime updateDatetime,
+                             UniqueIdentifier fundStateLinearId) {
             this.requestStateLinearId = requestStateLinearId;
             this.authorizerUserUsername = authorizerUserUsername;
             this.authorizerUserDept = authorizerUserDept;
             this.updateDatetime = updateDatetime;
+            this.fundStateLinearId = fundStateLinearId;
         }
 
         @Suspendable
@@ -52,35 +60,50 @@ public class ApproveRequestFlow {
             Vault.Page results = getServiceHub().getVaultService().queryBy(RequestState.class, queryCriteria);
             StateAndRef stateRef = (StateAndRef) results.getStates().get(0);
             RequestState inputRequestState = (RequestState) stateRef.getState().getData();
-
-            if(!inputRequestState.getAuthorizedParties().contains(getOurIdentity())){
-                throw new IllegalArgumentException("The initiator of this flow must be a authorizedParty");
-            }
-
+            // create output request state
             Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
             authorizerUserDeptAndUsername.put(authorizerUserDept, authorizerUserUsername);
-            RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
-            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserDeptAndUsername, updateDatetime);
+
+            RequestState outputRequestState = inputRequestState
+                    .changeStatus(RequestState.RequestStateStatus.APPROVED)
+                    .update(authorizerUserDeptAndUsername, updateDatetime)
+                    .updateFundStateID(fundStateLinearId);
+
+            //get matched fund state given fundStateId
+            List<UUID> fundStateLinearIdList = new ArrayList<>();
+            fundStateLinearIdList.add(fundStateLinearId.getId());
+
+            //get StatAndRef for the respective FundState
+            QueryCriteria fundQueryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, fundStateLinearIdList);
+            Vault.Page fundResults = getServiceHub().getVaultService().queryBy(FundState.class, fundQueryCriteria);
+            StateAndRef inputStateRef = (StateAndRef) fundResults.getStates().get(0);
+            FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
+
+            outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
+
+            if (outputRequestState.amount.compareTo(inputStateRefFundState.maxWithdrawalAmount) > 0) {
+                outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
+            }
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Approve();
-            transactionBuilder.addCommand(commandData, outputRequestStateFinal.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addInputState(stateRef);
-            transactionBuilder.addOutputState(outputRequestStateFinal, RequestContract.ID);
+            transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
-            //partially sign transaction
+            //partially sign transaction by ourself
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
+            //collect signature from authorized parties
+            SignedTransaction stx = subFlow(new CollectSignaturesInitiatingFlow(partSignedTx, inputStateRefFundState.getAuthorizedParties()));
 
-            //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = outputRequestStateFinal.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
+            //create list of all participants session minus our identity
+            List<Party> otherParties = outputRequestState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
             otherParties.remove(getOurIdentity());
-
-            //create sessions based on otherParties
             List<FlowSession> flowSessions = otherParties.stream().map(this::initiateFlow).collect(Collectors.toList());
 
-            SignedTransaction finalizedTransaction = subFlow(new FinalityFlow( subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions)), flowSessions));
+            SignedTransaction finalizedTransaction = subFlow(new FinalityFlow(stx, flowSessions));
             RequestState approveRequestState = (RequestState) finalizedTransaction.getTx().getOutputStates().get(0);
             subFlow(new UpdateFundBalanceFlow.InitiatorFlow(
                     approveRequestState
@@ -131,4 +154,53 @@ public class ApproveRequestFlow {
         }
     }
 
+
+
+    // Collected the signatures of only the requiredSigners listed on the FundState
+    @InitiatingFlow
+    @StartableByRPC
+    public static class CollectSignaturesInitiatingFlow extends FlowLogic<SignedTransaction> {
+
+        private SignedTransaction transaction;
+        private List<AbstractParty> requiredSigners;
+
+        public CollectSignaturesInitiatingFlow(
+                SignedTransaction transaction,
+                List<AbstractParty> requiredSigners
+        ) {
+            this.transaction = transaction;
+            this.requiredSigners = requiredSigners;
+        }
+
+        @Suspendable
+        @Override
+        public SignedTransaction call() throws FlowException {
+            // create new sessions to signers and trigger the signing responder flow
+            List<FlowSession> requiredSigsFlowSessions = requiredSigners.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
+            return subFlow(new CollectSignaturesFlow(transaction, requiredSigsFlowSessions));
+        }
+    }
+
+    //create sessions for each of the signers
+    @InitiatedBy(CollectSignaturesInitiatingFlow.class)
+    public static class CollectSignaturesResponder extends FlowLogic<SignedTransaction> {
+        private FlowSession session;
+
+        public CollectSignaturesResponder(
+                FlowSession session
+        ){
+            this.session = session;
+        }
+
+        @Suspendable
+        @Override
+        public SignedTransaction call() throws FlowException {
+            return subFlow(new SignTransactionFlow(session) {
+                @Override
+                protected void checkTransaction(@NotNull SignedTransaction stx) throws FlowException {
+
+                }
+            });
+        }
+    }
 }

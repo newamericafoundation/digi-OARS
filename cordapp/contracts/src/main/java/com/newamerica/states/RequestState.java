@@ -175,6 +175,25 @@ public class RequestState implements LinearState, Comparable<RequestState> {
         );
     }
 
+    public RequestState updateFundStateID(UniqueIdentifier fundStateLinearId){
+        return new RequestState(
+                this.authorizedUserUsername,
+                this.authorizedUserDept,
+                this.authorizerUserDeptAndUsername,
+                this.authorizedParties,
+                this.externalAccountId,
+                this.purpose,
+                this.amount,
+                this.currency,
+                this.createDatetime,
+                this.updateDatetime,
+                this.status,
+                fundStateLinearId,
+                this.linearId,
+                this.participants
+        );
+    }
+
     public RequestState update(Map<String, String> authorizerUserDeptAndUsername, ZonedDateTime updateDatetime){
         return new RequestState(
                 this.authorizedUserUsername,
