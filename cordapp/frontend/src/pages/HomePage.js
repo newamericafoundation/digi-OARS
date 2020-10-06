@@ -12,8 +12,9 @@ const HomePage = () => {
     <>
       <Jumbotron auth={auth} />
       <WelcomeCallout auth={auth} />
-      {auth.meta.keycloak.hasResourceRole("funds_receiver") ? (
-        <Actions />
+      {auth.meta.keycloak.hasResourceRole("funds_receiver") ||
+      auth.meta.keycloak.hasResourceRole("request_approver") ? (
+        <Actions auth={auth} />
       ) : null}
       <Widgets auth={auth} />
     </>
