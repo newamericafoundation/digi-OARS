@@ -149,6 +149,22 @@ export const RequestsTable = ({
     );
   };
 
+  const responseTransferMessage = (message) => {
+    return (
+      <div>
+        <strong>Request ID:</strong> {message.data.entity.linearId.id}
+        <br />
+        <strong>Status:</strong>{" "}
+        <CBadge color={message.data.entity.status ? getStatusBadge(message.data.entity.status) : getStatusBadge("TRANSFERRED")}>
+          {message.data.entity.status ? message.data.entity.status : "TRANSFERRED"}
+        </CBadge>
+        <br />
+        <strong>Amount:</strong>{" "}
+        {toCurrency(message.data.entity.amount, "USD")}
+      </div>
+    );
+  };
+
   const onHandleConfirmationClick = (
     requestStateLinearId,
     authorizerUserUsername,
@@ -214,7 +230,7 @@ export const RequestsTable = ({
           refreshFundsTableCallback();
           refreshRequestsTableCallback();
           handleClose();
-          const { hide } = cogoToast.info(responseMessage(response), {
+          const { hide } = cogoToast.info(responseTransferMessage(response), {
             heading: "Withdrawal Request Transferred",
             position: "top-right",
             hideAfter: 8,
@@ -224,6 +240,7 @@ export const RequestsTable = ({
           });
         })
         .catch((err) => {
+          console.log(err)
           const { hide } = cogoToast.error(err.message, {
             heading: "Error Transferring Request",
             position: "top-right",

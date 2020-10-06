@@ -9,21 +9,31 @@ import {
   CSubheader,
   CBreadcrumbRouter,
   CLink,
+  CButton,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { publicRoutes, privateRoutes } from "../routes";
-
+import { useAuth } from "../auth-hook";
 import { HeaderDropdown } from "./index";
 
 const Header = () => {
+  const auth = useAuth();
   const dispatch = useDispatch();
   const sidebarShow = useSelector((state) => state.sidebarShow);
+  const sidebarRightShow = useSelector((state) => state.sidebarRightShow);
 
   const toggleSidebar = () => {
     const val = [true, "responsive"].includes(sidebarShow)
       ? false
       : "responsive";
     dispatch({ type: "set", sidebarShow: val });
+  };
+
+  const toggleSidebarRight = () => {
+    const val = [true, "responsive"].includes(sidebarRightShow)
+      ? false
+      : true;
+    dispatch({ type: "set", sidebarRightShow: val });
   };
 
   const toggleSidebarMobile = () => {
@@ -59,8 +69,13 @@ const Header = () => {
         </CHeaderNavItem>
       </CHeaderNav>
 
+      
       <CHeaderNav className="px-3">
         <HeaderDropdown />
+        {auth.isAuthenticated ? 
+        <CButton onClick={toggleSidebarRight}>
+          <CIcon name="cil-applications-settings" />
+        </CButton> : null}
       </CHeaderNav>
 
       <CSubheader className="px-3 justify-content-between">
