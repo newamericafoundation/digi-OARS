@@ -90,6 +90,7 @@ public class IssuePartialRequestFundFlowTests {
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
+                "build a school",
                 new UniqueIdentifier(),
                 participants
         );
@@ -123,6 +124,7 @@ public class IssuePartialRequestFundFlowTests {
                 BigDecimal.valueOf(-1),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
+                "build a school",
                 new UniqueIdentifier(),
                 participants
         );
@@ -139,6 +141,7 @@ public class IssuePartialRequestFundFlowTests {
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
+                "build a school",
                 new UniqueIdentifier(),
                 participants
         );
@@ -158,6 +161,7 @@ public class IssuePartialRequestFundFlowTests {
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
+                "build a school",
                 new UniqueIdentifier(),
                 participants
         );
@@ -179,6 +183,7 @@ public class IssuePartialRequestFundFlowTests {
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
+                "build a school",
                 new UniqueIdentifier(),
                 participants
         );

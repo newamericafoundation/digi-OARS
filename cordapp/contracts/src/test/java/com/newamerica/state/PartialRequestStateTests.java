@@ -40,6 +40,7 @@ public class PartialRequestStateTests {
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                "build a school",
                 uniqueIdentifier,
                 participants
         );
@@ -54,6 +55,7 @@ public class PartialRequestStateTests {
         Field amount = PartialRequestState.class.getDeclaredField("amount");
         Field datetime = PartialRequestState.class.getDeclaredField("datetime");
         Field currency = PartialRequestState.class.getDeclaredField("currency");
+        Field purpose = PartialRequestState.class.getDeclaredField("purpose");
         Field fundStateLinearId = PartialRequestState.class.getDeclaredField("fundStateLinearId");
         Field participants = PartialRequestState.class.getDeclaredField("participants");
 
@@ -62,6 +64,7 @@ public class PartialRequestStateTests {
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(fundStateLinearId.getType().isAssignableFrom(UniqueIdentifier.class));
+        assertTrue(purpose.getType().isAssignableFrom(String.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(participants.getType().isAssignableFrom(List.class));
     }
@@ -76,6 +79,7 @@ public class PartialRequestStateTests {
         assertTrue(partialrequestState.getAmount().compareTo(BigDecimal.valueOf(1000000)) == 0);
         assertEquals(partialrequestState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertEquals(partialrequestState.getCurrency(), Currency.getInstance(Locale.US));
+        assertEquals(partialrequestState.getPurpose(), "build a school");
         assertEquals(partialrequestState.getFundStateLinearId(), uniqueIdentifier);
         assertEquals(partialrequestState.getParticipants(),new ArrayList<>(participants));
     }
