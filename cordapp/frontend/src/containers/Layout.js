@@ -1,6 +1,7 @@
 import React from 'react'
 import {
   Sidebar,
+  SidebarRight,
   Header,
   Footer,
   Content
@@ -10,6 +11,7 @@ const Layout = () => {
 
   return (
     <div className="c-app c-default-layout">
+      <SidebarRight />
       <Sidebar />
       <div className="c-wrapper">
         <Header />

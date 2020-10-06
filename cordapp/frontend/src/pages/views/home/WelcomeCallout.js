@@ -37,7 +37,6 @@ export const WelcomeCallout = ({ auth }) => {
         {(auth.isAuthenticated && auth.user.firstName !== undefined) && (
           <CCallout color="dark" className="bg-light mt-0 mb-4">
             <h1 className="text-muted">{greeting}{auth.user.firstName}!</h1>
-            <h6>Your daily summary:</h6>
           </CCallout>
         )}
       </CCol>
