@@ -224,11 +224,12 @@ public class FundsController extends BaseResource {
     }
 
     @PutMapping(value = "/fund", produces = "application/json", params = "fundId")
-    private Response receiveFund (@QueryParam("fundId") String fundId) {
+    private Response receiveFund (@QueryParam("fundId") String fundId, @QueryParam("receivedByUsername") String receivedByUsername) {
         try {
             String resourcePath = String.format("/fund?fundId=%s", fundId);
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     ReceiveFundFlow.InitiatorFlow.class,
+                    receivedByUsername,
                     new UniqueIdentifier(null, UUID.fromString(fundId)),
                     ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"))
             ).getReturnValue().get();

@@ -36,6 +36,7 @@ public class IssueRequestFlowTests {
     private Party usDoj;
     private Party usDos;
     private Party catanMoj;
+    private String username = "Ben Green";
     SignedTransaction stx2;
     private final List<AbstractParty> owners = new ArrayList<>();
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
@@ -118,6 +119,7 @@ public class IssueRequestFlowTests {
         FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
 
         ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                username,
                 fs.getLinearId(),
                 ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
         );
@@ -212,6 +214,7 @@ public class IssueRequestFlowTests {
         FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
 
         ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                username,
                 fs.getLinearId(),
                 ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
         );
