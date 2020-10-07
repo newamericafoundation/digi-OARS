@@ -10,7 +10,7 @@ import {
   CListGroupItem,
   CBadge,
   CLink,
-  CButton,
+  CButton, CAlert
 } from "@coreui/react";
 import { RequestsContext } from "../../../providers/RequestsProvider";
 import { FundsContext } from "../../../providers/FundsProvider";
@@ -34,6 +34,11 @@ export const Actions = ({ auth }) => {
           </CCardHeader>
           <CCardBody>
             {auth.meta.keycloak.hasResourceRole("funds_receiver") ? (
+              (requestsState.approved.length === 0 && fundsState.issued.length === 0) ? (
+                <CAlert color="success">
+                  No new pending actions!
+                </CAlert>
+              ) : (
               <CRow>
                 <CCol xs="12" xl="6">
                   <h4>
@@ -128,9 +133,14 @@ export const Actions = ({ auth }) => {
                     </CListGroupItem>
                   </CListGroup>
                 </CCol>
-              </CRow>
+              </CRow>)
             ) : null}
             {auth.meta.keycloak.hasResourceRole("request_approver") ? (
+              (requestsState.pending.length === 0) ? (
+                <CAlert color="success">
+                  No new pending actions!
+                </CAlert>
+              ) : (
               <CRow>
                 <CCol xl="8" xs="12">
                 <h4>
@@ -140,15 +150,15 @@ export const Actions = ({ auth }) => {
                       color="warning"
                       className="float-right"
                     >
-                      {requestsState.approved ? requestsState.approved.length : null}
+                      {requestsState.pending ? requestsState.pending.length : null}
                     </CBadge>
                   </h4>
                   <CListGroup accent={true}>
                     {requestsState.pending
                       ? requestsState.pending.slice(0, 5).map((item) => (
-                          <CListGroupItem key={item.linearId} accent="info">
+                          <CListGroupItem key={item.linearId} accent="warning">
                             <div className="float-right">
-                              <CBadge color="success">{item.status}</CBadge>
+                              <CBadge color="warning">{item.status}</CBadge>
                             </div>
                             <div>
                               <CIcon name="cil-chevron-right" />{" "}
@@ -169,7 +179,7 @@ export const Actions = ({ auth }) => {
                         ))
                       : null}
                     <CListGroupItem className="font-weight-bold text-muted c-small text-right">
-                      <CLink to="/transfers/approvals">
+                      <CLink to="/withdrawals">
                         <CButton color="secondary">
                           View{" "}
                           {requestsState.pending.length > 5
@@ -180,7 +190,7 @@ export const Actions = ({ auth }) => {
                     </CListGroupItem>
                   </CListGroup>
                 </CCol>
-              </CRow>
+              </CRow>)
             ) : null }
           </CCardBody>
         </CCard>

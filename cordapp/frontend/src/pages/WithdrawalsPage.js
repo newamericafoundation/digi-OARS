@@ -8,7 +8,7 @@ import {
   CCol,
   CCallout,
   CButton,
-  CButtonGroup
+  CButtonGroup,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
@@ -49,9 +49,7 @@ const WithdrawalsPage = () => {
       setIsRequestTransferer(
         auth.meta.keycloak.hasResourceRole("request_transferer")
       );
-      setIsObserver(
-        auth.meta.keycloak.hasResourceRole("observer")
-      );
+      setIsObserver(auth.meta.keycloak.hasResourceRole("observer"));
     }
   }, [auth]);
 
@@ -137,27 +135,29 @@ const WithdrawalsPage = () => {
           </CWidgetProgressIcon>
         </CCol>
       </CRow>
-      <CRow>
-        <CCol>
-          <CCard>
-            <CCardHeader>
-              <div className="mb-0">
-                <CCallout className="float-left mt-1 mb-1">
-                  <h4 className="mt-1">Available Funds</h4>
-                </CCallout>
-              </div>
-            </CCardHeader>
-            <CCardBody>
-              <AvailableFundsTable
-                funds={fundsState}
-                refreshFundsTableCallback={fundsCallback}
-                refreshRequestsTableCallback={requestsCallback}
-                isRequestor={isFundsRequestor}
-              />
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
+      {isFundsRequestor ? (
+        <CRow>
+          <CCol>
+            <CCard>
+              <CCardHeader>
+                <div className="mb-0">
+                  <CCallout className="float-left mt-1 mb-1">
+                    <h4 className="mt-1">Available Funds</h4>
+                  </CCallout>
+                </div>
+              </CCardHeader>
+              <CCardBody>
+                <AvailableFundsTable
+                  funds={fundsState}
+                  refreshFundsTableCallback={fundsCallback}
+                  refreshRequestsTableCallback={requestsCallback}
+                  isRequestor={isFundsRequestor}
+                />
+              </CCardBody>
+            </CCard>
+          </CCol>
+        </CRow>
+      ) : null}
       <CRow>
         <CCol>
           <CCard>
