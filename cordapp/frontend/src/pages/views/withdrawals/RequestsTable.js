@@ -526,6 +526,15 @@ export const RequestsTable = ({
               {toCurrency(currentItem.amount, "USD")}
             </strong>
           </CCallout>
+          <CCallout
+            color={getCurrentActionColor(currentRequestAction)}
+            className={"bg-light"}
+          >
+            <p className="text-muted mb-0">Account ID</p>
+            <strong className="p">
+              {currentItem.externalAccountId}
+            </strong>
+          </CCallout>
           {currentRequestAction === "transfer" ? (
             <CCallout
               color={getStatusBadge(currentItem.status)}
