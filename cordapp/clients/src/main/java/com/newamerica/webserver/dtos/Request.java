@@ -25,7 +25,6 @@ public class Request {
     @NotNull
     private String amount;
 
-    @NotNull
     private String fundStateLinearId;
 
     public String getPurpose() { return purpose; }

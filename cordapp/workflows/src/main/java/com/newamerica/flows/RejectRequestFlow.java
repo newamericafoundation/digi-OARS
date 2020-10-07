@@ -53,10 +53,6 @@ public class RejectRequestFlow {
             StateAndRef stateRef = (StateAndRef) results.getStates().get(0);
             RequestState inputRequestState = (RequestState) stateRef.getState().getData();
 
-            if(!inputRequestState.getAuthorizedParties().contains(getOurIdentity())){
-                throw new IllegalArgumentException("The initiator of this flow must be a authorizedParty");
-            }
-
             Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
             authorizerUserDeptAndUsername.put(authorizerUserDept, authorizerUserUsername);
             RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.REJECTED);

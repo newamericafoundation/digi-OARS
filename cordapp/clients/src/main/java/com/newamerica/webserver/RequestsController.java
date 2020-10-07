@@ -158,12 +158,10 @@ public class RequestsController extends BaseResource {
             String externalAccountId = request.getExternalAccountId();
             String purpose = request.getPurpose();
             String amount = request.getAmount();
-            String fundStateLinearId = request.getFundStateLinearId();
 
             BigDecimal amountAndBalance = new BigDecimal(amount);
             ZonedDateTime now = ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"));
             Currency currency = Currency.getInstance("USD");
-            UniqueIdentifier fundStateLinearIdAsUUID = UniqueIdentifier.Companion.fromString(fundStateLinearId);
 
             Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US_DoS,L=New York,C=US"));
             Party NewAmerica = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=NewAmerica,L=New York,C=US"));
@@ -183,7 +181,6 @@ public class RequestsController extends BaseResource {
                     currency,
                     now,
                     now,
-                    fundStateLinearIdAsUUID,
                     participants
             ).getReturnValue().get();
             RequestState created = (RequestState) tx.getTx().getOutputs().get(0).getData();
@@ -195,8 +192,11 @@ public class RequestsController extends BaseResource {
         }
     }
 
-    @PutMapping(value = "/request/approve", produces = "application/json", params = {"requestStateLinearId", "authorizerUserUsername", "authorizerUserDept"})
-    private Response approveRequest (@QueryParam("requestStateLinearId") String requestStateLinearId, @QueryParam("authorizerUserUsername") String authorizerUserUsername, @QueryParam("authorizerUserDept") String authorizerUserDept) {
+    @PutMapping(value = "/request/approve", produces = "application/json", params = {"requestStateLinearId", "authorizerUserUsername", "authorizerUserDept", "fundStateLinearId"})
+    private Response approveRequest (@QueryParam("requestStateLinearId") String requestStateLinearId,
+                                     @QueryParam("authorizerUserUsername") String authorizerUserUsername,
+                                     @QueryParam("authorizerUserDept") String authorizerUserDept,
+                                     @QueryParam("fundStateLinearId") String fundStateLinearId) {
         try {
             String resourcePath = String.format("/request?requestStateLinearId=%s?authorizerUserUsername=%s?authorizerUserDept=%s", requestStateLinearId, authorizerUserUsername, authorizerUserDept);
             SignedTransaction tx = rpcOps.startFlowDynamic(
@@ -204,7 +204,8 @@ public class RequestsController extends BaseResource {
                     new UniqueIdentifier(null, UUID.fromString(requestStateLinearId)),
                     authorizerUserUsername,
                     authorizerUserDept,
-                    ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"))
+                    ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC")),
+                    new UniqueIdentifier(null, UUID.fromString(fundStateLinearId))
             ).getReturnValue().get();
             RequestState updated = (RequestState) tx.getTx().getOutputs().get(0).getData();
             return Response.ok(createRequestSuccessServiceResponse("Request approved.", updated, resourcePath)).build();

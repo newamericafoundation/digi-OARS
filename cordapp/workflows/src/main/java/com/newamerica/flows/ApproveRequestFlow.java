@@ -88,7 +88,7 @@ public class ApproveRequestFlow {
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Approve();
-            transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, inputStateRefFundState.getAuthorizedParties().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addInputState(stateRef);
             transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
@@ -115,42 +115,21 @@ public class ApproveRequestFlow {
      * This is the flow which approves RequestState updates.
      */
 
+    // Call receiveFinalityFlow for all participants
     @InitiatedBy(ApproveRequestFlow.InitiatorFlow.class)
-    public static class ResponderFlow extends FlowLogic<SignedTransaction>{
-        private final FlowSession flowSession;
-        private SecureHash txWeJustSigned;
-
-        public ResponderFlow(FlowSession flowSession){
-            this.flowSession = flowSession;
+    public static class ExtraInitiatingFlowResponder extends FlowLogic<SignedTransaction> {
+        private FlowSession session;
+        public ExtraInitiatingFlowResponder(
+                FlowSession session
+        ){
+            this.session = session;
         }
 
         @Suspendable
         @Override
         public SignedTransaction call() throws FlowException {
-            class SignTxFlow extends SignTransactionFlow{
-
-                private SignTxFlow(FlowSession flowSession, ProgressTracker progressTracker){
-                    super(flowSession, progressTracker);
-                }
-
-                @Override
-                protected void checkTransaction(SignedTransaction stx){
-                    requireThat(req -> {
-                        ContractState output = stx.getTx().getOutputs().get(0).getData();
-                        req.using("This must be an RequestState transaction", output instanceof RequestState);
-                        return null;
-                    });
-                    txWeJustSigned = stx.getId();
-                }
-            }
-            flowSession.getCounterpartyFlowInfo().getFlowVersion();
-
-            // Create a sign transaction flow
-            SignTxFlow signTxFlow = new SignTxFlow(flowSession, SignTransactionFlow.Companion.tracker());
-
-            // Run the sign transaction flow to sign the transaction
-            subFlow(signTxFlow);
-            return subFlow(new ReceiveFinalityFlow(flowSession, txWeJustSigned));
+            // save the transaction and nothing else
+            return subFlow(new ReceiveFinalityFlow(session));
         }
     }
 
