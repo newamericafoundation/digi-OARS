@@ -71,6 +71,10 @@ public class ApproveRequestFlow {
             StateAndRef inputStateRef = (StateAndRef) fundResults.getStates().get(0);
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
 
+            if(inputStateRefFundState.getStatus() != FundState.FundStateStatus.RECEIVED) {
+                throw new IllegalArgumentException("FundState must be in received status!");
+            }
+
             // create output request state
             Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
             authorizerUserDeptAndUsername.put(authorizerUserDept, authorizerUserUsername);
