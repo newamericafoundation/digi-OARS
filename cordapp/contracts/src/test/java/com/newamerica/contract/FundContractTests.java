@@ -32,6 +32,7 @@ public class FundContractTests {
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+    private final String username = "Ben Green";
 
 
     @Before
@@ -51,6 +52,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -85,6 +87,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -120,6 +123,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -155,6 +159,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 US.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -185,6 +190,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -215,6 +221,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -244,6 +251,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -273,6 +281,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -302,6 +311,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -331,6 +341,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -360,6 +371,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,

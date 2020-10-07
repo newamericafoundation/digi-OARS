@@ -98,7 +98,7 @@ const SidebarRight = () => {
                 className="bg-light font-weight-bold text-muted text-uppercase c-small"
               >
                 Requests To Approve/Reject{" "}
-                <CBadge shape="pill" color="info" className="float-right">
+                <CBadge shape="pill" color="warning" className="float-right">
                   {requestsState.pending
                     ? requestsState.pending.length
                     : null}
@@ -106,7 +106,7 @@ const SidebarRight = () => {
               </CListGroupItem>
               {requestsState.pending
                 ? requestsState.pending.slice(0, 5).map((item) => (
-                    <CListGroupItem key={item.linearId} accent="info">
+                    <CListGroupItem key={item.linearId} accent="warning">
                       <div className="float-right">
                         <CBadge color="warning">{item.status}</CBadge>
                       </div>

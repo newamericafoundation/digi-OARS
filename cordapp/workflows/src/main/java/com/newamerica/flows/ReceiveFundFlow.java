@@ -36,8 +36,10 @@ public class ReceiveFundFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier fundStateLinearId;
         private final ZonedDateTime updateDatetime;
+        private final String receivedByUsername;
 
-        public InitiatorFlow(UniqueIdentifier fundStateLinearId, ZonedDateTime updateDatetime) {
+        public InitiatorFlow(String receivedByUsername, UniqueIdentifier fundStateLinearId, ZonedDateTime updateDatetime) {
+            this.receivedByUsername = receivedByUsername;
             this.fundStateLinearId = fundStateLinearId;
             this.updateDatetime = updateDatetime;
         }
@@ -58,22 +60,24 @@ public class ReceiveFundFlow {
             FundState inputFundState = (FundState) inputFundStateAndRef.getState().getData();
 
             // contruct output fund state
-            FundState outputFundState = inputFundState.changeStatus(FundState.FundStateStatus.RECEIVED);
-            FundState outputFundStateFinal = outputFundState.updateDatetime(updateDatetime);
+            FundState outputFundState = inputFundState
+                    .changeStatus(FundState.FundStateStatus.RECEIVED)
+                    .updateDatetime(updateDatetime)
+                    .setReceivedByUsername(receivedByUsername);
 
             // build tx
             transactionBuilder.addCommand(
                     commandData,
                     outputFundState.getParticipants().stream().map(i -> (i.getOwningKey())).collect(Collectors.toList()));
             transactionBuilder.addInputState(inputFundStateAndRef);
-            transactionBuilder.addOutputState(outputFundStateFinal, FundContract.ID);
+            transactionBuilder.addOutputState(outputFundState, FundContract.ID);
 
             //verify and partially sign transaction
             transactionBuilder.verify(getServiceHub());
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = outputFundStateFinal
+            List<Party> otherParties = outputFundState
                     .getParticipants()
                     .stream()
                     .map(i -> ((Party) i)).collect(Collectors.toList());

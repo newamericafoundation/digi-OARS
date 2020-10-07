@@ -36,7 +36,7 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
     authorizedUserUsername: { value: auth.user.fullName, error: "" },
     amount: { value: 0, error: "" },
     purpose: { value: "", error: "" },
-    externalAccountId: { value: "", error: "" },
+    accountId: { value: "", error: "" },
   };
 
   const stateValidatorSchema = {
@@ -48,8 +48,8 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
         error: "Invalid currency format.",
       },
     },
-    externalAccountId: {
-      required: false,
+    accountId: {
+      required: true,
     },
     purpose: {
       required: true,
@@ -66,7 +66,7 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
         amount: state.amount,
         authorizedUserDept: auth.meta.keycloak.tokenParsed.groups[0],
         authorizedUserUsername: auth.user.fullName,
-        externalAccountId: state.externalAccountId,
+        externalAccountId: state.accountId,
         fundStateLinearId: request.linearId,
         purpose: state.purpose,
       })
@@ -88,7 +88,7 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
     fundStateBalance,
     authorizedUserUsername,
     authorizedUserDept,
-    externalAccountId,
+    accountId,
     purpose,
   } = values;
 
@@ -219,7 +219,7 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
             </div>
           </CFormGroup>
           <CFormGroup>
-            <CLabel htmlFor="externalAccountId">External Account ID</CLabel>
+            <CLabel htmlFor="accountId">Account ID</CLabel>
             <CInputGroup className="input-prepend">
               <CInputGroupPrepend>
                 <CInputGroupText>
@@ -228,13 +228,16 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
               </CInputGroupPrepend>
               <CInput
                 type="text"
-                name="externalAccountId"
-                id="externalAccountId"
+                name="accountId"
+                id="accountId"
                 placeholder=""
-                value={externalAccountId}
+                value={accountId}
                 onChange={handleOnChange}
               />
             </CInputGroup>
+            <div className="text-muted small">
+              <p className="text-danger">{errors.accountId}</p>
+            </div>
           </CFormGroup>
         </CModalBody>
         <CModalFooter>

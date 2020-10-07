@@ -16,6 +16,8 @@ public class Fund {
     @NotNull
     private String receivingParty;
 
+    private String receivedByUsername;
+
     @NotNull
     public String amount;
 
@@ -55,4 +57,9 @@ public class Fund {
     public void setMaxWithdrawalAmount(String maxWithdrawalAmount) {
         this.maxWithdrawalAmount = maxWithdrawalAmount;
     }
+
+    public String getReceivedByUsername() { return receivedByUsername; }
+
+    public void setReceivedByUsername(String receivedByUsername) { this.receivedByUsername = receivedByUsername; }
+
 }
