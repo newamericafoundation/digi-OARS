@@ -428,7 +428,7 @@ export const RequestsTable = ({
                           <strong className="p">{item.linearId}</strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">External Account ID</p>
+                          <p className="text-muted mb-0">Account ID</p>
                           <strong className="p">
                             {item.externalAccountId}
                           </strong>
