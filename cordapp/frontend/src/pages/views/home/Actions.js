@@ -42,7 +42,7 @@ export const Actions = ({ auth }) => {
               <CRow>
                 <CCol xs="12" xl="6">
                   <h4>
-                    Funds to Receive{" "}
+                    Returns to Receive{" "}
                     <CBadge
                       shape="pill"
                       color="warning"
@@ -76,7 +76,7 @@ export const Actions = ({ auth }) => {
                         ))
                       : null}
                     <CListGroupItem className="font-weight-bold text-muted c-small text-right">
-                      <CLink to="/funds">
+                      <CLink to="/returns">
                         <CButton color="secondary">
                           View{" "}
                           {fundsState.issued.length > 5

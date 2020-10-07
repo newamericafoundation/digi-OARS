@@ -142,7 +142,7 @@ const WithdrawalsPage = () => {
               <CCardHeader>
                 <div className="mb-0">
                   <CCallout className="float-left mt-1 mb-1">
-                    <h4 className="mt-1">Available Funds</h4>
+                    <h4 className="mt-1">Available Money</h4>
                   </CCallout>
                 </div>
               </CCardHeader>

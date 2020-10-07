@@ -412,7 +412,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       </CModal>
       <CModal show={showRequests} size="xl" closeOnBackdrop={false}>
         <CModalHeader>
-          <CModalTitle>Fund Requests</CModalTitle>
+          <CModalTitle>Withdrawal Requests</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <RequestsSnapshotTable requests={requestsFromFundId} />
