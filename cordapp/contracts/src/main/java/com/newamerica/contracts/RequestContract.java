@@ -47,12 +47,10 @@ public class RequestContract implements Contract {
                 require.using("The authorizedUserUsername cannot change.", inputState.getAuthorizedUserUsername().equals(outputState.getAuthorizedUserUsername()));
                 require.using("The authorizedUserDept cannot change.", inputState.getAuthorizedUserDept().equals(outputState.getAuthorizedUserDept()));
                 require.using("The authorizerUserDeptAndUsername cannot be null.", !outputState.getAuthorizerUserDeptAndUsername().isEmpty());
-                require.using("The authorizerDept cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The externalAccountId cannot change.", inputState.getExternalAccountId().equals(outputState.getExternalAccountId()));
                 require.using("The purpose cannot change.", inputState.getPurpose().equals(outputState.getPurpose()));
                 require.using("The amount cannot change.", inputState.getAmount().equals(outputState.getAmount()));
                 require.using("The currency cannot change.", inputState.getCurrency().equals(outputState.getCurrency()));
-                require.using("The authorizedParties cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
                 require.using("update datetime must be later than create datetime.", outputState.getUpdateDatetime().isAfter(outputState.getCreateDatetime()));
                 require.using("fundstateid cannot be null for approve.", outputState.getFundStateLinearId() != null);

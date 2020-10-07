@@ -60,14 +60,6 @@ public class ApproveRequestFlow {
             Vault.Page results = getServiceHub().getVaultService().queryBy(RequestState.class, queryCriteria);
             StateAndRef stateRef = (StateAndRef) results.getStates().get(0);
             RequestState inputRequestState = (RequestState) stateRef.getState().getData();
-            // create output request state
-            Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
-            authorizerUserDeptAndUsername.put(authorizerUserDept, authorizerUserUsername);
-
-            RequestState outputRequestState = inputRequestState
-                    .changeStatus(RequestState.RequestStateStatus.APPROVED)
-                    .update(authorizerUserDeptAndUsername, updateDatetime)
-                    .updateFundStateID(fundStateLinearId);
 
             //get matched fund state given fundStateId
             List<UUID> fundStateLinearIdList = new ArrayList<>();
@@ -79,7 +71,15 @@ public class ApproveRequestFlow {
             StateAndRef inputStateRef = (StateAndRef) fundResults.getStates().get(0);
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
 
-            outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
+            // create output request state
+            Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
+            authorizerUserDeptAndUsername.put(authorizerUserDept, authorizerUserUsername);
+
+            RequestState outputRequestState = inputRequestState
+                    .changeStatus(RequestState.RequestStateStatus.APPROVED)
+                    .update(authorizerUserDeptAndUsername, updateDatetime)
+                    .updateFundStateID(fundStateLinearId)
+                    .updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
 
             if (outputRequestState.amount.compareTo(inputStateRefFundState.maxWithdrawalAmount) > 0) {
                 outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
