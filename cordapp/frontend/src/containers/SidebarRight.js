@@ -212,7 +212,7 @@ const SidebarRight = () => {
                       ))
                     : null}
                   <CListGroupItem className="font-weight-bold text-muted c-small text-right">
-                    <CLink to="/funds">
+                    <CLink to="/returns">
                       <CButton color="secondary">
                         View{" "}
                         {fundsState.issued.length > 5

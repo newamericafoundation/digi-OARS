@@ -70,7 +70,7 @@ const FundsPage = () => {
     handleClose();
     if (response.status === 200) {
       const { hide } = cogoToast.success(responseMessage(response), {
-        heading: "Funds Repatriated",
+        heading: "Money Repatriated",
         position: "top-right",
         hideAfter: 8,
         onClick: () => {
@@ -80,7 +80,7 @@ const FundsPage = () => {
       fundsCallback();
     } else {
       const { hide } = cogoToast.error(response.entity.message, {
-        heading: "Error Repatriating Funds",
+        heading: "Error Repatriating Money",
         position: "top-right",
         hideAfter: 8,
         onClick: () => {
@@ -118,25 +118,25 @@ const FundsPage = () => {
         <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(fundsState.paidAmount, "USD").toString()}
-            text="Paid Funds"
-            color="gradient-dark"
+            header={toCurrency(fundsState.issuedAmount, "USD").toString()}
+            text="Returns Issued"
+            color="gradient-warning"
             value={
-              (fundsState.paidAmount /
+              (fundsState.issuedAmount /
                 (fundsState.issuedAmount +
                   fundsState.receivedAmount +
                   fundsState.paidAmount)) *
               100
             }
           >
-            <CIcon name="cil-money" height="36" />
+            <CIcon name="cil-av-timer" height="36" />
           </CWidgetProgressIcon>
         </CCol>
         <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
             header={toCurrency(fundsState.receivedAmount, "USD").toString()}
-            text="Received Funds"
+            text="Returns Received"
             color="gradient-success"
             value={
               (fundsState.receivedAmount /
@@ -152,18 +152,18 @@ const FundsPage = () => {
         <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
-            header={toCurrency(fundsState.issuedAmount, "USD").toString()}
-            text="Issued Funds"
-            color="gradient-warning"
+            header={toCurrency(fundsState.paidAmount, "USD").toString()}
+            text="Returns Paid"
+            color="gradient-dark"
             value={
-              (fundsState.issuedAmount /
+              (fundsState.paidAmount /
                 (fundsState.issuedAmount +
                   fundsState.receivedAmount +
                   fundsState.paidAmount)) *
               100
             }
           >
-            <CIcon name="cil-av-timer" height="36" />
+            <CIcon name="cil-money" height="36" />
           </CWidgetProgressIcon>
         </CCol>
       </CRow>
@@ -179,7 +179,7 @@ const FundsPage = () => {
                   <h4 className="mt-1 text-dark">
                     {fundsFilterStatus.charAt(0).toUpperCase() +
                       fundsFilterStatus.slice(1).toLowerCase()}{" "}
-                    Funds
+                    Returns
                   </h4>
                 </CCallout>
                 {auth.isAuthenticated && isFundsIssuer ? (
@@ -189,7 +189,7 @@ const FundsPage = () => {
                     tabIndex="0"
                     onClick={handleShow}
                   >
-                    Issue Funds
+                    Issue Returns
                   </CButton>
                 ) : null}
                 <CButtonGroup className="float-right mr-3 mt-1 mb-1">
@@ -250,7 +250,7 @@ const FundsPage = () => {
       </CRow>
       <CModal show={show} onClose={handleClose} closeOnBackdrop={false}>
         <CModalHeader closeButton>
-          <CModalTitle>Funds Form</CModalTitle>
+          <CModalTitle>Returns Form</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <NetworkProvider>
