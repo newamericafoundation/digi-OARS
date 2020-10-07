@@ -124,6 +124,7 @@ public class RejectRequestFlowTests {
 
         //acknowledge the FundState
         ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                "Ben Green",
                 fs.getLinearId(),
                 ZonedDateTime.of(2020, 7, 27, 10, 30, 30, 0, ZoneId.of("America/New_York"))
         );
@@ -251,6 +252,7 @@ public class RejectRequestFlowTests {
 
         //acknowledge the FundState
         ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                "Ben Green",
                 fs.getLinearId(),
                 ZonedDateTime.of(2020, 7, 27, 10, 30, 30, 0, ZoneId.of("America/New_York"))
         );

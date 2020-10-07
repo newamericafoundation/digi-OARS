@@ -91,7 +91,8 @@ public class FundContract implements Contract {
                 FundState inputState = (FundState) tx.getInputStates().get(0);
                 require.using("The inputFundState's status must be ISSUED in order to proceed.", inputState.getStatus() == FundState.FundStateStatus.ISSUED);
                 FundState outputState = (FundState) tx.getOutputStates().get(0);
-                require.using("originParty and receivingParty cannot be the same Party", outputState.getOriginParty() != outputState.getReceivingParty());
+                require.using("OriginParty and receivingParty cannot be the same Party", outputState.getOriginParty() != outputState.getReceivingParty());
+                require.using("Received by username cannot be empty.", outputState.getReceivedByUsername() != null);
                 require.using("There must be at least one Party in the owner list.", !outputState.getOwners().isEmpty());
                 require.using("There must be at least one Party in the requiredSigners list.", !outputState.getOwners().isEmpty());
                 require.using("The amount must be greater than zero.", outputState.getAmount().compareTo(BigDecimal.ZERO) > 0);

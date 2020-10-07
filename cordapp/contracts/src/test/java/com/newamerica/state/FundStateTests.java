@@ -25,6 +25,7 @@ public class FundStateTests {
     private final List<AbstractParty> authorizedParties = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+    private final String username = "Ben Green";
 
 
     @Before
@@ -41,6 +42,7 @@ public class FundStateTests {
         fundState = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
                 authorizedParties,
                 partialRequestParticipants,
@@ -60,6 +62,7 @@ public class FundStateTests {
     public void hasAllAttributes() throws NoSuchFieldException{
         Field originParty = FundState.class.getDeclaredField("originParty");
         Field receivingParty = FundState.class.getDeclaredField("receivingParty");
+        Field receivedByUsername = FundState.class.getDeclaredField("receivedByUsername");
         Field owners = FundState.class.getDeclaredField("owners");
         Field authorizedParties = FundState.class.getDeclaredField("authorizedParties");
         Field partialRequestParticipants = FundState.class.getDeclaredField("partialRequestParticipants");
