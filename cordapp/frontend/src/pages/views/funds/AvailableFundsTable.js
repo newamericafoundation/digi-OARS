@@ -145,7 +145,7 @@ export const AvailableFundsTable = ({
           size="sm"
           onClick={() => handleShow(item, index)}
         >
-          Request Funds
+          Request Money
         </CButton>
       );
     }
@@ -293,10 +293,6 @@ export const AvailableFundsTable = ({
                           <strong className="p">{item.linearId}</strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Transaction ID</p>
-                          <strong className="p">{item.txId}</strong>
-                        </CCallout>
-                        <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
                             {Moment(item.createdDateTime).format(
@@ -340,7 +336,7 @@ export const AvailableFundsTable = ({
       />
       <CModal show={showRequests} size="xl" closeOnBackdrop={false}>
         <CModalHeader>
-          <CModalTitle>Fund Requests</CModalTitle>
+          <CModalTitle>Withdrawal Requests</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <RequestsSnapshotTable requests={requestsFromFundId} />

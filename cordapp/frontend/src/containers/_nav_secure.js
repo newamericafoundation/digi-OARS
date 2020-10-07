@@ -5,8 +5,8 @@ export default [
   },
   {
     _tag: "CSidebarNavItem",
-    name: "Funds",
-    to: "/funds",
+    name: "Returns",
+    to: "/returns",
     icon: "cil-bank",
   },
   {
