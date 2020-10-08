@@ -17,7 +17,8 @@ const getFunds = async (port) => {
     balance: ob.balance,
     maxWithdrawalAmount: ob.maxWithdrawalAmount,
     status: ob.status,
-    participants: ob.participants
+    participants: ob.participants,
+    receivedByUsername: ob.receivedByUsername
   }));
 };
 
