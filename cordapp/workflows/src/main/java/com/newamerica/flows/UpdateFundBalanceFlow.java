@@ -50,7 +50,7 @@ public class UpdateFundBalanceFlow {
             Vault.Page results = getServiceHub().getVaultService().queryBy(FundState.class, queryCriteria);
             StateAndRef inputStateRef = (StateAndRef) results.getStates().get(0);
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
-            
+
             if(requestState.getAmount().compareTo(inputStateRefFundState.getBalance()) > 0) {
                 throw new IllegalArgumentException("withdrawal amount is bigger than the balance.");
             }
