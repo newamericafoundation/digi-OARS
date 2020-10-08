@@ -27,8 +27,10 @@ import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
 import getRequestsByFundId from "../../../data/GetRequestsByFundId";
 import { RequestsSnapshotTable } from "../withdrawals/RequestsSnapshotTable";
 import cogoToast from "cogo-toast";
+import { useAuth } from "auth-hook";
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
+  const auth = useAuth();
   const [api] = useContext(APIContext);
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -152,13 +154,13 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     );
   };
 
-  const onHandleConfirmationClick = (fundId) => {
+  const onHandleConfirmationClick = (fundId, receivedByUsername) => {
     setIsLoading(true);
     const url =
       "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/fund";
 
     axios
-      .put(url, null, { params: { fundId } })
+      .put(url, null, { params: { fundId, receivedByUsername } })
       .then((response) => {
         setIsLoading(false);
         refreshTableCallback();
@@ -393,7 +395,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         <CModalFooter>
           <CButton
             color="success"
-            onClick={() => onHandleConfirmationClick(currentItem.linearId)}
+            onClick={() => onHandleConfirmationClick(currentItem.linearId, auth.user.fullName)}
           >
             {isLoading ? (
               <CSpinner
