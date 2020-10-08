@@ -51,6 +51,10 @@ public class UpdateFundBalanceFlow {
             StateAndRef inputStateRef = (StateAndRef) results.getStates().get(0);
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
 
+            if(requestState.getAmount().compareTo(inputStateRefFundState.getBalance()) > 0) {
+                throw new IllegalArgumentException("Withdrawal  amount is larger than the available balance.");
+            }
+
             //create new output state for the fundState
             FundState outputFundState = inputStateRefFundState.withdraw(requestState.getAmount());
             if(outputFundState.getBalance().compareTo(BigDecimal.ZERO) == 0){
