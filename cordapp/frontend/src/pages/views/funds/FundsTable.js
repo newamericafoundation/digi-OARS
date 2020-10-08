@@ -331,7 +331,12 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                           className={"bg-light"}
                         >
                           <p className="text-muted mb-0">Status</p>
-                          <strong className="p">{item.status}</strong>
+                          <strong className="p">
+                            {item.status}
+                            {item.status === "RECEIVED"
+                              ? " by " + item.receivedByUsername
+                              : null}
+                          </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
@@ -395,7 +400,12 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         <CModalFooter>
           <CButton
             color="success"
-            onClick={() => onHandleConfirmationClick(currentItem.linearId, auth.user.fullName)}
+            onClick={() =>
+              onHandleConfirmationClick(
+                currentItem.linearId,
+                auth.user.fullName
+              )
+            }
           >
             {isLoading ? (
               <CSpinner
