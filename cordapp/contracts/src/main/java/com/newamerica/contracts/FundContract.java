@@ -95,8 +95,8 @@ public class FundContract implements Contract {
                 require.using("Received by username cannot be empty.", outputState.getReceivedByUsername() != null);
                 require.using("There must be at least one Party in the owner list.", !outputState.getOwners().isEmpty());
                 require.using("There must be at least one Party in the requiredSigners list.", !outputState.getOwners().isEmpty());
-                require.using("The amount must be greater than zero.", outputState.getAmount().compareTo(BigDecimal.ZERO) > 0);
-                require.using("The balance must be greater than zero.", outputState.getBalance().compareTo(BigDecimal.ZERO) > 0);
+                require.using("The amount must be greater than or equal to zero.", outputState.getAmount().compareTo(BigDecimal.ZERO) >= 0);
+                require.using("The balance must be greater than or equal to zero.", outputState.getBalance().compareTo(BigDecimal.ZERO) >= 0);
                 require.using("the maxWithdrawalAmount must be greater than or equal to zero", outputState.getMaxWithdrawalAmount().compareTo(BigDecimal.ZERO) >= 0);
                 require.using("The status can only be RECEIVED during an issuance transaction.", outputState.getStatus() == FundState.FundStateStatus.RECEIVED);
                 require.using("The List of participants cannot be empty.", !outputState.getParticipants().isEmpty());
