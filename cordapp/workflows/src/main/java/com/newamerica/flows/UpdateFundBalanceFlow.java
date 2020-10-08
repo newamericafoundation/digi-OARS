@@ -52,7 +52,7 @@ public class UpdateFundBalanceFlow {
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
 
             if(requestState.getAmount().compareTo(inputStateRefFundState.getBalance()) > 0) {
-                throw new IllegalArgumentException("withdrawal amount is bigger than the balance.");
+                throw new IllegalArgumentException("Withdrawal amount is bigger than the balance.");
             }
 
             //create new output state for the fundState
