@@ -71,7 +71,7 @@ public class RequestsController extends BaseResource {
         try {
             String resourcePath = "/requests";
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.ALL);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<RequestState>> requestStates = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates();
             List<RequestState> resultSet = requestStates.stream().map(it -> it.getState().getData()).filter(it -> it.getFundStateLinearId().getId().equals(UUID.fromString(fundId))).sorted(Comparator.comparing(RequestState::getCreateDatetime).reversed()).collect(Collectors.toList());
             return Response.ok(resultSet).build();
