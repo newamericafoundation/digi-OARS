@@ -22,16 +22,17 @@ import static org.junit.Assert.assertTrue;
 public class FundStateTests {
     private FundState fundState;
     private final List<AbstractParty> owners = new ArrayList<>();
-    private final List<AbstractParty> requiredSigners = new ArrayList<>();
+    private final List<AbstractParty> authorizedParties = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
+    private final String username = "Ben Green";
 
 
     @Before
     public void setup(){
         owners.add(US.getParty());
-        requiredSigners.add(US.getParty());
-        requiredSigners.add(CATAN.getParty());
+        authorizedParties.add(US.getParty());
+        authorizedParties.add(CATAN.getParty());
         participants.add(US.getParty());
         participants.add(CATAN.getParty());
         partialRequestParticipants.add(US_CSO.getParty());
@@ -41,11 +42,13 @@ public class FundStateTests {
         fundState = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                username,
                 owners,
-                requiredSigners,
+                authorizedParties,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
                 BigDecimal.valueOf(5000000),
+                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -59,12 +62,14 @@ public class FundStateTests {
     public void hasAllAttributes() throws NoSuchFieldException{
         Field originParty = FundState.class.getDeclaredField("originParty");
         Field receivingParty = FundState.class.getDeclaredField("receivingParty");
+        Field receivedByUsername = FundState.class.getDeclaredField("receivedByUsername");
         Field owners = FundState.class.getDeclaredField("owners");
-        Field requiredSigners = FundState.class.getDeclaredField("requiredSigners");
+        Field authorizedParties = FundState.class.getDeclaredField("authorizedParties");
         Field partialRequestParticipants = FundState.class.getDeclaredField("partialRequestParticipants");
         Field amount = FundState.class.getDeclaredField("amount");
         Field balance = FundState.class.getDeclaredField("balance");
-        Field datetime = FundState.class.getDeclaredField("datetime");
+        Field createDatetime = FundState.class.getDeclaredField("createDatetime");
+        Field updateDatetime = FundState.class.getDeclaredField("updateDatetime");
         Field maxWithdrawalAmount = FundState.class.getDeclaredField("maxWithdrawalAmount");
         Field currency = FundState.class.getDeclaredField("currency");
         Field status = FundState.class.getDeclaredField("status");
@@ -73,11 +78,12 @@ public class FundStateTests {
         assertTrue(originParty.getType().isAssignableFrom(Party.class));
         assertTrue(receivingParty.getType().isAssignableFrom(Party.class));
         assertTrue(owners.getType().isAssignableFrom(List.class));
-        assertTrue(requiredSigners.getType().isAssignableFrom(List.class));
+        assertTrue(authorizedParties.getType().isAssignableFrom(List.class));
         assertTrue(partialRequestParticipants.getType().isAssignableFrom(List.class));
         assertTrue(amount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(balance.getType().isAssignableFrom(BigDecimal.class));
-        assertTrue(datetime.getType().isAssignableFrom(ZonedDateTime.class));
+        assertTrue(createDatetime.getType().isAssignableFrom(ZonedDateTime.class));
+        assertTrue(updateDatetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(maxWithdrawalAmount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(status.getType().isAssignableFrom(FundState.FundStateStatus.class));
@@ -87,20 +93,19 @@ public class FundStateTests {
     // ensure all getter tests return data as expected
     @Test
     public void getterTests(){
-
         assertEquals(fundState.getOriginParty(), US.getParty());
         assertEquals(fundState.getReceivingParty(), CATAN.getParty());
         assertEquals(fundState.getOwners(),owners);
-        assertEquals(fundState.getRequiredSigners(), requiredSigners);
+        assertEquals(fundState.getAuthorizedParties(), authorizedParties);
         assertEquals(fundState.getPartialRequestParticipants(), partialRequestParticipants);
         assertTrue(fundState.getAmount().compareTo(BigDecimal.valueOf(4999999)) > 0);
         assertTrue(fundState.getBalance().compareTo(BigDecimal.valueOf(4999999)) > 0);
-        assertEquals(fundState.getDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        assertEquals(fundState.getCreateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        assertEquals(fundState.getUpdateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertTrue(fundState.getMaxWithdrawalAmount().compareTo(BigDecimal.valueOf(999999)) > 0);
         assertEquals(fundState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(fundState.getStatus(), FundState.FundStateStatus.ISSUED);
         assertEquals(fundState.getParticipants(),new ArrayList<>(participants));
-
     }
 
     // ensure that the balance is properly reduced while using the withdraw() helper function

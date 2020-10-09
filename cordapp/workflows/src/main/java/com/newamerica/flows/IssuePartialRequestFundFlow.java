@@ -35,6 +35,7 @@ public class IssuePartialRequestFundFlow {
                 BigDecimal amount,
                 Currency currency,
                 ZonedDateTime datetime,
+                String purpose,
                 UniqueIdentifier fundStateLinearId,
                 List<AbstractParty> participants
         ){
@@ -44,6 +45,7 @@ public class IssuePartialRequestFundFlow {
                     amount,
                     currency,
                     datetime,
+                    purpose,
                     fundStateLinearId,
                     participants
             );

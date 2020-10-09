@@ -153,12 +153,18 @@ function useForm(
     [validateErrorState, submitFormCallback, values]
   );
 
+  const convertValue = (name, value) => {
+    if (name === "amount" || name === "maxWithdrawalAmount") {
+      return value.replace(/,/g, '')
+    }
+    return value
+  }
+
   // Event handler for handling changes in input.
   const handleOnChange = useCallback(
     (event) => {
       const name = event.target.name;
-      const value = event.target.value;
-
+      const value = convertValue(name, event.target.value)
       const error = validateField(name, value);
 
       setFieldValue({ name, value });

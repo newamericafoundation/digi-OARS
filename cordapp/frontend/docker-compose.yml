@@ -1,0 +1,14 @@
+version: "3.2"
+services:
+  ui:
+    container_name: ui
+    image: newamericaacrprod.azurecr.io/oars-ui:latest
+    ports:
+      - "12500:80"
+    volumes:
+      - "./conf/conf.d/default.conf:/etc/nginx/conf.d/default.conf"
+    environment:
+      - "API_CLIENT_URL=localhost"
+      - "KEYCLOAK_URL=localhost"
+      - "KEYCLOAK_PORT=9080"
+      - "KEYCLOAK_CLIENT_ID=oars-client"

@@ -17,6 +17,7 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -34,9 +35,13 @@ public class ReceiveFundFlow {
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier fundStateLinearId;
+        private final ZonedDateTime updateDatetime;
+        private final String receivedByUsername;
 
-        public InitiatorFlow(UniqueIdentifier fundStateLinearId) {
+        public InitiatorFlow(String receivedByUsername, UniqueIdentifier fundStateLinearId, ZonedDateTime updateDatetime) {
+            this.receivedByUsername = receivedByUsername;
             this.fundStateLinearId = fundStateLinearId;
+            this.updateDatetime = updateDatetime;
         }
 
 
@@ -55,7 +60,10 @@ public class ReceiveFundFlow {
             FundState inputFundState = (FundState) inputFundStateAndRef.getState().getData();
 
             // contruct output fund state
-            FundState outputFundState = inputFundState.changeStatus(FundState.FundStateStatus.RECEIVED);
+            FundState outputFundState = inputFundState
+                    .changeStatus(FundState.FundStateStatus.RECEIVED)
+                    .updateDatetime(updateDatetime)
+                    .setReceivedByUsername(receivedByUsername);
 
             // build tx
             transactionBuilder.addCommand(

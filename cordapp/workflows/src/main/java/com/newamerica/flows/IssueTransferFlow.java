@@ -52,8 +52,6 @@ public class IssueTransferFlow {
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new TransferContract.Commands.Issue();
-            transactionBuilder.addCommand(commandData, getOurIdentity().getOwningKey());
-
             outputTransferState = new TransferState(
                     getOurIdentity(),
                     requestState.getAuthorizedUserDept(),
@@ -65,7 +63,7 @@ public class IssueTransferFlow {
                     requestStateLinearId,
                     participants
             );
-
+            transactionBuilder.addCommand(commandData,  outputTransferState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputTransferState, TransferContract.ID);
             transactionBuilder.verify(getServiceHub());
 
@@ -76,10 +74,13 @@ public class IssueTransferFlow {
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
-            List<FlowSession> flowSessions = otherParties.stream().map(i -> initiateFlow(i)).collect(Collectors.toList());
+            List<FlowSession> flowSessions = otherParties.stream().map(this::initiateFlow).collect(Collectors.toList());
 
-            SignedTransaction signedTransaction = subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions));
-            return subFlow(new FinalityFlow(signedTransaction, flowSessions));
+            SignedTransaction finalizedTransaction = subFlow(new FinalityFlow(subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions)), flowSessions));
+            subFlow(new ChangeRequestStatusFlow.InitiatorFlow(
+                    requestStateRef
+            ));
+            return finalizedTransaction;
         }
     }
 

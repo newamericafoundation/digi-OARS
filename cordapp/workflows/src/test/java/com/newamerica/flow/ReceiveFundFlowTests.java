@@ -19,6 +19,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
@@ -85,7 +86,8 @@ public class ReceiveFundFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
-                ZonedDateTime.now(),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
@@ -116,8 +118,10 @@ public class ReceiveFundFlowTests {
     public void flowReturnsCorrectlyFormedPartiallySignedTransaction() throws Exception {
 
         ReceiveFundFlow.InitiatorFlow receiveFlow = new ReceiveFundFlow.InitiatorFlow(
-                fundStateLinearId
-        );
+                "Ben Green",
+                fundStateLinearId,
+                ZonedDateTime.of(2020, 7, 27, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+                );
         Future<SignedTransaction> futureTwo = c.startFlow(receiveFlow);
         mockNetwork.runNetwork();
 
@@ -142,8 +146,10 @@ public class ReceiveFundFlowTests {
     public void flowReturnsTransactionSignedByBothParties() throws Exception {
 
         ReceiveFundFlow.InitiatorFlow receiveFlow = new ReceiveFundFlow.InitiatorFlow(
-                fundStateLinearId
-        );
+                "Ben Green",
+                fundStateLinearId,
+                ZonedDateTime.of(2020, 7, 27, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+                );
         Future<SignedTransaction> futureTwo = c.startFlow(receiveFlow);
         mockNetwork.runNetwork();
         futureTwo.get().verifyRequiredSignatures();
@@ -153,8 +159,10 @@ public class ReceiveFundFlowTests {
     @Test
     public void flowRecordsTheSameTransactionInBothPartyVaults() throws Exception {
         ReceiveFundFlow.InitiatorFlow receiveFlow = new ReceiveFundFlow.InitiatorFlow(
-                fundStateLinearId
-        );
+                "Ben Green",
+                fundStateLinearId,
+                ZonedDateTime.of(2020, 7, 27, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+                );
         Future<SignedTransaction> future = c.startFlow(receiveFlow);
         mockNetwork.runNetwork();
         SignedTransaction stx = future.get();

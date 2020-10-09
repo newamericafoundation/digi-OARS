@@ -7,8 +7,8 @@
   tasks:
     - name: Stop Corda Docker Container
       docker_container:
-        name: corda-node
-        hostname: corda-node
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
         image: "{{ corda_docker_image_version }}"
         state: stopped
     - name: Remove Directories
@@ -16,13 +16,14 @@
         path: "{{ item }}"
         state: absent
       with_items:
-        - "/opt/corda/persistence/*"
+        - "/opt/corda/persistence/persistence.mv.db"
+        - "/opt/corda/persistence/persistence.trace.db"
       tags:
         - remove-dirs
     - name: Remove Docker Container
       docker_container:
-        name: corda-node
-        hostname: corda-node
+        name: "node-{{ inventory_hostname }}"
+        hostname: "node-{{ inventory_hostname }}"
         image: "{{ corda_docker_image_version }}"
         state: absent
       tags:

@@ -4,6 +4,7 @@ import Header from './Header';
 import HeaderDropdown from './HeaderDropdown';
 import Layout from './Layout';
 import Sidebar from './Sidebar';
+import SidebarRight from './SidebarRight';
 
 export {
   Content,
@@ -11,5 +12,6 @@ export {
   Header,
   HeaderDropdown,
   Layout,
-  Sidebar
+  Sidebar,
+  SidebarRight
 }

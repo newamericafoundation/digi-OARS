@@ -8,7 +8,7 @@ COPY . .
 RUN yarn build
 
 # => Run container
-FROM nginx:1.15.2-alpine
+FROM nginx:stable-alpine
 
 # Nginx config
 RUN rm -rf /etc/nginx/conf.d
@@ -23,7 +23,7 @@ EXPOSE 80
 # Copy .env file and shell script to container
 WORKDIR /usr/share/nginx/html
 COPY ./env.sh .
-COPY .env.poc .env
+COPY .env.prod .env
 
 # Add bash
 RUN apk add --no-cache bash

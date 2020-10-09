@@ -5,6 +5,7 @@ import net.corda.core.contracts.BelongsToContract;
 import net.corda.core.contracts.LinearState;
 import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.identity.AbstractParty;
+import net.corda.core.identity.Party;
 import net.corda.core.serialization.ConstructorForDeserialization;
 import net.corda.core.serialization.CordaSerializable;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Currency;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A RequestState is an on-ledger representation of request data that gets stored in the database.
@@ -28,16 +30,17 @@ import java.util.List;
  *  fundStateLinearId -  A reference to the fund state that this request is based on
  */
 @BelongsToContract(RequestContract.class)
-public class RequestState implements LinearState {
+public class RequestState implements LinearState, Comparable<RequestState> {
     public final String authorizedUserUsername;
     public final String authorizedUserDept;
-    public final String authorizerUserUsername;
+    public final Map<String,String> authorizerUserDeptAndUsername;
     public final List<AbstractParty> authorizedParties;
     public final String externalAccountId;
     public final String purpose;
     public final BigDecimal amount;
     public final Currency currency;
-    public final ZonedDateTime datetime;
+    public final ZonedDateTime createDatetime;
+    public final ZonedDateTime updateDatetime;
     public final RequestStateStatus status;
     public final UniqueIdentifier fundStateLinearId;
     public final UniqueIdentifier linearId;
@@ -46,26 +49,28 @@ public class RequestState implements LinearState {
     @ConstructorForDeserialization
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
-                        String authorizerUserUsername,
+                        Map<String,String> authorizerUserDeptAndUsername,
                         List<AbstractParty> authorizedParties,
                         String externalAccountId,
                         String purpose,
                         BigDecimal amount,
                         Currency currency,
-                        ZonedDateTime datetime,
+                        ZonedDateTime createDatetime,
+                        ZonedDateTime updateDatetime,
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         UniqueIdentifier linearId,
                         List<AbstractParty> participants) {
         this.authorizedUserUsername = authorizedUserUsername;
         this.authorizedUserDept = authorizedUserDept;
-        this.authorizerUserUsername = authorizerUserUsername;
+        this.authorizerUserDeptAndUsername = authorizerUserDeptAndUsername;
         this.authorizedParties = authorizedParties;
         this.externalAccountId = externalAccountId;
         this.purpose = purpose;
         this.amount = amount;
         this.currency = currency;
-        this.datetime = datetime;
+        this.createDatetime = createDatetime;
+        this.updateDatetime = updateDatetime;
         this.status = status;
         this.fundStateLinearId = fundStateLinearId;
         this.linearId = linearId;
@@ -74,17 +79,18 @@ public class RequestState implements LinearState {
 
     public RequestState(String authorizedUserUsername,
                         String authorizedUserDept,
-                        String authorizerUsername,
+                        Map<String,String> authorizerUserDeptAndUsername,
                         List<AbstractParty> authorizedParties,
                         String externalAccount,
                         String purpose,
                         BigDecimal amount,
                         Currency currency,
-                        ZonedDateTime datetime,
+                        ZonedDateTime createDatetime,
+                        ZonedDateTime updateDatetime,
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUsername, authorizedParties, externalAccount, purpose, amount, currency, datetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserUsername, authorizedUserDept, authorizerUserDeptAndUsername, authorizedParties, externalAccount, purpose, amount, currency, createDatetime, updateDatetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -102,12 +108,13 @@ public class RequestState implements LinearState {
     public List<AbstractParty> getAuthorizedParties() { return authorizedParties; }
     public BigDecimal getAmount() { return amount; }
     public Currency getCurrency() { return currency; }
-    public ZonedDateTime getDatetime() { return datetime; }
     public RequestStateStatus getStatus() { return status; }
     public UniqueIdentifier getFundStateLinearId() { return fundStateLinearId; }
-    public String getAuthorizerUserUsername() { return authorizerUserUsername; }
     public String getExternalAccountId() { return externalAccountId; }
     public String getPurpose() { return purpose; }
+    public ZonedDateTime getCreateDatetime() { return createDatetime; }
+    public ZonedDateTime getUpdateDatetime() { return updateDatetime; }
+    public Map<String, String> getAuthorizerUserDeptAndUsername() { return authorizerUserDeptAndUsername; }
 
 
     //helper functions
@@ -115,13 +122,14 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserUsername,
+                this.authorizerUserDeptAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
                 this.amount,
                 this.currency,
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 newStatus,
                 this.fundStateLinearId,
                 this.linearId,
@@ -133,13 +141,14 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserUsername,
+                this.authorizerUserDeptAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
                 this.amount,
                 this.currency,
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 this.status,
                 this.fundStateLinearId,
                 this.linearId,
@@ -151,13 +160,14 @@ public class RequestState implements LinearState {
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                this.authorizerUserUsername,
+                this.authorizerUserDeptAndUsername,
                 authorizedParties,
                 this.externalAccountId,
                 this.purpose,
                 this.amount,
                 this.currency,
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 this.status,
                 this.fundStateLinearId,
                 this.linearId,
@@ -165,33 +175,44 @@ public class RequestState implements LinearState {
         );
     }
 
-    public RequestState updateAuthorizerUserUsername(String authorizerUserUsername){
+    public RequestState update(Map<String, String> authorizerUserDeptAndUsername, ZonedDateTime updateDatetime){
         return new RequestState(
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
-                authorizerUserUsername,
+                authorizerUserDeptAndUsername,
                 this.authorizedParties,
                 this.externalAccountId,
                 this.purpose,
                 this.amount,
                 this.currency,
-                this.datetime,
+                this.createDatetime,
+                updateDatetime,
                 this.status,
                 this.fundStateLinearId,
                 this.linearId,
                 this.participants
         );
+    }
+
+    @Override
+    public int compareTo(RequestState a) {
+        return (-1)*(getCreateDatetime().compareTo(a.getCreateDatetime()));
     }
 
     @CordaSerializable
     public enum RequestStateStatus {
         PENDING("PENDING"),
         FLAGGED("FLAGGED"),
-        APPROVED("APPROVED");
+        APPROVED("APPROVED"),
+        REJECTED("REJECTED"),
+        TRANSFERRED("TRANSFERRED");
 
         public final String status;
         RequestStateStatus(String status) {
             this.status = status;
         }
     }
+
+
+
 }

@@ -31,15 +31,17 @@ import java.util.List;
  */
 
 @BelongsToContract(FundContract.class)
-public class FundState implements LinearState {
+public class FundState implements LinearState, Comparable<FundState> {
     public final Party originParty;
     public final Party receivingParty;
+    public final String receivedByUsername;
     public final List<AbstractParty> owners;
-    public final List<AbstractParty> requiredSigners;
+    public final List<AbstractParty> authorizedParties;
     public final List<AbstractParty> partialRequestParticipants;
     public final BigDecimal amount;
     public final BigDecimal balance;
-    public final ZonedDateTime datetime;
+    public final ZonedDateTime createDatetime;
+    public final ZonedDateTime updateDatetime;
     public final BigDecimal maxWithdrawalAmount;
     public final Currency currency;
     public final FundStateStatus status;
@@ -47,15 +49,31 @@ public class FundState implements LinearState {
     public final List<AbstractParty> participants;
 
     @ConstructorForDeserialization
-    public FundState(Party originParty, Party receivingParty, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amount, BigDecimal balance, ZonedDateTime datetime, BigDecimal maxWithdrawalAmount, Currency currency, FundStateStatus status, List<AbstractParty> participants, UniqueIdentifier linearId) {
+    public FundState(Party originParty,
+                     Party receivingParty,
+                     String receivedByUsername,
+                     List<AbstractParty> owners,
+                     List<AbstractParty> authorizedParties,
+                     List<AbstractParty> partialRequestParticipants,
+                     BigDecimal amount,
+                     BigDecimal balance,
+                     ZonedDateTime createDatetime,
+                     ZonedDateTime updateDatetime,
+                     BigDecimal maxWithdrawalAmount,
+                     Currency currency,
+                     FundStateStatus status,
+                     List<AbstractParty> participants,
+                     UniqueIdentifier linearId) {
         this.originParty = originParty;
         this.receivingParty = receivingParty;
+        this.receivedByUsername = receivedByUsername;
         this.owners = owners;
-        this.requiredSigners = requiredSigners;
+        this.authorizedParties = authorizedParties;
         this.partialRequestParticipants = partialRequestParticipants;
         this.amount = amount;
         this.balance = balance;
-        this.datetime = datetime;
+        this.createDatetime = createDatetime;
+        this.updateDatetime = updateDatetime;
         this.maxWithdrawalAmount = maxWithdrawalAmount;
         this.currency = currency;
         this.status = status;
@@ -65,17 +83,19 @@ public class FundState implements LinearState {
 
     public FundState(Party originParty,
                      Party receivingParty,
+                     String receivedByUsername,
                      List<AbstractParty> owners,
-                     List<AbstractParty> requiredSigners,
+                     List<AbstractParty> authorizedParties,
                      List<AbstractParty> partialRequestParticipants,
                      BigDecimal amount,
                      BigDecimal balance,
-                     ZonedDateTime datetime,
+                     ZonedDateTime createDatetime,
+                     ZonedDateTime updateDatetime,
                      BigDecimal maxWithdrawalAmount,
                      Currency currency,
                      FundStateStatus status,
                      List<AbstractParty> participants){
-        this(originParty, receivingParty, owners, requiredSigners, partialRequestParticipants, amount, balance, datetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
+        this(originParty, receivingParty, receivedByUsername, owners, authorizedParties, partialRequestParticipants, amount, balance, createDatetime, updateDatetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
     }
 
     //getters
@@ -89,16 +109,19 @@ public class FundState implements LinearState {
         return this.linearId;
     }
     public List<AbstractParty> getOwners(){ return owners; }
-    public List<AbstractParty> getRequiredSigners(){ return requiredSigners; }
+    public List<AbstractParty> getAuthorizedParties(){ return authorizedParties; }
     public List<AbstractParty> getPartialRequestParticipants(){ return partialRequestParticipants; }
     public BigDecimal getAmount() {        return amount;    }
     public BigDecimal getBalance() { return balance;    }
-    public ZonedDateTime getDatetime() { return datetime;    }
     public BigDecimal getMaxWithdrawalAmount() { return maxWithdrawalAmount;    }
     public Currency getCurrency() { return currency;    }
     public FundStateStatus getStatus() { return status;          }
     public Party getOriginParty() { return originParty; }
     public Party getReceivingParty() { return receivingParty; }
+    public ZonedDateTime getCreateDatetime() { return createDatetime; }
+    public ZonedDateTime getUpdateDatetime() { return updateDatetime; }
+    public String getReceivedByUsername() { return receivedByUsername; }
+
 
 
 
@@ -109,12 +132,14 @@ public class FundState implements LinearState {
         return new FundState(
                 this.originParty,
                 this.receivingParty,
+                this.receivedByUsername,
                 this.owners,
-                this.requiredSigners,
+                this.authorizedParties,
                 this.partialRequestParticipants,
                 this.amount,
                 this.balance.subtract(withdrawalAmount),
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 this.maxWithdrawalAmount,
                 this.currency,
                 this.status,
@@ -127,12 +152,14 @@ public class FundState implements LinearState {
         return new FundState(
                 this.originParty,
                 this.receivingParty,
+                this.receivedByUsername,
                 this.owners,
-                this.requiredSigners,
+                this.authorizedParties,
                 this.partialRequestParticipants,
                 this.amount,
                 this.balance,
-                this.datetime,
+                this.createDatetime,
+                this.updateDatetime,
                 this.maxWithdrawalAmount,
                 this.currency,
                 newStatus,
@@ -140,6 +167,51 @@ public class FundState implements LinearState {
                 this.linearId
         );
     }
+
+    public FundState updateDatetime(ZonedDateTime newDatetime){
+        return new FundState(
+                this.originParty,
+                this.receivingParty,
+                this.receivedByUsername,
+                this.owners,
+                this.authorizedParties,
+                this.partialRequestParticipants,
+                this.amount,
+                this.balance,
+                this.createDatetime,
+                newDatetime,
+                this.maxWithdrawalAmount,
+                this.currency,
+                this.status,
+                this.participants,
+                this.linearId
+        );
+    }
+    public FundState setReceivedByUsername(String receivedByUsername){
+        return new FundState(
+                this.originParty,
+                this.receivingParty,
+                receivedByUsername,
+                this.owners,
+                this.authorizedParties,
+                this.partialRequestParticipants,
+                this.amount,
+                this.balance,
+                this.createDatetime,
+                this.updateDatetime,
+                this.maxWithdrawalAmount,
+                this.currency,
+                this.status,
+                this.participants,
+                this.linearId
+        );
+    }
+
+    @Override
+    public int compareTo(FundState a) {
+        return (-1)*(getCreateDatetime().compareTo(a.getCreateDatetime()));
+    }
+
 
     @CordaSerializable
     public enum FundStateStatus{

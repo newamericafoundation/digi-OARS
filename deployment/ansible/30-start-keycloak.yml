@@ -8,6 +8,7 @@
 # 2. cd /opt/jboss/keycloak/bin
 # 3. ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin
 # 4. ./kcadm.sh update realms/master -s sslRequired=NONE
+# (5). ./kcadm.sh update realms/oars -s sslRequired=NONE
 ---
 - name: Start Keycloak
   hosts: keycloak
@@ -69,10 +70,9 @@
         state: started
         networks:
           - name: keycloak
-          - name: oars
         networks_cli_compatible: yes
         ports:
-          - 80:8080
+          - 3000:8080
         volumes:
           - /opt/keycloak/coreui-theme:/opt/jboss/keycloak/themes/coreui-theme
         env:

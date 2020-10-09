@@ -31,6 +31,7 @@ public class PartialRequestState implements LinearState {
     public final BigDecimal amount;
     public final Currency currency;
     public final ZonedDateTime datetime;
+    public final String purpose;
     public final UniqueIdentifier fundStateLinearId;
     public final UniqueIdentifier linearId;
     public final List<AbstractParty> participants;
@@ -41,6 +42,7 @@ public class PartialRequestState implements LinearState {
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
+                        String purpose,
                         UniqueIdentifier fundStateLinearId,
                         UniqueIdentifier linearId,
                         List<AbstractParty> participants) {
@@ -49,6 +51,7 @@ public class PartialRequestState implements LinearState {
         this.amount = amount;
         this.currency = currency;
         this.datetime = datetime;
+        this.purpose = purpose;
         this.fundStateLinearId = fundStateLinearId;
         this.linearId = linearId;
         this.participants = participants;
@@ -59,9 +62,10 @@ public class PartialRequestState implements LinearState {
                         BigDecimal amount,
                         Currency currency,
                         ZonedDateTime datetime,
+                        String purpose,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserDept, authorizedParties, amount, currency, datetime, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(authorizedUserDept, authorizedParties, amount, currency, datetime, purpose, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -80,5 +84,7 @@ public class PartialRequestState implements LinearState {
     public Currency getCurrency() { return currency; }
     public ZonedDateTime getDatetime() { return datetime; }
     public UniqueIdentifier getFundStateLinearId() { return fundStateLinearId; }
+    public String getPurpose() { return purpose; }
+
 
 }

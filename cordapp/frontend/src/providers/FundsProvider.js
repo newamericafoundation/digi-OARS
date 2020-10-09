@@ -3,21 +3,46 @@ import React, {
   useEffect,
   useReducer,
   useCallback,
+  useContext,
 } from "react";
 import getFunds from "../data/GetFunds";
+import { APIContext } from "./APIProvider";
+import * as Constants from "../constants";
+import { addAmounts } from "../utilities";
 
 export const FundsContext = createContext();
 
 const initialState = {
   data: [],
+  issued: [],
+  received: [],
+  paid: [],
+  issuedAmount: 0,
+  receivedAmount: 0,
+  paidAmount: 0,
   loading: true,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "UPDATE_FUNDS":
+    case "GET_FUNDS":
+      const issued = action.payload.filter(
+        (fund) => fund.status === Constants.FUND_ISSUED
+      );
+      const received = action.payload.filter(
+        (fund) => fund.status === Constants.FUND_RECEIVED
+      );
+      const paid = action.payload.filter(
+        (fund) => fund.status === Constants.FUND_PAID
+      );
       return {
         data: action.payload,
+        issued: issued,
+        received: received,
+        paid: paid,
+        issuedAmount: addAmounts(issued),
+        receivedAmount: addAmounts(received),
+        paidAmount: addAmounts(paid),
         loading: false,
       };
     default:
@@ -27,16 +52,25 @@ const reducer = (state, action) => {
 
 const FundsProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [api] = useContext(APIContext);
+
 
   const callback = useCallback(
-    () =>
-      getFunds().then((data) => dispatch({ type: "UPDATE_FUNDS", payload: data })),
-    [dispatch]
-  );
+    () => {
+      getFunds(api.port).then((data) => {
+        dispatch({ type: "GET_FUNDS", payload: data });
+      })
+    },
+    [dispatch, api.port],
+  )
 
   useEffect(() => {
-    getFunds().then((data) => dispatch({ type: "UPDATE_FUNDS", payload: data }));
-  }, []);
+    if (api.port) {
+      getFunds(api.port).then((data) => {
+        dispatch({ type: "GET_FUNDS", payload: data });
+      });
+    }
+  }, [api.port]);
 
   return (
     <FundsContext.Provider value={[state, callback]}>

@@ -2,13 +2,13 @@ terraform {
   required_version = ">= 0.12.25"
 
   backend "azure" {
-    resource_group_name  = "new-america-tfstate"
-    storage_account_name = "newamericatfstate"
-    container_name       = "staging-tfstate"
-    key                  = "staging.terraform.tfstate"
+    resource_group_name  = "new-america-terraform"
+    storage_account_name = "newamericaterraformstate"
+    container_name       = "prod-tfstate"
+    key                  = "prod.terraform.tfstate"
   }
 }
 
 output "StateStorageUrl" {
-  value = "https://newamericatfstate.blob.core.windows.net/staging-tfstate/nodes.staging.terraform.tfstate"
+  value = "https://newamericatfstate.blob.core.windows.net/${terraform.workspace}-tfstate/${terraform.workspace}.terraform.tfstateenv:${terraform.workspace}"
 }

@@ -18,10 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Currency;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
@@ -36,24 +33,25 @@ public class IssueRequestFlow {
                 String authorizedUserUsername,
                 String authorizedUserDept,
                 String externalAccountId,
-                List<AbstractParty> authorizedParties,
                 String purpose,
                 BigDecimal amount,
                 Currency currency,
-                ZonedDateTime datetime,
+                ZonedDateTime createDatetime,
+                ZonedDateTime updateDatetime,
                 UniqueIdentifier fundStateLinearId,
                 List<AbstractParty> participants
         ) {
             this.outputRequestState = new RequestState(
                     authorizedUserUsername,
                     authorizedUserDept,
-                    "",
-                    authorizedParties,
+                    new LinkedHashMap<>(),
+                    Collections.emptyList(),
                     externalAccountId,
                     purpose,
                     amount,
                     currency,
-                    datetime,
+                    createDatetime,
+                    updateDatetime,
                     RequestState.RequestStateStatus.PENDING,
                     fundStateLinearId,
                     participants
@@ -71,22 +69,31 @@ public class IssueRequestFlow {
             Vault.Page results = getServiceHub().getVaultService().queryBy(FundState.class, queryCriteria);
             StateAndRef inputStateRef = (StateAndRef) results.getStates().get(0);
             FundState inputStateRefFundState = (FundState) inputStateRef.getState().getData();
+
+            //a request state can only be issued once the FundState has been received by the receiving country.
+            if(inputStateRefFundState.getStatus() != FundState.FundStateStatus.RECEIVED){
+                throw new IllegalArgumentException("The FundState for the request must be in the RECEIVED status.");
+            }
+
+            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
+
             if (outputRequestState.amount.compareTo(inputStateRefFundState.maxWithdrawalAmount) > 0) {
                 outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
             }
             outputRequestState = outputRequestState.updateParticipantList(inputStateRefFundState.getParticipants());
+            outputRequestState = outputRequestState.updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Issue();
-            transactionBuilder.addCommand(commandData, inputStateRefFundState.getRequiredSigners().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, inputStateRefFundState.getAuthorizedParties().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
-            SignedTransaction stx = subFlow(new CollectSignaturesInitiatingFlow(partSignedTx, inputStateRefFundState.getRequiredSigners()));
+            SignedTransaction stx = subFlow(new CollectSignaturesInitiatingFlow(partSignedTx, inputStateRefFundState.getAuthorizedParties()));
 
             //create list of all parties minus ourIdentity for required signatures
             List<Party> otherParties = outputRequestState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());

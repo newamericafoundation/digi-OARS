@@ -17,9 +17,8 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.time.ZonedDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
@@ -31,10 +30,15 @@ public class ApproveRequestFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
         private final UniqueIdentifier requestStateLinearId;
         private final String authorizerUserUsername;
+        private final String authorizerUserDept;
+        private final ZonedDateTime updateDatetime;
 
-        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername) {
+
+        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername, String authorizerUserDept, ZonedDateTime updateDatetime) {
             this.requestStateLinearId = requestStateLinearId;
             this.authorizerUserUsername = authorizerUserUsername;
+            this.authorizerUserDept = authorizerUserDept;
+            this.updateDatetime = updateDatetime;
         }
 
         @Suspendable
@@ -53,13 +57,15 @@ public class ApproveRequestFlow {
                 throw new IllegalArgumentException("The initiator of this flow must be a authorizedParty");
             }
 
+            Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
+            authorizerUserDeptAndUsername.put(authorizerUserDept, authorizerUserUsername);
             RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.APPROVED);
-            RequestState outputRequestStateFinal = outputRequestState.updateAuthorizerUserUsername(authorizerUserUsername);
+            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserDeptAndUsername, updateDatetime);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Approve();
-            transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, outputRequestStateFinal.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addInputState(stateRef);
             transactionBuilder.addOutputState(outputRequestStateFinal, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());

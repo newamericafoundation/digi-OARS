@@ -39,6 +39,7 @@ public class PartialRequestContractTests {
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
+                "build a school",
                 new UniqueIdentifier(),
                 new UniqueIdentifier(),
                 participants
@@ -110,7 +111,7 @@ public class PartialRequestContractTests {
                 BigDecimal.valueOf(1000000).negate(),
                 Currency.getInstance("USD"),
                 ZonedDateTime.now(),
-                new UniqueIdentifier(),
+                "build a school",
                 new UniqueIdentifier(),
                 participants
         );

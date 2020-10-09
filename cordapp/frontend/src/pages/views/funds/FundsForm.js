@@ -5,27 +5,29 @@ import {
   CFormGroup,
   CLabel,
   CSelect,
-  CInput,
   CButton,
   CForm,
   CInputGroup,
   CInputGroupPrepend,
   CInputGroupText,
-  CInvalidFeedback,
   CSpinner,
 } from "@coreui/react";
 import { NetworkContext } from "../../../providers/NetworkProvider";
 import useForm from "../../../form/index";
 import axios from "axios";
+import { APIContext } from "../../../providers/APIProvider";
+import CurrencyInput from "../../../form/CurrencyInput";
+import { toCountryByIsoFromX500 } from "../../../utilities"
 
 export const FundsForm = ({ onSubmit }) => {
+  const [api] = useContext(APIContext);
   const [network] = useContext(NetworkContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const stateSchema = {
     receivingParty: { value: "", error: "" },
-    amount: { value: 0, error: "" },
-    maxWithdrawalAmount: { value: 0, error: "" },
+    amount: { value: 0.00, error: "" },
+    maxWithdrawalAmount: { value: 0.00, error: "" },
   };
 
   const stateValidatorSchema = {
@@ -53,11 +55,7 @@ export const FundsForm = ({ onSubmit }) => {
   const onSubmitForm = (state) => {
     setIsLoading(true);
     const url =
-      "http://" +
-      window._env_.API_CLIENT_URL +
-      ":" +
-      window._env_.API_CLIENT_PORT +
-      "/api/fund";
+      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/fund";
 
     axios
       .post(url, {
@@ -79,13 +77,12 @@ export const FundsForm = ({ onSubmit }) => {
     }
   };
 
-  const { values, errors, handleOnChange, handleOnSubmit, disable } = useForm(
+  const { errors, handleOnChange, handleOnSubmit, disable } = useForm(
     stateSchema,
     stateValidatorSchema,
     onSubmitForm
   );
 
-  const { amount, maxWithdrawalAmount } = values;
   const treasuryNodes = getTreasuryNodes();
 
   return (
@@ -107,9 +104,7 @@ export const FundsForm = ({ onSubmit }) => {
                     ? treasuryNodes.map((item) => (
                         <option
                           key={item}
-                          label={item
-                            .split(/O=([a-zA-Z_]+)/)[1]
-                            .replace("_", " ")}
+                          label={toCountryByIsoFromX500(item)}
                           value={item}
                         />
                       ))
@@ -126,18 +121,18 @@ export const FundsForm = ({ onSubmit }) => {
                   <CInputGroupPrepend>
                     <CInputGroupText>$</CInputGroupText>
                   </CInputGroupPrepend>
-                  <CInput
-                    type="number"
+                  <CurrencyInput
+                    className="form-control"
+                    placeholder="0.00"
+                    type="text"
                     name="amount"
                     id="amount"
-                    value={amount}
-                    placeholder={0}
-                    valid={errors.amount.length === 0}
-                    invalid={errors.amount.length > 0}
                     onChange={handleOnChange}
                   />
-                  <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
                 </CInputGroup>
+                <div className="text-muted small">
+                  <p className="text-danger">{errors.amount}</p>
+                </div>
               </CFormGroup>
             </CCol>
           </CRow>
@@ -151,18 +146,18 @@ export const FundsForm = ({ onSubmit }) => {
                   <CInputGroupPrepend>
                     <CInputGroupText>$</CInputGroupText>
                   </CInputGroupPrepend>
-                  <CInput
-                    type="number"
-                    id="maxWithdrawalAmount"
+                  <CurrencyInput
+                    className="form-control"
+                    placeholder="0.00"
+                    type="text"
                     name="maxWithdrawalAmount"
-                    value={maxWithdrawalAmount}
-                    placeholder={0}
-                    valid={errors.maxWithdrawalAmount.length === 0}
-                    invalid={errors.maxWithdrawalAmount.length > 0}
+                    id="maxWithdrawalAmount"
                     onChange={handleOnChange}
                   />
-                  <CInvalidFeedback>{errors.amount}</CInvalidFeedback>
                 </CInputGroup>
+                <div className="text-muted small">
+                  <p className="text-danger">{errors.maxWithdrawalAmount}</p>
+                </div>
               </CFormGroup>
             </CCol>
           </CRow>

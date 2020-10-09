@@ -3,6 +3,7 @@ package com.newamerica.flow;
 import com.newamerica.contracts.RequestContract;
 import com.newamerica.flows.IssueFundFlow;
 import com.newamerica.flows.IssueRequestFlow;
+import com.newamerica.flows.ReceiveFundFlow;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.Command;
@@ -31,17 +32,17 @@ import static org.junit.Assert.assertEquals;
 
 public class IssueRequestFlowTests {
     private MockNetwork mockNetwork;
-    private StartedMockNode a, b, c;
+    private StartedMockNode a, b, c, d;
     private Party usDoj;
     private Party usDos;
     private Party catanMoj;
+    private String username = "Ben Green";
     SignedTransaction stx2;
     private final List<AbstractParty> owners = new ArrayList<>();
     private final List<AbstractParty> requiredSigners = new ArrayList<>();
     private final List<AbstractParty> participants = new ArrayList<>();
     private final List<AbstractParty> partialRequestParticipants = new ArrayList<>();
-    private final List<AbstractParty> authorizedParties = new ArrayList<>();
-
+    private Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
 
 
     @Before
@@ -60,7 +61,7 @@ public class IssueRequestFlowTests {
         a = mockNetwork.createNode(new MockNodeParameters());
         b = mockNetwork.createNode(new MockNodeParameters());
         c = mockNetwork.createNode(new MockNodeParameters());
-        StartedMockNode d = mockNetwork.createNode(new MockNodeParameters());
+        d = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode e = mockNetwork.createNode(new MockNodeParameters());
         StartedMockNode f = mockNetwork.createNode(new MockNodeParameters());
 
@@ -95,7 +96,7 @@ public class IssueRequestFlowTests {
         participants.add(catanMoj);
         partialRequestParticipants.add(usCSO);
         partialRequestParticipants.add(catanCSO);
-        authorizedParties.add(CATANMoJ.getParty());
+        authorizerUserDeptAndUsername.put("Catan MOJ", "Chris Jones");
 
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
@@ -105,6 +106,7 @@ public class IssueRequestFlowTests {
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
@@ -116,16 +118,26 @@ public class IssueRequestFlowTests {
         SignedTransaction stx = future.get();
         FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
 
+        ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                username,
+                fs.getLinearId(),
+                ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+        );
+
+        Future<SignedTransaction> future2 = d.startFlow(receiveFundFlow);
+        mockNetwork.runNetwork();
+        future2.get();
+
         //create RequestState
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
-                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 fs.getLinearId(),
                 participants
         );
@@ -190,6 +202,7 @@ public class IssueRequestFlowTests {
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
@@ -200,16 +213,26 @@ public class IssueRequestFlowTests {
         SignedTransaction stx = future.get();
         FundState fs = (FundState) stx.getTx().getOutputStates().get(0);
 
+        ReceiveFundFlow.InitiatorFlow receiveFundFlow = new ReceiveFundFlow.InitiatorFlow(
+                username,
+                fs.getLinearId(),
+                ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
+        );
+
+        Future<SignedTransaction> future2 = d.startFlow(receiveFundFlow);
+        mockNetwork.runNetwork();
+        future2.get();
+
         //create RequestState
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
                 "Alice Bob",
                 "Catan Ministry of Education",
                 "1234567890",
-                authorizedParties,
                 "build a school",
                 BigDecimal.valueOf(1000001),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 fs.getLinearId(),
                 participants
         );
