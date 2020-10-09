@@ -78,12 +78,12 @@ public class IssueTransferFlowTests {
 
         // For real nodes this happens automatically, but we have to manually register the flow for tests
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueFundFlow.ResponderFlow.class));
-        startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.ExtraInitiatingFlowResponder.class));
-        startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.CollectSignaturesResponder.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssuePartialRequestFundFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(UpdateFundBalanceFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(ReceiveFundFlow.ResponderFlow.class));
-        startedNodes.forEach(el -> el.registerInitiatedFlow(ApproveRequestFlow.ResponderFlow.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(ApproveRequestFlow.ExtraInitiatingFlowResponder.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(ApproveRequestFlow.CollectSignaturesResponder.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueTransferFlow.ResponderFlow.class));
 
         mockNetwork.runNetwork();
@@ -98,7 +98,6 @@ public class IssueTransferFlowTests {
 
 
         owners.add(usDoj);
-        requiredSigners.add(usDoj);
         requiredSigners.add(catanMoj);
         participants.add(usDos);
         participants.add(usDoj);
@@ -150,7 +149,6 @@ public class IssueTransferFlowTests {
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                fs.getLinearId(),
                 participants
         );
 
@@ -164,7 +162,8 @@ public class IssueTransferFlowTests {
                 rs.getLinearId(),
                 "Sam Sung",
                 "Catan MOJ",
-                ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
+                ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                fs.getLinearId()
                 );
 
         Future<SignedTransaction> futureFour = d.startFlow(approveRequestFlow);

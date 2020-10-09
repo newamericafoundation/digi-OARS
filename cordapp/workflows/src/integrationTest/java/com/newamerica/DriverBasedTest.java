@@ -19,6 +19,7 @@ import net.corda.testing.node.TestCordapp;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.xml.soap.Node;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -29,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DriverBasedTest {
     //testing constants
+    private final CordaX500Name US_DOJ = new CordaX500Name("US_DoJ", "New York", "US");
     private final CordaX500Name US_DOS = new CordaX500Name("US_DoS", "New York", "US");
     private final CordaX500Name US_CSO = new CordaX500Name("US_CSO", "New York", "US");
     private final CordaX500Name CATAN_MOF = new CordaX500Name("Catan_MoFA", "London", "GB");
@@ -51,13 +53,17 @@ public class DriverBasedTest {
         driver(new DriverParameters().withStartNodesInProcess(true).withCordappsForAllNodes(CORDAPPS), dsl -> {
             // Start all nodes and wait for them to be ready.
             List<CordaFuture<NodeHandle>> handleFutures = ImmutableList.of(
+                    dsl.startNode(new NodeParameters().withProvidedName(US_DOJ)),
                     dsl.startNode(new NodeParameters().withProvidedName(US_DOS)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOF))
+                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOF)),
+                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOJ))
             );
 
             try {
-                NodeHandle usDOSHandle = handleFutures.get(0).get();
-                NodeHandle catanMOFHandle = handleFutures.get(1).get();
+                NodeHandle usDOJHandle = handleFutures.get(0).get();
+                NodeHandle usDOSHandle = handleFutures.get(1).get();
+                NodeHandle catanMOFHandle = handleFutures.get(2).get();
+                NodeHandle catanMOJHandle = handleFutures.get(3).get();
 
                 // From each node, make an RPC call to retrieve another node's name from the network map, to verify that the
                 // nodes have started and can communicate.
@@ -65,11 +71,12 @@ public class DriverBasedTest {
                 // This is a very basic test: in practice tests would be starting flows, and verifying the states in the vault
                 // and other important metrics to ensure that your CorDapp is working as intended.
                 assertEquals(Objects.requireNonNull(usDOSHandle.getRpc().wellKnownPartyFromX500Name(CATAN_MOF)).getName(), CATAN_MOF);
+                assertEquals(Objects.requireNonNull(catanMOFHandle.getRpc().wellKnownPartyFromX500Name(US_DOJ)).getName(), US_DOJ);
                 assertEquals(Objects.requireNonNull(catanMOFHandle.getRpc().wellKnownPartyFromX500Name(US_DOS)).getName(), US_DOS);
+                assertEquals(Objects.requireNonNull(catanMOJHandle.getRpc().wellKnownPartyFromX500Name(CATAN_MOJ)).getName(), CATAN_MOJ);
             } catch (Exception e) {
                 throw new RuntimeException("Caught exception during test: ", e);
             }
-
             return null;
         });
     }
@@ -79,43 +86,44 @@ public class DriverBasedTest {
         driver(new DriverParameters().withStartNodesInProcess(true).withCordappsForAllNodes(CORDAPPS), dsl -> {
             // Start all nodes and wait for them to be ready.
             List<CordaFuture<NodeHandle>> handleFutures = ImmutableList.of(
+                    dsl.startNode(new NodeParameters().withProvidedName(US_DOJ)),
                     dsl.startNode(new NodeParameters().withProvidedName(US_DOS)),
                     dsl.startNode(new NodeParameters().withProvidedName(US_CSO)),
-                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOF))
+                    dsl.startNode(new NodeParameters().withProvidedName(CATAN_MOJ))
             );
 
             try {
-                NodeHandle usDOSHandle = handleFutures.get(0).get();
-                NodeHandle catanMOFHandle = handleFutures.get(2).get();
+                NodeHandle usDOJHandle = handleFutures.get(0).get();
+                NodeHandle catanMOJHandle = handleFutures.get(3).get();
 
-                CordaRPCClient usDOSClient = new CordaRPCClient(usDOSHandle.getRpcAddress());
-                CordaRPCOps usDOSProxy = usDOSClient.start("default", "default").getProxy();
+                CordaRPCClient usDOJClient = new CordaRPCClient(usDOJHandle.getRpcAddress());
+                CordaRPCOps usDOJProxy = usDOJClient.start("default", "default").getProxy();
 
-                CordaRPCClient catanMOFClient = new CordaRPCClient(catanMOFHandle.getRpcAddress());
-                CordaRPCOps catanMOFProxy = catanMOFClient.start("default", "default").getProxy();
+                CordaRPCClient catanMOJClient = new CordaRPCClient(catanMOJHandle.getRpcAddress());
+                CordaRPCOps catanMOJProxy = catanMOJClient.start("default", "default").getProxy();
 
-                Party usDOSParty = usDOSProxy.wellKnownPartyFromX500Name(US_DOS);
-                Party usCSOParty = usDOSProxy.wellKnownPartyFromX500Name(US_CSO);
-                Party catanMOFParty = usDOSProxy.wellKnownPartyFromX500Name(CATAN_MOF);
+                Party usDOJParty = usDOJProxy.wellKnownPartyFromX500Name(US_DOJ);
+                Party usCSOParty = usDOJProxy.wellKnownPartyFromX500Name(US_CSO);
+                Party catanMOJParty = catanMOJProxy.wellKnownPartyFromX500Name(CATAN_MOJ);
 
                 List<Party> owners = new ArrayList<>();
-                owners.add(usDOSParty);
+                owners.add(usDOJParty);
 
                 List<Party> requiredSigners = new ArrayList<>();
-                requiredSigners.add(usDOSParty);
-                requiredSigners.add(catanMOFParty);
+                requiredSigners.add(usDOJParty);
+                requiredSigners.add(catanMOJParty);
 
                 List<Party> participants = new ArrayList<>();
-                participants.add(usDOSParty);
+                participants.add(usDOJParty);
                 participants.add(usCSOParty);
-                participants.add(catanMOFParty);
+                participants.add(catanMOJParty);
 
                 List<Party> partialRequestParticipants = new ArrayList<>();
                 partialRequestParticipants.add(usCSOParty);
 
-                usDOSProxy.startFlowDynamic(IssueFundFlow.InitiatorFlow.class,
-                        usDOSProxy.wellKnownPartyFromX500Name(US_DOS),
-                        usDOSProxy.wellKnownPartyFromX500Name(CATAN_MOF),
+                usDOJProxy.startFlowDynamic(IssueFundFlow.InitiatorFlow.class,
+                        usDOJProxy.wellKnownPartyFromX500Name(US_DOJ),
+                        usDOJProxy.wellKnownPartyFromX500Name(CATAN_MOJ),
                         owners,
                         requiredSigners,
                         partialRequestParticipants,
@@ -128,12 +136,12 @@ public class DriverBasedTest {
                         ).getReturnValue().get();
 
                 //make sure that the OriginParty (usDOSParty) node has the issued state in its vault
-                List<StateAndRef<FundState>> fundStatesUSDOS =  usDOSProxy.vaultQuery(FundState.class).getStates();
+                List<StateAndRef<FundState>> fundStatesUSDOS =  usDOJProxy.vaultQuery(FundState.class).getStates();
                 FundState issuedFundState = fundStatesUSDOS.get(0).getState().getData();
 
                 assertEquals(1, fundStatesUSDOS.size());
-                assertEquals(usDOSParty, issuedFundState.getOriginParty());
-                assertEquals(catanMOFParty, issuedFundState.getReceivingParty());
+                assertEquals(usDOJParty, issuedFundState.getOriginParty());
+                assertEquals(catanMOJParty, issuedFundState.getReceivingParty());
                 assertEquals(owners, issuedFundState.getOwners());
                 assertEquals(requiredSigners, issuedFundState.getAuthorizedParties());
                 assertEquals(partialRequestParticipants, issuedFundState.getPartialRequestParticipants());
@@ -145,12 +153,12 @@ public class DriverBasedTest {
                 assertEquals(participants, issuedFundState.getParticipants());
 
                 //make sure that the ReceivingParty (catanMOFParty) node has the issued state in its vault
-                List<StateAndRef<FundState>> fundStatesCatanMOF =  catanMOFProxy.vaultQuery(FundState.class).getStates();
+                List<StateAndRef<FundState>> fundStatesCatanMOF =  catanMOJProxy.vaultQuery(FundState.class).getStates();
                 FundState issuedFundStateCatanMOF = fundStatesCatanMOF.get(0).getState().getData();
 
                 assertEquals(1, fundStatesCatanMOF.size());
-                assertEquals(usDOSParty, issuedFundStateCatanMOF.getOriginParty());
-                assertEquals(catanMOFParty, issuedFundStateCatanMOF.getReceivingParty());
+                assertEquals(usDOJParty, issuedFundStateCatanMOF.getOriginParty());
+                assertEquals(catanMOJParty, issuedFundStateCatanMOF.getReceivingParty());
                 assertEquals(owners, issuedFundStateCatanMOF.getOwners());
                 assertEquals(requiredSigners, issuedFundStateCatanMOF.getAuthorizedParties());
                 assertEquals(partialRequestParticipants, issuedFundStateCatanMOF.getPartialRequestParticipants());
@@ -202,7 +210,6 @@ public class DriverBasedTest {
                 owners.add(usDOSParty);
 
                 List<Party> requiredSigners = new ArrayList<>();
-                requiredSigners.add(usDOSParty);
                 requiredSigners.add(catanMOFParty);
 
                 List<Party> participants = new ArrayList<>();
@@ -233,6 +240,7 @@ public class DriverBasedTest {
                 FundState issuedFundState = fundStatesUSDOS.get(0).getState().getData();
 
                 catanMOFProxy.startFlowDynamic(ReceiveFundFlow.InitiatorFlow.class,
+                        "Ben Green",
                         issuedFundState.getLinearId(),
                         ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
                 ).getReturnValue().get();
@@ -246,7 +254,6 @@ public class DriverBasedTest {
                         Currency.getInstance(Locale.US),
                         ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                         ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                        issuedFundState.getLinearId(),
                         participants
                 ).getReturnValue().get();
 
@@ -262,7 +269,6 @@ public class DriverBasedTest {
                 assertEquals(Currency.getInstance(Locale.US), issuedRequestStateCatanMOJ.getCurrency());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOJ.getCreateDatetime());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOJ.getUpdateDatetime());
-                assertEquals(issuedFundState.getLinearId(), issuedRequestStateCatanMOJ.getFundStateLinearId());
                 assertEquals(participants, issuedRequestStateCatanMOJ.getParticipants());
 
                 //make sure that the catanMOF node has issued the request state and can be found in the vault
@@ -277,7 +283,6 @@ public class DriverBasedTest {
                 assertEquals(Currency.getInstance(Locale.US), issuedRequestStateCatanMOF.getCurrency());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOF.getCreateDatetime());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")), issuedRequestStateCatanMOF.getUpdateDatetime());
-                assertEquals(issuedFundState.getLinearId(), issuedRequestStateCatanMOF.getFundStateLinearId());
                 assertEquals(participants, issuedRequestStateCatanMOF.getParticipants());
             } catch (Exception e) {
                 throw new RuntimeException("Caught exception during test: ", e);
@@ -325,7 +330,6 @@ public class DriverBasedTest {
                 owners.add(usDOSParty);
 
                 List<Party> requiredSigners = new ArrayList<>();
-                requiredSigners.add(usDOSParty);
                 requiredSigners.add(catanMOFParty);
 
                 List<Party> participants = new ArrayList<>();
@@ -352,6 +356,7 @@ public class DriverBasedTest {
                 ).getReturnValue().get().getTx().getOutputStates().get(0);
 
                 catanMOFProxy.startFlowDynamic(ReceiveFundFlow.InitiatorFlow.class,
+                        "Ben Green",
                         issuedFundState.getLinearId(),
                         ZonedDateTime.of(2020, 6, 28, 10, 30, 30, 0, ZoneId.of("America/New_York"))
                 ).getReturnValue().get();
@@ -365,7 +370,6 @@ public class DriverBasedTest {
                         Currency.getInstance(Locale.US),
                         ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                         ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                        issuedFundState.getLinearId(),
                         participants
                 ).getReturnValue().get().getTx().getOutputStates().get(0);
 
@@ -373,8 +377,9 @@ public class DriverBasedTest {
                         issuedRequestState.getLinearId(),
                         "A Name",
                         "A Dept",
-                        ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York"))
-                ).getReturnValue().get();
+                        ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York")),
+                        issuedFundState.getLinearId()
+                        ).getReturnValue().get();
 
                 // check that the PartialState has been issued to the CSO
                 List<StateAndRef<PartialRequestState>> partialRequestStates = usCSOProxy.vaultQuery(PartialRequestState.class).getStates();
@@ -385,7 +390,6 @@ public class DriverBasedTest {
                 assertEquals(issuedRequestState.getAmount(), issuedPartialRequestState.getAmount());
                 assertEquals(issuedRequestState.getCurrency(), issuedPartialRequestState.getCurrency());
                 assertEquals(ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York")), issuedPartialRequestState.getDatetime());
-                assertEquals(issuedRequestState.getFundStateLinearId(), issuedPartialRequestState.getFundStateLinearId());
                 assertEquals(partialRequestParticipants, issuedPartialRequestState.getParticipants());
 
                 //check that the fundState balance has been updated
@@ -401,7 +405,7 @@ public class DriverBasedTest {
                 //check that the requestState is now in the APPROVED status
                 assertEquals(RequestState.RequestStateStatus.APPROVED, approvedRequestState.getStatus());
                 assertEquals(ZonedDateTime.of(2020, 6, 28, 10,30,30,0, ZoneId.of("America/New_York")), approvedRequestState.getUpdateDatetime());
-
+                assertEquals(issuedFundState.getLinearId(), approvedRequestState.getFundStateLinearId());
                 catanMOFProxy.startFlowDynamic(IssueTransferFlow.InitiatorFlow.class,
                         approvedRequestState.getLinearId(),
                         participants).getReturnValue().get();
@@ -417,6 +421,7 @@ public class DriverBasedTest {
                 assertEquals(approvedRequestState.getExternalAccountId(), transferState.getExternalAccountId());
                 assertEquals(approvedRequestState.getAmount(), transferState.getAmount());
                 assertEquals(approvedRequestState.getLinearId(), transferState.getRequestStateLinearId());
+                assertEquals(approvedRequestState.getFundStateLinearId(), issuedFundState.getLinearId());
                 assertEquals(approvedRequestState.getParticipants(), transferState.getParticipants());
 
             } catch (Exception e) {
