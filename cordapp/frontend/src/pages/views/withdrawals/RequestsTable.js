@@ -18,6 +18,7 @@ import {
   CModalTitle,
   CModalBody,
   CModalFooter,
+  CAlert,
 } from "@coreui/react";
 import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
@@ -35,7 +36,7 @@ export const RequestsTable = ({
   isIssuer,
   isReceiver,
   isTransferer,
-  isObserver
+  isObserver,
 }) => {
   const auth = useAuth();
   const [api] = useContext(APIContext);
@@ -45,9 +46,23 @@ export const RequestsTable = ({
   const [currentItem, setCurrentItem] = useState({});
   const [, setCurrentItemIndex] = useState();
   const [currentRequestAction, setCurrentRequestAction] = useState("");
+  const [currentFundBalance, setCurrentFundBalance] = useState();
 
   const handleShow = (item) => {
     setCurrentItem(item);
+    axios
+      .get(
+        "http://" +
+          window._env_.API_CLIENT_URL +
+          ":" +
+          api.port +
+          "/api/fund/id?fundId=" +
+          item.fundStateLinearId
+      )
+      .then((response) => {
+        setCurrentFundBalance(response.data.entity.balance);
+      })
+      .catch((err) => console.log(err));
     setShow(true);
   };
 
@@ -139,8 +154,16 @@ export const RequestsTable = ({
         <strong>Request ID:</strong> {message.data.entity.data.linearId.id}
         <br />
         <strong>Status:</strong>{" "}
-        <CBadge color={message.data.entity.data.status ? getStatusBadge(message.data.entity.data.status) : getStatusBadge("TRANSFERRED")}>
-          {message.data.entity.data.status ? message.data.entity.data.status : "TRANSFERRED"}
+        <CBadge
+          color={
+            message.data.entity.data.status
+              ? getStatusBadge(message.data.entity.data.status)
+              : getStatusBadge("TRANSFERRED")
+          }
+        >
+          {message.data.entity.data.status
+            ? message.data.entity.data.status
+            : "TRANSFERRED"}
         </CBadge>
         <br />
         <strong>Amount:</strong>{" "}
@@ -155,12 +178,19 @@ export const RequestsTable = ({
         <strong>Request ID:</strong> {message.data.entity.linearId.id}
         <br />
         <strong>Status:</strong>{" "}
-        <CBadge color={message.data.entity.status ? getStatusBadge(message.data.entity.status) : getStatusBadge("TRANSFERRED")}>
-          {message.data.entity.status ? message.data.entity.status : "TRANSFERRED"}
+        <CBadge
+          color={
+            message.data.entity.status
+              ? getStatusBadge(message.data.entity.status)
+              : getStatusBadge("TRANSFERRED")
+          }
+        >
+          {message.data.entity.status
+            ? message.data.entity.status
+            : "TRANSFERRED"}
         </CBadge>
         <br />
-        <strong>Amount:</strong>{" "}
-        {toCurrency(message.data.entity.amount, "USD")}
+        <strong>Amount:</strong> {toCurrency(message.data.entity.amount, "USD")}
       </div>
     );
   };
@@ -240,7 +270,7 @@ export const RequestsTable = ({
           });
         })
         .catch((err) => {
-          console.log(err)
+          console.log(err);
           const { hide } = cogoToast.error(err.message, {
             heading: "Error Transferring Request",
             position: "top-right",
@@ -275,7 +305,7 @@ export const RequestsTable = ({
     );
   };
 
-  const getActionButton = (item, index) => {
+  const getActionButton = (item) => {
     if (item.status === Constants.REQUEST_PENDING && isApprover) {
       return (
         <div className="float-left mb-0">
@@ -518,7 +548,14 @@ export const RequestsTable = ({
             <strong className="p">{currentItem.authorizedUserDept}</strong>
           </CCallout>
           <CCallout
-            color={getCurrentActionColor(currentRequestAction)}
+            color={
+              isApprover
+                ? parseFloat(currentFundBalance) <
+                  parseFloat(currentItem.amount)
+                  ? "warning"
+                  : getCurrentActionColor(currentRequestAction)
+                : getCurrentActionColor(currentRequestAction)
+            }
             className={"bg-light"}
           >
             <p className="text-muted mb-0">Amount</p>
@@ -531,9 +568,7 @@ export const RequestsTable = ({
             className={"bg-light"}
           >
             <p className="text-muted mb-0">Account ID</p>
-            <strong className="p">
-              {currentItem.externalAccountId}
-            </strong>
+            <strong className="p">{currentItem.externalAccountId}</strong>
           </CCallout>
           {currentRequestAction === "transfer" ? (
             <CCallout
@@ -553,10 +588,32 @@ export const RequestsTable = ({
               </strong>
             </CCallout>
           ) : null}
+          {isApprover &&
+          parseFloat(currentFundBalance) < parseFloat(currentItem.amount) ? (
+            <CAlert color="warning">
+              <p>Insufficient Return balance available.</p>
+              <dl className="row">
+                <dt className="col-sm-6">Return Balance Available:</dt>
+                <dd className="col-sm-6">
+                  {toCurrency(currentFundBalance, "USD")}
+                </dd>
+                <dt className="col-sm-6">Request Amount:</dt>
+                <dd className="col-sm-6">
+                {toCurrency(currentFundBalance, "USD")}
+                </dd>
+                <dt className="col-sm-6">Difference:</dt>
+                <dd className="col-sm-6">
+                {toCurrency(currentFundBalance - currentItem.amount, "USD")}
+                </dd>
+              </dl>
+              <p>You will not be able to approve this request.</p>
+            </CAlert>
+          ) : null}
         </CModalBody>
         <CModalFooter>
           <CButton
             color={getCurrentActionColor(currentRequestAction)}
+            disabled={currentRequestAction === "approve" ? (parseFloat(currentFundBalance) < parseFloat(currentItem.amount)) : false}
             onClick={() =>
               onHandleConfirmationClick(
                 currentItem.linearId,
@@ -576,6 +633,7 @@ export const RequestsTable = ({
               currentRequestAction.slice(1)}{" "}
             Request
           </CButton>
+
           <CButton color="secondary" onClick={handleClose}>
             Cancel
           </CButton>
