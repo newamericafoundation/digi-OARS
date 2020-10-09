@@ -13,7 +13,8 @@ const getPartialRequests = async (port) => {
     currency: ob.currency,
     amount: ob.amount,
     participants: ob.participants,
-    createDateTime: ob.datetime
+    createDateTime: ob.datetime,
+    purpose: ob.purpose
   }));
 };
 

@@ -10,10 +10,8 @@ import {
   CCol,
   CRow,
   CCallout,
-  CTooltip,
 } from "@coreui/react";
 import moment from "moment-timezone";
-import EllipsesText from "react-ellipsis-text";
 import { toCurrency } from "../../../utilities";
 
 export const PartialRequestsTable = ({ partialRequests }) => {
@@ -32,8 +30,9 @@ export const PartialRequestsTable = ({ partialRequests }) => {
 
   const fields = [
     { key: "authorizedUserDept", label: "Department" },
-    { key: "amount" },
     { key: "createDateTime", label: "Requested Date" },
+    { key: "amount" },
+    { key: "purpose"},
     {
       key: "show_details",
       label: "",
@@ -115,14 +114,14 @@ export const PartialRequestsTable = ({ partialRequests }) => {
                         </CCallout>
                       </CCol>
                       <CCol xl="6" sm="4">
-                        <CTooltip content={item.linearId} placement="right-end">
-                          <CCallout color="info" className={"bg-light"}>
-                            <p className="text-muted mb-0">State ID</p>
-                            <strong className="p">
-                              <EllipsesText text={item.linearId} length={30} />
-                            </strong>
-                          </CCallout>
-                        </CTooltip>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">State ID</p>
+                          <strong className="p">{item.linearId}</strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Purpose</p>
+                          <strong className="p">{item.purpose}</strong>
+                        </CCallout>
                       </CCol>
                     </CRow>
                   </CCardBody>
