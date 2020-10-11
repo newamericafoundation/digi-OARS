@@ -1,10 +1,7 @@
 package com.newamerica.flow;
 
 import com.newamerica.contracts.RequestContract;
-import com.newamerica.flows.ApproveRequestFlow;
-import com.newamerica.flows.IssueFundFlow;
-import com.newamerica.flows.IssueRequestFlow;
-import com.newamerica.flows.ReceiveFundFlow;
+import com.newamerica.flows.*;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.Command;
@@ -80,6 +77,7 @@ public class ApproveRequestFlowTests {
         // For real nodes this happens automatically, but we have to manually register the flow for tests
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueFundFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(ReceiveFundFlow.ResponderFlow.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(IssueConfigFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(ApproveRequestFlow.ExtraInitiatingFlowResponder.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(ApproveRequestFlow.CollectSignaturesResponder.class));
@@ -115,7 +113,6 @@ public class ApproveRequestFlowTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
         );
@@ -134,6 +131,18 @@ public class ApproveRequestFlowTests {
         Future<SignedTransaction> futureTwo = c.startFlow(receiveFundFlow);
         mockNetwork.runNetwork();
         futureTwo.get();
+
+        IssueConfigFlow.InitiatorFlow configFlow =  new IssueConfigFlow.InitiatorFlow(
+                "US DoJ",
+                "Catan",
+                BigDecimal.valueOf(5000000),
+                Currency.getInstance(Locale.US),
+                ZonedDateTime.of(2020, 6, 26, 10,30,30,0, ZoneId.of("America/New_York")),
+                participants
+        );
+        Future<SignedTransaction> future3 = b.startFlow(configFlow);
+        mockNetwork.runNetwork();
+        future3.get();
 
         //create RequestState
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(
@@ -243,7 +252,6 @@ public class ApproveRequestFlowTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(5000000),
                 Currency.getInstance(Locale.US),
                 participants
         );
@@ -316,14 +324,13 @@ public class ApproveRequestFlowTests {
         //create FundState
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDos,
-                catanMoj,
+                CatanMoJ,
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(5000000),
                 Currency.getInstance(Locale.US),
                 participants
         );
@@ -353,7 +360,6 @@ public class ApproveRequestFlowTests {
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 8, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                fs.getLinearId(),
                 participants
         );
 
@@ -367,7 +373,9 @@ public class ApproveRequestFlowTests {
                 rs.getLinearId(),
                 "Sam Sung",
                 "Catan MOJ",
-                ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York"))
+                ZonedDateTime.of(2020, 9, 27, 10,30,30,0, ZoneId.of("America/New_York")),
+                fs.getLinearId()
+
         );
 
         //run the flow as the a party that is not in the requiredSigners list.

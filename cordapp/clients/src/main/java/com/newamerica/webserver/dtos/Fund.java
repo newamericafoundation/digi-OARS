@@ -21,9 +21,6 @@ public class Fund {
     @NotNull
     public String amount;
 
-    @NotNull
-    public String maxWithdrawalAmount;
-
 
     public String getOriginParty() {
         return originParty;
@@ -47,15 +44,6 @@ public class Fund {
 
     public void setAmount(String amount) {
         this.amount = amount;
-    }
-
-
-    public String getMaxWithdrawalAmount() {
-        return maxWithdrawalAmount;
-    }
-
-    public void setMaxWithdrawalAmount(String maxWithdrawalAmount) {
-        this.maxWithdrawalAmount = maxWithdrawalAmount;
     }
 
     public String getReceivedByUsername() { return receivedByUsername; }

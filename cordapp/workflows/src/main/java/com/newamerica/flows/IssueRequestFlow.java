@@ -2,16 +2,20 @@ package com.newamerica.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
 import com.newamerica.contracts.RequestContract;
+import com.newamerica.states.ConfigState;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import net.corda.core.contracts.CommandData;
 
 import net.corda.core.contracts.ContractState;
+import net.corda.core.contracts.StateAndRef;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.AbstractParty;
 import net.corda.core.identity.Party;
 
+import net.corda.core.node.services.Vault;
+import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
@@ -61,6 +65,16 @@ public class IssueRequestFlow {
         @Suspendable
         @Override
         public SignedTransaction call() throws FlowException {
+            //get lastest config
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
+            List<StateAndRef<ConfigState>> configs = getServiceHub().getVaultService().queryBy(ConfigState.class, queryCriteria).getStates();
+            ConfigState lastestConfig = configs.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(ConfigState::getCreateDatetime).reversed()).collect(Collectors.toList()).get(0);
+
+            // if request amount > max limit, then flag this request
+            if (outputRequestState.getAmount().compareTo(lastestConfig.getMaxWithdrawalAmount()) > 0) {
+                outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
+            }
+
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Issue();

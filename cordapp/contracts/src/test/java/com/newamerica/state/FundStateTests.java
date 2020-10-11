@@ -50,7 +50,6 @@ public class FundStateTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -70,7 +69,6 @@ public class FundStateTests {
         Field balance = FundState.class.getDeclaredField("balance");
         Field createDatetime = FundState.class.getDeclaredField("createDatetime");
         Field updateDatetime = FundState.class.getDeclaredField("updateDatetime");
-        Field maxWithdrawalAmount = FundState.class.getDeclaredField("maxWithdrawalAmount");
         Field currency = FundState.class.getDeclaredField("currency");
         Field status = FundState.class.getDeclaredField("status");
         Field participants = FundState.class.getDeclaredField("participants");
@@ -84,7 +82,6 @@ public class FundStateTests {
         assertTrue(balance.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(createDatetime.getType().isAssignableFrom(ZonedDateTime.class));
         assertTrue(updateDatetime.getType().isAssignableFrom(ZonedDateTime.class));
-        assertTrue(maxWithdrawalAmount.getType().isAssignableFrom(BigDecimal.class));
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(status.getType().isAssignableFrom(FundState.FundStateStatus.class));
         assertTrue(participants.getType().isAssignableFrom(List.class));
@@ -102,7 +99,6 @@ public class FundStateTests {
         assertTrue(fundState.getBalance().compareTo(BigDecimal.valueOf(4999999)) > 0);
         assertEquals(fundState.getCreateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
         assertEquals(fundState.getUpdateDatetime(), ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")));
-        assertTrue(fundState.getMaxWithdrawalAmount().compareTo(BigDecimal.valueOf(999999)) > 0);
         assertEquals(fundState.getCurrency(), Currency.getInstance(Locale.US));
         assertEquals(fundState.getStatus(), FundState.FundStateStatus.ISSUED);
         assertEquals(fundState.getParticipants(),new ArrayList<>(participants));

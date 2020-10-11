@@ -1,8 +1,8 @@
 package com.newamerica.flows;
 
 import co.paralleluniverse.fibers.Suspendable;
-import com.newamerica.contracts.FundContract;
-import com.newamerica.states.FundState;
+import com.newamerica.contracts.ConfigContract;
+import com.newamerica.states.ConfigState;
 import net.corda.core.contracts.CommandData;
 import net.corda.core.contracts.ContractState;
 import net.corda.core.crypto.SecureHash;
@@ -23,30 +23,31 @@ import static com.newamerica.flows.CordappConfigUtilities.getPreferredNotary;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
 /**
- * This flow is responsible for the issuance of FundState on ledger.
+ * This flow is responsible for the issuance of ConfigState on ledger.
  */
 
-public class IssueFundFlow {
+public class IssueConfigFlow {
     @InitiatingFlow
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction>{
-        private final FundState outputFundState;
+        private final ConfigState outputConfigState;
 
-        public InitiatorFlow(Party originParty, Party receivingParty, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amountAndBalance, ZonedDateTime createDatetime, ZonedDateTime updateDatetime, Currency currency, List<AbstractParty> participants){
-            this.outputFundState = new FundState(
-                    originParty,
-                    receivingParty,
-                    null,
-                    owners,
-                    requiredSigners,
-                    partialRequestParticipants,
-                    amountAndBalance,
-                    amountAndBalance,
-                    createDatetime,
-                    updateDatetime,
+        public InitiatorFlow(
+                String creator,
+                String country,
+                BigDecimal maxWithdrawalAmount,
+                Currency currency,
+                ZonedDateTime createDatetime,
+                List<AbstractParty> participants
+        ){
+            this.outputConfigState = new ConfigState(
+                    creator,
+                    country,
+                    maxWithdrawalAmount,
                     currency,
-                    FundState.FundStateStatus.ISSUED,
-                    participants);
+                    createDatetime,
+                    participants
+            );
         }
 
         @Suspendable
@@ -54,16 +55,16 @@ public class IssueFundFlow {
         public SignedTransaction call() throws FlowException {
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
-            CommandData commandData = new FundContract.Commands.Issue();
-            transactionBuilder.addCommand(commandData, outputFundState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
-            transactionBuilder.addOutputState(outputFundState, FundContract.ID);
+            CommandData commandData = new ConfigContract.Commands.Issue();
+            transactionBuilder.addCommand(commandData, outputConfigState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addOutputState(outputConfigState, ConfigContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<AbstractParty> otherParties = outputFundState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
+            List<AbstractParty> otherParties = outputConfigState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties
@@ -75,10 +76,10 @@ public class IssueFundFlow {
     }
 
     /**
-     * This is the flow which signs FundState issuances.
+     * This is the flow which signs ConfigState issuances.
      */
 
-    @InitiatedBy(IssueFundFlow.InitiatorFlow.class)
+    @InitiatedBy(IssueConfigFlow.InitiatorFlow.class)
     public static class ResponderFlow extends FlowLogic<SignedTransaction>{
         private final FlowSession flowSession;
         private SecureHash txWeJustSigned;
@@ -100,7 +101,7 @@ public class IssueFundFlow {
                 protected void checkTransaction(SignedTransaction stx){
                     requireThat(req -> {
                         ContractState output = stx.getTx().getOutputs().get(0).getData();
-                        req.using("This must be an FundState transaction", output instanceof FundState);
+                        req.using("This must be an ConfigState transaction", output instanceof ConfigState);
                         return null;
                     });
                     txWeJustSigned = stx.getId();
