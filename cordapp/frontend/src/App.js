@@ -8,6 +8,7 @@ import APIProvider from "providers/APIProvider";
 import { useAuth } from "./auth-hook";
 import TransfersProvider from "./providers/TransfersProvider";
 import PartialRequestsProvider from "./providers/PartialRequestsProvider";
+import ConfigProvider from "./providers/ConfigProvider";
 
 const App = () => {
   const auth = useAuth();
@@ -25,10 +26,12 @@ const App = () => {
         <RequestsProvider authorizedUser={auth}>
           <TransfersProvider authorizedUser={auth}>
             <PartialRequestsProvider>
-              <div className="App">
-                <ReactNotification />
-                <AppRouter />
-              </div>
+              <ConfigProvider>
+                <div className="App">
+                  <ReactNotification />
+                  <AppRouter />
+                </div>
+              </ConfigProvider>
             </PartialRequestsProvider>
           </TransfersProvider>
         </RequestsProvider>
