@@ -83,7 +83,7 @@ public class ConfigController extends BaseResource {
         try {
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<ConfigState>> configs = rpcOps.vaultQueryByCriteria(queryCriteria, ConfigState.class).getStates();
-            ConfigState result = configs.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(ConfigState::getCreateDatetime).reversed()).collect(Collectors.toList()).get(0);
+            List<ConfigState> result = configs.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(ConfigState::getCreateDatetime).reversed()).collect(Collectors.toList());
             return Response.ok(result).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
