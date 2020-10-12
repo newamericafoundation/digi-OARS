@@ -8,6 +8,7 @@ const PartialWithdrawalsPage = React.lazy(() => import('./pages/PartialWithdrawa
 const TransfersPage = React.lazy(() => import('./pages/TransfersPage'));
 const TransfersHistoryPage = React.lazy(() => import('./pages/TransfersHistoryPage'));
 const AdminPage = React.lazy(() => import('./pages/AdminPage'));
+const ConfigPage = React.lazy(() => import('./pages/ConfigPage'));
 
 // const Login = React.lazy(() => import('./pages/views/login/Login'));
 
@@ -23,4 +24,5 @@ export const privateRoutes = [
   { roles: ['user'], path: '/transfers/approvals', exact: true, name: 'Transfers', component: TransfersPage },
   { roles: ['user'], path: '/transfers/history', exact: true, name: 'Transfers History', component: TransfersHistoryPage },
   { roles: ['admin'], path: '/admin', exact: true, name: 'Admin', component: AdminPage},
+  { roles: ['funds_issuer'], path: '/config', exact: true, name: 'Configuration', component: ConfigPage}
 ]
