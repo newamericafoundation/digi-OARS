@@ -17,9 +17,7 @@ import net.corda.core.node.services.vault.QueryCriteria;
 import net.corda.core.transactions.SignedTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.ws.rs.core.Response;
@@ -33,6 +31,9 @@ import java.util.Currency;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RestController
+@CrossOrigin(origins = "*")
+@RequestMapping("/api") // The paths for HTTP requests are relative to this base path.
 public class ConfigController extends BaseResource {
     private final CordaRPCOps rpcOps;
     private final static Logger logger = LoggerFactory.getLogger(ConfigController.class);
