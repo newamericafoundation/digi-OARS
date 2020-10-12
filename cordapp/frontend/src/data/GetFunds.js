@@ -5,7 +5,7 @@ const getFunds = async (port) => {
     "http://" + window._env_.API_CLIENT_URL + ":" + port + "/api/funds";
 
   const res = await axios.get(url);
-
+  
   return res.data.entity.map((ob) => ({
     linearId: ob.linearId.id,
     createdDateTime: ob.createDatetime,
@@ -15,7 +15,6 @@ const getFunds = async (port) => {
     currency: ob.currency,
     amount: ob.amount,
     balance: ob.balance,
-    maxWithdrawalAmount: ob.maxWithdrawalAmount,
     status: ob.status,
     participants: ob.participants,
     receivedByUsername: ob.receivedByUsername

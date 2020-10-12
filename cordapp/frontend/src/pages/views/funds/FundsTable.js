@@ -77,7 +77,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     { key: "receivingParty", label: "Receiving Country" },
     { key: "amount" },
     { key: "balance" },
-    { key: "maxWithdrawalAmount" },
     { key: "createdDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
     { key: "actions", _style: { width: "20%" }, sorter: false, filter: false },
@@ -208,9 +207,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           ),
           amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
           balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
-          maxWithdrawalAmount: (item) => (
-            <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
-          ),
           createdDateTime: (item) => (
             <td>
               {moment
@@ -309,17 +305,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                           <p className="text-muted mb-0">Balance</p>
                           <strong className="p">
                             {toCurrency(item.balance, item.currency)}
-                          </strong>
-                        </CCallout>
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">
-                            Max Withdrawal Amount
-                          </p>
-                          <strong className="p">
-                            {toCurrency(
-                              item.maxWithdrawalAmount,
-                              item.currency
-                            )}
                           </strong>
                         </CCallout>
                       </CCol>
