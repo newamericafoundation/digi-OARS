@@ -9,6 +9,7 @@ import {
   CCallout,
   CButton,
   CButtonGroup,
+  CBadge,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
 import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
@@ -19,6 +20,8 @@ import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
 import { toCurrency } from "../utilities";
 import useInterval from "../interval-hook";
+import { RequestForm } from "./views/withdrawals/RequestForm";
+import cogoToast from "cogo-toast";
 
 const WithdrawalsPage = () => {
   const auth = useAuth();
@@ -31,6 +34,12 @@ const WithdrawalsPage = () => {
   const [isRequestTransferer, setIsRequestTransferer] = useState(false);
   const [isObserver, setIsObserver] = useState(false);
   const [requestsFilterStatus, setRequestsFilterStatus] = useState("ALL");
+  const [show, setShow] = useState(false);
+
+  const handleShow = () => {
+    setShow(true);
+  };
+  const handleClose = () => setShow(false);
 
   const handleTableFilter = (filterValue) => {
     setRequestsFilterStatus(filterValue);
@@ -60,6 +69,19 @@ const WithdrawalsPage = () => {
     }
   }, Constants.REFRESH_INTERVAL_MS);
 
+  const responseMessage = (message) => {
+    return (
+      <div>
+        <strong>Request ID:</strong> {message.entity.data.linearId.id}
+        <br />
+        <strong>Status:</strong>{" "}
+        <CBadge color="warning">{message.entity.data.status}</CBadge>
+        <br />
+        <strong>Amount:</strong> {toCurrency(message.entity.data.amount, "USD")}
+      </div>
+    );
+  };
+
   const getCalloutColor = () => {
     switch (requestsFilterStatus) {
       case "ALL":
@@ -77,6 +99,31 @@ const WithdrawalsPage = () => {
       default:
         return "warning";
     }
+  };
+
+  const onFormSubmit = (response) => {
+    handleClose();
+    if (response.status === 200) {
+      const { hide } = cogoToast.success(responseMessage(response), {
+        heading: "Withdrawal Request Created",
+        position: "top-right",
+        hideAfter: 8,
+        onClick: () => {
+          hide();
+        },
+      });
+    } else {
+      const { hide } = cogoToast.error(response.entity.message, {
+        heading: "Error Receiving Funds",
+        position: "top-right",
+        hideAfter: 8,
+        onClick: () => {
+          hide();
+        },
+      });
+    }
+    fundsCallback();
+    requestsCallback();
   };
 
   return (
@@ -135,7 +182,7 @@ const WithdrawalsPage = () => {
           </CWidgetProgressIcon>
         </CCol>
       </CRow>
-      {isFundsRequestor ? (
+      {/* {isFundsRequestor ? (
         <CRow>
           <CCol>
             <CCard>
@@ -157,7 +204,7 @@ const WithdrawalsPage = () => {
             </CCard>
           </CCol>
         </CRow>
-      ) : null}
+      ) : null} */}
       <CRow>
         <CCol>
           <CCard>
@@ -173,6 +220,19 @@ const WithdrawalsPage = () => {
                     Withdrawal Requests
                   </h4>
                 </CCallout>
+                {isFundsRequestor ? (
+                  <CButtonGroup className="float-right mt-2 mb-1">
+                    <CButton
+                      color="success"
+                      variant="outline"
+                      shape="square"
+                      size="sm"
+                      onClick={() => handleShow()}
+                    >
+                      Request Money
+                    </CButton>
+                  </CButtonGroup>
+                ) : null}
                 <CButtonGroup className="float-right mr-3 mt-1 mb-1">
                   <CButton
                     color="outline-dark"
@@ -247,6 +307,11 @@ const WithdrawalsPage = () => {
           </CCard>
         </CCol>
       </CRow>
+      <RequestForm
+        show={show}
+        onSubmit={onFormSubmit}
+        handleClose={handleClose}
+      />
     </>
   );
 };
