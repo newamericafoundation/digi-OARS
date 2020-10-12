@@ -12,7 +12,6 @@ import {
   CBadge,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-import { AvailableFundsTable } from "./views/funds/AvailableFundsTable";
 import { RequestsTable } from "./views//withdrawals/RequestsTable";
 import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
@@ -25,7 +24,7 @@ import cogoToast from "cogo-toast";
 
 const WithdrawalsPage = () => {
   const auth = useAuth();
-  const [fundsState, fundsCallback] = useContext(FundsContext);
+  const [, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);

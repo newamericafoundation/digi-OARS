@@ -12,7 +12,6 @@ const getRequests = async (port) => {
     authorizerUserDeptAndUsername: ob.authorizerUserDeptAndUsername,
     authorizedParties: ob.authorizedParties,
     linearId: ob.linearId.id,
-    fundStateLinearId: ob.fundStateLinearId.id,
     externalAccountId: ob.externalAccountId,
     purpose: ob.purpose,
     currency: ob.currency,
