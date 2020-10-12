@@ -1,16 +1,12 @@
 # 101-clean-dbs.yml
 ---
+- import_playbook: 04-stop-nodes.yml
+
 - name: Clean DB's
   hosts: node-machines, notary-machines
   gather_facts: true
   become: true
   tasks:
-    - name: Stop Corda Docker Container
-      docker_container:
-        name: "node-{{ inventory_hostname }}"
-        hostname: "node-{{ inventory_hostname }}"
-        image: "{{ corda_docker_image_version }}"
-        state: stopped
     - name: Remove Directories
       file:
         path: "{{ item }}"
@@ -20,11 +16,3 @@
         - "/opt/corda/persistence/persistence.trace.db"
       tags:
         - remove-dirs
-    - name: Remove Docker Container
-      docker_container:
-        name: "node-{{ inventory_hostname }}"
-        hostname: "node-{{ inventory_hostname }}"
-        image: "{{ corda_docker_image_version }}"
-        state: absent
-      tags:
-        - remove-corda
