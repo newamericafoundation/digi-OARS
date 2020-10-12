@@ -26,8 +26,7 @@ export const FundsForm = ({ onSubmit }) => {
 
   const stateSchema = {
     receivingParty: { value: "", error: "" },
-    amount: { value: 0.00, error: "" },
-    maxWithdrawalAmount: { value: 0.00, error: "" },
+    amount: { value: 0.00, error: "" }
   };
 
   const stateValidatorSchema = {
@@ -41,15 +40,7 @@ export const FundsForm = ({ onSubmit }) => {
           /^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$/.test(value),
         error: "Invalid currency format.",
       },
-    },
-    maxWithdrawalAmount: {
-      required: true,
-      validator: {
-        func: (value) =>
-          /^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$/.test(value),
-        error: "Invalid currency format.",
-      },
-    },
+    }
   };
 
   const onSubmitForm = (state) => {
@@ -61,8 +52,7 @@ export const FundsForm = ({ onSubmit }) => {
       .post(url, {
         originParty: "O=US_DoJ, L=New York, C=US",
         receivingParty: state.receivingParty,
-        amount: state.amount,
-        maxWithdrawalAmount: state.maxWithdrawalAmount,
+        amount: state.amount
       })
       .then((response) => {
         onSubmit(response.data);
@@ -132,31 +122,6 @@ export const FundsForm = ({ onSubmit }) => {
                 </CInputGroup>
                 <div className="text-muted small">
                   <p className="text-danger">{errors.amount}</p>
-                </div>
-              </CFormGroup>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol xs="12">
-              <CFormGroup>
-                <CLabel htmlFor="maxWithdrawalAmount">
-                  Maximum Withdrawal Amount
-                </CLabel>
-                <CInputGroup className="input-prepend">
-                  <CInputGroupPrepend>
-                    <CInputGroupText>$</CInputGroupText>
-                  </CInputGroupPrepend>
-                  <CurrencyInput
-                    className="form-control"
-                    placeholder="0.00"
-                    type="text"
-                    name="maxWithdrawalAmount"
-                    id="maxWithdrawalAmount"
-                    onChange={handleOnChange}
-                  />
-                </CInputGroup>
-                <div className="text-muted small">
-                  <p className="text-danger">{errors.maxWithdrawalAmount}</p>
                 </div>
               </CFormGroup>
             </CCol>

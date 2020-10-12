@@ -111,7 +111,6 @@ export const AvailableFundsTable = ({
     { key: "originParty", label: "Origin Country" },
     { key: "balance", label: "Balance Available" },
     { key: "updatedDateTime", label: "Updated Date" },
-    { key: "maxWithdrawalAmount" },
     { key: "status", _style: { width: "10%" }, filter: false },
     { key: "actions", _style: { width: "20%" }, sorter: false, filter: false },
     {
@@ -188,9 +187,6 @@ export const AvailableFundsTable = ({
           ),
           amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
           balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
-          maxWithdrawalAmount: (item) => (
-            <td>{toCurrency(item.maxWithdrawalAmount, item.currency)}</td>
-          ),
           createdDateTime: (item) => (
             <td>{Moment(item.createdDateTime).format("DD/MMM/yyyy")}</td>
           ),
@@ -273,17 +269,6 @@ export const AvailableFundsTable = ({
                           <p className="text-muted mb-0">Balance</p>
                           <strong className="p">
                             {toCurrency(item.balance, item.currency)}
-                          </strong>
-                        </CCallout>
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">
-                            Max Withdrawal Amount
-                          </p>
-                          <strong className="p">
-                            {toCurrency(
-                              item.maxWithdrawalAmount,
-                              item.currency
-                            )}
                           </strong>
                         </CCallout>
                       </CCol>
