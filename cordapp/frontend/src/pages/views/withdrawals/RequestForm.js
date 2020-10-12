@@ -1,7 +1,5 @@
 import React, { useState, useContext } from "react";
 import {
-  CRow,
-  CCol,
   CFormGroup,
   CLabel,
   CInput,
@@ -23,16 +21,14 @@ import useForm from "../../../form/index";
 import { useAuth } from "../../../auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
-import { toCurrency } from "../../../utilities";
 import CurrencyInput from "../../../form/CurrencyInput";
 
-export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
+export const RequestForm = ({ show, onSubmit, handleClose }) => {
   const auth = useAuth();
   const [api] = useContext(APIContext);
   const [isLoading, setIsLoading] = useState(false);
 
   const stateSchema = {
-    fundStateId: { value: request.linearId, error: "" },
     authorizedUserUsername: { value: auth.user.fullName, error: "" },
     amount: { value: 0, error: "" },
     purpose: { value: "", error: "" },
@@ -67,7 +63,6 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
         authorizedUserDept: auth.meta.keycloak.tokenParsed.groups[0],
         authorizedUserUsername: auth.user.fullName,
         externalAccountId: state.accountId,
-        fundStateLinearId: request.linearId,
         purpose: state.purpose,
       })
       .then((response) => {
@@ -84,8 +79,6 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
   );
 
   const {
-    fundStateId,
-    fundStateBalance,
     authorizedUserUsername,
     authorizedUserDept,
     accountId,
@@ -99,48 +92,6 @@ export const RequestForm = ({ show, onSubmit, request, handleClose }) => {
           <CModalTitle>Withdrawal Request Form</CModalTitle>
         </CModalHeader>
         <CModalBody>
-          <CRow>
-            <CCol>
-              <CFormGroup>
-                <CLabel htmlFor="fundStateId">Fund State ID</CLabel>
-                <CInputGroup className="input-prepend">
-                  <CInputGroupPrepend>
-                    <CInputGroupText>
-                      <CIcon name="cil-bank"></CIcon>
-                    </CInputGroupText>
-                  </CInputGroupPrepend>
-                  <CInput
-                    type="text"
-                    name="fundStateId"
-                    id="fundStateId"
-                    placeholder={request.linearId}
-                    value={fundStateId}
-                    disabled
-                  />
-                </CInputGroup>
-              </CFormGroup>
-            </CCol>
-            <CCol>
-              <CFormGroup>
-                <CLabel htmlFor="fundStateBalance">Fund Balance</CLabel>
-                <CInputGroup className="input-prepend">
-                  <CInputGroupPrepend>
-                    <CInputGroupText>$</CInputGroupText>
-                  </CInputGroupPrepend>
-                  <CInput
-                    type="text"
-                    name="fundStateBalance"
-                    id="fundStateBalance"
-                    placeholder={toCurrency(request.balance, "USD").substring(
-                      1
-                    )}
-                    value={fundStateBalance}
-                    disabled
-                  />
-                </CInputGroup>
-              </CFormGroup>
-            </CCol>
-          </CRow>
           <CFormGroup>
             <CLabel htmlFor="authorizedUserUsername">Requestor</CLabel>
             <CInputGroup className="input-prepend">
