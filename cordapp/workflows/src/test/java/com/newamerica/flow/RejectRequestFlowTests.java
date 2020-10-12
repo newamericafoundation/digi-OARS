@@ -75,8 +75,10 @@ public class RejectRequestFlowTests {
         startedNodes.add(e);
         startedNodes.add(f);
 
-        // For real nodes this happens automatically, but we have to manually register the flow for tests
+        // For real nodes this happens automatically, but we have to manually register cCthe flow for tests
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueFundFlow.ResponderFlow.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(ReceiveFundFlow.ResponderFlow.class));
+        startedNodes.forEach(el -> el.registerInitiatedFlow(IssueConfigFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(IssueRequestFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(RejectRequestFlow.ResponderFlow.class));
         startedNodes.forEach(el -> el.registerInitiatedFlow(ReceiveFundFlow.ResponderFlow.class));
@@ -111,7 +113,6 @@ public class RejectRequestFlowTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 participants
         );
@@ -130,6 +131,18 @@ public class RejectRequestFlowTests {
         Future<SignedTransaction> futureTwo = c.startFlow(receiveFundFlow);
         mockNetwork.runNetwork();
         futureTwo.get();
+
+        IssueConfigFlow.InitiatorFlow configFlow =  new IssueConfigFlow.InitiatorFlow(
+                "US DoJ",
+                "Catan",
+                BigDecimal.valueOf(5000000),
+                Currency.getInstance(Locale.US),
+                ZonedDateTime.of(2020, 6, 26, 10,30,30,0, ZoneId.of("America/New_York")),
+                participants
+        );
+        Future<SignedTransaction> future3 = b.startFlow(configFlow);
+        mockNetwork.runNetwork();
+        future3.get();
 
         //create RequestState
         IssueRequestFlow.InitiatorFlow requestFlow = new IssueRequestFlow.InitiatorFlow(

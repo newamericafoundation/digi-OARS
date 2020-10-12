@@ -60,7 +60,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -95,7 +94,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -131,7 +129,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -167,7 +164,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -198,7 +194,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -229,7 +224,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -259,7 +253,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -289,7 +282,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(0),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -319,7 +311,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000001),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.ISSUED,
                 participants
@@ -335,35 +326,7 @@ public class FundContractTests {
         });
     }
 
-    // An issuance is not valid if the maxWithdrawalLimit is not greater than or equal to zero.
-    @Test
-    public void maxWithdrawalLimitPositiveValue() {
-        FundState fs = new FundState(
-                US.getParty(),
-                CATAN.getParty(),
-                username,
-                owners,
-                requiredSigners,
-                partialRequestParticipants,
-                BigDecimal.valueOf(5000000),
-                BigDecimal.valueOf(5000000),
-                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(-1),
-                Currency.getInstance(Locale.US),
-                FundState.FundStateStatus.ISSUED,
-                participants
-        );
 
-        ledger(ledgerServices, l -> {
-            l.transaction(tx -> {
-                tx.command((fs.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList())), new FundContract.Commands.Issue());
-                tx.output(FundContract.ID, fs);
-                return tx.failsWith("The maxWithdrawalAmount must be greater than or equal to zero.");
-            });
-            return null;
-        });
-    }
 
     // An issuance is not valid if the status is not ISSUED.
     @Test
@@ -379,7 +342,6 @@ public class FundContractTests {
                 BigDecimal.valueOf(5000000),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
                 ZonedDateTime.of(2020, 6, 27, 10,30,30,0, ZoneId.of("America/New_York")),
-                BigDecimal.valueOf(1000000),
                 Currency.getInstance(Locale.US),
                 FundState.FundStateStatus.PAID,
                 participants

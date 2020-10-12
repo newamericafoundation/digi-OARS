@@ -1,9 +1,11 @@
 package com.newamerica.webserver;
 
+import com.newamerica.states.ConfigState;
 import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import com.newamerica.states.TransferState;
 import com.newamerica.webserver.exceptions.CustomizedError;
+import com.newamerica.webserver.responses.ConfigResponse;
 import com.newamerica.webserver.responses.FundResponse;
 import com.newamerica.webserver.responses.RequestResponse;
 import com.newamerica.webserver.responses.TransferResponse;
@@ -23,6 +25,12 @@ public class BaseResource {
     public FundResponse createFundSuccessServiceResponse(String message, Object data, String resourcePath) {
         FundResponse response = new FundResponse(message, resourcePath);
         response.setData((FundState) data);
+        return response;
+    }
+
+    public ConfigResponse createConfigSuccessServiceResponse(String message, Object data, String resourcePath) {
+        ConfigResponse response = new ConfigResponse(message, resourcePath);
+        response.setData((ConfigState) data);
         return response;
     }
 

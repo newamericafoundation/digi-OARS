@@ -85,10 +85,6 @@ public class ApproveRequestFlow {
                     .updateFundStateID(fundStateLinearId)
                     .updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
 
-            if (outputRequestState.amount.compareTo(inputStateRefFundState.maxWithdrawalAmount) > 0) {
-                outputRequestState = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
-            }
-
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Approve();

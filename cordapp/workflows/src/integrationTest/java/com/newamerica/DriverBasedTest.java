@@ -130,7 +130,6 @@ public class DriverBasedTest {
                         BigDecimal.valueOf(5000000),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                        BigDecimal.valueOf(1000000),
                         Currency.getInstance(Locale.US),
                         participants
                         ).getReturnValue().get();
@@ -148,7 +147,6 @@ public class DriverBasedTest {
                 assertEquals(BigDecimal.valueOf(5000000), issuedFundState.getAmount());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundState.getCreateDatetime());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundState.getUpdateDatetime());
-                assertEquals(BigDecimal.valueOf(1000000), issuedFundState.getMaxWithdrawalAmount());
                 assertEquals(Currency.getInstance(Locale.US), issuedFundState.getCurrency());
                 assertEquals(participants, issuedFundState.getParticipants());
 
@@ -165,7 +163,6 @@ public class DriverBasedTest {
                 assertEquals(BigDecimal.valueOf(5000000), issuedFundStateCatanMOF.getAmount());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundStateCatanMOF.getCreateDatetime());
                 assertEquals(ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")), issuedFundStateCatanMOF.getUpdateDatetime());
-                assertEquals(BigDecimal.valueOf(1000000), issuedFundStateCatanMOF.getMaxWithdrawalAmount());
                 assertEquals(Currency.getInstance(Locale.US), issuedFundStateCatanMOF.getCurrency());
                 assertEquals(participants, issuedFundStateCatanMOF.getParticipants());
             } catch (Exception e) {
@@ -230,7 +227,6 @@ public class DriverBasedTest {
                         BigDecimal.valueOf(5000000),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                        BigDecimal.valueOf(1000000),
                         Currency.getInstance(Locale.US),
                         participants
                 ).getReturnValue().get();
@@ -238,6 +234,16 @@ public class DriverBasedTest {
                 //make sure that the OriginParty (usDOSParty) node has the issued state in its vault
                 List<StateAndRef<FundState>> fundStatesUSDOS = usDOSProxy.vaultQuery(FundState.class).getStates();
                 FundState issuedFundState = fundStatesUSDOS.get(0).getState().getData();
+
+                usDOSProxy.startFlowDynamic(IssueConfigFlow.InitiatorFlow.class,
+                        "US DoJ",
+                        "Catan",
+                        BigDecimal.valueOf(5000000),
+                        Currency.getInstance(Locale.US),
+                        ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                        participants
+                ).getReturnValue().get();
+
 
                 catanMOFProxy.startFlowDynamic(ReceiveFundFlow.InitiatorFlow.class,
                         "Ben Green",
@@ -350,10 +356,18 @@ public class DriverBasedTest {
                         BigDecimal.valueOf(5000000),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
                         ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
-                        BigDecimal.valueOf(1000000),
                         Currency.getInstance(Locale.US),
                         participants
                 ).getReturnValue().get().getTx().getOutputStates().get(0);
+
+                usDOSProxy.startFlowDynamic(IssueConfigFlow.InitiatorFlow.class,
+                        "US DoJ",
+                        "Catan",
+                        BigDecimal.valueOf(5000000),
+                        ZonedDateTime.of(2020, 6, 27, 10, 30, 30, 0, ZoneId.of("America/New_York")),
+                        Currency.getInstance(Locale.US),
+                        participants
+                ).getReturnValue().get();
 
                 catanMOFProxy.startFlowDynamic(ReceiveFundFlow.InitiatorFlow.class,
                         "Ben Green",

@@ -42,7 +42,6 @@ public class FundState implements LinearState, Comparable<FundState> {
     public final BigDecimal balance;
     public final ZonedDateTime createDatetime;
     public final ZonedDateTime updateDatetime;
-    public final BigDecimal maxWithdrawalAmount;
     public final Currency currency;
     public final FundStateStatus status;
     public final UniqueIdentifier linearId;
@@ -59,7 +58,6 @@ public class FundState implements LinearState, Comparable<FundState> {
                      BigDecimal balance,
                      ZonedDateTime createDatetime,
                      ZonedDateTime updateDatetime,
-                     BigDecimal maxWithdrawalAmount,
                      Currency currency,
                      FundStateStatus status,
                      List<AbstractParty> participants,
@@ -74,7 +72,6 @@ public class FundState implements LinearState, Comparable<FundState> {
         this.balance = balance;
         this.createDatetime = createDatetime;
         this.updateDatetime = updateDatetime;
-        this.maxWithdrawalAmount = maxWithdrawalAmount;
         this.currency = currency;
         this.status = status;
         this.participants = participants;
@@ -91,11 +88,10 @@ public class FundState implements LinearState, Comparable<FundState> {
                      BigDecimal balance,
                      ZonedDateTime createDatetime,
                      ZonedDateTime updateDatetime,
-                     BigDecimal maxWithdrawalAmount,
                      Currency currency,
                      FundStateStatus status,
                      List<AbstractParty> participants){
-        this(originParty, receivingParty, receivedByUsername, owners, authorizedParties, partialRequestParticipants, amount, balance, createDatetime, updateDatetime, maxWithdrawalAmount, currency, status, participants, new UniqueIdentifier());
+        this(originParty, receivingParty, receivedByUsername, owners, authorizedParties, partialRequestParticipants, amount, balance, createDatetime, updateDatetime, currency, status, participants, new UniqueIdentifier());
     }
 
     //getters
@@ -113,7 +109,6 @@ public class FundState implements LinearState, Comparable<FundState> {
     public List<AbstractParty> getPartialRequestParticipants(){ return partialRequestParticipants; }
     public BigDecimal getAmount() {        return amount;    }
     public BigDecimal getBalance() { return balance;    }
-    public BigDecimal getMaxWithdrawalAmount() { return maxWithdrawalAmount;    }
     public Currency getCurrency() { return currency;    }
     public FundStateStatus getStatus() { return status;          }
     public Party getOriginParty() { return originParty; }
@@ -140,7 +135,6 @@ public class FundState implements LinearState, Comparable<FundState> {
                 this.balance.subtract(withdrawalAmount),
                 this.createDatetime,
                 this.updateDatetime,
-                this.maxWithdrawalAmount,
                 this.currency,
                 this.status,
                 this.participants,
@@ -160,7 +154,6 @@ public class FundState implements LinearState, Comparable<FundState> {
                 this.balance,
                 this.createDatetime,
                 this.updateDatetime,
-                this.maxWithdrawalAmount,
                 this.currency,
                 newStatus,
                 this.participants,
@@ -180,7 +173,6 @@ public class FundState implements LinearState, Comparable<FundState> {
                 this.balance,
                 this.createDatetime,
                 newDatetime,
-                this.maxWithdrawalAmount,
                 this.currency,
                 this.status,
                 this.participants,
@@ -199,7 +191,6 @@ public class FundState implements LinearState, Comparable<FundState> {
                 this.balance,
                 this.createDatetime,
                 this.updateDatetime,
-                this.maxWithdrawalAmount,
                 this.currency,
                 this.status,
                 this.participants,

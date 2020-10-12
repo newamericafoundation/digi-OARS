@@ -178,7 +178,6 @@ public class FundsController extends BaseResource {
             String originPartyName = request.getOriginParty();
             String receivingPartyName = request.getReceivingParty();
             String amountStr = request.getAmount();
-            String maxWithdrawalAmountStr = request.getMaxWithdrawalAmount();
 
             Party originParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(originPartyName));
             Party receivingParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(receivingPartyName));
@@ -192,7 +191,6 @@ public class FundsController extends BaseResource {
 
             BigDecimal amountAndBalance = new BigDecimal(amountStr);
             ZonedDateTime now = ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC"));
-            BigDecimal maxWithdrawalAmount = new BigDecimal(maxWithdrawalAmountStr);
             Currency currency = Currency.getInstance("USD");
 
             List<AbstractParty> owners = Arrays.asList(originParty);
@@ -210,7 +208,6 @@ public class FundsController extends BaseResource {
                     amountAndBalance,
                     now,
                     now,
-                    maxWithdrawalAmount,
                     currency,
                     participants
             ).getReturnValue().get();
