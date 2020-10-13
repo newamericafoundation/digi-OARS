@@ -110,7 +110,7 @@ public class RequestState implements LinearState, Comparable<RequestState> {
     public Currency getCurrency() { return currency; }
     public RequestStateStatus getStatus() { return status; }
     public UniqueIdentifier getFundStateLinearId() {
-        if(fundStateLinearId != null) {
+        if (fundStateLinearId != null) {
             return fundStateLinearId;
         }
         return new UniqueIdentifier();
