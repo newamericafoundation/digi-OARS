@@ -71,15 +71,16 @@ public class IssueRequestFlow {
             ConfigState lastestConfig = configs.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(ConfigState::getCreateDatetime).reversed()).collect(Collectors.toList()).get(0);
 
             // if request amount > max limit, then flag this request
+            RequestState requestStateFlagged = null;
             if (outputRequestState.getAmount().compareTo(lastestConfig.getMaxWithdrawalAmount()) > 0) {
-                outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
+                requestStateFlagged = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
             }
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Issue();
-            transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
-            transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
+            transactionBuilder.addCommand(commandData, requestStateFlagged == null? outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()) : requestStateFlagged.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addOutputState(requestStateFlagged == null? outputRequestState: requestStateFlagged, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction by ourself

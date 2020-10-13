@@ -132,7 +132,7 @@ public class IssueRequestFlowTests {
         IssueConfigFlow.InitiatorFlow configFlow =  new IssueConfigFlow.InitiatorFlow(
                "US DoJ",
                 "Catan",
-                BigDecimal.valueOf(5000000),
+                BigDecimal.valueOf(500),
                 Currency.getInstance(Locale.US),
                 ZonedDateTime.of(2020, 6, 26, 10,30,30,0, ZoneId.of("America/New_York")),
                 participants
@@ -157,6 +157,8 @@ public class IssueRequestFlowTests {
         Future<SignedTransaction> futureTwo = c.startFlow(requestFlow);
         mockNetwork.runNetwork();
         stx2 = futureTwo.get();
+        RequestState s = (RequestState) stx2.getTx().getOutput(0);
+        System.out.println(s.getStatus());
     }
 
 
