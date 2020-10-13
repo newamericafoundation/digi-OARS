@@ -19,13 +19,17 @@ import {
   CModalBody,
   CModalFooter,
   CAlert,
+  CFormGroup,
+  CLabel,
+  CSelect, CTooltip
 } from "@coreui/react";
 import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
 import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
-import { toCurrency } from "../../../utilities";
+import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
 import cogoToast from "cogo-toast";
+import { FundsContext } from "../../../providers/FundsProvider";
 
 export const RequestsTable = ({
   filterStatus,
@@ -47,6 +51,8 @@ export const RequestsTable = ({
   const [, setCurrentItemIndex] = useState();
   const [currentRequestAction, setCurrentRequestAction] = useState("");
   const [currentFundBalance, setCurrentFundBalance] = useState();
+  const [fundsState,] = useContext(FundsContext);
+  const [fundStateLinearId, setFundStateLinearId] = useState("");
 
   const handleShow = (item) => {
     setCurrentItem(item);
@@ -198,14 +204,20 @@ export const RequestsTable = ({
   const onHandleConfirmationClick = (
     requestStateLinearId,
     authorizerUserUsername,
-    authorizerUserDept,
-    index
+    authorizerUserDept
   ) => {
     setIsLoading(true);
 
     if (currentRequestAction !== "transfer") {
       axios
-        .put(getUrl(), null, {
+        .put(getUrl(), null, (currentRequestAction === "approve") ? {
+          params: {
+            requestStateLinearId,
+            authorizerUserUsername,
+            authorizerUserDept,
+            fundStateLinearId
+          },
+        } : {
           params: {
             requestStateLinearId,
             authorizerUserUsername,
@@ -214,9 +226,9 @@ export const RequestsTable = ({
         })
         .then((response) => {
           setIsLoading(false);
+          handleClose();
           refreshFundsTableCallback();
           refreshRequestsTableCallback();
-          handleClose();
           if (currentRequestAction === "approve") {
             const { hide } = cogoToast.success(responseMessage(response), {
               heading: "Withdrawal Request Approved",
@@ -513,10 +525,13 @@ export const RequestsTable = ({
           },
         }}
       />
+
+
       <CModal
         color={getCurrentActionColor(currentRequestAction)}
         show={show}
         onClose={handleClose}
+        size="lg"
       >
         <CModalHeader closeButton>
           <CModalTitle>
@@ -530,7 +545,7 @@ export const RequestsTable = ({
             color={getCurrentActionColor(currentRequestAction)}
             className={"bg-light"}
           >
-            <p className="text-muted mb-0">Request State ID</p>
+            <p className="text-muted mb-0">Request ID</p>
             <strong className="p">{currentItem.linearId}</strong>
           </CCallout>
           <CCallout
@@ -599,21 +614,53 @@ export const RequestsTable = ({
                 </dd>
                 <dt className="col-sm-6">Request Amount:</dt>
                 <dd className="col-sm-6">
-                {toCurrency(currentFundBalance, "USD")}
+                  {toCurrency(currentFundBalance, "USD")}
                 </dd>
                 <dt className="col-sm-6">Difference:</dt>
                 <dd className="col-sm-6">
-                {toCurrency(currentFundBalance - currentItem.amount, "USD")}
+                  {toCurrency(currentFundBalance - currentItem.amount, "USD")}
                 </dd>
               </dl>
               <p>You will not be able to approve this request.</p>
             </CAlert>
           ) : null}
+          {currentRequestAction === "approve" ?
+          <CFormGroup>
+            <CTooltip content="Assign a Return (in Received status) to the request." placement="left">
+            <CLabel htmlFor="fund">Assign Return</CLabel></CTooltip>
+            <CSelect
+              custom
+              name="fund"
+              id="fund"
+              onChange={e => setFundStateLinearId(e.currentTarget.value)}
+            >
+              <option placeholder={0}></option>
+              {fundsState.received
+                ? fundsState.received.map((item) => (
+                    <option
+                      key={item}
+                      label={
+                        item.linearId +
+                        " - " +
+                        toCurrency(item.balance, "USD") +
+                        " - " +
+                        toCountryByIsoFromX500(item.originParty)
+                      }
+                      value={item.linearId}
+                    />
+                  ))
+                : null}
+            </CSelect>
+          </CFormGroup> : null}
         </CModalBody>
         <CModalFooter>
           <CButton
             color={getCurrentActionColor(currentRequestAction)}
-            disabled={currentRequestAction === "approve" ? (parseFloat(currentFundBalance) < parseFloat(currentItem.amount)) : false}
+            disabled={
+              currentRequestAction === "approve"
+                ? (parseFloat(currentFundBalance) < parseFloat(currentItem.amount) || (fundStateLinearId === ""))
+                : false
+            }
             onClick={() =>
               onHandleConfirmationClick(
                 currentItem.linearId,
