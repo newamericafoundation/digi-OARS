@@ -109,12 +109,7 @@ public class RequestState implements LinearState, Comparable<RequestState> {
     public BigDecimal getAmount() { return amount; }
     public Currency getCurrency() { return currency; }
     public RequestStateStatus getStatus() { return status; }
-    public UniqueIdentifier getFundStateLinearId() {
-        if (fundStateLinearId != null) {
-            return fundStateLinearId;
-        }
-        return new UniqueIdentifier();
-    }
+    public UniqueIdentifier getFundStateLinearId() { return fundStateLinearId; }
     public String getExternalAccountId() { return externalAccountId; }
     public String getPurpose() { return purpose; }
     public ZonedDateTime getCreateDatetime() { return createDatetime; }
