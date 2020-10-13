@@ -76,7 +76,6 @@ public class RequestsController extends BaseResource {
             List<RequestState> resultSet =
                     requestStates.stream()
                             .map(it -> it.getState().getData())
-                            .filter(it -> it.getFundStateLinearId().getId() != null)
                             .filter(it -> it.getFundStateLinearId().getId().equals(UUID.fromString(fundId)))
                             .sorted(Comparator.comparing(RequestState::getCreateDatetime).reversed())
                             .collect(Collectors.toList());

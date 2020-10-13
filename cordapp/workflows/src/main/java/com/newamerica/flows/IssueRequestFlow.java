@@ -9,6 +9,7 @@ import net.corda.core.contracts.CommandData;
 
 import net.corda.core.contracts.ContractState;
 import net.corda.core.contracts.StateAndRef;
+import net.corda.core.contracts.UniqueIdentifier;
 import net.corda.core.crypto.SecureHash;
 import net.corda.core.flows.*;
 import net.corda.core.identity.AbstractParty;
@@ -57,7 +58,7 @@ public class IssueRequestFlow {
                     createDatetime,
                     updateDatetime,
                     RequestState.RequestStateStatus.PENDING,
-                    null,
+                    UniqueIdentifier.Companion.fromString(""),
                     participants
             );
         }
