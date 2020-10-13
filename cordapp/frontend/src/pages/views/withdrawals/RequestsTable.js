@@ -36,6 +36,7 @@ export const RequestsTable = ({
   requests,
   refreshFundsTableCallback,
   refreshRequestsTableCallback,
+  isRequestor,
   isApprover,
   isIssuer,
   isReceiver,
@@ -405,7 +406,7 @@ export const RequestsTable = ({
           ),
           status: (item) => (
             <td>
-              <CBadge color={getStatusBadge(item.status)}>{item.status}</CBadge>
+              <CBadge color={(isRequestor && item.status === "FLAGGED") ? "warning" : getStatusBadge(item.status)}>{(isRequestor && item.status === "FLAGGED") ? "PENDING" : item.status}</CBadge>
             </td>
           ),
           actions: (item, index) => {

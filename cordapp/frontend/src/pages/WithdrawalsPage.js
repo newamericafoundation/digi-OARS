@@ -73,8 +73,7 @@ const WithdrawalsPage = () => {
       <div>
         <strong>Request ID:</strong> {message.entity.data.linearId.id}
         <br />
-        <strong>Status:</strong>{" "}
-        <CBadge color="warning">{message.entity.data.status}</CBadge>
+        <strong>Status:</strong> <CBadge color="warning">PENDING</CBadge>
         <br />
         <strong>Amount:</strong> {toCurrency(message.entity.data.amount, "USD")}
       </div>
@@ -128,7 +127,30 @@ const WithdrawalsPage = () => {
   return (
     <>
       <CRow>
-        <CCol xs="12" sm="6" lg="3">
+        <CCol xs="12" sm="6" lg={!isFundsRequestor ? "3" : "4"}>
+          <CWidgetProgressIcon
+            inverse
+            header={toCurrency(
+              isFundsRequestor
+                ? requestsState.pendingAmount + requestsState.flaggedAmount
+                : requestsState.pendingAmount,
+              "USD"
+            ).toString()}
+            text="Pending Withdrawal Requests"
+            color="gradient-warning"
+            value={
+              isFundsRequestor
+                ? ((requestsState.pendingAmount + requestsState.flaggedAmount) /
+                    requestsState.totalAmount) *
+                  100
+                : (requestsState.pendingAmount / requestsState.totalAmount) *
+                  100
+            }
+          >
+            <CIcon name="cil-av-timer" height="36" />
+          </CWidgetProgressIcon>
+        </CCol>
+        <CCol xs="12" sm="6" lg={!isFundsRequestor ? "3" : "4"}>
           <CWidgetProgressIcon
             inverse
             header={toCurrency(requestsState.approvedAmount, "USD").toString()}
@@ -141,20 +163,8 @@ const WithdrawalsPage = () => {
             <CIcon name="cil-check-circle" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-        <CCol xs="12" sm="6" lg="3">
-          <CWidgetProgressIcon
-            inverse
-            header={toCurrency(requestsState.pendingAmount, "USD").toString()}
-            text="Pending Withdrawal Requests"
-            color="gradient-warning"
-            value={
-              (requestsState.pendingAmount / requestsState.totalAmount) * 100
-            }
-          >
-            <CIcon name="cil-av-timer" height="36" />
-          </CWidgetProgressIcon>
-        </CCol>
-        <CCol xs="12" sm="6" lg="3">
+
+        <CCol xs="12" sm="6" lg={!isFundsRequestor ? "3" : "4"}>
           <CWidgetProgressIcon
             inverse
             header={toCurrency(requestsState.rejectedAmount, "USD").toString()}
@@ -167,43 +177,22 @@ const WithdrawalsPage = () => {
             <CIcon name="cil-x-circle" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-        <CCol xs="12" sm="6" lg="3">
-          <CWidgetProgressIcon
-            inverse
-            header={toCurrency(requestsState.flaggedAmount, "USD").toString()}
-            text="Flagged Withdrawal Requests"
-            color="gradient-info"
-            value={
-              (requestsState.flaggedAmount / requestsState.totalAmount) * 100
-            }
-          >
-            <CIcon name="cil-flag-alt" height="36" />
-          </CWidgetProgressIcon>
-        </CCol>
-      </CRow>
-      {/* {isFundsRequestor ? (
-        <CRow>
-          <CCol>
-            <CCard>
-              <CCardHeader>
-                <div className="mb-0">
-                  <CCallout className="float-left mt-1 mb-1">
-                    <h4 className="mt-1">Available Money</h4>
-                  </CCallout>
-                </div>
-              </CCardHeader>
-              <CCardBody>
-                <AvailableFundsTable
-                  funds={fundsState}
-                  refreshFundsTableCallback={fundsCallback}
-                  refreshRequestsTableCallback={requestsCallback}
-                  isRequestor={isFundsRequestor}
-                />
-              </CCardBody>
-            </CCard>
+        {!isFundsRequestor ? (
+          <CCol xs="12" sm="6" lg="3">
+            <CWidgetProgressIcon
+              inverse
+              header={toCurrency(requestsState.flaggedAmount, "USD").toString()}
+              text="Flagged Withdrawal Requests"
+              color="gradient-info"
+              value={
+                (requestsState.flaggedAmount / requestsState.totalAmount) * 100
+              }
+            >
+              <CIcon name="cil-flag-alt" height="36" />
+            </CWidgetProgressIcon>
           </CCol>
-        </CRow>
-      ) : null} */}
+        ) : null}
+      </CRow>
       <CRow>
         <CCol>
           <CCard>
@@ -278,15 +267,17 @@ const WithdrawalsPage = () => {
                   >
                     Rejected
                   </CButton>
-                  <CButton
-                    color="outline-dark"
-                    className="mx-0"
-                    key="Flagged"
-                    active={"FLAGGED" === requestsFilterStatus}
-                    onClick={() => handleTableFilter("FLAGGED")}
-                  >
-                    Flagged
-                  </CButton>
+                  {!isFundsRequestor ? (
+                    <CButton
+                      color="outline-dark"
+                      className="mx-0"
+                      key="Flagged"
+                      active={"FLAGGED" === requestsFilterStatus}
+                      onClick={() => handleTableFilter("FLAGGED")}
+                    >
+                      Flagged
+                    </CButton>
+                  ) : null}
                 </CButtonGroup>
               </div>
             </CCardHeader>{" "}
@@ -296,6 +287,7 @@ const WithdrawalsPage = () => {
                 requests={requestsState}
                 refreshFundsTableCallback={fundsCallback}
                 refreshRequestsTableCallback={requestsCallback}
+                isRequestor={isFundsRequestor}
                 isApprover={isRequestApprover}
                 isIssuer={isFundsIssuer}
                 isReceiver={isFundsReceiver}
