@@ -58,7 +58,7 @@ public class IssueRequestFlow {
                     createDatetime,
                     updateDatetime,
                     RequestState.RequestStateStatus.PENDING,
-                    UniqueIdentifier.Companion.fromString(""),
+                    new UniqueIdentifier("", new UUID(0L, 0L)),
                     participants
             );
         }

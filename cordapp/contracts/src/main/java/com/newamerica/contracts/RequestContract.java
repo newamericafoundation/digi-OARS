@@ -8,6 +8,8 @@ import net.corda.core.contracts.TypeOnlyCommandData;
 import net.corda.core.transactions.LedgerTransaction;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 import static net.corda.core.contracts.ContractsDSL.requireSingleCommand;
 import static net.corda.core.contracts.ContractsDSL.requireThat;
 
@@ -76,7 +78,8 @@ public class RequestContract implements Contract {
                 require.using("The authorizedParties cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
                 require.using("update datetime must be later than create datetime.", outputState.getUpdateDatetime().isAfter(outputState.getCreateDatetime()));
-                require.using("fundstateid should be null for reject.", outputState.getFundStateLinearId() == null);
+                System.out.println(outputState.getFundStateLinearId().getId());
+                require.using("fundstateid should be empty for reject.", outputState.getFundStateLinearId().getId().equals(new UUID(0L, 0L)));
                 return null;
             });
         }else if(commandData.equals(new Commands.Transfer())){
