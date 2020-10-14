@@ -112,10 +112,14 @@ public class RequestsController extends BaseResource {
     private Response getRequestByIdAll (@QueryParam("requestId") String requestId) {
         try {
             String resourcePath = String.format("/request/all", requestId);
-            PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Collections.singletonList(UUID.fromString(requestId)), null, Vault.StateStatus.ALL);
-            StateAndRef<RequestState> request = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates().get(0);
-            return Response.ok(request.getState().getData()).build();
+            List<StateAndRef<RequestState>> requestList = rpcOps.vaultQueryByCriteria(queryCriteria, RequestState.class).getStates();
+            List<RequestState> resultSet =
+                    requestList.stream()
+                            .map(it -> it.getState().getData())
+                            .sorted(Comparator.comparing(RequestState::getUpdateDatetime).reversed())
+                            .collect(Collectors.toList());
+            return Response.ok(resultSet).build();
         }catch (IllegalArgumentException e) {
             return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
         } catch (Exception e) {
