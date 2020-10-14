@@ -98,10 +98,10 @@ public class FundsController extends BaseResource {
     }
 
 
-    @GetMapping(value = "/fund/{fundId}/all", produces = "application/json", params = "fundId")
-    private Response getFundByIdAll (@PathParam("fundId") String fundId) {
+    @GetMapping(value = "/fund/all", produces = "application/json", params = "fundId")
+    private Response getFundByIdAll (@QueryParam("fundId") String fundId) {
         try {
-            String resourcePath = String.format("/fund/%s/all", fundId);
+            String resourcePath = String.format("/fund/all", fundId);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Collections.singletonList(UUID.fromString(fundId)), null, Vault.StateStatus.ALL);
             List<StateAndRef<FundState>> requestList = rpcOps.vaultQueryByCriteria(queryCriteria, FundState.class).getStates();
             List<FundState> resultSet =

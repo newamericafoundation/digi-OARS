@@ -108,10 +108,10 @@ public class RequestsController extends BaseResource {
     }
 
     // get All request status
-    @GetMapping(value = "/request/{requestId}/all", produces = "application/json", params = "requestId")
-    private Response getRequestByIdAll (@PathParam("requestId") String requestId) {
+    @GetMapping(value = "/request/all", produces = "application/json", params = "requestId")
+    private Response getRequestByIdAll (@QueryParam("requestId") String requestId) {
         try {
-            String resourcePath = String.format("/request/%s/all", requestId);
+            String resourcePath = String.format("/request/all", requestId);
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(requestId)));
             StateAndRef<RequestState> request = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates().get(0);
