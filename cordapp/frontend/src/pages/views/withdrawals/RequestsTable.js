@@ -338,7 +338,7 @@ export const RequestsTable = ({
   };
 
   const getActionButton = (item) => {
-    if (item.status === Constants.REQUEST_PENDING && isApprover) {
+    if ((item.status === Constants.REQUEST_PENDING || item.status === Constants.REQUEST_FLAGGED) && isApprover) {
       return (
         <div className="float-left mb-0">
           <CButtonGroup className="mb-0 mr-2">
@@ -671,7 +671,7 @@ export const RequestsTable = ({
                 {fundsState.received
                   ? fundsState.received.map((item) => (
                       <option
-                        key={item}
+                        key={item.linearId}
                         label={
                           item.linearId +
                           " - " +
