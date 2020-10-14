@@ -31,6 +31,8 @@ import java.util.Map;
  */
 @BelongsToContract(RequestContract.class)
 public class RequestState implements LinearState, Comparable<RequestState> {
+
+    public final BigDecimal maxWithdrawalAmount;
     public final String authorizedUserUsername;
     public final String authorizedUserDept;
     public final Map<String,String> authorizerUserDeptAndUsername;
@@ -47,7 +49,8 @@ public class RequestState implements LinearState, Comparable<RequestState> {
     public final List<AbstractParty> participants;
 
     @ConstructorForDeserialization
-    public RequestState(String authorizedUserUsername,
+    public RequestState(BigDecimal maxWithdrawalAmount,
+                        String authorizedUserUsername,
                         String authorizedUserDept,
                         Map<String,String> authorizerUserDeptAndUsername,
                         List<AbstractParty> authorizedParties,
@@ -61,6 +64,7 @@ public class RequestState implements LinearState, Comparable<RequestState> {
                         UniqueIdentifier fundStateLinearId,
                         UniqueIdentifier linearId,
                         List<AbstractParty> participants) {
+        this.maxWithdrawalAmount = maxWithdrawalAmount;
         this.authorizedUserUsername = authorizedUserUsername;
         this.authorizedUserDept = authorizedUserDept;
         this.authorizerUserDeptAndUsername = authorizerUserDeptAndUsername;
@@ -77,7 +81,8 @@ public class RequestState implements LinearState, Comparable<RequestState> {
         this.participants = participants;
     }
 
-    public RequestState(String authorizedUserUsername,
+    public RequestState(BigDecimal maxWithdrawalAmount,
+                        String authorizedUserUsername,
                         String authorizedUserDept,
                         Map<String,String> authorizerUserDeptAndUsername,
                         List<AbstractParty> authorizedParties,
@@ -90,7 +95,7 @@ public class RequestState implements LinearState, Comparable<RequestState> {
                         RequestStateStatus status,
                         UniqueIdentifier fundStateLinearId,
                         List<AbstractParty> participants) {
-        this(authorizedUserUsername, authorizedUserDept, authorizerUserDeptAndUsername, authorizedParties, externalAccount, purpose, amount, currency, createDatetime, updateDatetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
+        this(maxWithdrawalAmount, authorizedUserUsername, authorizedUserDept, authorizerUserDeptAndUsername, authorizedParties, externalAccount, purpose, amount, currency, createDatetime, updateDatetime, status, fundStateLinearId, new UniqueIdentifier(), participants);
     }
 
 
@@ -115,11 +120,33 @@ public class RequestState implements LinearState, Comparable<RequestState> {
     public ZonedDateTime getCreateDatetime() { return createDatetime; }
     public ZonedDateTime getUpdateDatetime() { return updateDatetime; }
     public Map<String, String> getAuthorizerUserDeptAndUsername() { return authorizerUserDeptAndUsername; }
+    public BigDecimal getMaxWithdrawalAmount() { return maxWithdrawalAmount; }
 
 
     //helper functions
+    public RequestState setMaxWithdrawalLimit(BigDecimal max){
+        return new RequestState(
+                max,
+                this.authorizedUserUsername,
+                this.authorizedUserDept,
+                this.authorizerUserDeptAndUsername,
+                this.authorizedParties,
+                this.externalAccountId,
+                this.purpose,
+                this.amount,
+                this.currency,
+                this.createDatetime,
+                this.updateDatetime,
+                this.status,
+                this.fundStateLinearId,
+                this.linearId,
+                this.participants
+        );
+    }
+    //helper functions
     public RequestState changeStatus(RequestStateStatus newStatus){
         return new RequestState(
+                this.maxWithdrawalAmount,
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
                 this.authorizerUserDeptAndUsername,
@@ -136,9 +163,9 @@ public class RequestState implements LinearState, Comparable<RequestState> {
                 this.participants
         );
     }
-
     public RequestState updateParticipantList(List<AbstractParty> participantList){
         return new RequestState(
+                this.maxWithdrawalAmount,
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
                 this.authorizerUserDeptAndUsername,
@@ -158,6 +185,7 @@ public class RequestState implements LinearState, Comparable<RequestState> {
 
     public RequestState updateAuthorizedPartiesList(List<AbstractParty> authorizedParties){
         return new RequestState(
+                this.maxWithdrawalAmount,
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
                 this.authorizerUserDeptAndUsername,
@@ -177,6 +205,7 @@ public class RequestState implements LinearState, Comparable<RequestState> {
 
     public RequestState updateFundStateID(UniqueIdentifier fundStateLinearId){
         return new RequestState(
+                this.maxWithdrawalAmount,
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
                 this.authorizerUserDeptAndUsername,
@@ -196,6 +225,7 @@ public class RequestState implements LinearState, Comparable<RequestState> {
 
     public RequestState update(Map<String, String> authorizerUserDeptAndUsername, ZonedDateTime updateDatetime){
         return new RequestState(
+                this.maxWithdrawalAmount,
                 this.authorizedUserUsername,
                 this.authorizedUserDept,
                 authorizerUserDeptAndUsername,
