@@ -1,18 +1,13 @@
 # 10-install-cordapps.yml
 ---
+
+- import_playbook: 04-stop-nodes.yml
+
 - name: Install CorDapps
   hosts: node-machines
   gather_facts: true
   become: true
   tasks:
-    - name: Stop Corda Docker Container
-      docker_container:
-        name: "node-{{ inventory_hostname }}"
-        hostname: "node-{{ inventory_hostname }}"
-        image: "{{ corda_docker_image_version }}"
-        state: stopped
-      tags:
-        - stop-node
     - name: Copy CorDapps
       copy:
         src: files/cordapps/
@@ -21,11 +16,5 @@
         group: root
       tags:
         - copy-cordapps
-    - name: Start Corda Docker Container
-      docker_container:
-        name: "node-{{ inventory_hostname }}"
-        hostname: "node-{{ inventory_hostname }}"
-        image: "{{ corda_docker_image_version }}"
-        state: started
-      tags:
-        - start-node
+
+- import_playbook: 03-start-nodes.yml
