@@ -96,6 +96,9 @@ public class FundsController extends BaseResource {
         }
     }
 
+
+    
+
     @GetMapping(value = "/fund/aggregate", produces = "application/json", params = {"startDate", "endDate"})
     private Response getFundAggregate (@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
         try {

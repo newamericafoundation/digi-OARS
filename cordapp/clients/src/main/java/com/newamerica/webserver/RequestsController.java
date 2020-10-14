@@ -71,12 +71,11 @@ public class RequestsController extends BaseResource {
         try {
             String resourcePath = "/requests";
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Collections.singletonList(UUID.fromString(fundId)), null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<RequestState>> requestStates = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates();
             List<RequestState> resultSet =
                     requestStates.stream()
                             .map(it -> it.getState().getData())
-                            .filter(it -> it.getFundStateLinearId().getId().equals(UUID.fromString(fundId)))
                             .sorted(Comparator.comparing(RequestState::getCreateDatetime).reversed())
                             .collect(Collectors.toList());
             return Response.ok(resultSet).build();
@@ -92,6 +91,27 @@ public class RequestsController extends BaseResource {
     private Response getRequestById (@PathParam("requestId") String requestId) {
         try {
             String resourcePath = String.format("/request/%s", requestId);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Collections.singletonList(UUID.fromString(requestId)), null, Vault.StateStatus.ALL);
+            List<StateAndRef<RequestState>> requestList = rpcOps.vaultQueryByCriteria(queryCriteria, RequestState.class).getStates();
+            List<RequestState> resultSet =
+                    requestList.stream()
+                            .map(it -> it.getState().getData())
+                            .sorted(Comparator.comparing(RequestState::getUpdateDatetime).reversed())
+                            .collect(Collectors.toList());
+            return Response.ok(resultSet).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    // get All request status
+    @GetMapping(value = "/request/{requestId}/all", produces = "application/json", params = "requestId")
+    private Response getRequestByIdAll (@PathParam("requestId") String requestId) {
+        try {
+            String resourcePath = String.format("/request/%s/all", requestId);
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(requestId)));
             StateAndRef<RequestState> request = rpcOps.vaultQueryByWithPagingSpec(RequestState.class, queryCriteria, pagingSpec).getStates().get(0);
