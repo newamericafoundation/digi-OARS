@@ -320,7 +320,6 @@ export const RequestsTable = ({
     }
 
     if (isRequestor && filterStatus === "PENDING") {
-      console.log(filterStatus)
       return requests.data.filter(
         (request) =>
           (request.status === filterStatus ||
