@@ -130,8 +130,8 @@ export const Widgets = ({ auth }) => {
                     !auth.meta.keycloak.hasResourceRole(
                       "partial_request_viewer"
                     )
-                      ? "Withdrawals"
-                      : "Department Withdrawals"}
+                      ? "Requests"
+                      : "Department Requests"}
                   </h6>
                   {!auth.meta.keycloak.hasResourceRole("funds_requestor") &&
                     !auth.meta.keycloak.hasResourceRole(

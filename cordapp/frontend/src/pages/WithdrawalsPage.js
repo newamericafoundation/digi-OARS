@@ -103,7 +103,7 @@ const WithdrawalsPage = () => {
     handleClose();
     if (response.status === 200) {
       const { hide } = cogoToast.success(responseMessage(response), {
-        heading: "Withdrawal Request Created",
+        heading: "Request Created",
         position: "top-right",
         hideAfter: 8,
         onClick: () => {
@@ -136,7 +136,7 @@ const WithdrawalsPage = () => {
                 : requestsState.pendingAmount,
               "USD"
             ).toString()}
-            text="Pending Withdrawal Requests"
+            text="Pending Requests"
             color="gradient-warning"
             value={
               isFundsRequestor
@@ -154,7 +154,7 @@ const WithdrawalsPage = () => {
           <CWidgetProgressIcon
             inverse
             header={toCurrency(requestsState.approvedAmount, "USD").toString()}
-            text="Approved Withdrawal Requests"
+            text="Approved Requests"
             color="gradient-success"
             value={
               (requestsState.approvedAmount / requestsState.totalAmount) * 100
@@ -168,7 +168,7 @@ const WithdrawalsPage = () => {
           <CWidgetProgressIcon
             inverse
             header={toCurrency(requestsState.rejectedAmount, "USD").toString()}
-            text="Rejected Withdrawal Requests"
+            text="Rejected Requests"
             color="gradient-danger"
             value={
               (requestsState.rejectedAmount / requestsState.totalAmount) * 100
@@ -182,7 +182,7 @@ const WithdrawalsPage = () => {
             <CWidgetProgressIcon
               inverse
               header={toCurrency(requestsState.flaggedAmount, "USD").toString()}
-              text="Flagged Withdrawal Requests"
+              text="Flagged Requests"
               color="gradient-info"
               value={
                 (requestsState.flaggedAmount / requestsState.totalAmount) * 100
@@ -205,7 +205,7 @@ const WithdrawalsPage = () => {
                   <h4 className="mt-1 text-dark">
                     {requestsFilterStatus.charAt(0).toUpperCase() +
                       requestsFilterStatus.slice(1).toLowerCase()}{" "}
-                    Withdrawal Requests
+                    Requests
                   </h4>
                 </CCallout>
                 {isFundsRequestor ? (

@@ -33,7 +33,7 @@ const TransfersPage = () => {
           <CWidgetProgressIcon
             inverse
             header={toCurrency(transfersState.amount, "USD").toString()}
-            text="Transferred Withdrawal Requests"
+            text="Transferred Requests"
             color="gradient-info"
             value={100}
           >

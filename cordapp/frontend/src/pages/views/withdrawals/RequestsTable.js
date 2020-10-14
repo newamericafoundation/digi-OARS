@@ -239,7 +239,7 @@ export const RequestsTable = ({
           refreshRequestsTableCallback();
           if (currentRequestAction === "approve") {
             const { hide } = cogoToast.success(responseMessage(response), {
-              heading: "Withdrawal Request Approved",
+              heading: "Request Approved",
               position: "top-right",
               hideAfter: 8,
               onClick: () => {
@@ -249,7 +249,7 @@ export const RequestsTable = ({
           }
           if (currentRequestAction === "reject") {
             const { hide } = cogoToast.warn(responseMessage(response), {
-              heading: "Withdrawal Request Rejected",
+              heading: "Request Rejected",
               position: "top-right",
               hideAfter: 8,
               onClick: () => {
@@ -281,7 +281,7 @@ export const RequestsTable = ({
           refreshRequestsTableCallback();
           handleClose();
           const { hide } = cogoToast.info(responseTransferMessage(response), {
-            heading: "Withdrawal Request Transferred",
+            heading: "Request Transferred",
             position: "top-right",
             hideAfter: 8,
             onClick: () => {

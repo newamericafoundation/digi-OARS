@@ -81,7 +81,7 @@ const TransfersPage = () => {
               requestsState.transferredAmount,
               "USD"
             ).toString()}
-            text="Transferred Withdrawal Requests"
+            text="Transferred Requests"
             color="gradient-info"
             value={
               (requestsState.transferredAmount /
@@ -98,7 +98,7 @@ const TransfersPage = () => {
           <CWidgetProgressIcon
             inverse
             header={toCurrency(requestsState.approvedAmount, "USD").toString()}
-            text="Approved Withdrawal Requests"
+            text="Approved Requests"
             color="gradient-warning"
             value={
               (requestsState.approvedAmount /
@@ -124,7 +124,7 @@ const TransfersPage = () => {
                   <h4 className="mt-1 text-dark">
                     {requestsFilterStatus.charAt(0).toUpperCase() +
                       requestsFilterStatus.slice(1).toLowerCase()}{" "}
-                    Withdrawal Requests
+                    Requests
                   </h4>
                 </CCallout>
                 <CButtonGroup className="float-right mr-3 mt-1 mb-1">
