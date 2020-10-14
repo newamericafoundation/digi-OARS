@@ -75,7 +75,7 @@ export const AvailableFundsTable = ({
     handleClose();
     if (response.status === 200) {
       const { hide } = cogoToast.success(responseMessage(response), {
-        heading: "Withdrawal Request Created",
+        heading: "Request Created",
         position: "top-right",
         hideAfter: 8,
         onClick: () => {
@@ -321,7 +321,7 @@ export const AvailableFundsTable = ({
       />
       <CModal show={showRequests} size="xl" closeOnBackdrop={false}>
         <CModalHeader>
-          <CModalTitle>Withdrawal Requests</CModalTitle>
+          <CModalTitle>Requests</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <RequestsSnapshotTable requests={requestsFromFundId} />

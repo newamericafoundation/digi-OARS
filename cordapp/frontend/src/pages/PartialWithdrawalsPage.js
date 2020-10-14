@@ -34,7 +34,7 @@ const PartialWithdrawalsPage = () => {
               <div className="mb-0">
                 <CCallout className="float-left mt-1 mb-1">
                   <h4 className="mt-1">
-                    Withdrawal Requests by Authorized Departments
+                    Requests by Authorized Departments
                   </h4>
                 </CCallout>
               </div>

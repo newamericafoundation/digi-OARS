@@ -89,7 +89,7 @@ export const RequestForm = ({ show, onSubmit, handleClose }) => {
     <CModal show={show} onClose={handleClose} size="lg" closeOnBackdrop={false}>
       <CForm onSubmit={handleOnSubmit}>
         <CModalHeader closeButton>
-          <CModalTitle>Withdrawal Request Form</CModalTitle>
+          <CModalTitle>Request Form</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CFormGroup>
