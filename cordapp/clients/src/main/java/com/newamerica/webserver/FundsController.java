@@ -3,6 +3,7 @@ package com.newamerica.webserver;
 import com.newamerica.flows.IssueFundFlow;
 import com.newamerica.flows.ReceiveFundFlow;
 import com.newamerica.states.FundState;
+import com.newamerica.states.RequestState;
 import com.newamerica.webserver.dtos.Fund;
 import net.corda.core.contracts.StateAndRef;
 import net.corda.core.contracts.UniqueIdentifier;
@@ -97,7 +98,25 @@ public class FundsController extends BaseResource {
     }
 
 
-    
+    @GetMapping(value = "/fund/{fundId}/all", produces = "application/json", params = "fundId")
+    private Response getFundByIdAll (@PathParam("fundId") String fundId) {
+        try {
+            String resourcePath = String.format("/fund/%s/all", fundId);
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Collections.singletonList(UUID.fromString(fundId)), null, Vault.StateStatus.ALL);
+            List<StateAndRef<FundState>> requestList = rpcOps.vaultQueryByCriteria(queryCriteria, FundState.class).getStates();
+            List<FundState> resultSet =
+                    requestList.stream()
+                            .map(it -> it.getState().getData())
+                            .sorted(Comparator.comparing(FundState::getUpdateDatetime).reversed())
+                            .collect(Collectors.toList());
+            return Response.ok(resultSet).build();
+        }catch (IllegalArgumentException e) {
+            return customizeErrorResponse(Response.Status.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return customizeErrorResponse(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 
     @GetMapping(value = "/fund/aggregate", produces = "application/json", params = {"startDate", "endDate"})
     private Response getFundAggregate (@PathParam("startDate") String startDate, @PathParam("endDate") String endDate) {
