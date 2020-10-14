@@ -86,7 +86,7 @@ public class FundsController extends BaseResource {
         try {
             String resourcePath = String.format("/fund/%s", fundId);
             PageSpecification pagingSpec = new PageSpecification(DEFAULT_PAGE_NUM, 100);
-            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Arrays.asList(UUID.fromString(fundId)));
+            QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, Collections.singletonList(UUID.fromString(fundId)), null, Vault.StateStatus.UNCONSUMED);
             StateAndRef<FundState> fund = rpcOps.vaultQueryByWithPagingSpec(FundState.class, queryCriteria, pagingSpec).getStates().get(0);
             return Response.ok(fund.getState().getData()).build();
         }catch (IllegalArgumentException e) {
