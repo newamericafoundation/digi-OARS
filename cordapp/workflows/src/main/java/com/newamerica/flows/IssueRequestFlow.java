@@ -47,6 +47,7 @@ public class IssueRequestFlow {
                 List<AbstractParty> participants
         ) {
             this.outputRequestState = new RequestState(
+                    BigDecimal.valueOf(0), // create request with default max withdrawal limit of 0
                     authorizedUserUsername,
                     authorizedUserDept,
                     new LinkedHashMap<>(),
@@ -73,15 +74,19 @@ public class IssueRequestFlow {
 
             // if request amount > max limit, then flag this request
             RequestState requestStateFlagged = null;
+            RequestState requestStateUnflagged = null;
             if (outputRequestState.getAmount().compareTo(lastestConfig.getMaxWithdrawalAmount()) > 0) {
                 requestStateFlagged = outputRequestState.changeStatus(RequestState.RequestStateStatus.FLAGGED);
+                requestStateFlagged = requestStateFlagged.setMaxWithdrawalLimit(lastestConfig.maxWithdrawalAmount);
+            } else {
+                requestStateUnflagged = outputRequestState.setMaxWithdrawalLimit(lastestConfig.maxWithdrawalAmount);
             }
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Issue();
-            transactionBuilder.addCommand(commandData, requestStateFlagged == null? outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()) : requestStateFlagged.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
-            transactionBuilder.addOutputState(requestStateFlagged == null? outputRequestState: requestStateFlagged, RequestContract.ID);
+            transactionBuilder.addCommand(commandData, requestStateFlagged == null? requestStateUnflagged.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()) : requestStateFlagged.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addOutputState(requestStateFlagged == null? requestStateUnflagged: requestStateFlagged, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction by ourself
