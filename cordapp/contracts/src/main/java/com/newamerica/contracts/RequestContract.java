@@ -78,7 +78,6 @@ public class RequestContract implements Contract {
                 require.using("The authorizedParties cannot change.", inputState.getAuthorizedParties().equals(outputState.getAuthorizedParties()));
                 require.using("The participants cannot change.", inputState.getParticipants().equals(outputState.getParticipants()));
                 require.using("update datetime must be later than create datetime.", outputState.getUpdateDatetime().isAfter(outputState.getCreateDatetime()));
-                System.out.println(outputState.getFundStateLinearId().getId());
                 require.using("fundstateid should be empty for reject.", outputState.getFundStateLinearId().getId().equals(new UUID(0L, 0L)));
                 return null;
             });

@@ -21,7 +21,8 @@ import {
   CAlert,
   CFormGroup,
   CLabel,
-  CSelect, CTooltip
+  CSelect,
+  CTooltip,
 } from "@coreui/react";
 import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
@@ -52,7 +53,7 @@ export const RequestsTable = ({
   const [, setCurrentItemIndex] = useState();
   const [currentRequestAction, setCurrentRequestAction] = useState("");
   const [currentFundBalance, setCurrentFundBalance] = useState();
-  const [fundsState,] = useContext(FundsContext);
+  const [fundsState] = useContext(FundsContext);
   const [fundStateLinearId, setFundStateLinearId] = useState("");
 
   const handleShow = (item) => {
@@ -211,20 +212,26 @@ export const RequestsTable = ({
 
     if (currentRequestAction !== "transfer") {
       axios
-        .put(getUrl(), null, (currentRequestAction === "approve") ? {
-          params: {
-            requestStateLinearId,
-            authorizerUserUsername,
-            authorizerUserDept,
-            fundStateLinearId
-          },
-        } : {
-          params: {
-            requestStateLinearId,
-            authorizerUserUsername,
-            authorizerUserDept,
-          },
-        })
+        .put(
+          getUrl(),
+          null,
+          currentRequestAction === "approve"
+            ? {
+                params: {
+                  requestStateLinearId,
+                  authorizerUserUsername,
+                  authorizerUserDept,
+                  fundStateLinearId,
+                },
+              }
+            : {
+                params: {
+                  requestStateLinearId,
+                  authorizerUserUsername,
+                  authorizerUserDept,
+                },
+              }
+        )
         .then((response) => {
           setIsLoading(false);
           handleClose();
@@ -311,6 +318,17 @@ export const RequestsTable = ({
           auth.meta.keycloak.tokenParsed.groups[0]
       );
     }
+
+    if (isRequestor && filterStatus === "PENDING") {
+      return requests.data.filter(
+        (request) =>
+          (request.status === filterStatus ||
+          request.status === "FLAGGED") &&
+          request.authorizedUserDept ===
+            auth.meta.keycloak.tokenParsed.groups[0]
+      );
+    }
+
     return requests.data.filter(
       (request) =>
         request.status === filterStatus &&
@@ -319,7 +337,7 @@ export const RequestsTable = ({
   };
 
   const getActionButton = (item) => {
-    if (item.status === Constants.REQUEST_PENDING && isApprover) {
+    if ((item.status === Constants.REQUEST_PENDING || item.status === Constants.REQUEST_FLAGGED) && isApprover) {
       return (
         <div className="float-left mb-0">
           <CButtonGroup className="mb-0 mr-2">
@@ -406,7 +424,17 @@ export const RequestsTable = ({
           ),
           status: (item) => (
             <td>
-              <CBadge color={(isRequestor && item.status === "FLAGGED") ? "warning" : getStatusBadge(item.status)}>{(isRequestor && item.status === "FLAGGED") ? "PENDING" : item.status}</CBadge>
+              <CBadge
+                color={
+                  isRequestor && item.status === "FLAGGED"
+                    ? "warning"
+                    : getStatusBadge(item.status)
+                }
+              >
+                {isRequestor && item.status === "FLAGGED"
+                  ? "PENDING"
+                  : item.status}
+              </CBadge>
             </td>
           ),
           actions: (item, index) => {
@@ -477,12 +505,12 @@ export const RequestsTable = ({
                           </strong>
                         </CCallout>
                         <CCallout
-                          color={getStatusBadge(item.status)}
+                          color={(isRequestor && item.status === "FLAGGED") ? "warning" : getStatusBadge(item.status)}
                           className={"bg-light"}
                         >
                           <p className="text-muted mb-0">Status</p>
                           <strong className="p">
-                            {item.status}
+                            {(isRequestor && item.status === "FLAGGED") ? "PENDING" : item.status}
                             {item.status === Constants.REQUEST_APPROVED
                               ? " by " +
                                 Object.keys(
@@ -526,7 +554,6 @@ export const RequestsTable = ({
           },
         }}
       />
-
 
       <CModal
         color={getCurrentActionColor(currentRequestAction)}
@@ -625,41 +652,47 @@ export const RequestsTable = ({
               <p>You will not be able to approve this request.</p>
             </CAlert>
           ) : null}
-          {currentRequestAction === "approve" ?
-          <CFormGroup>
-            <CTooltip content="Assign a Return (in Received status) to the request." placement="left">
-            <CLabel htmlFor="fund">Assign Return</CLabel></CTooltip>
-            <CSelect
-              custom
-              name="fund"
-              id="fund"
-              onChange={e => setFundStateLinearId(e.currentTarget.value)}
-            >
-              <option placeholder={0}></option>
-              {fundsState.received
-                ? fundsState.received.map((item) => (
-                    <option
-                      key={item}
-                      label={
-                        item.linearId +
-                        " - " +
-                        toCurrency(item.balance, "USD") +
-                        " - " +
-                        toCountryByIsoFromX500(item.originParty)
-                      }
-                      value={item.linearId}
-                    />
-                  ))
-                : null}
-            </CSelect>
-          </CFormGroup> : null}
+          {currentRequestAction === "approve" ? (
+            <CFormGroup>
+              <CTooltip
+                content="Assign a Return (in Received status) to the request."
+                placement="left"
+              >
+                <CLabel htmlFor="fund">Assign Return</CLabel>
+              </CTooltip>
+              <CSelect
+                custom
+                name="fund"
+                id="fund"
+                onChange={(e) => setFundStateLinearId(e.currentTarget.value)}
+              >
+                <option placeholder={0}></option>
+                {fundsState.received
+                  ? fundsState.received.map((item) => (
+                      <option
+                        key={item.linearId}
+                        label={
+                          item.linearId +
+                          " - " +
+                          toCurrency(item.balance, "USD") +
+                          " - " +
+                          toCountryByIsoFromX500(item.originParty)
+                        }
+                        value={item.linearId}
+                      />
+                    ))
+                  : null}
+              </CSelect>
+            </CFormGroup>
+          ) : null}
         </CModalBody>
         <CModalFooter>
           <CButton
             color={getCurrentActionColor(currentRequestAction)}
             disabled={
               currentRequestAction === "approve"
-                ? (parseFloat(currentFundBalance) < parseFloat(currentItem.amount) || (fundStateLinearId === ""))
+                ? parseFloat(currentFundBalance) <
+                    parseFloat(currentItem.amount) || fundStateLinearId === ""
                 : false
             }
             onClick={() =>
