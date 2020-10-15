@@ -31,6 +31,7 @@ import { APIContext } from "../../../providers/APIProvider";
 import { toCountryByIsoFromX500, toCurrency } from "../../../utilities";
 import cogoToast from "cogo-toast";
 import { FundsContext } from "../../../providers/FundsProvider";
+import { RequestHistory } from "./RequestHistory";
 
 export const RequestsTable = ({
   filterStatus,
@@ -49,6 +50,7 @@ export const RequestsTable = ({
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [currentItem, setCurrentItem] = useState({});
   const [, setCurrentItemIndex] = useState();
   const [currentRequestAction, setCurrentRequestAction] = useState("");
@@ -76,6 +78,15 @@ export const RequestsTable = ({
 
   const handleClose = () => {
     setShow(false);
+  };
+
+  const handleShowHistory = (item) => {
+    setCurrentItem(item);
+    setShowHistory(true);
+  };
+
+  const handleCloseHistory = () => {
+    setShowHistory(false);
   };
 
   const toggleDetails = (index) => {
@@ -322,8 +333,7 @@ export const RequestsTable = ({
     if (isRequestor && filterStatus === "PENDING") {
       return requests.data.filter(
         (request) =>
-          (request.status === filterStatus ||
-          request.status === "FLAGGED") &&
+          (request.status === filterStatus || request.status === "FLAGGED") &&
           request.authorizedUserDept ===
             auth.meta.keycloak.tokenParsed.groups[0]
       );
@@ -337,7 +347,11 @@ export const RequestsTable = ({
   };
 
   const getActionButton = (item) => {
-    if ((item.status === Constants.REQUEST_PENDING || item.status === Constants.REQUEST_FLAGGED) && isApprover) {
+    if (
+      (item.status === Constants.REQUEST_PENDING ||
+        item.status === Constants.REQUEST_FLAGGED) &&
+      isApprover
+    ) {
       return (
         <div className="float-left mb-0">
           <CButtonGroup className="mb-0 mr-2">
@@ -462,7 +476,18 @@ export const RequestsTable = ({
             return (
               <CCollapse show={details.includes(index)}>
                 <CCard className="m-3">
-                  <CCardHeader>Request Details</CCardHeader>
+                  <CCardHeader>
+                    Request Details{" "}
+                    {!isRequestor && (
+                      <CButton
+                        className="float-right mt-1 mb-1"
+                        color="secondary"
+                        onClick={() => handleShowHistory(item)}
+                      >
+                        Show Request History
+                      </CButton>
+                    )}
+                  </CCardHeader>
                   <CCardBody>
                     <CRow>
                       <CCol xl="6" sm="4">
@@ -505,12 +530,18 @@ export const RequestsTable = ({
                           </strong>
                         </CCallout>
                         <CCallout
-                          color={(isRequestor && item.status === "FLAGGED") ? "warning" : getStatusBadge(item.status)}
+                          color={
+                            isRequestor && item.status === "FLAGGED"
+                              ? "warning"
+                              : getStatusBadge(item.status)
+                          }
                           className={"bg-light"}
                         >
                           <p className="text-muted mb-0">Status</p>
                           <strong className="p">
-                            {(isRequestor && item.status === "FLAGGED") ? "PENDING" : item.status}
+                            {isRequestor && item.status === "FLAGGED"
+                              ? "PENDING"
+                              : item.status}
                             {item.status === Constants.REQUEST_APPROVED
                               ? " by " +
                                 Object.keys(
@@ -720,6 +751,11 @@ export const RequestsTable = ({
           </CButton>
         </CModalFooter>
       </CModal>
+      <RequestHistory
+        show={showHistory}
+        requestId={currentItem.linearId ? currentItem.linearId : null}
+        handleClose={handleCloseHistory}
+      />
     </>
   );
 };
