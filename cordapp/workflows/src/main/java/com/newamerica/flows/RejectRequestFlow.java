@@ -32,9 +32,15 @@ public class RejectRequestFlow {
         private final String authorizerUserUsername;
         private final String authorizerUserDept;
         private final ZonedDateTime updateDatetime;
+        private final String rejectReason;
 
 
-        public InitiatorFlow(UniqueIdentifier requestStateLinearId, String authorizerUserUsername, String authorizerUserDept, ZonedDateTime updateDatetime) {
+        public InitiatorFlow(String rejectReason,
+                             UniqueIdentifier requestStateLinearId,
+                             String authorizerUserUsername,
+                             String authorizerUserDept,
+                             ZonedDateTime updateDatetime) {
+            this.rejectReason = rejectReason;
             this.requestStateLinearId = requestStateLinearId;
             this.authorizerUserUsername = authorizerUserUsername;
             this.authorizerUserDept = authorizerUserDept;
@@ -55,22 +61,23 @@ public class RejectRequestFlow {
 
             Map<String, String> authorizerUserDeptAndUsername = new LinkedHashMap<>();
             authorizerUserDeptAndUsername.put(authorizerUserDept, authorizerUserUsername);
-            RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.REJECTED);
-            RequestState outputRequestStateFinal = outputRequestState.update(authorizerUserDeptAndUsername, updateDatetime);
+            RequestState outputRequestState = inputRequestState
+                    .changeStatus(RequestState.RequestStateStatus.REJECTED)
+                    .update(authorizerUserDeptAndUsername, updateDatetime, rejectReason);
 
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Reject();
-            transactionBuilder.addCommand(commandData, outputRequestStateFinal.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
+            transactionBuilder.addCommand(commandData, outputRequestState.getParticipants().stream().map(AbstractParty::getOwningKey).collect(Collectors.toList()));
             transactionBuilder.addInputState(stateRef);
-            transactionBuilder.addOutputState(outputRequestStateFinal, RequestContract.ID);
+            transactionBuilder.addOutputState(outputRequestState, RequestContract.ID);
             transactionBuilder.verify(getServiceHub());
 
             //partially sign transaction
             SignedTransaction partSignedTx = getServiceHub().signInitialTransaction(transactionBuilder, getOurIdentity().getOwningKey());
 
             //create list of all parties minus ourIdentity for required signatures
-            List<Party> otherParties = outputRequestStateFinal.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
+            List<Party> otherParties = outputRequestState.getParticipants().stream().map(i -> ((Party) i)).collect(Collectors.toList());
             otherParties.remove(getOurIdentity());
 
             //create sessions based on otherParties

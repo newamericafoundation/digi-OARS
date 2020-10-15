@@ -38,6 +38,7 @@ public class RequestStateTests {
         authorizerUserPartyAndUsername.put("Catan MOJ", "Chris Jones");
 
         requestState = new RequestState(
+                "some reason",
                 BigDecimal.valueOf(1000000),
                 "Alice Bob",
                 "Catan Ministry of Education",
@@ -59,6 +60,7 @@ public class RequestStateTests {
     // ensure that the FundState object has all necessary attributes and correct data types.
     @Test
     public void hasAllAttributes() throws NoSuchFieldException{
+        Field rejectReason = RequestState.class.getDeclaredField("rejectReason");
         Field maxWithdrawalAmount = RequestState.class.getDeclaredField("maxWithdrawalAmount");
         Field authorizedUserUsername = RequestState.class.getDeclaredField("authorizedUserUsername");
         Field authorizedUserDept = RequestState.class.getDeclaredField("authorizedUserDept");
@@ -88,6 +90,8 @@ public class RequestStateTests {
         assertTrue(status.getType().isAssignableFrom(RequestState.RequestStateStatus.class));
         assertTrue(participants.getType().isAssignableFrom(List.class));
         assertTrue(maxWithdrawalAmount.getType().isAssignableFrom(BigDecimal.class));
+        assertTrue(rejectReason.getType().isAssignableFrom(String.class));
+
     }
 
 
@@ -109,6 +113,8 @@ public class RequestStateTests {
         assertEquals(requestState.getFundStateLinearId(), uniqueIdentifier);
         assertEquals(requestState.getParticipants(),new ArrayList<>(participants));
         assertEquals(0, requestState.getMaxWithdrawalAmount().compareTo(BigDecimal.valueOf(1000000)));
+        assertEquals(requestState.getRejectReason(), "some reason");
+
 
     }
 }
