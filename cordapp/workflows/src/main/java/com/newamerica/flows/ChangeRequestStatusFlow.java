@@ -14,6 +14,9 @@ import net.corda.core.transactions.SignedTransaction;
 import net.corda.core.transactions.TransactionBuilder;
 import net.corda.core.utilities.ProgressTracker;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,8 +36,9 @@ public class ChangeRequestStatusFlow {
         @Override
         public SignedTransaction call() throws FlowException {
             RequestState inputRequestState = (RequestState) inputRequestStateAndRef.getState().getData();
-            RequestState outputRequestState = inputRequestState.changeStatus(RequestState.RequestStateStatus.TRANSFERRED);
-
+            RequestState outputRequestState = inputRequestState
+                    .changeStatus(RequestState.RequestStateStatus.TRANSFERRED)
+                    .updateUpdateDatetime(ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC")));
             final Party notary = getPreferredNotary(getServiceHub());
             TransactionBuilder transactionBuilder = new TransactionBuilder(notary);
             CommandData commandData = new RequestContract.Commands.Transfer();

@@ -243,6 +243,26 @@ public class RequestState implements LinearState, Comparable<RequestState> {
         );
     }
 
+    public RequestState updateUpdateDatetime(ZonedDateTime updateDatetime){
+        return new RequestState(
+                this.maxWithdrawalAmount,
+                this.authorizedUserUsername,
+                this.authorizedUserDept,
+                authorizerUserDeptAndUsername,
+                this.authorizedParties,
+                this.externalAccountId,
+                this.purpose,
+                this.amount,
+                this.currency,
+                this.createDatetime,
+                updateDatetime,
+                this.status,
+                this.fundStateLinearId,
+                this.linearId,
+                this.participants
+        );
+    }
+
     @Override
     public int compareTo(RequestState a) {
         return (-1)*(getCreateDatetime().compareTo(a.getCreateDatetime()));
