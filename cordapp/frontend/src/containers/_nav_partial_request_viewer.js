@@ -6,7 +6,7 @@ export default [
     {
       _tag: "CSidebarNavItem",
       name: "Requests",
-      to: "/withdrawals/partial",
+      to: "/requests/partial",
       icon: "cil-wallet",
     }
   ];
