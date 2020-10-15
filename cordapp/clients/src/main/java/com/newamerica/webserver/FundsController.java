@@ -33,6 +33,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
 import static net.corda.core.node.services.vault.QueryCriteriaUtils.DEFAULT_PAGE_NUM;
 
 /**
@@ -112,7 +113,7 @@ public class FundsController extends BaseResource {
             List<FundState> resultSet =
                     requestList.stream()
                             .map(it -> it.getState().getData())
-                            .sorted(Comparator.comparing(FundState::getUpdateDatetime).reversed())
+                            .sorted((comparing(FundState::getUpdateDatetime).reversed()).thenComparing(FundState::getBalance))
                             .collect(Collectors.toList());
             return Response.ok(resultSet).build();
         }catch (IllegalArgumentException e) {
