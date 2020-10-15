@@ -28,6 +28,7 @@ import getRequestsByFundId from "../../../data/GetRequestsByFundId";
 import { RequestsSnapshotTable } from "../withdrawals/RequestsSnapshotTable";
 import cogoToast from "cogo-toast";
 import { useAuth } from "auth-hook";
+import { FundHistory } from "./FundHistory";
 
 export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const auth = useAuth();
@@ -35,6 +36,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const [details, setDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const [showRequests, setShowRequests] = useState(false);
   const [currentItem, setCurrentItem] = useState({});
   const [currentAction, setCurrentAction] = useState("");
@@ -47,6 +49,15 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
 
   const handleClose = () => {
     setShow(false);
+  };
+  
+  const handleShowHistory = (item) => {
+    setCurrentItem(item);
+    setShowHistory(true);
+  };
+
+  const handleCloseHistory = () => {
+    setShowHistory(false);
   };
 
   const handleRequestsShow = (fundId) => {
@@ -255,13 +266,21 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
             return (
               <CCollapse show={details.includes(index)}>
                 <CCard className="m-3">
-                  <CCardHeader>Fund Details</CCardHeader>
+                  <CCardHeader>Return Details
+                  <CButton
+                        className="float-right mt-1 mb-1"
+                        color="secondary"
+                        onClick={() => handleShowHistory(item)}
+                      >
+                        Show Return History
+                      </CButton>
+                  </CCardHeader>
                   <CCardBody>
                     {item.status === Constants.FUND_RECEIVED ? (
                       <CRow className="mb-3">
                         <CCol>
                           <p className="text-muted">
-                            Total Assets Repatriated:
+                            Total Available Balance:
                           </p>
                           <CProgress
                             value={(item.balance / item.amount) * 100}
@@ -307,8 +326,24 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                             {toCurrency(item.balance, item.currency)}
                           </strong>
                         </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Created Date/Time</p>
+                          <strong className="p">
+                            {moment
+                              .tz(item.createdDateTime, "UTC")
+                              .format(Constants.DATETIME_FORMAT)}
+                          </strong>
+                        </CCallout>
                       </CCol>
                       <CCol xl="4" sm="3">
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Updated Date/Time</p>
+                          <strong className="p">
+                            {moment
+                              .tz(item.updatedDateTime, "UTC")
+                              .format(Constants.DATETIME_FORMAT)}
+                          </strong>
+                        </CCallout>
                         <CCallout
                           color={
                             item.status === "ISSUED" ? "warning" : "success"
@@ -323,24 +358,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                               : null}
                           </strong>
                         </CCallout>
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Created Date/Time</p>
-                          <strong className="p">
-                            {moment
-                              .tz(item.createdDateTime, "UTC")
-                              .format(Constants.DATETIME_FORMAT)}
-                          </strong>
-                        </CCallout>
-                        {item.createdDateTime !== item.updatedDateTime ?? (
-                          <CCallout color="info" className={"bg-light"}>
-                            <p className="text-muted mb-0">Updated Date/Time</p>
-                            <strong className="p">
-                              {moment
-                                .tz(item.updateDateTime, "UTC")
-                                .format(Constants.DATETIME_FORMAT)}
-                            </strong>
-                          </CCallout>
-                        )}
                       </CCol>
                     </CRow>
                   </CCardBody>
@@ -420,6 +437,11 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           </CButton>
         </CModalFooter>
       </CModal>
+      <FundHistory
+        show={showHistory}
+        fundId={currentItem.linearId ? currentItem.linearId : null}
+        handleClose={handleCloseHistory}
+      />
     </>
   );
 };
