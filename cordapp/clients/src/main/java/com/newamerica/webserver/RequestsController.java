@@ -247,12 +247,16 @@ public class RequestsController extends BaseResource {
         }
     }
 
-    @PutMapping(value = "/request/reject", produces = "application/json", params = {"requestStateLinearId", "authorizerUserUsername", "authorizerUserDept"})
-    private Response rejectRequest (@QueryParam("requestStateLinearId") String requestStateLinearId, @QueryParam("authorizerUserUsername") String authorizerUserUsername, @QueryParam("authorizerUserDept") String authorizerUserDept) {
+    @PutMapping(value = "/request/reject", produces = "application/json", params = {"requestStateLinearId", "authorizerUserUsername", "authorizerUserDept", "rejectReason"})
+    private Response rejectRequest (@QueryParam("requestStateLinearId") String requestStateLinearId,
+                                    @QueryParam("authorizerUserUsername") String authorizerUserUsername,
+                                    @QueryParam("authorizerUserDept") String authorizerUserDept,
+                                    @QueryParam("rejectReason") String rejectReason) {
         try {
             String resourcePath = String.format("/request?requestStateLinearId=%s?authorizerUserUsername=%s?authorizerUserDept=%s", requestStateLinearId, authorizerUserUsername, authorizerUserDept);
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     RejectRequestFlow.InitiatorFlow.class,
+                    rejectReason,
                     new UniqueIdentifier(null, UUID.fromString(requestStateLinearId)),
                     authorizerUserUsername,
                     authorizerUserDept,

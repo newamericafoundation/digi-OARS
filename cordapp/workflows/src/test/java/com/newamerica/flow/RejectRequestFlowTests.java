@@ -164,6 +164,7 @@ public class RejectRequestFlowTests {
 
         //reject requestState
         RejectRequestFlow.InitiatorFlow rejectRequestFlow = new RejectRequestFlow.InitiatorFlow(
+                "some reason",
                 rs.getLinearId(),
                 "Sam Sung",
                 "Catan MOJ",

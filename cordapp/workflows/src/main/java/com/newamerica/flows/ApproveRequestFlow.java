@@ -81,7 +81,7 @@ public class ApproveRequestFlow {
 
             RequestState outputRequestState = inputRequestState
                     .changeStatus(RequestState.RequestStateStatus.APPROVED)
-                    .update(authorizerUserDeptAndUsername, updateDatetime)
+                    .update(authorizerUserDeptAndUsername, updateDatetime, "")
                     .updateFundStateID(fundStateLinearId)
                     .updateAuthorizedPartiesList(inputStateRefFundState.getAuthorizedParties());
 

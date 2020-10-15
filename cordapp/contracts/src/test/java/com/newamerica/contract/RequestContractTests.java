@@ -55,10 +55,11 @@ public class RequestContractTests {
 
         //create request state
         requestState = new RequestState(
+                "",
                 BigDecimal.valueOf(1000000),
                 "Alice Bob",
                 "Catan Ministry of Education",
-                new LinkedHashMap<>(),
+                new LinkedHashMap<String, String>(),
                 authorizedParties,
                 "1234567890",
                 "build a school",
@@ -72,10 +73,11 @@ public class RequestContractTests {
         );
 
         //issued request state
-        requestState2 = requestState.update(authorizerUserDeptAndUsername, ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")));
+        requestState2 = requestState.update(authorizerUserDeptAndUsername, ZonedDateTime.of(2020, 7, 27, 10,30,30,0, ZoneId.of("America/New_York")), "");
 
         //approved request state
         requestState_diff = new RequestState(
+                "",
                 BigDecimal.valueOf(1000000),
                 "Alice Alice",
                 "Catan Ministry of Education",
@@ -95,8 +97,8 @@ public class RequestContractTests {
         requestState_diff2 = requestState.changeStatus(RequestState.RequestStateStatus.TRANSFERRED);
 
         requestState_negative_amount = new RequestState(
+                "",
                 BigDecimal.valueOf(1000000),
-
                 "Alice Bob",
                 "Catan Ministry of Education",
                 new LinkedHashMap<>(),
@@ -114,6 +116,7 @@ public class RequestContractTests {
 
         //flagged request state
         requestState_flagged = new RequestState(
+                "",
                 BigDecimal.valueOf(1000000),
                 "Alice Alice",
                 "Catan Ministry of Education",
