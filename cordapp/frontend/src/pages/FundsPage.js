@@ -70,7 +70,7 @@ const FundsPage = () => {
     handleClose();
     if (response.status === 200) {
       const { hide } = cogoToast.success(responseMessage(response), {
-        heading: "Money Repatriated",
+        heading: "Return Repatriated",
         position: "top-right",
         hideAfter: 8,
         onClick: () => {
@@ -80,7 +80,7 @@ const FundsPage = () => {
       fundsCallback();
     } else {
       const { hide } = cogoToast.error(response.entity.message, {
-        heading: "Error Repatriating Money",
+        heading: "Error Repatriating Return",
         position: "top-right",
         hideAfter: 8,
         onClick: () => {

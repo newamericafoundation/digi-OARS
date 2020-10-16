@@ -19,7 +19,8 @@ const getRequests = async (port) => {
     status: ob.status,
     participants: ob.participants,
     createDateTime: ob.createDatetime,
-    updateDateTime: ob.updateDateTime
+    updateDateTime: ob.updateDatetime,
+    maxWithdrawalAmount: ob.maxWithdrawalAmount
   }));
 };
 

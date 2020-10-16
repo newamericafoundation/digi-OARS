@@ -492,6 +492,10 @@ export const RequestsTable = ({
                     <CRow>
                       <CCol xl="6" sm="4">
                         <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Request ID</p>
+                          <strong className="p">{item.linearId}</strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Requestor</p>
                           <strong className="p">
                             {item.authorizedUserUsername}
@@ -509,6 +513,15 @@ export const RequestsTable = ({
                             {toCurrency(item.amount, item.currency)}
                           </strong>
                         </CCallout>
+                        {!isRequestor ? 
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Max Withdrawal Amount</p>
+                          <strong className="p">
+                            {toCurrency(item.maxWithdrawalAmount, item.currency)}
+                          </strong>
+                        </CCallout> : null }
+                      </CCol>
+                      <CCol xl="6" sm="4">
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
@@ -517,12 +530,16 @@ export const RequestsTable = ({
                               .format(Constants.DATETIME_FORMAT)}
                           </strong>
                         </CCallout>
-                      </CCol>
-                      <CCol xl="6" sm="4">
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">State ID</p>
-                          <strong className="p">{item.linearId}</strong>
-                        </CCallout>
+                        {!isRequestor ? (
+                          <CCallout color="info" className={"bg-light"}>
+                            <p className="text-muted mb-0">Updated Date/Time</p>
+                            <strong className="p">
+                              {moment
+                                .tz(item.updateDateTime, "UTC")
+                                .format(Constants.DATETIME_FORMAT)}
+                            </strong>
+                          </CCallout>
+                        ) : null}
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Account ID</p>
                           <strong className="p">
@@ -539,7 +556,8 @@ export const RequestsTable = ({
                         >
                           <p className="text-muted mb-0">Status</p>
                           <strong className="p">
-                            {isRequestor && item.status === "FLAGGED"
+                            {isRequestor &&
+                            item.status === Constants.REQUEST_FLAGGED
                               ? "PENDING"
                               : item.status}
                             {item.status === Constants.REQUEST_APPROVED
@@ -567,6 +585,27 @@ export const RequestsTable = ({
                                 )
                               : null}
                           </strong>
+                          {!isRequestor &&
+                          item.status === Constants.REQUEST_FLAGGED ? (
+                            <div>
+                              <CRow>
+                                <CCol>
+                                  <CAlert className="mt-2" color="warning">
+                                    <p>
+                                      Request amount has breached the maximum
+                                      withdrawal amount of the system by{" "}
+                                      {toCurrency(
+                                        parseFloat(item.amount) -
+                                          parseFloat(item.maxWithdrawalAmount),
+                                        "USD"
+                                      )}
+                                      .
+                                    </p>
+                                  </CAlert>
+                                </CCol>
+                              </CRow>
+                            </div>
+                          ) : null}
                         </CCallout>
                       </CCol>
                     </CRow>

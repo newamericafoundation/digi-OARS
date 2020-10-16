@@ -18,6 +18,7 @@ import {
   CModalTitle,
   CModalBody,
   CModalFooter,
+  CAlert
 } from "@coreui/react";
 import moment from "moment-timezone";
 import axios from "axios";
@@ -50,7 +51,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
   const handleClose = () => {
     setShow(false);
   };
-  
+
   const handleShowHistory = (item) => {
     setCurrentItem(item);
     setShowHistory(true);
@@ -144,7 +145,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           size="sm"
           onClick={() => handleRequestsShow(item.linearId)}
         >
-          View Requests
+          View Requests Matched
         </CButton>
       );
     }
@@ -266,22 +267,21 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
             return (
               <CCollapse show={details.includes(index)}>
                 <CCard className="m-3">
-                  <CCardHeader>Return Details
-                  <CButton
-                        className="float-right mt-1 mb-1"
-                        color="secondary"
-                        onClick={() => handleShowHistory(item)}
-                      >
-                        Show Return History
-                      </CButton>
+                  <CCardHeader>
+                    Return Details
+                    <CButton
+                      className="float-right mt-1 mb-1"
+                      color="secondary"
+                      onClick={() => handleShowHistory(item)}
+                    >
+                      Show Return History
+                    </CButton>
                   </CCardHeader>
                   <CCardBody>
                     {item.status === Constants.FUND_RECEIVED ? (
                       <CRow className="mb-3">
                         <CCol>
-                          <p className="text-muted">
-                            Total Available Balance:
-                          </p>
+                          <p className="text-muted">Total Available Balance:</p>
                           <CProgress
                             value={(item.balance / item.amount) * 100}
                             showPercentage
@@ -426,9 +426,19 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       </CModal>
       <CModal show={showRequests} size="xl" closeOnBackdrop={false}>
         <CModalHeader>
-          <CModalTitle>Requests</CModalTitle>
+          <CModalTitle>Requests Matched</CModalTitle>
         </CModalHeader>
         <CModalBody>
+          <CAlert color="info">
+            This view represents <strong>Requests</strong> that have been{" "}
+            <CBadge color="success">{Constants.REQUEST_APPROVED}</CBadge> and
+            matched to this <strong>Return</strong> by the <strong>Catan Ministry of Justice</strong>.{" "}
+            <strong>Requests</strong> that are in{" "}
+            <CBadge color="secondary">
+              {Constants.REQUEST_TRANSFERRED}
+            </CBadge>{" "}
+            status represent a transfer of money from the <strong>Catan Treasury</strong> to the destination account.
+          </CAlert>
           <RequestsSnapshotTable requests={requestsFromFundId} />
         </CModalBody>
         <CModalFooter>
