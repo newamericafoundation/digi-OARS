@@ -217,7 +217,7 @@ const WithdrawalsPage = () => {
                       size="sm"
                       onClick={() => handleShow()}
                     >
-                      Request Money
+                      Make a Request
                     </CButton>
                   </CButtonGroup>
                 ) : null}
@@ -229,7 +229,7 @@ const WithdrawalsPage = () => {
                     active={"ALL" === requestsFilterStatus}
                     onClick={() => handleTableFilter("ALL")}
                   >
-                    All
+                    All{" "}<CBadge color="secondary" shape="pill">{requestsState.data.length}</CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -238,7 +238,7 @@ const WithdrawalsPage = () => {
                     active={"PENDING" === requestsFilterStatus}
                     onClick={() => handleTableFilter("PENDING")}
                   >
-                    Pending
+                    Pending{" "}<CBadge color="warning" shape="pill">{isFundsRequestor ? (requestsState.pending.length + requestsState.flagged.length) : requestsState.pending.length}</CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -247,7 +247,7 @@ const WithdrawalsPage = () => {
                     active={"APPROVED" === requestsFilterStatus}
                     onClick={() => handleTableFilter("APPROVED")}
                   >
-                    Approved
+                    Approved{" "}<CBadge color="success" shape="pill">{requestsState.approved.length}</CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -256,7 +256,7 @@ const WithdrawalsPage = () => {
                     active={"TRANSFERRED" === requestsFilterStatus}
                     onClick={() => handleTableFilter("TRANSFERRED")}
                   >
-                    Transferred
+                    Transferred{" "}<CBadge color="secondary" shape="pill">{requestsState.transferred.length}</CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -265,7 +265,7 @@ const WithdrawalsPage = () => {
                     active={"REJECTED" === requestsFilterStatus}
                     onClick={() => handleTableFilter("REJECTED")}
                   >
-                    Rejected
+                    Rejected{" "}<CBadge color="danger" shape="pill">{requestsState.rejected.length}</CBadge>
                   </CButton>
                   {!isFundsRequestor ? (
                     <CButton
@@ -275,7 +275,7 @@ const WithdrawalsPage = () => {
                       active={"FLAGGED" === requestsFilterStatus}
                       onClick={() => handleTableFilter("FLAGGED")}
                     >
-                      Flagged
+                      Flagged{" "}<CBadge color="info" shape="pill">{requestsState.flagged.length}</CBadge>
                     </CButton>
                   ) : null}
                 </CButtonGroup>
