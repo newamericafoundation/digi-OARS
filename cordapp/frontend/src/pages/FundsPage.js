@@ -9,13 +9,13 @@ import {
   CModalBody,
   CModalTitle,
   CRow,
-  CWidgetProgressIcon,
+  // CWidgetProgressIcon,
   CCol,
   CCallout,
   CButtonGroup,
   CBadge,
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+// import CIcon from "@coreui/icons-react";
 import { FundsTable } from "./views/funds/FundsTable";
 import { FundsForm } from "./views/funds/FundsForm";
 import NetworkProvider from "../providers/NetworkProvider";
@@ -114,7 +114,7 @@ const FundsPage = () => {
 
   return (
     <>
-      <CRow>
+      {/* <CRow>
         <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
@@ -166,7 +166,7 @@ const FundsPage = () => {
             <CIcon name="cil-money" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-      </CRow>
+      </CRow> */}
       <CRow>
         <CCol>
           <CCard>

@@ -3,21 +3,21 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
-  CWidgetProgressIcon,
+  // CWidgetProgressIcon,
   CRow,
   CCol,
   CCallout,
   CButtonGroup,
   CButton,
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+// import CIcon from "@coreui/icons-react";
 import { RequestsTable } from "./views/withdrawals/RequestsTable";
 import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
 import * as Constants from "../constants";
 import { useAuth } from "auth-hook";
 import { TransfersContext } from "../providers/TransfersProvider";
-import { toCurrency } from "../utilities";
+// import { toCurrency } from "../utilities";
 import useInterval from "../interval-hook";
 
 const TransfersPage = () => {
@@ -73,7 +73,7 @@ const TransfersPage = () => {
 
   return (
     <>
-      <CRow>
+      {/* <CRow>
         <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
@@ -111,7 +111,7 @@ const TransfersPage = () => {
             <CIcon name="cil-av-timer" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-      </CRow>
+      </CRow> */}
       <CRow>
         <CCol>
           <CCard>

@@ -3,7 +3,7 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
-  CWidgetProgressIcon,
+  // CWidgetProgressIcon,
   CRow,
   CCol,
   CCallout,
@@ -11,7 +11,7 @@ import {
   CButtonGroup,
   CBadge,
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+// import CIcon from "@coreui/icons-react";
 import { RequestsTable } from "./views//withdrawals/RequestsTable";
 import { FundsContext } from "../providers/FundsProvider";
 import { RequestsContext } from "../providers/RequestsProvider";
@@ -126,7 +126,7 @@ const WithdrawalsPage = () => {
 
   return (
     <>
-      <CRow>
+      {/* <CRow>
         <CCol xs="12" sm="6" lg={!isFundsRequestor ? "3" : "4"}>
           <CWidgetProgressIcon
             inverse
@@ -192,7 +192,7 @@ const WithdrawalsPage = () => {
             </CWidgetProgressIcon>
           </CCol>
         ) : null}
-      </CRow>
+      </CRow> */}
       <CRow>
         <CCol>
           <CCard>
