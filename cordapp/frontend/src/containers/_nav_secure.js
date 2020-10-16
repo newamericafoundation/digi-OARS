@@ -12,7 +12,7 @@ export default [
   {
     _tag: "CSidebarNavItem",
     name: "Requests",
-    to: "/withdrawals",
+    to: "/requests",
     icon: "cil-wallet",
   },
   {
