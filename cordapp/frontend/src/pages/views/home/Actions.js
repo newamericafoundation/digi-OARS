@@ -10,7 +10,8 @@ import {
   CListGroupItem,
   CBadge,
   CLink,
-  CButton, CAlert
+  CButton,
+  CAlert,
 } from "@coreui/react";
 import { RequestsContext } from "../../../providers/RequestsProvider";
 import { FundsContext } from "../../../providers/FundsProvider";
@@ -34,164 +35,224 @@ export const Actions = ({ auth }) => {
           </CCardHeader>
           <CCardBody>
             {auth.meta.keycloak.hasResourceRole("funds_receiver") ? (
-              (requestsState.approved.length === 0 && fundsState.issued.length === 0) ? (
-                <CAlert color="success">
-                  No new pending actions!
-                </CAlert>
+              requestsState.approved.length === 0 &&
+              fundsState.issued.length === 0 ? (
+                <CAlert color="success">No new pending actions!</CAlert>
               ) : (
-              <CRow>
-                <CCol xs="12" xl="6">
-                  <h4>
-                    Returns to Receive{" "}
-                    <CBadge
-                      shape="pill"
-                      color="warning"
-                      className="float-right"
-                    >
-                      {fundsState.issued ? fundsState.issued.length : null}
-                    </CBadge>
-                  </h4>
-                  <CListGroup accent={true}>
-                    {fundsState.issued
-                      ? fundsState.issued.slice(0, 5).map((item) => (
-                          <CListGroupItem key={item.linearId} accent="warning">
-                            <div className="float-right">
-                              <CBadge color="warning">{item.status}</CBadge>
-                            </div>
-                            <div>
-                              <CIcon name="cil-bank" />{" "}
-                              {toCurrency(item.amount, "USD")}
-                            </div>
-                            <small className="text-muted mr-3">
-                              <CIcon name="cil-location-pin" />{" "}
-                              {toCountryByIsoFromX500(item.originParty)}
-                            </small>
-                            <small className="text-muted mr-3">
-                              <CIcon name="cil-av-timer" />{" "}
-                              {moment
-                                .tz(item.createdDateTime, "UTC")
-                                .format(Constants.DATETIME_FORMAT)}
-                            </small>
-                          </CListGroupItem>
-                        ))
-                      : null}
-                    <CListGroupItem className="font-weight-bold text-muted c-small text-right">
-                      <CLink to="/returns">
-                        <CButton color="secondary">
-                          View{" "}
-                          {fundsState.issued.length > 5
-                            ? fundsState.issued.length - 5 + " more..."
-                            : " all..."}
-                        </CButton>
-                      </CLink>
-                    </CListGroupItem>
-                  </CListGroup>
-                </CCol>
-                <CCol xs="12" xl="6">
-                  <h4>
-                    Requests to Transfer{" "}
-                    <CBadge shape="pill" color="info" className="float-right">
-                      {requestsState.approved
-                        ? requestsState.approved.length
+                <CRow>
+                  <CCol xs="12" xl="6">
+                    <h4>
+                      Returns to Receive{" "}
+                      <CBadge
+                        shape="pill"
+                        color="warning"
+                        className="float-right"
+                      >
+                        {fundsState.issued ? fundsState.issued.length : null}
+                      </CBadge>
+                    </h4>
+                    <CListGroup accent={true}>
+                      {fundsState.issued
+                        ? fundsState.issued.slice(0, 5).map((item) => (
+                            <CListGroupItem
+                              key={item.linearId}
+                              accent="warning"
+                            >
+                              <div className="float-right">
+                                <CBadge color="warning">{item.status}</CBadge>
+                              </div>
+                              <div>
+                                <CIcon name="cil-bank" />{" "}
+                                {toCurrency(item.amount, "USD")}
+                              </div>
+                              <small className="text-muted mr-3">
+                                <CIcon name="cil-location-pin" />{" "}
+                                {toCountryByIsoFromX500(item.originParty)}
+                              </small>
+                              <small className="text-muted mr-3">
+                                <CIcon name="cil-av-timer" />{" "}
+                                {moment
+                                  .tz(item.createdDateTime, "UTC")
+                                  .format(Constants.DATETIME_FORMAT)}
+                              </small>
+                            </CListGroupItem>
+                          ))
                         : null}
-                    </CBadge>
-                  </h4>
-                  <CListGroup accent={true}>
-                    {requestsState.approved
-                      ? requestsState.approved.slice(0, 5).map((item) => (
-                          <CListGroupItem key={item.linearId} accent="info">
-                            <div className="float-right">
-                              <CBadge color="success">{item.status}</CBadge>
-                            </div>
-                            <div>
-                              <CIcon name="cil-chevron-right" />{" "}
-                              {toCurrency(item.amount, "USD")}
-                            </div>
-                            <small className="text-muted mr-3">
-                              <CIcon name="cil-user" />{" "}
-                              {item.authorizedUserUsername} [
-                              {item.authorizedUserDept}]
-                            </small>
-                            <small className="text-muted mr-3">
-                              <CIcon name="cil-av-timer" />{" "}
-                              {moment
-                                .tz(item.createDateTime, "UTC")
-                                .format(Constants.DATETIME_FORMAT)}
-                            </small>
-                          </CListGroupItem>
-                        ))
-                      : null}
-                    <CListGroupItem className="font-weight-bold text-muted c-small text-right">
-                      <CLink to="/transfers/approvals">
-                        <CButton color="secondary">
-                          View{" "}
-                          {requestsState.approved.length > 5
-                            ? requestsState.approved.length - 5 + " more..."
-                            : " all..."}
-                        </CButton>
-                      </CLink>
-                    </CListGroupItem>
-                  </CListGroup>
-                </CCol>
-              </CRow>)
+                      <CListGroupItem className="font-weight-bold text-muted c-small text-right">
+                        <CLink to="/returns">
+                          <CButton color="secondary">
+                            View{" "}
+                            {fundsState.issued.length > 5
+                              ? fundsState.issued.length - 5 + " more..."
+                              : " all..."}
+                          </CButton>
+                        </CLink>
+                      </CListGroupItem>
+                    </CListGroup>
+                  </CCol>
+                  <CCol xs="12" xl="6">
+                    <h4>
+                      Requests to Transfer{" "}
+                      <CBadge shape="pill" color="info" className="float-right">
+                        {requestsState.approved
+                          ? requestsState.approved.length
+                          : null}
+                      </CBadge>
+                    </h4>
+                    <CListGroup accent={true}>
+                      {requestsState.approved
+                        ? requestsState.approved.slice(0, 5).map((item) => (
+                            <CListGroupItem key={item.linearId} accent="info">
+                              <div className="float-right">
+                                <CBadge color="success">{item.status}</CBadge>
+                              </div>
+                              <div>
+                                <CIcon name="cil-chevron-right" />{" "}
+                                {toCurrency(item.amount, "USD")}
+                              </div>
+                              <small className="text-muted mr-3">
+                                <CIcon name="cil-user" />{" "}
+                                {item.authorizedUserUsername} [
+                                {item.authorizedUserDept}]
+                              </small>
+                              <small className="text-muted mr-3">
+                                <CIcon name="cil-av-timer" />{" "}
+                                {moment
+                                  .tz(item.createDateTime, "UTC")
+                                  .format(Constants.DATETIME_FORMAT)}
+                              </small>
+                            </CListGroupItem>
+                          ))
+                        : null}
+                      <CListGroupItem className="font-weight-bold text-muted c-small text-right">
+                        <CLink to="/transfers/approvals">
+                          <CButton color="secondary">
+                            View{" "}
+                            {requestsState.approved.length > 5
+                              ? requestsState.approved.length - 5 + " more..."
+                              : " all..."}
+                          </CButton>
+                        </CLink>
+                      </CListGroupItem>
+                    </CListGroup>
+                  </CCol>
+                </CRow>
+              )
             ) : null}
             {auth.meta.keycloak.hasResourceRole("request_approver") ? (
-              (requestsState.pending.length === 0) ? (
-                <CAlert color="success">
-                  No new pending actions!
-                </CAlert>
+              requestsState.pending.length === 0 && requestsState.flagged.length === 0 ? (
+                <CAlert color="success">No new pending actions!</CAlert>
               ) : (
-              <CRow>
-                <CCol xl="8" xs="12">
-                <h4>
-                    Requests to Approve/Reject{" "}
-                    <CBadge
-                      shape="pill"
-                      color="warning"
-                      className="float-right"
-                    >
-                      {requestsState.pending ? requestsState.pending.length : null}
-                    </CBadge>
-                  </h4>
-                  <CListGroup accent={true}>
-                    {requestsState.pending
-                      ? requestsState.pending.slice(0, 5).map((item) => (
-                          <CListGroupItem key={item.linearId} accent="warning">
-                            <div className="float-right">
-                              <CBadge color="warning">{item.status}</CBadge>
-                            </div>
-                            <div>
-                              <CIcon name="cil-chevron-right" />{" "}
-                              {toCurrency(item.amount, "USD")}
-                            </div>
-                            <small className="text-muted mr-3">
-                              <CIcon name="cil-user" />{" "}
-                              {item.authorizedUserUsername} [
-                              {item.authorizedUserDept}]
-                            </small>
-                            <small className="text-muted mr-3">
-                              <CIcon name="cil-av-timer" />{" "}
-                              {moment
-                                .tz(item.createDateTime, "UTC")
-                                .format(Constants.DATETIME_FORMAT)}
-                            </small>
-                          </CListGroupItem>
-                        ))
-                      : null}
-                    <CListGroupItem className="font-weight-bold text-muted c-small text-right">
-                      <CLink to="/requests">
-                        <CButton color="secondary">
-                          View{" "}
-                          {requestsState.pending.length > 5
-                            ? requestsState.pending.length - 5 + " more..."
-                            : " all..."}
-                        </CButton>
-                      </CLink>
-                    </CListGroupItem>
-                  </CListGroup>
-                </CCol>
-              </CRow>)
-            ) : null }
+                <CRow>
+                  <CCol xs="12" xl="6">
+                    <h4>
+                      Pending Requests to Approve/Reject{" "}
+                      <CBadge
+                        shape="pill"
+                        color="warning"
+                        className="float-right"
+                      >
+                        {requestsState.pending
+                          ? requestsState.pending.length
+                          : null}
+                      </CBadge>
+                    </h4>
+                    <CListGroup accent={true}>
+                      {requestsState.pending
+                        ? requestsState.pending.slice(0, 5).map((item) => (
+                            <CListGroupItem
+                              key={item.linearId}
+                              accent="warning"
+                            >
+                              <div className="float-right">
+                                <CBadge color="warning">{item.status}</CBadge>
+                              </div>
+                              <div>
+                                <CIcon name="cil-chevron-right" />{" "}
+                                {toCurrency(item.amount, "USD")}
+                              </div>
+                              <small className="text-muted mr-3">
+                                <CIcon name="cil-user" />{" "}
+                                {item.authorizedUserUsername} [
+                                {item.authorizedUserDept}]
+                              </small>
+                              <small className="text-muted mr-3">
+                                <CIcon name="cil-av-timer" />{" "}
+                                {moment
+                                  .tz(item.createDateTime, "UTC")
+                                  .format(Constants.DATETIME_FORMAT)}
+                              </small>
+                            </CListGroupItem>
+                          ))
+                        : null}
+                      <CListGroupItem className="font-weight-bold text-muted c-small text-right">
+                        <CLink to="/requests">
+                          <CButton color="secondary">
+                            View{" "}
+                            {requestsState.pending.length > 5
+                              ? requestsState.pending.length - 5 + " more..."
+                              : " all..."}
+                          </CButton>
+                        </CLink>
+                      </CListGroupItem>
+                    </CListGroup>
+                  </CCol>
+                  <CCol xs="12" xl="6">
+                    <h4>
+                      Flagged Requests to Approve/Reject{" "}
+                      <CBadge
+                        shape="pill"
+                        color="info"
+                        className="float-right"
+                      >
+                        {requestsState.flagged
+                          ? requestsState.flagged.length
+                          : null}
+                      </CBadge>
+                    </h4>
+                    <CListGroup accent={true}>
+                      {requestsState.flagged
+                        ? requestsState.flagged.slice(0, 5).map((item) => (
+                            <CListGroupItem
+                              key={item.linearId}
+                              accent="info"
+                            >
+                              <div className="float-right">
+                                <CBadge color="info">{item.status}</CBadge>
+                              </div>
+                              <div>
+                                <CIcon name="cil-chevron-right" />{" "}
+                                {toCurrency(item.amount, "USD")}
+                              </div>
+                              <small className="text-muted mr-3">
+                                <CIcon name="cil-user" />{" "}
+                                {item.authorizedUserUsername} [
+                                {item.authorizedUserDept}]
+                              </small>
+                              <small className="text-muted mr-3">
+                                <CIcon name="cil-av-timer" />{" "}
+                                {moment
+                                  .tz(item.createDateTime, "UTC")
+                                  .format(Constants.DATETIME_FORMAT)}
+                              </small>
+                            </CListGroupItem>
+                          ))
+                        : null}
+                      <CListGroupItem className="font-weight-bold text-muted c-small text-right">
+                        <CLink to="/requests">
+                          <CButton color="secondary">
+                            View{" "}
+                            {requestsState.flagged.length > 5
+                              ? requestsState.flagged.length - 5 + " more..."
+                              : " all..."}
+                          </CButton>
+                        </CLink>
+                      </CListGroupItem>
+                    </CListGroup>
+                  </CCol>
+                </CRow>
+              )
+            ) : null}
           </CCardBody>
         </CCard>
       </CCol>

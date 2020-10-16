@@ -69,13 +69,15 @@ const SidebarRight = () => {
       <CTabs
         className="nav"
         activeTab={
-          (auth.meta.keycloak.hasResourceRole("funds_receiver") || auth.meta.keycloak.hasResourceRole("request_approver"))
+          auth.meta.keycloak.hasResourceRole("funds_receiver") ||
+          auth.meta.keycloak.hasResourceRole("request_approver")
             ? "notifications"
             : "user"
         }
       >
         <CNav variant="tabs" className="nav-underline nav-underline-primary">
-          {(auth.meta.keycloak.hasResourceRole("funds_receiver") || auth.meta.keycloak.hasResourceRole("request_approver")) ? (
+          {auth.meta.keycloak.hasResourceRole("funds_receiver") ||
+          auth.meta.keycloak.hasResourceRole("request_approver") ? (
             <CNavItem>
               <CNavLink data-tab="notifications">
                 <CIcon name="cil-bell" />
@@ -89,59 +91,86 @@ const SidebarRight = () => {
           </CNavItem>
         </CNav>
         <CTabContent className="c-sidebar-nav">
-        {auth.meta.keycloak.hasResourceRole("request_approver") ? (
-          <CTabPane data-tab="notifications">
-          {requestsState.pending.length > 0 ? (
-            <CListGroup accent={true}>
-              <CListGroupItem
-                accent="secondary"
-                className="bg-light font-weight-bold text-muted text-uppercase c-small"
-              >
-                Requests To Approve/Reject{" "}
-                <CBadge shape="pill" color="warning" className="float-right">
+          {auth.meta.keycloak.hasResourceRole("request_approver") ? (
+            <CTabPane data-tab="notifications">
+              {requestsState.pending.length > 0 ||
+              requestsState.flagged.length > 0 ? (
+                <CListGroup accent={true}>
+                  <CListGroupItem
+                    accent="secondary"
+                    className="bg-light font-weight-bold text-muted text-uppercase c-small"
+                  >
+                    Requests To Approve/Reject{" "}
+                    <CBadge shape="pill" color="info" className="float-right">
+                      {requestsState.flagged
+                        ? requestsState.flagged.length
+                        : null}
+                    </CBadge>{" "}
+                    <CBadge
+                      shape="pill"
+                      color="warning"
+                      className="float-right"
+                    >
+                      {requestsState.pending
+                        ? requestsState.pending.length
+                        : null}
+                    </CBadge>
+                  </CListGroupItem>
                   {requestsState.pending
-                    ? requestsState.pending.length
+                    ? requestsState.pending.slice(0, 5).map((item) => (
+                        <CListGroupItem key={item.linearId} accent="warning">
+                          <div className="float-right">
+                            <CBadge color="warning">{item.status}</CBadge>
+                          </div>
+                          <div>{toCurrency(item.amount, "USD")}</div>
+                          <small className="text-muted mr-3">
+                            <CIcon name="cil-user" />{" "}
+                            {item.authorizedUserUsername} [
+                            {item.authorizedUserDept}]
+                          </small>
+                        </CListGroupItem>
+                      ))
                     : null}
-                </CBadge>
-              </CListGroupItem>
-              {requestsState.pending
-                ? requestsState.pending.slice(0, 5).map((item) => (
-                    <CListGroupItem key={item.linearId} accent="warning">
-                      <div className="float-right">
-                        <CBadge color="warning">{item.status}</CBadge>
-                      </div>
-                      <div>{toCurrency(item.amount, "USD")}</div>
-                      <small className="text-muted mr-3">
-                        <CIcon name="cil-user" /> {item.authorizedUserUsername} [{item.authorizedUserDept}]
-                      </small>
-                    </CListGroupItem>
-                  ))
-                : null}
-              <CListGroupItem className="font-weight-bold text-muted c-small text-right">
-                <CLink to="/withdrawals">
-                  <CButton color="secondary">
-                    View{" "}
-                    {requestsState.pending.length > 5
-                      ? requestsState.pending.length - 5 + " more..."
-                      : " all..."}
-                  </CButton>
-                </CLink>
-              </CListGroupItem>
-            </CListGroup>
+                    {requestsState.flagged
+                    ? requestsState.flagged.slice(0, 5).map((item) => (
+                        <CListGroupItem key={item.linearId} accent="info">
+                          <div className="float-right">
+                            <CBadge color="info">{item.status}</CBadge>
+                          </div>
+                          <div>{toCurrency(item.amount, "USD")}</div>
+                          <small className="text-muted mr-3">
+                            <CIcon name="cil-user" />{" "}
+                            {item.authorizedUserUsername} [
+                            {item.authorizedUserDept}]
+                          </small>
+                        </CListGroupItem>
+                      ))
+                    : null}
+                  <CListGroupItem className="font-weight-bold text-muted c-small text-right">
+                    <CLink to="/requests">
+                      <CButton color="secondary">
+                        View{" "}
+                        {(requestsState.pending.length + requestsState.flagged.length) > 10
+                          ? (requestsState.pending.length + requestsState.flagged.length) - 10 + " more..."
+                          : " all..."}
+                      </CButton>
+                    </CLink>
+                  </CListGroupItem>
+                </CListGroup>
+              ) : null}
+              {requestsState.pending.length === 0 ? (
+                <CListGroup accent={true}>
+                  <CListGroupItem accent="secondary">
+                    No new notifications... you're all set, grab a coffee!{" "}
+                    <CIcon
+                      name="cil-coffee"
+                      className="mr-2 text-dark mfs-auto"
+                    />
+                  </CListGroupItem>
+                </CListGroup>
+              ) : null}
+            </CTabPane>
           ) : null}
-          {requestsState.pending.length === 0 ? (
-            <CListGroup accent={true}>
-              <CListGroupItem accent="secondary">
-                No new notifications... you're all set, grab a coffee!{" "}
-                <CIcon
-                  name="cil-coffee"
-                  className="mr-2 text-dark mfs-auto"
-                />
-              </CListGroupItem>
-            </CListGroup>
-          ) : null}
-        </CTabPane>
-        ) : null }
           {auth.meta.keycloak.hasResourceRole("funds_receiver") ? (
             <CTabPane data-tab="notifications">
               {requestsState.approved.length > 0 ? (
@@ -165,7 +194,9 @@ const SidebarRight = () => {
                           </div>
                           <div>{toCurrency(item.amount, "USD")}</div>
                           <small className="text-muted mr-3">
-                            <CIcon name="cil-user" /> {item.authorizedUserUsername} [{item.authorizedUserDept}]
+                            <CIcon name="cil-user" />{" "}
+                            {item.authorizedUserUsername} [
+                            {item.authorizedUserDept}]
                           </small>
                         </CListGroupItem>
                       ))
