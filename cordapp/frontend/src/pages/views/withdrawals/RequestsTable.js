@@ -55,26 +55,12 @@ export const RequestsTable = ({
   const [currentItem, setCurrentItem] = useState({});
   const [, setCurrentItemIndex] = useState();
   const [currentRequestAction, setCurrentRequestAction] = useState("");
-  const [currentFundBalance, setCurrentFundBalance] = useState();
   const [fundsState] = useContext(FundsContext);
   const [fundStateLinearId, setFundStateLinearId] = useState("");
   const [rejectReason, setRejectReason] = useState("");
 
   const handleShow = (item) => {
     setCurrentItem(item);
-    axios
-      .get(
-        "http://" +
-          window._env_.API_CLIENT_URL +
-          ":" +
-          api.port +
-          "/api/fund/id?fundId=" +
-          item.fundStateLinearId
-      )
-      .then((response) => {
-        setCurrentFundBalance(response.data.entity.balance);
-      })
-      .catch((err) => console.log(err));
     setShow(true);
   };
 
@@ -596,24 +582,29 @@ export const RequestsTable = ({
                           </strong>
                           {!isRequestor &&
                           item.status === Constants.REQUEST_FLAGGED ? (
-                            <CAlert className="mt-2" color="warning">
-                              <p>
-                                Request amount has breached the maximum
-                                withdrawal amount of the system by{" "}
-                                {toCurrency(
-                                  parseFloat(item.amount) -
-                                    parseFloat(item.maxWithdrawalAmount),
-                                  "USD"
-                                )}
-                                .
-                              </p>
-                            </CAlert>
+                            <CRow>
+                              <CCol>
+                                <CAlert className="mt-2 mb-2" color="warning">
+                                  Request amount has breached the maximum
+                                  withdrawal amount of the system by{" "}
+                                  {toCurrency(
+                                    parseFloat(item.amount) -
+                                      parseFloat(item.maxWithdrawalAmount),
+                                    "USD"
+                                  )}
+                                  .
+                                </CAlert>
+                              </CCol>
+                            </CRow>
                           ) : null}
                           {!isRequestor &&
                           item.status === Constants.REQUEST_REJECTED ? (
                             <div>
-                            <p className="text-muted mt-2 mb-0">Reject Reason</p>
-                            <strong className="p">{item.rejectReason}</strong></div>
+                              <p className="text-muted mt-2 mb-0">
+                                Reject Reason
+                              </p>
+                              <strong className="p">{item.rejectReason}</strong>
+                            </div>
                           ) : null}
                         </CCallout>
                       </CCol>
@@ -670,14 +661,7 @@ export const RequestsTable = ({
             <strong className="p">{currentItem.authorizedUserDept}</strong>
           </CCallout>
           <CCallout
-            color={
-              isApprover
-                ? parseFloat(currentFundBalance) <
-                  parseFloat(currentItem.amount)
-                  ? "warning"
-                  : getCurrentActionColor(currentRequestAction)
-                : getCurrentActionColor(currentRequestAction)
-            }
+            color={getCurrentActionColor(currentRequestAction)}
             className={"bg-light"}
           >
             <p className="text-muted mb-0">Amount</p>
@@ -710,27 +694,6 @@ export const RequestsTable = ({
               </strong>
             </CCallout>
           ) : null}
-          {isApprover &&
-          parseFloat(currentFundBalance) < parseFloat(currentItem.amount) ? (
-            <CAlert color="warning">
-              <p>Insufficient Return balance available.</p>
-              <dl className="row">
-                <dt className="col-sm-6">Return Balance Available:</dt>
-                <dd className="col-sm-6">
-                  {toCurrency(currentFundBalance, "USD")}
-                </dd>
-                <dt className="col-sm-6">Request Amount:</dt>
-                <dd className="col-sm-6">
-                  {toCurrency(currentFundBalance, "USD")}
-                </dd>
-                <dt className="col-sm-6">Difference:</dt>
-                <dd className="col-sm-6">
-                  {toCurrency(currentFundBalance - currentItem.amount, "USD")}
-                </dd>
-              </dl>
-              <p>You will not be able to approve this request.</p>
-            </CAlert>
-          ) : null}
           {currentRequestAction === "approve" ? (
             <CFormGroup>
               <CTooltip
@@ -749,6 +712,7 @@ export const RequestsTable = ({
                 {fundsState.received
                   ? fundsState.received.map((item) => (
                       <option
+                        disabled={item.balance < currentItem.amount}
                         key={item.linearId}
                         label={
                           item.linearId +
@@ -778,9 +742,10 @@ export const RequestsTable = ({
             color={getCurrentActionColor(currentRequestAction)}
             disabled={
               currentRequestAction === "approve"
-                ? parseFloat(currentFundBalance) <
-                    parseFloat(currentItem.amount) || fundStateLinearId === ""
-                : currentRequestAction === "reject" ? rejectReason.length === 0 : false
+                ? fundStateLinearId === ""
+                : currentRequestAction === "reject"
+                ? rejectReason.length === 0
+                : false
             }
             onClick={() =>
               onHandleConfirmationClick(
