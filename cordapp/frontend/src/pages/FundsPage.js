@@ -200,7 +200,7 @@ const FundsPage = () => {
                     active={"ALL" === fundsFilterStatus}
                     onClick={() => handleTableFilter("ALL")}
                   >
-                    All
+                    All{" "}<CBadge color="secondary" shape="pill">{fundsState.data.length}</CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -209,7 +209,7 @@ const FundsPage = () => {
                     active={"ISSUED" === fundsFilterStatus}
                     onClick={() => handleTableFilter("ISSUED")}
                   >
-                    Issued
+                    Issued{" "}<CBadge color="warning" shape="pill">{fundsState.issued.length}</CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -218,7 +218,7 @@ const FundsPage = () => {
                     active={"RECEIVED" === fundsFilterStatus}
                     onClick={() => handleTableFilter("RECEIVED")}
                   >
-                    Received
+                    Received{" "}<CBadge color="success" shape="pill">{fundsState.received.length}</CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -227,7 +227,7 @@ const FundsPage = () => {
                     active={"PAID" === fundsFilterStatus}
                     onClick={() => handleTableFilter("PAID")}
                   >
-                    Paid
+                    Paid{" "}<CBadge color="dark" shape="pill">{fundsState.paid.length}</CBadge>
                   </CButton>
                 </CButtonGroup>
               </div>
