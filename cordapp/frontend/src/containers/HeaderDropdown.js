@@ -122,7 +122,7 @@ const HeaderDropdown = () => {
               </CDropdownItem>
             ) : null}
             {isFundsReceiver || isRequestApprover ? (
-              <CDropdownItem to="/withdrawals">
+              <CDropdownItem to="/requests">
                 <CIcon
                   name="cil-arrow-circle-right"
                   className="mr-2 text-dark float-left"
