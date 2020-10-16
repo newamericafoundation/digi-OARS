@@ -23,6 +23,7 @@ import {
   CLabel,
   CSelect,
   CTooltip,
+  CTextarea,
 } from "@coreui/react";
 import moment from "moment-timezone";
 import { useAuth } from "auth-hook";
@@ -57,6 +58,7 @@ export const RequestsTable = ({
   const [currentFundBalance, setCurrentFundBalance] = useState();
   const [fundsState] = useContext(FundsContext);
   const [fundStateLinearId, setFundStateLinearId] = useState("");
+  const [rejectReason, setRejectReason] = useState("");
 
   const handleShow = (item) => {
     setCurrentItem(item);
@@ -240,6 +242,7 @@ export const RequestsTable = ({
                   requestStateLinearId,
                   authorizerUserUsername,
                   authorizerUserDept,
+                  rejectReason,
                 },
               }
         )
@@ -513,13 +516,19 @@ export const RequestsTable = ({
                             {toCurrency(item.amount, item.currency)}
                           </strong>
                         </CCallout>
-                        {!isRequestor ? 
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Max Withdrawal Amount</p>
-                          <strong className="p">
-                            {toCurrency(item.maxWithdrawalAmount, item.currency)}
-                          </strong>
-                        </CCallout> : null }
+                        {!isRequestor ? (
+                          <CCallout color="info" className={"bg-light"}>
+                            <p className="text-muted mb-0">
+                              Max Withdrawal Amount
+                            </p>
+                            <strong className="p">
+                              {toCurrency(
+                                item.maxWithdrawalAmount,
+                                item.currency
+                              )}
+                            </strong>
+                          </CCallout>
+                        ) : null}
                       </CCol>
                       <CCol xl="6" sm="4">
                         <CCallout color="info" className={"bg-light"}>
@@ -587,24 +596,24 @@ export const RequestsTable = ({
                           </strong>
                           {!isRequestor &&
                           item.status === Constants.REQUEST_FLAGGED ? (
+                            <CAlert className="mt-2" color="warning">
+                              <p>
+                                Request amount has breached the maximum
+                                withdrawal amount of the system by{" "}
+                                {toCurrency(
+                                  parseFloat(item.amount) -
+                                    parseFloat(item.maxWithdrawalAmount),
+                                  "USD"
+                                )}
+                                .
+                              </p>
+                            </CAlert>
+                          ) : null}
+                          {!isRequestor &&
+                          item.status === Constants.REQUEST_REJECTED ? (
                             <div>
-                              <CRow>
-                                <CCol>
-                                  <CAlert className="mt-2" color="warning">
-                                    <p>
-                                      Request amount has breached the maximum
-                                      withdrawal amount of the system by{" "}
-                                      {toCurrency(
-                                        parseFloat(item.amount) -
-                                          parseFloat(item.maxWithdrawalAmount),
-                                        "USD"
-                                      )}
-                                      .
-                                    </p>
-                                  </CAlert>
-                                </CCol>
-                              </CRow>
-                            </div>
+                            <p className="text-muted mt-2 mb-0">Reject Reason</p>
+                            <strong className="p">{item.rejectReason}</strong></div>
                           ) : null}
                         </CCallout>
                       </CCol>
@@ -755,6 +764,14 @@ export const RequestsTable = ({
               </CSelect>
             </CFormGroup>
           ) : null}
+          {currentRequestAction === "reject" ? (
+            <CFormGroup>
+              <CLabel htmlFor="rejectReason">Rejection Reason</CLabel>
+              <CTextarea
+                onChange={(e) => setRejectReason(e.currentTarget.value)}
+              ></CTextarea>
+            </CFormGroup>
+          ) : null}
         </CModalBody>
         <CModalFooter>
           <CButton
@@ -763,7 +780,7 @@ export const RequestsTable = ({
               currentRequestAction === "approve"
                 ? parseFloat(currentFundBalance) <
                     parseFloat(currentItem.amount) || fundStateLinearId === ""
-                : false
+                : currentRequestAction === "reject" ? rejectReason.length === 0 : false
             }
             onClick={() =>
               onHandleConfirmationClick(

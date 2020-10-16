@@ -20,7 +20,8 @@ const getRequests = async (port) => {
     participants: ob.participants,
     createDateTime: ob.createDatetime,
     updateDateTime: ob.updateDatetime,
-    maxWithdrawalAmount: ob.maxWithdrawalAmount
+    maxWithdrawalAmount: ob.maxWithdrawalAmount,
+    rejectReason: ob.rejectReason
   }));
 };
 
