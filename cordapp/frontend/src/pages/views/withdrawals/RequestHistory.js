@@ -16,13 +16,13 @@ import { toCurrency } from "../../../utilities";
 import moment from "moment-timezone";
 import * as Constants from "../../../constants";
 
-export const RequestHistory = ({ show, requestId, handleClose }) => {
+export const RequestHistory = ({ show, requestId, handleClose, refresh }) => {
   const [api] = useContext(APIContext);
   const [requestHistory, setRequestHistory] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (requestId) {
+    if (requestId && show) {
       setIsLoading(true);
       const url =
         "http://" +
@@ -43,7 +43,7 @@ export const RequestHistory = ({ show, requestId, handleClose }) => {
           setIsLoading(false);
         });
     }
-  }, [api.port, requestId]);
+  }, [api.port, show, requestId]);
 
   const fields = [
     { key: "status", _style: { width: "10%" } },
