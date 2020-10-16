@@ -179,7 +179,7 @@ export const Actions = ({ auth }) => {
                         ))
                       : null}
                     <CListGroupItem className="font-weight-bold text-muted c-small text-right">
-                      <CLink to="/withdrawals">
+                      <CLink to="/requests">
                         <CButton color="secondary">
                           View{" "}
                           {requestsState.pending.length > 5
