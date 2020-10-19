@@ -1,19 +1,23 @@
 import React from "react";
 import {
-  CButton,
+  CCallout,
   CCard,
   CCardBody,
   CCardHeader,
 } from "@coreui/react";
-import { UsersTable } from './views/admin/UsersTable';
+import { UsersTable } from "./views/admin/UsersTable";
 
-const AdminPage = () => {
+const UsersPage = () => {
   return (
     <>
-    <CCard>
+      <CCard>
         <CCardHeader>
-          Users
-          <div className="card-header-actions">
+          <div className="mb-0">
+            <CCallout className="float-left mt-1 mb-1" color="secondary">
+              <h4 className="mt-1 text-dark">Users</h4>
+            </CCallout>
+          </div>
+          {/* <div className="card-header-actions">
             <CButton
               className={"float-right mb-0"}
               color={"primary"}
@@ -35,7 +39,7 @@ const AdminPage = () => {
             >
               Remove User
             </CButton>
-          </div>
+          </div> */}
         </CCardHeader>
         <CCardBody>
           <UsersTable />
@@ -45,4 +49,4 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default UsersPage;
