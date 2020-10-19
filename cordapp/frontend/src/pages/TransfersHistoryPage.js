@@ -3,15 +3,15 @@ import {
   CCard,
   CCardBody,
   CCardHeader,
-  CWidgetProgressIcon,
+  // CWidgetProgressIcon,
   CRow,
   CCol,
   CCallout,
 } from "@coreui/react";
-import CIcon from "@coreui/icons-react";
+// import CIcon from "@coreui/icons-react";
 import { TransfersTable } from "./views/transfers/TransfersTable";
 import { TransfersContext } from "../providers/TransfersProvider";
-import { toCurrency } from "../utilities";
+// import { toCurrency } from "../utilities";
 import useInterval from "../interval-hook";
 import * as Constants from "../constants";
 import { useAuth } from "../auth-hook";
@@ -28,7 +28,7 @@ const TransfersPage = () => {
 
   return (
     <>
-      <CRow>
+      {/* <CRow>
         <CCol xs="12" sm="6" lg="4">
           <CWidgetProgressIcon
             inverse
@@ -40,7 +40,7 @@ const TransfersPage = () => {
             <CIcon name="cil-chevron-right" height="36" />
           </CWidgetProgressIcon>
         </CCol>
-      </CRow>
+      </CRow> */}
       <CRow>
         <CCol>
           <CCard>

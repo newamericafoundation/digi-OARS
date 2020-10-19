@@ -145,7 +145,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           size="sm"
           onClick={() => handleRequestsShow(item.linearId)}
         >
-          View Requests Matched
+          View Assigned Requests
         </CButton>
       );
     }
@@ -426,7 +426,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
       </CModal>
       <CModal show={showRequests} size="xl" closeOnBackdrop={false}>
         <CModalHeader>
-          <CModalTitle>Requests Matched</CModalTitle>
+          <CModalTitle>Assigned Requests</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CAlert color="info">
