@@ -46,13 +46,16 @@ export const RequestHistory = ({ auth, show, requestId, handleClose }) => {
   }, [api.port, show, requestId]);
 
   const getFields = () => {
-      if (auth.isAuthenticated && auth.meta.keycloak.hasResourceRole("partial_request_viewer")) {
-        return [
-            { key: "status", _style: { width: "10%" } },
-            { key: "updateDateTime", label: "Update Date/Time" },
-            { key: "amount" },
-          ];
-      }
+    if (
+      auth.isAuthenticated &&
+      auth.meta.keycloak.hasResourceRole("partial_request_viewer")
+    ) {
+      return [
+        { key: "status", _style: { width: "10%" } },
+        { key: "updateDateTime", label: "Update Date/Time" },
+        { key: "amount" },
+      ];
+    }
     return [
       { key: "status", _style: { width: "10%" } },
       { key: "updateDateTime", label: "Update Date/Time" },
@@ -120,9 +123,9 @@ export const RequestHistory = ({ auth, show, requestId, handleClose }) => {
             ),
             status: (item) => (
               <td>
-                <CBadge color={getStatusBadge(item.status)}>
-                  {item.status}
-                </CBadge>
+                  <CBadge color={getStatusBadge(item.status)}>
+                    {item.status}
+                  </CBadge>
               </td>
             ),
           }}

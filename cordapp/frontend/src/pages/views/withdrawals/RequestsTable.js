@@ -466,12 +466,12 @@ export const RequestsTable = ({
             <td>
               <CBadge
                 color={
-                  isRequestor && item.status === "FLAGGED"
+                  (isRequestor || isPartialRequestViewer) && item.status === "FLAGGED"
                     ? "warning"
                     : getStatusBadge(item.status)
                 }
               >
-                {isRequestor && item.status === "FLAGGED"
+                {(isRequestor || isPartialRequestViewer) && item.status === "FLAGGED"
                   ? "PENDING"
                   : item.status}
               </CBadge>
@@ -504,7 +504,7 @@ export const RequestsTable = ({
                 <CCard className="m-3">
                   <CCardHeader>
                     Request Details{" "}
-                    {!isRequestor && (
+                    {!isRequestor && !isPartialRequestViewer && (
                       <CButton
                         className="float-right mt-1 mb-1"
                         color="secondary"
@@ -583,7 +583,7 @@ export const RequestsTable = ({
                         </CCallout>) : null }
                         <CCallout
                           color={
-                            isRequestor && item.status === "FLAGGED"
+                            (isRequestor || isPartialRequestViewer) && item.status === "FLAGGED"
                               ? "warning"
                               : getStatusBadge(item.status)
                           }
@@ -591,7 +591,7 @@ export const RequestsTable = ({
                         >
                           <p className="text-muted mb-0">Status</p>
                           <strong className="p">
-                            {isRequestor &&
+                            {(isRequestor || isPartialRequestViewer) &&
                             item.status === Constants.REQUEST_FLAGGED
                               ? "PENDING"
                               : item.status}
@@ -620,7 +620,7 @@ export const RequestsTable = ({
                                 )
                               : null}
                           </strong>
-                          {!isRequestor &&
+                          {(!isRequestor && !isPartialRequestViewer) &&
                           item.status === Constants.REQUEST_FLAGGED ? (
                             <CRow>
                               <CCol>
