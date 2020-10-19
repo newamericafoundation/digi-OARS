@@ -45,6 +45,7 @@ export const RequestsTable = ({
   isReceiver,
   isTransferer,
   isObserver,
+  isPartialRequestViewer,
 }) => {
   const auth = useAuth();
   const [api] = useContext(APIContext);
@@ -88,21 +89,50 @@ export const RequestsTable = ({
     setDetails(newDetails);
   };
 
-  const fields = [
-    { key: "authorizedUserUsername", label: "Requestor" },
-    { key: "authorizedUserDept", label: "Department" },
-    { key: "amount" },
-    { key: "createDateTime", label: "Created Date" },
-    { key: "status", _style: { width: "20%" } },
-    { key: "actions", _style: { width: "15%" }, sorter: false, filter: false },
-    {
-      key: "show_details",
-      label: "",
-      _style: { width: "1%" },
-      sorter: false,
-      filter: false,
-    },
-  ];
+  const getFields = () => {
+    if (isPartialRequestViewer) {
+      return [
+        { key: "authorizedUserDept", label: "Department" },
+        { key: "amount" },
+        { key: "createDateTime", label: "Created Date" },
+        { key: "status", _style: { width: "20%" } },
+        {
+          key: "actions",
+          _style: { width: "15%" },
+          sorter: false,
+          filter: false,
+        },
+        {
+          key: "show_details",
+          label: "",
+          _style: { width: "1%" },
+          sorter: false,
+          filter: false,
+        },
+      ];
+    }
+
+    return [
+      { key: "authorizedUserUsername", label: "Requestor" },
+      { key: "authorizedUserDept", label: "Department" },
+      { key: "amount" },
+      { key: "createDateTime", label: "Created Date" },
+      { key: "status", _style: { width: "20%" } },
+      {
+        key: "actions",
+        _style: { width: "15%" },
+        sorter: false,
+        filter: false,
+      },
+      {
+        key: "show_details",
+        label: "",
+        _style: { width: "1%" },
+        sorter: false,
+        filter: false,
+      },
+    ];
+  };
 
   const getCurrentActionColor = (action) => {
     switch (action) {
@@ -304,7 +334,14 @@ export const RequestsTable = ({
   };
 
   const getData = () => {
-    if (isApprover || isIssuer || isTransferer || isReceiver || isObserver) {
+    if (
+      isApprover ||
+      isIssuer ||
+      isTransferer ||
+      isReceiver ||
+      isObserver ||
+      isPartialRequestViewer
+    ) {
       if (filterStatus === "ALL") {
         return requests.data;
       }
@@ -397,7 +434,7 @@ export const RequestsTable = ({
     <>
       <CDataTable
         items={getData()}
-        fields={fields}
+        fields={getFields()}
         columnFilter
         tableFilter
         itemsPerPageSelect
@@ -484,12 +521,14 @@ export const RequestsTable = ({
                           <p className="text-muted mb-0">Request ID</p>
                           <strong className="p">{item.linearId}</strong>
                         </CCallout>
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Requestor</p>
-                          <strong className="p">
-                            {item.authorizedUserUsername}
-                          </strong>
-                        </CCallout>
+                        {!isPartialRequestViewer ? (
+                          <CCallout color="info" className={"bg-light"}>
+                            <p className="text-muted mb-0">Requestor</p>
+                            <strong className="p">
+                              {item.authorizedUserUsername}
+                            </strong>
+                          </CCallout>
+                        ) : null}
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Department</p>
                           <strong className="p">
