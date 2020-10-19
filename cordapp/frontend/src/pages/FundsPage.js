@@ -4,26 +4,18 @@ import {
   CCardBody,
   CCardHeader,
   CButton,
-  CModal,
-  CModalHeader,
-  CModalBody,
-  CModalTitle,
   CRow,
-  // CWidgetProgressIcon,
   CCol,
   CCallout,
   CButtonGroup,
   CBadge,
 } from "@coreui/react";
-// import CIcon from "@coreui/icons-react";
 import { FundsTable } from "./views/funds/FundsTable";
-import { FundsForm } from "./views/funds/FundsForm";
-import NetworkProvider from "../providers/NetworkProvider";
 import { FundsContext } from "../providers/FundsProvider";
 import { useAuth } from "../auth-hook";
 import useInterval from "../interval-hook";
 import * as Constants from "../constants";
-import cogoToast from "cogo-toast";
+import { CreateFundButton } from "../buttons/funds";
 
 const FundsPage = () => {
   const auth = useAuth();
@@ -31,10 +23,6 @@ const FundsPage = () => {
   const [isFundsIssuer, setIsFundsIssuer] = useState(false);
   const [isFundsReceiver, setIsFundsReceiver] = useState(false);
   const [fundsFilterStatus, setFundsFilterStatus] = useState("ALL");
-
-  const [show, setShow] = useState(false);
-  const handleShow = () => setShow(true);
-  const handleClose = () => setShow(false);
 
   const handleTableFilter = (filterValue) => {
     setFundsFilterStatus(filterValue);
@@ -52,50 +40,6 @@ const FundsPage = () => {
       fundsCallback();
     }
   }, Constants.REFRESH_INTERVAL_MS);
-
-  const responseMessage = (message) => {
-    return (
-      <div>
-        <strong>Fund ID:</strong> {message.entity.data.linearId.id}
-        <br />
-        <strong>Status:</strong>{" "}
-        <CBadge color="warning">{message.entity.data.status}</CBadge>
-        <br />
-        <strong>Amount:</strong> {toCurrency(message.entity.data.amount, "USD")}
-      </div>
-    );
-  };
-
-  const onFormSubmit = (response) => {
-    handleClose();
-    if (response.status === 200) {
-      const { hide } = cogoToast.success(responseMessage(response), {
-        heading: "Return Repatriated",
-        position: "top-right",
-        hideAfter: 8,
-        onClick: () => {
-          hide();
-        },
-      });
-      fundsCallback();
-    } else {
-      const { hide } = cogoToast.error(response.entity.message, {
-        heading: "Error Repatriating Return",
-        position: "top-right",
-        hideAfter: 8,
-        onClick: () => {
-          hide();
-        },
-      });
-    }
-  };
-
-  const toCurrency = (number, currency) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(number);
-  };
 
   const getCalloutColor = () => {
     switch (fundsFilterStatus) {
@@ -183,14 +127,9 @@ const FundsPage = () => {
                   </h4>
                 </CCallout>
                 {auth.isAuthenticated && isFundsIssuer ? (
-                  <CButton
-                    className="float-right mt-1 mb-1"
-                    color={"primary"}
-                    tabIndex="0"
-                    onClick={handleShow}
-                  >
-                    Issue Returns
-                  </CButton>
+                  <CButtonGroup className="float-right mt-2 mb-1">
+                    <CreateFundButton size="sm" />
+                  </CButtonGroup>
                 ) : null}
                 <CButtonGroup className="float-right mr-3 mt-1 mb-1">
                   <CButton
@@ -200,7 +139,10 @@ const FundsPage = () => {
                     active={"ALL" === fundsFilterStatus}
                     onClick={() => handleTableFilter("ALL")}
                   >
-                    All{" "}<CBadge color="secondary" shape="pill">{fundsState.data.length}</CBadge>
+                    All{" "}
+                    <CBadge color="secondary" shape="pill">
+                      {fundsState.data.length}
+                    </CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -209,7 +151,10 @@ const FundsPage = () => {
                     active={"ISSUED" === fundsFilterStatus}
                     onClick={() => handleTableFilter("ISSUED")}
                   >
-                    Issued{" "}<CBadge color="warning" shape="pill">{fundsState.issued.length}</CBadge>
+                    Issued{" "}
+                    <CBadge color="warning" shape="pill">
+                      {fundsState.issued.length}
+                    </CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -218,7 +163,10 @@ const FundsPage = () => {
                     active={"RECEIVED" === fundsFilterStatus}
                     onClick={() => handleTableFilter("RECEIVED")}
                   >
-                    Received{" "}<CBadge color="success" shape="pill">{fundsState.received.length}</CBadge>
+                    Received{" "}
+                    <CBadge color="success" shape="pill">
+                      {fundsState.received.length}
+                    </CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -227,7 +175,10 @@ const FundsPage = () => {
                     active={"PAID" === fundsFilterStatus}
                     onClick={() => handleTableFilter("PAID")}
                   >
-                    Paid{" "}<CBadge color="dark" shape="pill">{fundsState.paid.length}</CBadge>
+                    Paid{" "}
+                    <CBadge color="dark" shape="pill">
+                      {fundsState.paid.length}
+                    </CBadge>
                   </CButton>
                 </CButtonGroup>
               </div>
@@ -248,16 +199,6 @@ const FundsPage = () => {
           </CCard>
         </CCol>
       </CRow>
-      <CModal show={show} onClose={handleClose} closeOnBackdrop={false}>
-        <CModalHeader closeButton>
-          <CModalTitle>Returns Form</CModalTitle>
-        </CModalHeader>
-        <CModalBody>
-          <NetworkProvider>
-            <FundsForm onSubmit={onFormSubmit} />
-          </NetworkProvider>
-        </CModalBody>
-      </CModal>
     </>
   );
 };

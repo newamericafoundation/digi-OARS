@@ -10,6 +10,8 @@ import { PartialRequestsContext } from "../../../providers/PartialRequestsProvid
 import useInterval from "../../../interval-hook";
 import * as Constants from "../../../constants";
 
+// Deprecated Code
+
 export const Widgets = ({ auth }) => {
   const [fundsState, fundsCallback] = useContext(FundsContext);
   const [requestsState, requestsCallback] = useContext(RequestsContext);

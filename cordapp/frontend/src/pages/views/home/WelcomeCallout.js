@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { CCol, CRow, CCallout } from "@coreui/react";
 
+// Deprecated Code
+
 export const WelcomeCallout = ({ auth }) => {
   const [hour, setHour] = useState();
   const [greeting, setGreeting] = useState("");
