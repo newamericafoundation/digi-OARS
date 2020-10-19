@@ -16,7 +16,7 @@ import { toCurrency } from "../../../utilities";
 import moment from "moment-timezone";
 import * as Constants from "../../../constants";
 
-export const RequestHistory = ({ show, requestId, handleClose, refresh }) => {
+export const RequestHistory = ({ auth, show, requestId, handleClose }) => {
   const [api] = useContext(APIContext);
   const [requestHistory, setRequestHistory] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -45,12 +45,21 @@ export const RequestHistory = ({ show, requestId, handleClose, refresh }) => {
     }
   }, [api.port, show, requestId]);
 
-  const fields = [
-    { key: "status", _style: { width: "10%" } },
-    { key: "updateDateTime", label: "Update Date/Time" },
-    { key: "amount" },
-    { key: "maxWithdrawalAmount" },
-  ];
+  const getFields = () => {
+      if (auth.isAuthenticated && auth.meta.keycloak.hasResourceRole("partial_request_viewer")) {
+        return [
+            { key: "status", _style: { width: "10%" } },
+            { key: "updateDateTime", label: "Update Date/Time" },
+            { key: "amount" },
+          ];
+      }
+    return [
+      { key: "status", _style: { width: "10%" } },
+      { key: "updateDateTime", label: "Update Date/Time" },
+      { key: "amount" },
+      { key: "maxWithdrawalAmount" },
+    ];
+  };
 
   const getStatusBadge = (status) => {
     switch (status) {
@@ -92,7 +101,7 @@ export const RequestHistory = ({ show, requestId, handleClose, refresh }) => {
 
         <CDataTable
           items={requestHistory ? requestHistory : null}
-          fields={fields}
+          fields={getFields()}
           itemsPerPage={5}
           hover
           pagination

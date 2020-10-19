@@ -541,7 +541,7 @@ export const RequestsTable = ({
                             {toCurrency(item.amount, item.currency)}
                           </strong>
                         </CCallout>
-                        {!isRequestor ? (
+                        {!isRequestor && !isPartialRequestViewer ? (
                           <CCallout color="info" className={"bg-light"}>
                             <p className="text-muted mb-0">
                               Max Withdrawal Amount
@@ -574,12 +574,13 @@ export const RequestsTable = ({
                             </strong>
                           </CCallout>
                         ) : null}
+                        {!isPartialRequestViewer ? (
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Account ID</p>
                           <strong className="p">
                             {item.externalAccountId}
                           </strong>
-                        </CCallout>
+                        </CCallout>) : null }
                         <CCallout
                           color={
                             isRequestor && item.status === "FLAGGED"
@@ -812,6 +813,7 @@ export const RequestsTable = ({
         </CModalFooter>
       </CModal>
       <RequestHistory
+        auth={auth}
         show={showHistory}
         requestId={currentItem.linearId ? currentItem.linearId : null}
         handleClose={handleCloseHistory}

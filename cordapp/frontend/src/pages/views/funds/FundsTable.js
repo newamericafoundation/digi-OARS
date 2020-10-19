@@ -206,7 +206,6 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         tableFilter
         itemsPerPageSelect
         itemsPerPage={5}
-        clickableRows
         hover
         sorter
         pagination
