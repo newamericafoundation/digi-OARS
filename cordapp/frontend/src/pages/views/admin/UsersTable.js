@@ -71,7 +71,6 @@ export const UsersTable = () => {
       getUsers();
       // getLastLoggedIn()
     }
-    // eslint-disable-next-line
   }, [auth.isAuthenticated]);
 
   // const toggleDetails = (index) => {
