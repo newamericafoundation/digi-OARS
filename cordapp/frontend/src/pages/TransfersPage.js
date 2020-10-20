@@ -9,6 +9,7 @@ import {
   CCallout,
   CButtonGroup,
   CButton,
+  CBadge
 } from "@coreui/react";
 // import CIcon from "@coreui/icons-react";
 import { RequestsTable } from "./views/withdrawals/RequestsTable";
@@ -135,7 +136,10 @@ const TransfersPage = () => {
                     active={"APPROVED" === requestsFilterStatus}
                     onClick={() => handleTableFilter("APPROVED")}
                   >
-                    Approved
+                    Approved{" "}
+                    <CBadge color="success" shape="pill">
+                      {requestsState.approved.length}
+                    </CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -144,7 +148,10 @@ const TransfersPage = () => {
                     active={"TRANSFERRED" === requestsFilterStatus}
                     onClick={() => handleTableFilter("TRANSFERRED")}
                   >
-                    Transferred
+                    Transferred{" "}
+                    <CBadge color="secondary" shape="pill">
+                      {requestsState.transferred.length}
+                    </CBadge>
                   </CButton>
                 </CButtonGroup>
               </div>
