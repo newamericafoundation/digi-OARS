@@ -48,7 +48,6 @@ public class IssueRequestFlow {
         ) {
             this.outputRequestState = new RequestState(
                     "",
-                    "",
                     BigDecimal.valueOf(0), // create request with default max withdrawal limit of 0
                     authorizedUserUsername,
                     authorizedUserDept,
