@@ -82,7 +82,6 @@ public class ReceiveFundFlowTests {
         IssueFundFlow.InitiatorFlow flow = new IssueFundFlow.InitiatorFlow(
                 usDoj,
                 catanTreasury,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,

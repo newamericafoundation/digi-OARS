@@ -95,7 +95,6 @@ public class IssueFundFlowTests {
         IssueFundFlow.InitiatorFlow flow = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 catan,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -135,7 +134,6 @@ public class IssueFundFlowTests {
         IssueFundFlow.InitiatorFlow originAndReceivingTheSame = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 usDos,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -157,7 +155,6 @@ public class IssueFundFlowTests {
         IssueFundFlow.InitiatorFlow emptyOwnersList = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 usDoj,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -181,7 +178,6 @@ public class IssueFundFlowTests {
         IssueFundFlow.InitiatorFlow emptyRequiredSignersList = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 usDoj,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -205,7 +201,6 @@ public class IssueFundFlowTests {
         IssueFundFlow.InitiatorFlow negativeAmountAndBalance = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 usDoj,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -226,7 +221,6 @@ public class IssueFundFlowTests {
         IssueFundFlow.InitiatorFlow negativeMaxWithdrawalAmount = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 usDoj,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -247,7 +241,6 @@ public class IssueFundFlowTests {
         IssueFundFlow.InitiatorFlow validFundState = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 usDoj,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -269,7 +262,6 @@ public class IssueFundFlowTests {
 
         IssueFundFlow.InitiatorFlow flow = new IssueFundFlow.InitiatorFlow(usDos,
                 usDoj,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -292,7 +284,6 @@ public class IssueFundFlowTests {
 
         IssueFundFlow.InitiatorFlow flow = new IssueFundFlow.InitiatorFlow(usDos,
                 usDoj,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
