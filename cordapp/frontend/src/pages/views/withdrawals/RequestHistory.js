@@ -123,9 +123,9 @@ export const RequestHistory = ({ auth, show, requestId, handleClose }) => {
             ),
             status: (item) => (
               <td>
-                  <CBadge color={getStatusBadge(item.status)}>
-                    {item.status}
-                  </CBadge>
+                <CBadge color={getStatusBadge(item.status)}>
+                  {item.status}
+                </CBadge>
               </td>
             ),
           }}
