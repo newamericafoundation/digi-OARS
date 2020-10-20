@@ -59,11 +59,9 @@ public class TransferController extends BaseResource {
         }
     }
 
-    @PostMapping(value = "/transfer", produces = "application/json", params = "requestId")
-    private Response createTransfer (@QueryParam("requestId") String requestId) {
+    @PostMapping(value = "/transfer", produces = "application/json", params = {"requestId", "transferUsername"})
+    private Response createTransfer (@QueryParam("transferUsername") String transferUsername, @QueryParam("requestId") String requestId) {
         try {
-            String resourcePath = String.format("/request?requestId=%s", requestId);
-
             UniqueIdentifier requestStateLinearIdAsUUID = UniqueIdentifier.Companion.fromString(requestId);
             Party US_DoS = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US_DoS,L=New York,C=US"));
             Party US_DoJ = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse("O=US_DoJ,L=New York,C=US"));
@@ -76,6 +74,7 @@ public class TransferController extends BaseResource {
 
             SignedTransaction tx = rpcOps.startFlowDynamic(
                     IssueTransferFlow.InitiatorFlow.class,
+                    transferUsername,
                     requestStateLinearIdAsUUID,
                     participants
             ).getReturnValue().get();
