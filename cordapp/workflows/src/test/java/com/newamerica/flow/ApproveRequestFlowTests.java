@@ -107,6 +107,7 @@ public class ApproveRequestFlowTests {
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDoj,
                 CatanTreasury,
+                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -246,6 +247,7 @@ public class ApproveRequestFlowTests {
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDoj,
                 CatanTreasury,
+                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -325,6 +327,7 @@ public class ApproveRequestFlowTests {
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 CatanMoJ,
+                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
