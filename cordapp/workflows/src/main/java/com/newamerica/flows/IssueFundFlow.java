@@ -32,21 +32,10 @@ public class IssueFundFlow {
     public static class InitiatorFlow extends FlowLogic<SignedTransaction>{
         private final FundState outputFundState;
 
-        public InitiatorFlow(Party originParty,
-                             Party receivingParty,
-                             String accountId,
-                             List<AbstractParty> owners,
-                             List<AbstractParty> requiredSigners,
-                             List<AbstractParty> partialRequestParticipants,
-                             BigDecimal amountAndBalance,
-                             ZonedDateTime createDatetime,
-                             ZonedDateTime updateDatetime,
-                             Currency currency,
-                             List<AbstractParty> participants){
+        public InitiatorFlow(Party originParty, Party receivingParty, List<AbstractParty> owners, List<AbstractParty> requiredSigners, List<AbstractParty> partialRequestParticipants, BigDecimal amountAndBalance, ZonedDateTime createDatetime, ZonedDateTime updateDatetime, Currency currency, List<AbstractParty> participants){
             this.outputFundState = new FundState(
                     originParty,
                     receivingParty,
-                    accountId,
                     null,
                     owners,
                     requiredSigners,
