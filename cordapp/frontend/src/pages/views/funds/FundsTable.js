@@ -326,6 +326,12 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                           </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Account ID</p>
+                          <strong className="p">
+                            { item.accountId }
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
                             {moment
@@ -395,6 +401,12 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
             <p className="text-muted mb-0">Amount</p>
             <strong className="p">
               {toCurrency(currentItem.amount, "USD")}
+            </strong>
+          </CCallout>
+          <CCallout color="success" className={"bg-light"}>
+            <p className="text-muted mb-0">Account ID</p>
+            <strong className="p">
+              { currentItem.accountId }
             </strong>
           </CCallout>
         </CModalBody>

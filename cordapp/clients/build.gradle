@@ -51,7 +51,7 @@ task runTemplateClient(type: JavaExec, dependsOn: assemble) {
 task runDOJServer(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.newamerica.webserver.Starter'
-    args '--server.port=10050', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=10200', '--config.rpc.host=localhost', '--config.rpc.port=10006', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 task runMOFAServer(type: JavaExec, dependsOn: assemble) {
@@ -63,11 +63,11 @@ task runMOFAServer(type: JavaExec, dependsOn: assemble) {
 task runTreasuryServer(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.newamerica.webserver.Starter'
-    args '--server.port=10080', '--config.rpc.host=localhost', '--config.rpc.port=10024', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=10400', '--config.rpc.host=localhost', '--config.rpc.port=10024', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 task runMOJServer(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.newamerica.webserver.Starter'
-    args '--server.port=10070', '--config.rpc.host=localhost', '--config.rpc.port=10021', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=10500', '--config.rpc.host=localhost', '--config.rpc.port=10021', '--config.rpc.username=user1', '--config.rpc.password=test'
 }

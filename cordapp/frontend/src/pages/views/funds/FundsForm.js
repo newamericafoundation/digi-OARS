@@ -7,6 +7,7 @@ import {
   CSelect,
   CButton,
   CForm,
+  CInput,
   CInputGroup,
   CInputGroupPrepend,
   CInputGroupText,
@@ -18,6 +19,7 @@ import axios from "axios";
 import { APIContext } from "../../../providers/APIProvider";
 import CurrencyInput from "../../../form/CurrencyInput";
 import { toCountryByIsoFromX500 } from "../../../utilities"
+import { CIcon } from '@coreui/icons-react';
 
 export const FundsForm = ({ onSubmit }) => {
   const [api] = useContext(APIContext);
@@ -26,7 +28,8 @@ export const FundsForm = ({ onSubmit }) => {
 
   const stateSchema = {
     receivingParty: { value: "", error: "" },
-    amount: { value: 0.00, error: "" }
+    amount: { value: 0.00, error: "" },
+    accountId: { value: "", error: "" }
   };
 
   const stateValidatorSchema = {
@@ -40,19 +43,23 @@ export const FundsForm = ({ onSubmit }) => {
           /^[+-]?[0-9]{1,3}(?:,?[0-9]{3})*(?:\.[0-9]{2})?$/.test(value),
         error: "Invalid currency format.",
       },
+    },
+    accountId: {
+      required: true,
     }
   };
 
   const onSubmitForm = (state) => {
     setIsLoading(true);
     const url =
-      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/fund";
+      "http://" + window._env_.API_CLIENT_URL + ":10050/api/fund";
 
     axios
       .post(url, {
         originParty: "O=US_DoJ, L=New York, C=US",
         receivingParty: state.receivingParty,
-        amount: state.amount
+        amount: state.amount,
+        accountId: state.accountId
       })
       .then((response) => {
         onSubmit(response.data);
@@ -67,11 +74,13 @@ export const FundsForm = ({ onSubmit }) => {
     }
   };
 
-  const { errors, handleOnChange, handleOnSubmit, disable } = useForm(
+  const { values, errors, handleOnChange, handleOnSubmit, disable } = useForm(
     stateSchema,
     stateValidatorSchema,
     onSubmitForm
   );
+
+  const { accountId } = values;
 
   const treasuryNodes = getTreasuryNodes();
 
@@ -124,6 +133,31 @@ export const FundsForm = ({ onSubmit }) => {
                   <p className="text-danger">{errors.amount}</p>
                 </div>
               </CFormGroup>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol xs="12">
+              <CFormGroup>
+              <CLabel htmlFor="accountId">Account ID</CLabel>
+              <CInputGroup className="input-prepend">
+                <CInputGroupPrepend>
+                  <CInputGroupText>
+                    <CIcon name="cil-briefcase"></CIcon>
+                  </CInputGroupText>
+                </CInputGroupPrepend>
+                <CInput
+                  type="text"
+                  name="accountId"
+                  id="accountId"
+                  placeholder=""
+                  value={accountId}
+                  onChange={handleOnChange}
+                />
+              </CInputGroup>
+              <div className="text-muted small">
+                <p className="text-danger">{errors.accountId}</p>
+              </div>
+            </CFormGroup>
             </CCol>
           </CRow>
           <CRow>
