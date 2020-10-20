@@ -302,6 +302,7 @@ export const RequestsTable = ({
       axios
         .post(getUrl(), null, {
           params: {
+            transferUsername: auth.user.fullName,
             requestId: requestStateLinearId,
           },
         })
@@ -619,6 +620,9 @@ export const RequestsTable = ({
                                     "]"
                                 )
                               : null}
+                            {item.status === Constants.REQUEST_TRANSFERRED
+                              ? " by ["+ item.transferUsername + "]"
+                              : null}  
                           </strong>
                           {(!isRequestor && !isPartialRequestViewer) &&
                           item.status === Constants.REQUEST_FLAGGED ? (
