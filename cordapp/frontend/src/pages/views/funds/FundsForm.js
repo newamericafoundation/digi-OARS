@@ -52,7 +52,7 @@ export const FundsForm = ({ onSubmit }) => {
   const onSubmitForm = (state) => {
     setIsLoading(true);
     const url =
-      "http://" + window._env_.API_CLIENT_URL + ":10050/api/fund";
+      "http://" + window._env_.API_CLIENT_URL + ":" + api.port + "/api/fund";
 
     axios
       .post(url, {

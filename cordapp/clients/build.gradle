@@ -63,7 +63,7 @@ task runMOFAServer(type: JavaExec, dependsOn: assemble) {
 task runTreasuryServer(type: JavaExec, dependsOn: assemble) {
     classpath = sourceSets.main.runtimeClasspath
     main = 'com.newamerica.webserver.Starter'
-    args '--server.port=10400', '--config.rpc.host=localhost', '--config.rpc.port=10024', '--config.rpc.username=user1', '--config.rpc.password=test'
+    args '--server.port=10800', '--config.rpc.host=localhost', '--config.rpc.port=10024', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
 
 task runMOJServer(type: JavaExec, dependsOn: assemble) {
