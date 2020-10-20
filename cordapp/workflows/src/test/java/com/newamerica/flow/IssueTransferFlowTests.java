@@ -186,7 +186,6 @@ public class IssueTransferFlowTests {
 
 
         IssueTransferFlow.InitiatorFlow transferFlow = new IssueTransferFlow.InitiatorFlow(
-                "Bob Bob",
                 rs2.getLinearId(),
                 participants
         );

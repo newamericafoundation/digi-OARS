@@ -27,11 +27,9 @@ public class ChangeRequestStatusFlow {
     @InitiatingFlow
     @StartableByRPC
     public static class InitiatorFlow extends FlowLogic<SignedTransaction> {
-        private StateAndRef inputRequestStateAndRef;
-        private String transferUsername;
+        private final StateAndRef inputRequestStateAndRef;
 
-        public InitiatorFlow(String transferUsername, StateAndRef inputRequestStateAndRef) {
-            this.transferUsername = transferUsername;
+        public InitiatorFlow(StateAndRef inputRequestStateAndRef) {
             this.inputRequestStateAndRef = inputRequestStateAndRef;
         }
         @Suspendable
@@ -39,7 +37,6 @@ public class ChangeRequestStatusFlow {
         public SignedTransaction call() throws FlowException {
             RequestState inputRequestState = (RequestState) inputRequestStateAndRef.getState().getData();
             RequestState outputRequestState = inputRequestState
-                    .setTransferUsername(transferUsername)
                     .changeStatus(RequestState.RequestStateStatus.TRANSFERRED)
                     .updateUpdateDatetime(ZonedDateTime.ofInstant(Instant.from(ZonedDateTime.now()), ZoneId.of("UTC")));
             final Party notary = getPreferredNotary(getServiceHub());
