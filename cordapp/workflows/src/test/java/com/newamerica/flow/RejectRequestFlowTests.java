@@ -107,6 +107,7 @@ public class RejectRequestFlowTests {
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 catanMoj,
+                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,

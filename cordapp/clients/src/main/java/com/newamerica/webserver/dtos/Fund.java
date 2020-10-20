@@ -16,6 +16,9 @@ public class Fund {
     @NotNull
     private String receivingParty;
 
+    @NotNull
+    private String accountId;
+
     private String receivedByUsername;
 
     @NotNull
@@ -49,5 +52,10 @@ public class Fund {
     public String getReceivedByUsername() { return receivedByUsername; }
 
     public void setReceivedByUsername(String receivedByUsername) { this.receivedByUsername = receivedByUsername; }
+
+    public String getAccountId() { return accountId; }
+
+    public void setAccountId(String accountId) { this.accountId = accountId; }
+
 
 }

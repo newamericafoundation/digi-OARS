@@ -52,6 +52,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -86,6 +87,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -121,6 +123,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -156,6 +159,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 US.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -186,6 +190,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -216,6 +221,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -245,6 +251,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -274,6 +281,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -303,6 +311,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
@@ -334,6 +343,7 @@ public class FundContractTests {
         FundState fs = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
+                "ABC123",
                 username,
                 owners,
                 requiredSigners,
