@@ -42,7 +42,6 @@ public class FundStateTests {
         fundState = new FundState(
                 US.getParty(),
                 CATAN.getParty(),
-                "Account ID",
                 username,
                 owners,
                 authorizedParties,
@@ -61,7 +60,6 @@ public class FundStateTests {
     @Test
     public void hasAllAttributes() throws NoSuchFieldException{
         Field originParty = FundState.class.getDeclaredField("originParty");
-        Field accountId = FundState.class.getDeclaredField("accountId");
         Field receivingParty = FundState.class.getDeclaredField("receivingParty");
         Field receivedByUsername = FundState.class.getDeclaredField("receivedByUsername");
         Field owners = FundState.class.getDeclaredField("owners");
@@ -87,9 +85,6 @@ public class FundStateTests {
         assertTrue(currency.getType().isAssignableFrom(Currency.class));
         assertTrue(status.getType().isAssignableFrom(FundState.FundStateStatus.class));
         assertTrue(participants.getType().isAssignableFrom(List.class));
-        assertTrue(receivedByUsername.getType().isAssignableFrom(String.class));
-        assertTrue(accountId.getType().isAssignableFrom(String.class));
-
     }
 
     // ensure all getter tests return data as expected
@@ -97,7 +92,6 @@ public class FundStateTests {
     public void getterTests(){
         assertEquals(fundState.getOriginParty(), US.getParty());
         assertEquals(fundState.getReceivingParty(), CATAN.getParty());
-        assertEquals(fundState.getAccountId(), "Account ID");
         assertEquals(fundState.getOwners(),owners);
         assertEquals(fundState.getAuthorizedParties(), authorizedParties);
         assertEquals(fundState.getPartialRequestParticipants(), partialRequestParticipants);
