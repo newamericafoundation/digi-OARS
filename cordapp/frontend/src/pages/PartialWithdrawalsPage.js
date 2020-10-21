@@ -240,7 +240,7 @@ const WithdrawalsPage = () => {
                     active={"PENDING" === requestsFilterStatus}
                     onClick={() => handleTableFilter("PENDING")}
                   >
-                    Pending{" "}<CBadge color="warning" shape="pill">{isFundsRequestor ? (requestsState.pending.length + requestsState.flagged.length) : requestsState.pending.length}</CBadge>
+                    Pending{" "}<CBadge color="warning" shape="pill">{(isFundsRequestor || isPartialRequestViewer) ? (requestsState.pending.length + requestsState.flagged.length) : requestsState.pending.length}</CBadge>
                   </CButton>
                   <CButton
                     color="outline-dark"
@@ -269,7 +269,7 @@ const WithdrawalsPage = () => {
                   >
                     Rejected{" "}<CBadge color="danger" shape="pill">{requestsState.rejected.length}</CBadge>
                   </CButton>
-                  {!isFundsRequestor ? (
+                  {!isFundsRequestor && !isPartialRequestViewer ? (
                     <CButton
                       color="outline-dark"
                       className="mx-0"
