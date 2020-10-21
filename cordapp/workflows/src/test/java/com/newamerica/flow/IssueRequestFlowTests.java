@@ -104,6 +104,7 @@ public class IssueRequestFlowTests {
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDos,
                 catanMoj,
+                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,

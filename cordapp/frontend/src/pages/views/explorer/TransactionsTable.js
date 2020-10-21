@@ -14,9 +14,15 @@ import {
 } from "@coreui/react";
 import { TransactionsContext } from "../../../providers/TransactionsProvider";
 import CIcon from "@coreui/icons-react";
+import * as Constants from "../../../constants";
+import useInterval from "../../../interval-hook";
+import { useAuth } from "../../../auth-hook";
+
+
 
 export const TransactionsTable = () => {
-  const [transactions] = useContext(TransactionsContext);
+  const auth = useAuth();
+  const [transactions, transactionsCallback] = useContext(TransactionsContext);
   const [details, setDetails] = useState([]);
 
   const fields = [
@@ -69,6 +75,12 @@ export const TransactionsTable = () => {
     const txConsumed = transactions.data.filter((data) => data.inputs);
     return txConsumed.some((data) => data.inputs[0].stateRef.txhash === txId);
   };
+
+  useInterval(() => {
+    if (auth.isAuthenticated) {
+      transactionsCallback();
+    }
+  }, Constants.REFRESH_INTERVAL_MS);
 
   return (
     <>
