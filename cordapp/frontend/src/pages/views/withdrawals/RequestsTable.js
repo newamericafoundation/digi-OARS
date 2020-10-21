@@ -621,7 +621,7 @@ export const RequestsTable = ({
                                 )
                               : null}
                             {item.status === Constants.REQUEST_TRANSFERRED
-                              ? " by ["+ item.transferUsername + "]"
+                              ? " by "+ item.transferUsername + " [Catan Treasury]"
                               : null}  
                           </strong>
                           {(!isRequestor && !isPartialRequestViewer) &&
