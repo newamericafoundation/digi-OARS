@@ -48,6 +48,7 @@ public class IssueRequestFlow {
         ) {
             this.outputRequestState = new RequestState(
                     "",
+                    "",
                     BigDecimal.valueOf(0), // create request with default max withdrawal limit of 0
                     authorizedUserUsername,
                     authorizedUserDept,
@@ -71,6 +72,8 @@ public class IssueRequestFlow {
             //get lastest config
             QueryCriteria queryCriteria = new QueryCriteria.LinearStateQueryCriteria(null, null, null, Vault.StateStatus.UNCONSUMED);
             List<StateAndRef<ConfigState>> configs = getServiceHub().getVaultService().queryBy(ConfigState.class, queryCriteria).getStates();
+
+            //TODO: Need to handle exception of Config does not exist.
             ConfigState lastestConfig = configs.stream().map(it -> it.getState().getData()).sorted(Comparator.comparing(ConfigState::getCreateDatetime).reversed()).collect(Collectors.toList()).get(0);
 
             // if request amount > max limit, then flag this request

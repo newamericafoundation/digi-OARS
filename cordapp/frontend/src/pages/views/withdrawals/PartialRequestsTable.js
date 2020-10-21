@@ -95,6 +95,12 @@ export const PartialRequestsTable = ({ partialRequests }) => {
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Department</p>
                           <strong className="p">
+                            {item.transferUsername}
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Department</p>
+                          <strong className="p">
                             {item.authorizedUserDept}
                           </strong>
                         </CCallout>

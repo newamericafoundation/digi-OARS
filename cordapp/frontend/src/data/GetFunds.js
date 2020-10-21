@@ -15,6 +15,7 @@ const getFunds = async (port) => {
     currency: ob.currency,
     amount: ob.amount,
     balance: ob.balance,
+    accountId: ob.accountId,
     status: ob.status,
     participants: ob.participants,
     receivedByUsername: ob.receivedByUsername

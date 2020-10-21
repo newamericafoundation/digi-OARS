@@ -543,19 +543,6 @@
         ]
       },
       "subGroups": []
-    },
-    {
-      "id": "2299fc5e-e61c-44cd-a19c-270371febffc",
-      "name": "US Treasury",
-      "path": "/US Treasury",
-      "attributes": {
-        "api_port": [
-          "10400"
-        ]
-      },
-      "realmRoles": [],
-      "clientRoles": {},
-      "subGroups": []
     }
   ],
   "defaultRoles": [
