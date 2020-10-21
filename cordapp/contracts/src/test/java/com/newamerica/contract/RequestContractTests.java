@@ -56,6 +56,7 @@ public class RequestContractTests {
         //create request state
         requestState = new RequestState(
                 "",
+                "",
                 BigDecimal.valueOf(1000000),
                 "Alice Bob",
                 "Catan Ministry of Education",
@@ -78,6 +79,7 @@ public class RequestContractTests {
         //approved request state
         requestState_diff = new RequestState(
                 "",
+                "",
                 BigDecimal.valueOf(1000000),
                 "Alice Alice",
                 "Catan Ministry of Education",
@@ -98,6 +100,7 @@ public class RequestContractTests {
 
         requestState_negative_amount = new RequestState(
                 "",
+                "",
                 BigDecimal.valueOf(1000000),
                 "Alice Bob",
                 "Catan Ministry of Education",
@@ -116,6 +119,7 @@ public class RequestContractTests {
 
         //flagged request state
         requestState_flagged = new RequestState(
+                "",
                 "",
                 BigDecimal.valueOf(1000000),
                 "Alice Alice",
