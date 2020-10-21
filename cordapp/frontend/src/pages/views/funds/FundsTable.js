@@ -89,6 +89,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
     { key: "receivingParty", label: "Receiving Country" },
     { key: "amount" },
     { key: "balance" },
+    { key: "accountId", label: "Account ID" },
     { key: "createdDateTime", label: "Created Date" },
     { key: "status", _style: { width: "20%" } },
     { key: "actions", _style: { width: "20%" }, sorter: false, filter: false },
@@ -161,6 +162,8 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         <br />
         <strong>Amount:</strong>{" "}
         {toCurrency(message.data.entity.data.amount, "USD")}
+        <br />
+        <strong>Account ID:</strong> {message.data.entity.data.accountId}
       </div>
     );
   };
@@ -218,6 +221,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
           ),
           amount: (item) => <td>{toCurrency(item.amount, item.currency)}</td>,
           balance: (item) => <td>{toCurrency(item.balance, item.currency)}</td>,
+          accountId: (item) => (<td>{item.accountId}</td>),
           createdDateTime: (item) => (
             <td>
               {moment
@@ -326,6 +330,12 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                           </strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>
+                          <p className="text-muted mb-0">Account ID</p>
+                          <strong className="p">
+                            { item.accountId }
+                          </strong>
+                        </CCallout>
+                        <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
                             {moment
@@ -395,6 +405,12 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
             <p className="text-muted mb-0">Amount</p>
             <strong className="p">
               {toCurrency(currentItem.amount, "USD")}
+            </strong>
+          </CCallout>
+          <CCallout color="success" className={"bg-light"}>
+            <p className="text-muted mb-0">Account ID</p>
+            <strong className="p">
+              { currentItem.accountId }
             </strong>
           </CCallout>
         </CModalBody>

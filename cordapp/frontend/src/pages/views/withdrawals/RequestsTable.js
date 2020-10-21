@@ -302,6 +302,7 @@ export const RequestsTable = ({
       axios
         .post(getUrl(), null, {
           params: {
+            transferUsername: auth.user.fullName,
             requestId: requestStateLinearId,
           },
         })
@@ -334,14 +335,7 @@ export const RequestsTable = ({
   };
 
   const getData = () => {
-    if (
-      isApprover ||
-      isIssuer ||
-      isTransferer ||
-      isReceiver ||
-      isObserver ||
-      isPartialRequestViewer
-    ) {
+    if (isApprover || isIssuer || isTransferer || isReceiver || isObserver) {
       if (filterStatus === "ALL") {
         return requests.data;
       }
@@ -349,6 +343,9 @@ export const RequestsTable = ({
     }
 
     if (filterStatus === "ALL") {
+      if (isPartialRequestViewer) {
+        return requests.data
+      }
       return requests.data.filter(
         (request) =>
           request.authorizedUserDept ===
@@ -363,6 +360,17 @@ export const RequestsTable = ({
           request.authorizedUserDept ===
             auth.meta.keycloak.tokenParsed.groups[0]
       );
+    }
+
+    if (isPartialRequestViewer && filterStatus === "PENDING") {
+      return requests.data.filter(
+        (request) =>
+          (request.status === filterStatus || request.status === "FLAGGED")
+      );
+    } 
+    
+    if (isPartialRequestViewer) {
+      return requests.data.filter((request) => (request.status === filterStatus))
     }
 
     return requests.data.filter(
@@ -466,12 +474,14 @@ export const RequestsTable = ({
             <td>
               <CBadge
                 color={
-                  (isRequestor || isPartialRequestViewer) && item.status === "FLAGGED"
+                  (isRequestor || isPartialRequestViewer) &&
+                  item.status === "FLAGGED"
                     ? "warning"
                     : getStatusBadge(item.status)
                 }
               >
-                {(isRequestor || isPartialRequestViewer) && item.status === "FLAGGED"
+                {(isRequestor || isPartialRequestViewer) &&
+                item.status === "FLAGGED"
                   ? "PENDING"
                   : item.status}
               </CBadge>
@@ -575,15 +585,17 @@ export const RequestsTable = ({
                           </CCallout>
                         ) : null}
                         {!isPartialRequestViewer ? (
-                        <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">Account ID</p>
-                          <strong className="p">
-                            {item.externalAccountId}
-                          </strong>
-                        </CCallout>) : null }
+                          <CCallout color="info" className={"bg-light"}>
+                            <p className="text-muted mb-0">Account ID</p>
+                            <strong className="p">
+                              {item.externalAccountId}
+                            </strong>
+                          </CCallout>
+                        ) : null}
                         <CCallout
                           color={
-                            (isRequestor || isPartialRequestViewer) && item.status === "FLAGGED"
+                            (isRequestor || isPartialRequestViewer) &&
+                            item.status === "FLAGGED"
                               ? "warning"
                               : getStatusBadge(item.status)
                           }
@@ -619,8 +631,14 @@ export const RequestsTable = ({
                                     "]"
                                 )
                               : null}
+                            {item.status === Constants.REQUEST_TRANSFERRED
+                              ? " by " +
+                                item.transferUsername +
+                                " [Catan Treasury]"
+                              : null}
                           </strong>
-                          {(!isRequestor && !isPartialRequestViewer) &&
+                          {!isRequestor &&
+                          !isPartialRequestViewer &&
                           item.status === Constants.REQUEST_FLAGGED ? (
                             <CRow>
                               <CCol>

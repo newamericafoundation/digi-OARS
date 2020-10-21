@@ -22,6 +22,8 @@ export const CreateFundButton = ({ size }) => {
         <CBadge color="warning">{message.entity.data.status}</CBadge>
         <br />
         <strong>Amount:</strong> {toCurrency(message.entity.data.amount, "USD")}
+        <br />
+        <strong>Account ID:</strong> {message.entity.data.accountId}
       </div>
     );
   };

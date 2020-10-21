@@ -5,10 +5,7 @@ import com.newamerica.states.FundState;
 import com.newamerica.states.RequestState;
 import com.newamerica.states.TransferState;
 import com.newamerica.webserver.exceptions.CustomizedError;
-import com.newamerica.webserver.responses.ConfigResponse;
-import com.newamerica.webserver.responses.FundResponse;
-import com.newamerica.webserver.responses.RequestResponse;
-import com.newamerica.webserver.responses.TransferResponse;
+import com.newamerica.webserver.responses.*;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -43,6 +40,11 @@ public class BaseResource {
     public TransferResponse createTransferSuccessServiceResponse(String message, Object data, String resourcePath) {
         TransferResponse response = new TransferResponse(message, resourcePath);
         response.setData((TransferState) data);
+        return response;
+    }
+
+    public TransactionList createTransactionListServiceResponse(String message, Object data, String resourcePath) {
+        TransactionList response = new TransactionList();
         return response;
     }
 }

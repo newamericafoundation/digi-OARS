@@ -7,6 +7,7 @@ const getRequests = async (port) => {
   const res = await axios.get(url);
 
   return res.data.entity.map((ob, index) => ({
+    transferUsername: ob.transferUsername,
     authorizedUserUsername: ob.authorizedUserUsername,
     authorizedUserDept: ob.authorizedUserDept,
     authorizerUserDeptAndUsername: ob.authorizerUserDeptAndUsername,
