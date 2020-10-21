@@ -71,3 +71,9 @@ task runMOJServer(type: JavaExec, dependsOn: assemble) {
     main = 'com.newamerica.webserver.Starter'
     args '--server.port=10600', '--config.rpc.host=localhost', '--config.rpc.port=10021', '--config.rpc.username=user1', '--config.rpc.password=test'
 }
+
+task runCatanCSOServer(type: JavaExec, dependsOn: assemble) {
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'com.newamerica.webserver.Starter'
+    args '--server.port=10700', '--config.rpc.host=localhost', '--config.rpc.port=10027', '--config.rpc.username=user1', '--config.rpc.password=test'
+}

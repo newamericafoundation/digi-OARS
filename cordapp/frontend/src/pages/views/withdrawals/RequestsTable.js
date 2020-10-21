@@ -607,7 +607,7 @@ export const RequestsTable = ({
                             item.status === Constants.REQUEST_FLAGGED
                               ? "PENDING"
                               : item.status}
-                            {item.status === Constants.REQUEST_APPROVED
+                            {item.status === Constants.REQUEST_APPROVED && !isPartialRequestViewer
                               ? " by " +
                                 Object.keys(
                                   item.authorizerUserDeptAndUsername
@@ -619,7 +619,7 @@ export const RequestsTable = ({
                                     "]"
                                 )
                               : null}
-                            {item.status === Constants.REQUEST_REJECTED
+                            {item.status === Constants.REQUEST_REJECTED && !isPartialRequestViewer
                               ? " by " +
                                 Object.keys(
                                   item.authorizerUserDeptAndUsername
@@ -631,7 +631,7 @@ export const RequestsTable = ({
                                     "]"
                                 )
                               : null}
-                            {item.status === Constants.REQUEST_TRANSFERRED
+                            {item.status === Constants.REQUEST_TRANSFERRED && !isPartialRequestViewer
                               ? " by " +
                                 item.transferUsername +
                                 " [Catan Treasury]"
@@ -655,7 +655,7 @@ export const RequestsTable = ({
                               </CCol>
                             </CRow>
                           ) : null}
-                          {!isRequestor &&
+                          {!isRequestor && !isPartialRequestViewer &&
                           item.status === Constants.REQUEST_REJECTED ? (
                             <div>
                               <p className="text-muted mt-2 mb-0">
