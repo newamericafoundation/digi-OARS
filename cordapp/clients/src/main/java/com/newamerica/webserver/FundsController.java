@@ -206,6 +206,7 @@ public class FundsController extends BaseResource {
             String originPartyName = request.getOriginParty();
             String receivingPartyName = request.getReceivingParty();
             String amountStr = request.getAmount();
+            String accountId = request.getAccountId();
 
             Party originParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(originPartyName));
             Party receivingParty = rpcOps.wellKnownPartyFromX500Name(CordaX500Name.parse(receivingPartyName));
@@ -230,6 +231,7 @@ public class FundsController extends BaseResource {
                     IssueFundFlow.InitiatorFlow.class,
                     originParty,
                     receivingParty,
+                    accountId,
                     owners,
                     requiredSigners,
                     partialRequestParticipants,
