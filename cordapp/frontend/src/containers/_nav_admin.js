@@ -12,12 +12,19 @@ export default [
         _tag: "CSidebarNavItem",
         name: "Users",
         to: "/admin/users",
-      },
-      // {
-      //   _tag: "CSidebarNavItem",
-      //   name: "History",
-      //   to: "/transfers/history",
-      // },
+      }
+    ],
+  },
+  {
+    _tag: "CSidebarNavDropdown",
+    name: "Node Explorer",
+    icon: "cordaLogo",
+    _children: [
+      {
+        _tag: "CSidebarNavItem",
+        name: "Transactions",
+        to: "/node/transactions",
+      }
     ],
   }
 ];

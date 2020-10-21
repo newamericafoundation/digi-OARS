@@ -113,7 +113,6 @@ public class IssueTransferFlowTests {
         IssueFundFlow.InitiatorFlow fundStateFlow = new IssueFundFlow.InitiatorFlow(
                 usDoj,
                 catanTreasury,
-                "ABC123",
                 owners,
                 requiredSigners,
                 partialRequestParticipants,
@@ -186,7 +185,6 @@ public class IssueTransferFlowTests {
 
 
         IssueTransferFlow.InitiatorFlow transferFlow = new IssueTransferFlow.InitiatorFlow(
-                "Bob Bob",
                 rs2.getLinearId(),
                 participants
         );
