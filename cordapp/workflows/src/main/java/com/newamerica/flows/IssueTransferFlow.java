@@ -34,8 +34,10 @@ public class IssueTransferFlow {
         private TransferState outputTransferState;
         private UniqueIdentifier requestStateLinearId;
         private List<AbstractParty> participants;
+        private String transferUsername;
 
-        public InitiatorFlow (UniqueIdentifier requestStateLinearId, List<AbstractParty> participants) {
+        public InitiatorFlow (String transferUsername, UniqueIdentifier requestStateLinearId, List<AbstractParty> participants) {
+            this.transferUsername = transferUsername;
             this.requestStateLinearId = requestStateLinearId;
             this.participants = participants;
         }
@@ -78,6 +80,7 @@ public class IssueTransferFlow {
 
             SignedTransaction finalizedTransaction = subFlow(new FinalityFlow(subFlow(new CollectSignaturesFlow(partSignedTx, flowSessions)), flowSessions));
             subFlow(new ChangeRequestStatusFlow.InitiatorFlow(
+                    transferUsername,
                     requestStateRef
             ));
             return finalizedTransaction;
