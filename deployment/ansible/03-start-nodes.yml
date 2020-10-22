@@ -30,5 +30,7 @@
           - "/opt/corda/cordapps:/opt/corda/cordapps"
           - "/opt/corda/drivers:/opt/corda/drivers"
           - "/opt/corda/network-parameters:/opt/corda/network-parameters"
+        env:
+          ACCEPT_LICENSE: "Y"
   tags:
     - start-nodes
