@@ -1,5 +1,5 @@
 network_boostrapper_version: 4.5.1
-corda_docker_image_version: "corda/corda-zulu-java1.8-4.5"
+corda_docker_image_version: "corda/corda-enterprise-node-alpine-zulu-java1.8-4.5.2"
 
 docker_registry_url: newamericaacrprod.azurecr.io
 docker_registry_username: newamericaacrprod
