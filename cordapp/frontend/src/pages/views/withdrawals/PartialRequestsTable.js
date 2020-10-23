@@ -121,7 +121,7 @@ export const PartialRequestsTable = ({ partialRequests }) => {
                       </CCol>
                       <CCol xl="6" sm="4">
                         <CCallout color="info" className={"bg-light"}>
-                          <p className="text-muted mb-0">State ID</p>
+                          <p className="text-muted mb-0">Ledger ID</p>
                           <strong className="p">{item.linearId}</strong>
                         </CCallout>
                         <CCallout color="info" className={"bg-light"}>

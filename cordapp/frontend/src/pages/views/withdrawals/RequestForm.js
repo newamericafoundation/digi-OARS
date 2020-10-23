@@ -5,6 +5,7 @@ import {
   CInput,
   CButton,
   CForm,
+  CTooltip,
   CInputGroup,
   CInputGroupPrepend,
   CInputGroupText,
@@ -170,7 +171,9 @@ export const RequestForm = ({ show, onSubmit, handleClose }) => {
             </div>
           </CFormGroup>
           <CFormGroup>
-            <CLabel htmlFor="accountId">Account ID</CLabel>
+            <CTooltip content="Destination account number for requested amount" placement="right-end">
+              <CLabel htmlFor="accountId">Account ID</CLabel>
+            </CTooltip>
             <CInputGroup className="input-prepend">
               <CInputGroupPrepend>
                 <CInputGroupText>

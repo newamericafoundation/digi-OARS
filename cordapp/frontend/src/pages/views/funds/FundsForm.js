@@ -8,6 +8,7 @@ import {
   CButton,
   CForm,
   CInput,
+  CTooltip,
   CInputGroup,
   CInputGroupPrepend,
   CInputGroupText,
@@ -138,7 +139,9 @@ export const FundsForm = ({ onSubmit }) => {
           <CRow>
             <CCol xs="12">
               <CFormGroup>
-              <CLabel htmlFor="accountId">Account ID</CLabel>
+              <CTooltip popperOptions="{backgroundColor: 'blue'}" content="Receiving country bank account number" placement="right-end">
+                <CLabel htmlFor="accountId">Account ID</CLabel>
+              </CTooltip>
               <CInputGroup className="input-prepend">
                 <CInputGroupPrepend>
                   <CInputGroupText>

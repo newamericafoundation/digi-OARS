@@ -299,7 +299,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                       <CCol xl="4" sm="3">
                         <CTooltip content={item.linearId} placement="right-end">
                           <CCallout color="info" className={"bg-light"}>
-                            <p className="text-muted mb-0">State ID</p>
+                            <p className="text-muted mb-0">Ledger ID</p>
                             <strong className="p">{item.linearId}</strong>
                           </CCallout>
                         </CTooltip>
@@ -329,12 +329,14 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
                             {toCurrency(item.balance, item.currency)}
                           </strong>
                         </CCallout>
+                        <CTooltip style="background-color: #f00" content="Receiving country bank account number" placement="right-end">
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Account ID</p>
                           <strong className="p">
                             { item.accountId }
                           </strong>
                         </CCallout>
+                        </CTooltip>
                         <CCallout color="info" className={"bg-light"}>
                           <p className="text-muted mb-0">Created Date/Time</p>
                           <strong className="p">
@@ -390,7 +392,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
         </CModalHeader>
         <CModalBody>
           <CCallout color="success" className={"bg-light"}>
-            <p className="text-muted mb-0">Request State ID</p>
+            <p className="text-muted mb-0">Request Ledger ID</p>
             <strong className="p">{currentItem.linearId}</strong>
           </CCallout>
           <CCallout color="success" className={"bg-light"}>
@@ -408,7 +410,7 @@ export const FundsTable = ({ funds, isReceiver, refreshTableCallback }) => {
             </strong>
           </CCallout>
           <CCallout color="success" className={"bg-light"}>
-            <p className="text-muted mb-0">Account ID</p>
+              <p className="text-muted mb-0">Account ID</p>
             <strong className="p">
               { currentItem.accountId }
             </strong>
