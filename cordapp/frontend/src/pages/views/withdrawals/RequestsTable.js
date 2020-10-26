@@ -585,12 +585,14 @@ export const RequestsTable = ({
                           </CCallout>
                         ) : null}
                         {!isPartialRequestViewer ? (
+                          <CTooltip content="Destination account number for requested amount" placement="right-end">
                           <CCallout color="info" className={"bg-light"}>
                             <p className="text-muted mb-0">Account ID</p>
                             <strong className="p">
                               {item.externalAccountId}
                             </strong>
                           </CCallout>
+                          </CTooltip>
                         ) : null}
                         <CCallout
                           color={
