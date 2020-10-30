@@ -36,7 +36,8 @@ To bootstrap locally, follow the following steps:
 1. build project using `./gradlew clean build`
 2. run `./gradlew deployNodes`
 3. run `build/nodes/runnodes` and wait for all the nodes to startup correctly
-4. to start the UI of respective node, follow the pattern in the /client/build.gradle file
+4. to start the client of respective node, follow the pattern in the /client/build.gradle file
+5. to start the UI on localhost, navigate to `/cordapp/frontend` and run `npm start`
 
 
 
